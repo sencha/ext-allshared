@@ -4,6 +4,13 @@ git merge upstream/master
 git merge upstream/ext-allshared-7.0.x
 
 
+generators/ext-angular/src/*.*
+generators/ext-angular/src/ext-angular/*.*
+generators/ext-angular/src/ext-angular/lib/*.*
+generators/ext-angular/src/lib/*.*
+
+
+
 @angular-devkit/build-webpack/src/webpack/index.js/runWebpack
 @angular-devkit/build-angular/src/dev-server/index.js
 
