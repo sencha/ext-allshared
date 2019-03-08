@@ -31,5 +31,7 @@ export class Ext{capclassname}Component extends ExtBase {
   }
 }
 (function () {
-window.customElements.define('ext-{classname}', Ext{capclassname}Component);
+  Ext.onReady(function() {
+    window.customElements.define('ext-{classname}', Ext{capclassname}Component);
+  });
 })();

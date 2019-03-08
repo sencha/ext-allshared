@@ -45,7 +45,7 @@ export function _constructor(options) {
     {thisVars.production = false}
   logv(options, `thisVars - ${JSON.stringify(thisVars)}`)
 
-  log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
+  //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
   log(thisVars.app + 'Building for ' + thisOptions.environment)
   log(thisVars.app + 'Treeshake is ' + thisOptions.treeshake)
 
