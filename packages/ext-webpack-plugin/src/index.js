@@ -14,6 +14,7 @@ export default class ExtWebpackPlugin {
 
     compiler.hooks.thisCompilation.tap(`ext-this-compilation`, (compilation) => {
       v(options,'HOOK thisCompilation')
+      require(`./pluginUtil`)._thisCompilation(compiler, compilation, vars, options)
       if (vars.pluginErrors.length > 0) {
         compilation.errors.push( new Error(vars.pluginErrors.join("")) )
       }

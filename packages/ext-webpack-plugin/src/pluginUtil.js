@@ -1,4 +1,25 @@
 //**********
+function runScript(scriptPath, callback) {
+  var childProcess = require('child_process');
+  // keep track of whether callback has been invoked to prevent multiple invocations
+  var invoked = false;
+  var process = childProcess.fork(scriptPath);
+  // listen for errors as they may prevent the exit event from firing
+  process.on('error', function (err) {
+    if (invoked) return;
+    invoked = true;
+    callback(err);
+  });
+  // execute the callback once the process has finished running
+  process.on('exit', function (code) {
+    if (invoked) return;
+    invoked = true;
+    var err = code === 0 ? null : new Error('exit code ' + code);
+    callback(err);
+  });
+}
+
+//**********
 export function _constructor(options) {
   const fs = require('fs')
  
@@ -56,7 +77,29 @@ export function _constructor(options) {
   plugin.vars = thisVars
   plugin.options = thisOptions
   require('./pluginUtil').logv(options, 'FUNCTION constructor (end)')
+
   return plugin
+}
+
+//**********
+export function _thisCompilation(compiler, compilation, vars, options) {
+  try {
+    require('./pluginUtil').logv(options, 'FUNCTION _thisCompilation')
+
+    if (options.script != undefined) {
+      if (options.script != null) {
+        runScript(options.script, function (err) {
+          if (err) throw err;
+          require('./pluginUtil').log(vars.app + `finished running ${options.script}`)
+      });
+      }
+    }
+
+  }
+  catch(e) {
+    require('./pluginUtil').logv(options,e)
+    compilation.errors.push('_thisCompilation: ' + e)
+  }
 }
 
 //**********
@@ -351,27 +394,6 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
 }
 
 //**********
-function runScript(scriptPath, callback) {
-  var childProcess = require('child_process');
-  // keep track of whether callback has been invoked to prevent multiple invocations
-  var invoked = false;
-  var process = childProcess.fork(scriptPath);
-  // listen for errors as they may prevent the exit event from firing
-  process.on('error', function (err) {
-    if (invoked) return;
-    invoked = true;
-    callback(err);
-  });
-  // execute the callback once the process has finished running
-  process.on('exit', function (code) {
-    if (invoked) return;
-    invoked = true;
-    var err = code === 0 ? null : new Error('exit code ' + code);
-    callback(err);
-  });
-}
-
-//**********
 export function _done(vars, options) {
   try {
     const log = require('./pluginUtil').log
@@ -382,14 +404,14 @@ export function _done(vars, options) {
       require(`./${options.framework}Util`)._toDev(vars, options)
     }
 
-    if (options.script != undefined) {
-      if (options.script != null) {
-        runScript(options.script, function (err) {
-          if (err) throw err;
-          require('./pluginUtil').log(vars.app + `finished running ${options.script}`)
-      });
-      }
-    }
+    // if (options.script != undefined) {
+    //   if (options.script != null) {
+    //     runScript(options.script, function (err) {
+    //       if (err) throw err;
+    //       require('./pluginUtil').log(vars.app + `finished running ${options.script}`)
+    //   });
+    //   }
+    // }
 
     try {
       if(options.browser == true && options.watch == 'yes' && vars.production == false) {
