@@ -14,7 +14,8 @@ export function getValidateOptions() {
       "environment": {"type": [ "string" ]},
       "verbose":     {"type": [ "string" ]},
       "theme":       {"type": [ "string" ]},
-      "treeshake": {"type": [ "boolean" ]},
+      "treeshake":   {"type": [ "boolean" ]},
+      "script":      {"type": [ "string" ]},
       "packages":    {"type": [ "string", "array" ]}
     },
     "additionalProperties": false
@@ -29,6 +30,7 @@ export function getDefaultOptions() {
     watch: 'yes',
     profile: '', 
     treeshake: false,
+    script: null,
     environment: 'development', 
     verbose: 'no',
     toolkit: 'modern',
