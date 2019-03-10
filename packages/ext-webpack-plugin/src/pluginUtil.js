@@ -1,3 +1,4 @@
+
 //**********
 function runScript(scriptPath, callback) {
   var childProcess = require('child_process');
@@ -67,8 +68,8 @@ export function _constructor(options) {
   logv(options, `thisVars - ${JSON.stringify(thisVars)}`)
 
   //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
-  log(thisVars.app + 'Building for ' + thisOptions.environment)
-  log(thisVars.app + 'Treeshake is ' + thisOptions.treeshake)
+  log(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
+//  log(thisVars.app + 'Treeshake is ' + thisOptions.treeshake)
 
   if (thisVars.production == true && thisOptions.treeshake == true && options.framework == 'angular') {
     require(`./angularUtil`)._toProd(thisVars, thisOptions)
@@ -76,7 +77,7 @@ export function _constructor(options) {
 
   plugin.vars = thisVars
   plugin.options = thisOptions
-  require('./pluginUtil').logv(options, 'FUNCTION constructor (end)')
+  require('./pluginUtil').logv(options, 'FUNCTION _constructor')
 
   return plugin
 }
@@ -106,6 +107,11 @@ export function _thisCompilation(compiler, compilation, vars, options) {
 export function _compilation(compiler, compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options, 'FUNCTION _compilation')
+
+    if (options.framework == 'extjs') {
+      require('./pluginUtil').logv(options,'FUNCTION _compilation (empty)')
+      return
+    }
 
     var extComponents = []
 
@@ -147,40 +153,68 @@ export function _compilation(compiler, compilation, vars, options) {
       (options.framework == 'angular' && options.treeshake == false) ||
       (options.framework == 'react')
     ) {
-        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
-        logv(options,'HOOK ext-html-generation')
+
+      compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
+        require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
+      })
+
+      // try {
+      //   // eslint-disable-next-line global-require
+      //   HtmlWebpackPlugin = require('html-webpack-plugin');
+      // } catch (e) {
+      //   if (!(e instanceof Error) || e.code !== 'MODULE_NOT_FOUND') {
+      //     throw e;
+      //   }
+      // }
+
+
+      var HtmlWebpackPlugin = require('html-webpack-plugin');
+      if (HtmlWebpackPlugin && HtmlWebpackPlugin.getHooks) {
+        HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tapAsync(`ext-beforeAssetTagGeneration`, (data, callback) => {
+          console.log(data.assetTags.scripts)
+          console.log(data.assetTags.styles)
+          callback(null, data);
+        })
+      }
+      else {
+        console.log('no')
+      }
+
+        // HtmlWebpackPlugin.getHooks(compilation).beforeAssetTagGeneration.tapAsync(
+        //   'sri',
+        //   this.beforeHtmlGeneration.bind(this, hwpCompilation)
+        // );
+
+        // HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tapAsync(
+        //   'sri',
+        //   function cb(data, callback) {
+        //     var processTag = self.processTag.bind(self, hwpCompilation);
+        //     data.assetTags.scripts.filter(util.filterTag).forEach(processTag);
+        //     data.assetTags.styles.filter(util.filterTag).forEach(processTag);
+        //     callback(null, data);
+        //   }
+        // );
+
+
+
+//      }
+
+
+
+      compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
+        logv(options,'htmlWebpackPluginBeforeHtmlGeneration')
         const path = require('path')
-
-        //var outputPath = ''
-        // if (compiler.options.devServer) {
-        //   if (compiler.outputPath === '/') {
-        //     outputPath = path.join(compiler.options.devServer.contentBase, outputPath)
-        //   }
-        //   else {
-        //     if (compiler.options.devServer.contentBase == undefined) {
-        //       outputPath = 'build'
-        //     }
-        //     else {
-        //       outputPath = ''
-        //     }
-        //   }
-        // }
-        // else {
-        //   outputPath = 'build'
-        // }
-        // outputPath = outputPath.replace(process.cwd(), '').trim()
-        //var jsPath = path.join(outputPath, vars.extPath, 'ext.js')
-        //var cssPath = path.join(outputPath, vars.extPath, 'ext.css')
-
         var jsPath = path.join(vars.extPath, 'ext.js')
         var cssPath = path.join(vars.extPath, 'ext.css')
+        console.log(data)
         data.assets.js.unshift(jsPath)
         data.assets.css.unshift(cssPath)
+        console.log(data)
         log(vars.app + `Adding ${jsPath} and ${cssPath} to index.html`)
       })
     }
     else {
-      logv(options,'skipped HOOK ext-html-generation')
+      logv(options,'skipped htmlWebpackPluginBeforeHtmlGeneration')
     }
   }
   catch(e) {
@@ -192,14 +226,32 @@ export function _compilation(compiler, compilation, vars, options) {
 //**********
 export function _afterCompile(compiler, compilation, vars, options) {
   require('./pluginUtil').logv(options, 'FUNCTION _afterCompile')
+  if (options.framework == 'extjs') {
+        require(`./extjsUtil`)._afterCompile(compilation, vars, options)
+  }
 }
 
 //**********
-export async function emit(compiler, compilation, vars, options, callback) {
+export async function _emit(compiler, compilation, vars, options, callback) {
   try {
     const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
-    logv(options,'FUNCTION emit')
+    logv(options,'FUNCTION _emit')
+
+    var treeshake = options.treeshake
+    var framework = options.framework
+    var environment =  options.environment
+
+    if (environment == 'production' && treeshake == true  && framework == 'angular' ||
+        environment != 'production' && treeshake == false && framework == 'angular'
+    ) {
+      logv(options,'running emit')
+    }
+    else {
+      logv(options,'NOT running emit')
+      return
+    }
+
     var app = vars.app
     var framework = vars.framework
     const path = require('path')
@@ -403,16 +455,6 @@ export function _done(vars, options) {
     if (vars.production == true && options.treeshake == false && options.framework == 'angular') {
       require(`./${options.framework}Util`)._toDev(vars, options)
     }
-
-    // if (options.script != undefined) {
-    //   if (options.script != null) {
-    //     runScript(options.script, function (err) {
-    //       if (err) throw err;
-    //       require('./pluginUtil').log(vars.app + `finished running ${options.script}`)
-    //   });
-    //   }
-    // }
-
     try {
       if(options.browser == true && options.watch == 'yes' && vars.production == false) {
         if (vars.browserCount == 0) {
@@ -463,11 +505,24 @@ export async function executeAsync (app, command, parms, opts, compilation, opti
         var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
         logv(options, `${str}`)
         if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
+
+          // const fs = require('fs');
+          // var filename = process.cwd()+'/src/index.js';
+          // var data = fs.readFileSync(filename);
+          // fs.writeFileSync(filename, data + ' ', 'utf8')
+          // logv(options, `touching ${filename}`)
+
           const fs = require('fs');
-          var filename = process.cwd()+'/src/index.js';
-          var data = fs.readFileSync(filename);
-          fs.writeFileSync(filename, data + ' ', 'utf8')
-          logv(options, `touching ${filename}`)
+          var filename = process.cwd() + '/src/index.js';
+          try {
+            var data = fs.readFileSync(filename);
+            fs.writeFileSync(filename, data + ' ', 'utf8');
+            log(options, `touching ${filename}`);
+          }
+          catch(e) {
+            log(options, `NOT touching ${filename}`);
+          }
+
           resolve(0)
         }
         else {
