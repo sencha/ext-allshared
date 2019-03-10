@@ -181,7 +181,7 @@ export function _toProd(vars, options) {
 export function _toDev(vars, options) {
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _toProd')
+  logv(options,'FUNCTION _toDev')
   try {
     const path = require('path')
     const pathExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-prod`);
