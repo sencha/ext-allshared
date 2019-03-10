@@ -24,33 +24,33 @@ export default class ExtWebpackPlugin {
       require(`./pluginUtil`)._compilation(compiler, compilation, vars, options)
     })
 
-    var emit = options.emit
-    var treeshake = options.treeshake
-    var framework = options.framework
-    var environment =  options.environment
+    // var emit = options.emit
+    // var treeshake = options.treeshake
+    // var framework = options.framework
+    // var environment =  options.environment
 
 
-    if (options.emit) {
-      if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
-          (environment != 'production' && treeshake == false && framework == 'angular') ||
-          (framework == 'react') ||
-          (framework == 'components')
-      ) {
-        require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
-      }
-      else {
-        logv(options,'NOT running emit')
-      }
-    }
-    else {
-      logv(options,'emit is false')
-    }
+    // if (options.emit) {
+    //   if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
+    //       (environment != 'production' && treeshake == false && framework == 'angular') ||
+    //       (framework == 'react') ||
+    //       (framework == 'components')
+    //   ) {
+    //     require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
+    //   }
+    //   else {
+    //     logv(options,'NOT running emit')
+    //   }
+    // }
+    // else {
+    //   logv(options,'emit is false')
+    // }
 
 
 
-    // compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
-    //   require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
-    // })
+    compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
+      require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
+    })
 
     compiler.hooks.afterCompile.tap('ext-after-compile', (compilation) => {
       require(`./pluginUtil`)._afterCompile(compiler, compilation, vars, options)
