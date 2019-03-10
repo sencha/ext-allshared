@@ -169,6 +169,7 @@ export function _compilation(compiler, compilation, vars, options) {
 
 
       var HtmlWebpackPlugin = require('html-webpack-plugin');
+
       if (HtmlWebpackPlugin && HtmlWebpackPlugin.getHooks) {
         HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tapAsync(`ext-beforeAssetTagGeneration`, (data, callback) => {
           console.log(data.assetTags.scripts)
@@ -249,6 +250,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     }
     else {
       logv(options,'NOT running emit')
+      callback()
       return
     }
 
