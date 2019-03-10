@@ -93,13 +93,15 @@ export function _constructor(options) {
 export function _thisCompilation(compiler, compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options, 'FUNCTION _thisCompilation')
-
-    if (options.script != undefined) {
-      if (options.script != null) {
-        runScript(options.script, function (err) {
-          if (err) throw err;
-          require('./pluginUtil').log(vars.app + `finished running ${options.script}`)
-      });
+ 
+    if (vars.buildstep != 1) {
+      if (options.script != undefined) {
+        if (options.script != null) {
+          runScript(options.script, function (err) {
+            if (err) throw err;
+            require('./pluginUtil').log(vars.app + `finished running ${options.script}`)
+        });
+        }
       }
     }
 
@@ -195,56 +197,53 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         }
         logv(options,'outputPath: ' + outputPath)
         logv(options,'framework: ' + framework)
-        //    if (options.emit == true) {
-          if (framework != 'extjs') {
-            _prepareForBuild(app, vars, options, outputPath, compilation)
+        if (framework != 'extjs') {
+          _prepareForBuild(app, vars, options, outputPath, compilation)
+        }
+        else {
+          if (options.framework == 'angular' && options.treeshake == false) {
+            require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
           }
           else {
-            if (options.framework == 'angular' && options.treeshake == false) {
-              require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
+            require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
+          }
+        }
+        var command = ''
+        if (options.watch == 'yes' && vars.production == false) {
+          command = 'watch'
+        }
+        else {
+          command = 'build'
+        }
+        if (vars.rebuild == true) {
+          var parms = []
+          if (options.profile == undefined || options.profile == '' || options.profile == null) {
+            if (command == 'build') {
+              parms = ['app', command, options.environment]
             }
             else {
-              require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
+              parms = ['app', command, '--web-server', 'false', options.environment]
             }
-          }
 
-          var command = ''
-          if (options.watch == 'yes' && vars.production == false) {
-            command = 'watch'
           }
           else {
-            command = 'build'
-          }
-
-          if (vars.rebuild == true) {
-            var parms = []
-            if (options.profile == undefined || options.profile == '' || options.profile == null) {
-              if (command == 'build') {
-                parms = ['app', command, options.environment]
-              }
-              else {
-                parms = ['app', command, '--web-server', 'false', options.environment]
-              }
-
+            if (command == 'build') {
+              parms = ['app', command, options.profile, options.environment]
             }
             else {
-              if (command == 'build') {
-                parms = ['app', command, options.profile, options.environment]
-              }
-              else {
-                parms = ['app', command, '--web-server', 'false', options.profile, options.environment]
-              }
+              parms = ['app', command, '--web-server', 'false', options.profile, options.environment]
             }
+          }
 
-            if (vars.watchStarted == false) {
-              await _buildExtBundle(app, compilation, outputPath, parms, options)
-              vars.watchStarted = true
-            }
-            callback()
+          if (vars.watchStarted == false) {
+            await _buildExtBundle(app, compilation, outputPath, parms, options)
+            vars.watchStarted = true
           }
-          else {
-              callback()
-          }
+          callback()
+        }
+        else {
+          callback()
+        }
       }
       else {
         logv(options,'NOT running emit')
