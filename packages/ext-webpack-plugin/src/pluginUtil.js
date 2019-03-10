@@ -251,7 +251,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     else {
       logv(options,'NOT running emit')
       callback()
-      return
     }
 
     var app = vars.app
