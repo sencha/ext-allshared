@@ -1,40 +1,15 @@
-
-//**********
-function runScript(scriptPath, callback) {
-  var childProcess = require('child_process');
-  // keep track of whether callback has been invoked to prevent multiple invocations
-  var invoked = false;
-  var process = childProcess.fork(scriptPath);
-  // listen for errors as they may prevent the exit event from firing
-  process.on('error', function (err) {
-    if (invoked) return;
-    invoked = true;
-    callback(err);
-  });
-  // execute the callback once the process has finished running
-  process.on('exit', function (code) {
-    if (invoked) return;
-    invoked = true;
-    var err = code === 0 ? null : new Error('exit code ' + code);
-    callback(err);
-  });
-}
-
 //**********
 export function _constructor(options) {
   const fs = require('fs')
- 
   var thisVars = {}
   var thisOptions = {}
   var plugin = {}
-
   if (options.framework == undefined) {
     thisVars.pluginErrors = []
     thisVars.pluginErrors.push('webpack config: framework parameter on ext-webpack-plugin is not defined - values: react, angular, extjs')
     plugin.vars = thisVars
     return plugin
   }
-
   const validateOptions = require('schema-utils')
   validateOptions(require(`./${options.framework}Util`).getValidateOptions(), options, '')
   thisVars = require(`./${options.framework}Util`).getDefaultVars()
@@ -52,17 +27,13 @@ export function _constructor(options) {
     default:
       thisVars.pluginName = 'ext-webpack-plugin'
   }
-
   thisVars.app = require('./pluginUtil')._getApp()
   require(`./pluginUtil`).logh(thisVars.app + `HOOK constructor`)
-
   logv(options, `pluginName - ${thisVars.pluginName}`)
   logv(options, `thisVars.app - ${thisVars.app}`)
-
   const rc = (fs.existsSync(`.ext-${thisVars.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${thisVars.framework}rc`, 'utf-8')) || {})
   thisOptions = { ...require(`./${thisVars.framework}Util`).getDefaultOptions(), ...options, ...rc }
   logv(options, `thisOptions - ${JSON.stringify(thisOptions)}`)
-
   if (thisOptions.environment == 'production') 
     {thisVars.production = true}
   else 
@@ -82,14 +53,11 @@ export function _constructor(options) {
   if (thisVars.buildstep == 0) {
     log(thisVars.app + 'Starting Development Build')
   }
-
   //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
   logv(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
-
   plugin.vars = thisVars
   plugin.options = thisOptions
   require('./pluginUtil').logv(options, 'FUNCTION _constructor')
-
   return plugin
 }
 
@@ -97,8 +65,7 @@ export function _constructor(options) {
 export function _thisCompilation(compiler, compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options, 'FUNCTION _thisCompilation')
- 
-    if (vars.buildstep == 0 || vars.buildstep == 1) {
+     if (vars.buildstep == 0 || vars.buildstep == 1) {
       if (options.script != undefined) {
         if (options.script != null) {
           runScript(options.script, function (err) {
@@ -120,7 +87,6 @@ export function _thisCompilation(compiler, compilation, vars, options) {
 export function _compilation(compiler, compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options, 'FUNCTION _compilation')
-
     if (options.framework != 'extjs') {
       var extComponents = []
       if (vars.production) {
@@ -168,7 +134,7 @@ export function _compilation(compiler, compilation, vars, options) {
 export function _afterCompile(compiler, compilation, vars, options) {
   require('./pluginUtil').logv(options, 'FUNCTION _afterCompile')
   if (options.framework == 'extjs') {
-        require(`./extjsUtil`)._afterCompile(compilation, vars, options)
+    require(`./extjsUtil`)._afterCompile(compilation, vars, options)
   }
 }
 
@@ -178,13 +144,10 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
     logv(options,'FUNCTION _emit')
-
-
     var emit = options.emit
     var treeshake = options.treeshake
     var framework = options.framework
     var environment =  options.environment
-
     if (emit) {
       if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
           (environment != 'production' && treeshake == false && framework == 'angular') ||
@@ -228,7 +191,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
             else {
               parms = ['app', command, '--web-server', 'false', options.environment]
             }
-
           }
           else {
             if (command == 'build') {
@@ -238,7 +200,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
               parms = ['app', command, '--web-server', 'false', options.profile, options.environment]
             }
           }
-
           if (vars.watchStarted == false) {
             await _buildExtBundle(app, compilation, outputPath, parms, options)
             vars.watchStarted = true
@@ -275,11 +236,9 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
     const fsx = require('fs-extra')
     const fs = require('fs')
     const path = require('path')
-
     var packages = options.packages
     var toolkit = options.toolkit
     var theme = options.theme
-
     theme = theme || (toolkit === 'classic' ? 'theme-triton' : 'theme-material')
     logv(options,'firstTime: ' + vars.firstTime)
     if (vars.firstTime) {
@@ -289,12 +248,10 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
       const createAppJson = require('./artifacts').createAppJson
       const createWorkspaceJson = require('./artifacts').createWorkspaceJson
       const createJSDOMEnvironment = require('./artifacts').createJSDOMEnvironment
-
       fs.writeFileSync(path.join(output, 'build.xml'), buildXML(vars.production, options, output), 'utf8')
       fs.writeFileSync(path.join(output, 'app.json'), createAppJson(theme, packages, toolkit, options, output), 'utf8')
       fs.writeFileSync(path.join(output, 'jsdom-environment.js'), createJSDOMEnvironment(options, output), 'utf8')
       fs.writeFileSync(path.join(output, 'workspace.json'), createWorkspaceJson(options, output), 'utf8')
-
       var framework = vars.framework;
       //because of a problem with colorpicker
       if (fs.existsSync(path.join(process.cwd(),`ext-${framework}/ux/`))) {
@@ -356,7 +313,6 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
     const fs = require('fs')
     const logv = require('./pluginUtil').logv
     logv(options,'FUNCTION _buildExtBundle')
-
     let sencha; try { sencha = require('@sencha/cmd') } catch (e) { sencha = 'sencha' }
     if (fs.existsSync(sencha)) {
       logv(options,'sencha folder exists')
@@ -364,13 +320,11 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
     else {
       logv(options,'sencha folder DOES NOT exist')
     }
-
     return new Promise((resolve, reject) => {
       const onBuildDone = () => {
         logv(options,'onBuildDone')
         resolve()
       }
-
       var opts = { cwd: outputPath, silent: true, stdio: 'pipe', encoding: 'utf-8'}
       executeAsync(app, sencha, parms, opts, compilation, options).then (
         function() { onBuildDone() }, 
@@ -392,7 +346,6 @@ export function _done(vars, options) {
     const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
     logv(options,'FUNCTION _done')
-
     if (vars.production == true && options.treeshake == false && options.framework == 'angular') {
       require(`./${options.framework}Util`)._toDev(vars, options)
     }
@@ -411,7 +364,6 @@ export function _done(vars, options) {
       console.log(e)
       //compilation.errors.push('show browser window - ext-done: ' + e)
     }
-
     if (vars.buildstep == 0) {
       require('./pluginUtil').log(vars.app + `Ending Development Build`)
     }
@@ -504,41 +456,28 @@ export async function executeAsync (app, command, parms, opts, compilation, opti
   } 
 }
 
-export function log(s) {
-  require('readline').cursorTo(process.stdout, 0)
-  try {
-    process.stdout.clearLine()
-  }
-  catch(e) {}
-  process.stdout.write(s)
-  process.stdout.write('\n')
+//**********
+function runScript(scriptPath, callback) {
+  var childProcess = require('child_process');
+  // keep track of whether callback has been invoked to prevent multiple invocations
+  var invoked = false;
+  var process = childProcess.fork(scriptPath);
+  // listen for errors as they may prevent the exit event from firing
+  process.on('error', function (err) {
+    if (invoked) return;
+    invoked = true;
+    callback(err);
+  });
+  // execute the callback once the process has finished running
+  process.on('exit', function (code) {
+    if (invoked) return;
+    invoked = true;
+    var err = code === 0 ? null : new Error('exit code ' + code);
+    callback(err);
+  });
 }
 
-export function logh(s) {
-  var h = false
-  if (h == true) {
-    require('readline').cursorTo(process.stdout, 0)
-    try {
-      process.stdout.clearLine()
-    }
-    catch(e) {}
-    process.stdout.write(s)
-    process.stdout.write('\n')
-  }
-}
-
-export function logv(options, s) {
-  if (options.verbose == 'yes') {
-    require('readline').cursorTo(process.stdout, 0)
-    try {
-      process.stdout.clearLine()
-    }
-    catch(e) {}
-    process.stdout.write(`-verbose: ${s}`)
-    process.stdout.write('\n')
-  }
-}
-
+//**********
 export function _getApp() {
   var chalk = require('chalk')
   var prefix = ``
@@ -548,10 +487,10 @@ export function _getApp() {
   return `${chalk.green(prefix)} `
 }
 
+//**********
 export function _getVersions(app, pluginName, frameworkName) {
   const path = require('path')
   const fs = require('fs')
-
   var v = {}
   var pluginPath = path.resolve(process.cwd(),'node_modules/@sencha', pluginName)
   var pluginPkg = (fs.existsSync(pluginPath+'/package.json') && JSON.parse(fs.readFileSync(pluginPath+'/package.json', 'utf-8')) || {});
@@ -568,25 +507,20 @@ export function _getVersions(app, pluginName, frameworkName) {
       v.edition = `Community`
     }
   }
-
   var webpackPath = path.resolve(process.cwd(),'node_modules/webpack')
   var webpackPkg = (fs.existsSync(webpackPath+'/package.json') && JSON.parse(fs.readFileSync(webpackPath+'/package.json', 'utf-8')) || {});
   v.webpackVersion = webpackPkg.version
-
   var extPath = path.resolve(process.cwd(),'node_modules/@sencha/ext')
   var extPkg = (fs.existsSync(extPath+'/package.json') && JSON.parse(fs.readFileSync(extPath+'/package.json', 'utf-8')) || {});
   v.extVersion = extPkg.sencha.version
-
   var cmdPath = path.resolve(process.cwd(),`node_modules/@sencha/cmd`)
   var cmdPkg = (fs.existsSync(cmdPath+'/package.json') && JSON.parse(fs.readFileSync(cmdPath+'/package.json', 'utf-8')) || {});
   v.cmdVersion = cmdPkg.version_full
-
   if (v.cmdVersion == undefined) {
     var cmdPath = path.resolve(process.cwd(),`node_modules/@sencha/${pluginName}/node_modules/@sencha/cmd`)
     var cmdPkg = (fs.existsSync(cmdPath+'/package.json') && JSON.parse(fs.readFileSync(cmdPath+'/package.json', 'utf-8')) || {});
     v.cmdVersion = cmdPkg.version_full
   }
-
   var frameworkInfo = ''
    if (frameworkName != undefined && frameworkName != 'extjs') {
     var frameworkPath = ''
@@ -602,3 +536,37 @@ export function _getVersions(app, pluginName, frameworkName) {
   }
   return app + 'ext-webpack-plugin v' + v.pluginVersion + ', Ext JS v' + v.extVersion + ' ' + v.edition + ' Edition, Sencha Cmd v' + v.cmdVersion + ', webpack v' + v.webpackVersion + frameworkInfo
  }
+
+//**********
+export function log(s) {
+  require('readline').cursorTo(process.stdout, 0)
+  try {process.stdout.clearLine()}catch(e) {}
+  process.stdout.write(s);process.stdout.write('\n')
+}
+
+//**********
+export function logh(s) {
+  var h = false
+  if (h == true) {
+    require('readline').cursorTo(process.stdout, 0)
+    try {
+      process.stdout.clearLine()
+    }
+    catch(e) {}
+    process.stdout.write(s)
+    process.stdout.write('\n')
+  }
+}
+
+//**********
+export function logv(options, s) {
+  if (options.verbose == 'yes') {
+    require('readline').cursorTo(process.stdout, 0)
+    try {
+      process.stdout.clearLine()
+    }
+    catch(e) {}
+    process.stdout.write(`-verbose: ${s}`)
+    process.stdout.write('\n')
+  }
+}
