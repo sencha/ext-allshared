@@ -74,8 +74,11 @@ export function _thisCompilation(compiler, compilation, vars, options) {
         });
         }
       }
+      else {
+        require('./pluginUtil').logv(vars.app + `options.script: ${options.script }`)
+        require('./pluginUtil').logv(vars.app + `buildstep: ${vars.buildstep}`)
+      }
     }
-
   }
   catch(e) {
     require('./pluginUtil').logv(options,e)
@@ -97,11 +100,15 @@ export function _compilation(compiler, compilation, vars, options) {
           if (module.resource && !module.resource.match(/node_modules/)) {
             if(module.resource.match(/\.html$/) != null) {
               if(module._source._value.toLowerCase().includes('doctype html') == false) {
-                vars.deps = [...(vars.deps || []), ...require(`./${vars.framework}Util`).extractFromSource(module, options, compilation, extComponents)]
+                vars.deps = [
+                  ...(vars.deps || []),
+                  ...require(`./${vars.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
               }
             }
             else {
-              vars.deps = [...(vars.deps || []), ...require(`./${vars.framework}Util`).extractFromSource(module, options, compilation, extComponents)]
+              vars.deps = [
+                ...(vars.deps || []),
+                ...require(`./${vars.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
             }
           }
         })
