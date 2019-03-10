@@ -54,7 +54,7 @@ export function _constructor(options) {
   }
 
   thisVars.app = require('./pluginUtil')._getApp()
-  require(`./pluginUtil`).log(thisVars.app + `HOOK constructor`)
+  require(`./pluginUtil`).logh(thisVars.app + `HOOK constructor`)
 
   logv(options, `pluginName - ${thisVars.pluginName}`)
   logv(options, `thisVars.app - ${thisVars.app}`)
@@ -70,17 +70,17 @@ export function _constructor(options) {
   logv(options, `thisVars - ${JSON.stringify(thisVars)}`)
 
   if (thisVars.production == true && thisOptions.treeshake == true && options.framework == 'angular') {
-    log(thisVars.app + 'Production Build Step 1')
+    log(thisVars.app + 'Starting Production Build - Step 1')
     thisVars.buildstep = 1
     require(`./angularUtil`)._toProd(thisVars, thisOptions)
   }
   if (thisVars.production == true && thisOptions.treeshake == false && options.framework == 'angular') {
-    log(thisVars.app + '(check for prod folder and module change)')
-    log(thisVars.app + 'Production Build Step 2')
+    //mjg log(thisVars.app + '(check for prod folder and module change)')
+    log(thisVars.app + 'Starting Production Build - Step 2')
     thisVars.buildstep = 2
   }
   if (thisVars.buildstep == 0) {
-    log(thisVars.app + 'Development Build')
+    log(thisVars.app + 'Starting Development Build')
   }
 
   //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
@@ -413,10 +413,10 @@ export function _done(vars, options) {
     }
 
     if (vars.buildstep == 0) {
-      require('./pluginUtil').log(vars.app + ` Development Build Completed`)
+      require('./pluginUtil').log(vars.app + `Ending Development Build`)
     }
     if (vars.buildstep == 2) {
-      require('./pluginUtil').log(vars.app + `Production Build Completed`)
+      require('./pluginUtil').log(vars.app + `Ending Production Build`)
     }
   }
   catch(e) {
