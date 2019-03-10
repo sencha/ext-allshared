@@ -72,7 +72,14 @@ export function _constructor(options) {
 //  log(thisVars.app + 'Treeshake is ' + thisOptions.treeshake)
 
   if (thisVars.production == true && thisOptions.treeshake == true && options.framework == 'angular') {
+    log(thisVars.app + 'BUILD STEP 1')
+    thisVars.buildstep = 1
     require(`./angularUtil`)._toProd(thisVars, thisOptions)
+  }
+  if (thisVars.production == true && thisOptions.treeshake == false && options.framework == 'angular') {
+    log(thisVars.app + '(check for prod folder and module change)')
+    log(thisVars.app + 'BUILD STEP 2')
+    thisVars.buildstep = 2
   }
 
   plugin.vars = thisVars
@@ -132,15 +139,17 @@ export function _compilation(compiler, compilation, vars, options) {
           })
         }
       }
-      compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
-        logv(options,'htmlWebpackPluginBeforeHtmlGeneration')
-        const path = require('path')
-        var jsPath = path.join(vars.extPath, 'ext.js')
-        var cssPath = path.join(vars.extPath, 'ext.css')
-        data.assets.js.unshift(jsPath)
-        data.assets.css.unshift(cssPath)
-        log(vars.app + `Adding ${jsPath} and ${cssPath} to index.html`)
-      })
+      if (vars.buildstep != 1) {
+        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
+          logv(options,'htmlWebpackPluginBeforeHtmlGeneration')
+          const path = require('path')
+          var jsPath = path.join(vars.extPath, 'ext.js')
+          var cssPath = path.join(vars.extPath, 'ext.css')
+          data.assets.js.unshift(jsPath)
+          data.assets.css.unshift(cssPath)
+          log(vars.app + `Adding ${jsPath} and ${cssPath} to index.html`)
+        })
+      }
     }
   }
   catch(e) {
