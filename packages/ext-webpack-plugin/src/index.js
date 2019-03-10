@@ -41,12 +41,6 @@ export default class ExtWebpackPlugin {
     compiler.hooks.done.tap(`ext-done`, () => {
       h(vars.app + `HOOK done`)
       p._done(vars, options)
-      if (vars.buildstep == 0) {
-        require('./pluginUtil').log(vars.app + ` Development Build Completed`)
-      }
-      if (vars.buildstep == 0) {
-        require('./pluginUtil').log(vars.app + `Production Build Completed`)
-      }
     })
   }
 }
