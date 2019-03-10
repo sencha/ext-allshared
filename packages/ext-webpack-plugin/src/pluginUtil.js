@@ -94,7 +94,7 @@ export function _thisCompilation(compiler, compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options, 'FUNCTION _thisCompilation')
  
-    if (vars.buildstep != 1) {
+    if (vars.buildstep == 0 || vars.buildstep == 1) {
       if (options.script != undefined) {
         if (options.script != null) {
           runScript(options.script, function (err) {
