@@ -411,6 +411,13 @@ export function _done(vars, options) {
       console.log(e)
       //compilation.errors.push('show browser window - ext-done: ' + e)
     }
+
+    if (vars.buildstep == 0) {
+      require('./pluginUtil').log(vars.app + ` Development Build Completed`)
+    }
+    if (vars.buildstep == 2) {
+      require('./pluginUtil').log(vars.app + `Production Build Completed`)
+    }
   }
   catch(e) {
     require('./pluginUtil').logv(options,e)
