@@ -149,14 +149,33 @@ export function _compilation(compiler, compilation, vars, options) {
 
     }
 
-    if (
-      (options.framework == 'angular' && options.treeshake == false) ||
-      (options.framework == 'react')
-    ) {
 
-      compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
-        require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
-      })
+    var treeshake = options.treeshake
+    var framework = options.framework
+    var environment =  options.environment
+
+    if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
+        (environment != 'production' && treeshake == false && framework == 'angular') ||
+        (framework == 'react') ||
+        (framework == 'components')
+    ) {
+      require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
+    }
+    else {
+      logv(options,'NOT running emit')
+    }
+
+
+
+    // if (
+    //   ( options.framework == 'angular' && options.treeshake == false) ||
+    //     options.framework == 'react' ||
+    //     options.framework == 'components'
+    //   ) {
+
+      // compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
+      //   require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
+      // })
 
       // try {
       //   // eslint-disable-next-line global-require
@@ -168,18 +187,18 @@ export function _compilation(compiler, compilation, vars, options) {
       // }
 
 
-      var HtmlWebpackPlugin = require('html-webpack-plugin');
+      // var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-      if (HtmlWebpackPlugin && HtmlWebpackPlugin.getHooks) {
-        HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tapAsync(`ext-beforeAssetTagGeneration`, (data, callback) => {
-          console.log(data.assetTags.scripts)
-          console.log(data.assetTags.styles)
-          callback(null, data);
-        })
-      }
-      else {
-        console.log('no')
-      }
+      // if (HtmlWebpackPlugin && HtmlWebpackPlugin.getHooks) {
+      //   HtmlWebpackPlugin.getHooks(compilation).alterAssetTags.tapAsync(`ext-beforeAssetTagGeneration`, (data, callback) => {
+      //     console.log(data.assetTags.scripts)
+      //     console.log(data.assetTags.styles)
+      //     callback(null, data);
+      //   })
+      // }
+      // else {
+      //   console.log('no')
+      // }
 
         // HtmlWebpackPlugin.getHooks(compilation).beforeAssetTagGeneration.tapAsync(
         //   'sri',
@@ -213,10 +232,10 @@ export function _compilation(compiler, compilation, vars, options) {
         console.log(data)
         log(vars.app + `Adding ${jsPath} and ${cssPath} to index.html`)
       })
-    }
-    else {
-      logv(options,'skipped htmlWebpackPluginBeforeHtmlGeneration')
-    }
+    //}
+    // else {
+    //   logv(options,'skipped htmlWebpackPluginBeforeHtmlGeneration')
+    // }
   }
   catch(e) {
     require('./pluginUtil').logv(options,e)
@@ -239,19 +258,9 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     const logv = require('./pluginUtil').logv
     logv(options,'FUNCTION _emit')
 
-    var treeshake = options.treeshake
-    var framework = options.framework
-    var environment =  options.environment
 
-    if (environment == 'production' && treeshake == true  && framework == 'angular' ||
-        environment != 'production' && treeshake == false && framework == 'angular'
-    ) {
-      logv(options,'running emit')
-    }
-    else {
-      logv(options,'NOT running emit')
-      callback()
-    }
+
+
 
     var app = vars.app
     var framework = vars.framework
