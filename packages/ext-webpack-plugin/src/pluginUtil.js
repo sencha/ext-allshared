@@ -245,69 +245,86 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     const logv = require('./pluginUtil').logv
     logv(options,'FUNCTION _emit')
 
-    var app = vars.app
-    var framework = vars.framework
-    const path = require('path')
-    const _buildExtBundle = require('./pluginUtil')._buildExtBundle
-    let outputPath = path.join(compiler.outputPath,vars.extPath)
-    if (compiler.outputPath === '/' && compiler.options.devServer) {
-      outputPath = path.join(compiler.options.devServer.contentBase, outputPath)
-    }
-    logv(options,'outputPath: ' + outputPath)
-    logv(options,'framework: ' + framework)
-    if (options.emit == true) {
-      if (framework != 'extjs') {
-        _prepareForBuild(app, vars, options, outputPath, compilation)
-      }
-      else {
-        if (options.framework == 'angular' && options.treeshake == false) {
-          require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
-        }
-        else {
-          require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
-        }
-      }
 
-      var command = ''
-      if (options.watch == 'yes' && vars.production == false) {
-        command = 'watch'
-      }
-      else {
-        command = 'build'
-      }
+    var emit = options.emit
+    var treeshake = options.treeshake
+    var framework = options.framework
+    var environment =  options.environment
 
-      if (vars.rebuild == true) {
-        var parms = []
-        if (options.profile == undefined || options.profile == '' || options.profile == null) {
-          if (command == 'build') {
-            parms = ['app', command, options.environment]
+    if (emit) {
+      if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
+          (environment != 'production' && treeshake == false && framework == 'angular') ||
+          (framework == 'react') ||
+          (framework == 'components')
+      ) {
+        var app = vars.app
+        var framework = vars.framework
+        const path = require('path')
+        const _buildExtBundle = require('./pluginUtil')._buildExtBundle
+        let outputPath = path.join(compiler.outputPath,vars.extPath)
+        if (compiler.outputPath === '/' && compiler.options.devServer) {
+          outputPath = path.join(compiler.options.devServer.contentBase, outputPath)
+        }
+        logv(options,'outputPath: ' + outputPath)
+        logv(options,'framework: ' + framework)
+        //    if (options.emit == true) {
+          if (framework != 'extjs') {
+            _prepareForBuild(app, vars, options, outputPath, compilation)
           }
           else {
-            parms = ['app', command, '--web-server', 'false', options.environment]
+            if (options.framework == 'angular' && options.treeshake == false) {
+              require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
+            }
+            else {
+              require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
+            }
           }
 
-        }
-        else {
-          if (command == 'build') {
-            parms = ['app', command, options.profile, options.environment]
+          var command = ''
+          if (options.watch == 'yes' && vars.production == false) {
+            command = 'watch'
           }
           else {
-            parms = ['app', command, '--web-server', 'false', options.profile, options.environment]
+            command = 'build'
           }
-        }
 
-        if (vars.watchStarted == false) {
-          await _buildExtBundle(app, compilation, outputPath, parms, options)
-          vars.watchStarted = true
-        }
+          if (vars.rebuild == true) {
+            var parms = []
+            if (options.profile == undefined || options.profile == '' || options.profile == null) {
+              if (command == 'build') {
+                parms = ['app', command, options.environment]
+              }
+              else {
+                parms = ['app', command, '--web-server', 'false', options.environment]
+              }
+
+            }
+            else {
+              if (command == 'build') {
+                parms = ['app', command, options.profile, options.environment]
+              }
+              else {
+                parms = ['app', command, '--web-server', 'false', options.profile, options.environment]
+              }
+            }
+
+            if (vars.watchStarted == false) {
+              await _buildExtBundle(app, compilation, outputPath, parms, options)
+              vars.watchStarted = true
+            }
+            callback()
+          }
+          else {
+              callback()
+          }
+      }
+      else {
+        logv(options,'NOT running emit')
         callback()
-      }
-      else {
-          callback()
       }
     }
     else {
-      log(`${vars.app}FUNCTION emit not run`)
+      logv(options,'emit is false')
       callback()
     }
   }
