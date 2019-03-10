@@ -150,20 +150,7 @@ export function _compilation(compiler, compilation, vars, options) {
     }
 
 
-    var treeshake = options.treeshake
-    var framework = options.framework
-    var environment =  options.environment
 
-    if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
-        (environment != 'production' && treeshake == false && framework == 'angular') ||
-        (framework == 'react') ||
-        (framework == 'components')
-    ) {
-      require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
-    }
-    else {
-      logv(options,'NOT running emit')
-    }
 
 
 
@@ -257,10 +244,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
     logv(options,'FUNCTION _emit')
-
-
-
-
 
     var app = vars.app
     var framework = vars.framework
