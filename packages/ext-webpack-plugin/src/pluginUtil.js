@@ -54,6 +54,8 @@ export function _constructor(options) {
   }
 
   thisVars.app = require('./pluginUtil')._getApp()
+  require(`./pluginUtil`).log(thisVars.app + `HOOK constructor`)
+
   logv(options, `pluginName - ${thisVars.pluginName}`)
   logv(options, `thisVars.app - ${thisVars.app}`)
 
@@ -67,10 +69,6 @@ export function _constructor(options) {
     {thisVars.production = false}
   logv(options, `thisVars - ${JSON.stringify(thisVars)}`)
 
-  //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
-  log(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
-//  log(thisVars.app + 'Treeshake is ' + thisOptions.treeshake)
-
   if (thisVars.production == true && thisOptions.treeshake == true && options.framework == 'angular') {
     log(thisVars.app + 'BUILD STEP 1')
     thisVars.buildstep = 1
@@ -81,6 +79,9 @@ export function _constructor(options) {
     log(thisVars.app + 'BUILD STEP 2')
     thisVars.buildstep = 2
   }
+
+  //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
+  log(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
 
   plugin.vars = thisVars
   plugin.options = thisOptions

@@ -6,7 +6,6 @@ const l = p.log
 export default class ExtWebpackPlugin {
 
   constructor(options) {
-    l(vars.app + `constructor`)
     this.plugin = p._constructor(options)
   }
 
@@ -16,7 +15,7 @@ export default class ExtWebpackPlugin {
     if (!compiler.hooks) {console.log('not webpack 4');return}
 
     compiler.hooks.thisCompilation.tap(`ext-this-compilation`, (compilation) => {
-      l(vars.app + `thisCompilation`)
+      l(vars.app + `HOOK thisCompilation`)
       p._thisCompilation(compiler, compilation, vars, options)
       if (vars.pluginErrors.length > 0) {
         compilation.errors.push( new Error(vars.pluginErrors.join("")) )
@@ -25,22 +24,22 @@ export default class ExtWebpackPlugin {
     })
 
     compiler.hooks.compilation.tap(`ext-compilation`, (compilation) => {
-      l(vars.app + `thisCompilation`)
+      l(vars.app + `HOOK compilation`)
       p._compilation(compiler, compilation, vars, options)
     })
 
     compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
-      l(vars.app + `emit`)
+      l(vars.app + `HOOK emit (async)`)
       p._emit(compiler, compilation, vars, options, callback)
     })
 
     compiler.hooks.afterCompile.tap('ext-after-compile', (compilation) => {
-      l(vars.app + `afterCompile`)
+      l(vars.app + `HOOK afterCompile`)
       p._afterCompile(compiler, compilation, vars, options)
     })
 
     compiler.hooks.done.tap(`ext-done`, () => {
-      l(vars.app + `done`)
+      l(vars.app + `HOOK done`)
       p._done(vars, options)
       require('./pluginUtil').log(vars.app + `Completed ext-webpack-plugin processing`)
     })
