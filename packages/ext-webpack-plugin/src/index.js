@@ -1,10 +1,13 @@
 'use strict'
 require('@babel/polyfill')
-const v = require('./pluginUtil').logv
+const p = require(`./pluginUtil`)
+const v = p.logv
+const l = p.log
 export default class ExtWebpackPlugin {
 
   constructor(options) {
-    this.plugin = require(`./pluginUtil`)._constructor(options)
+    l(vars.app + `constructor`)
+    this.plugin = p._constructor(options)
   }
 
   apply(compiler) {
@@ -13,7 +16,8 @@ export default class ExtWebpackPlugin {
     if (!compiler.hooks) {console.log('not webpack 4');return}
 
     compiler.hooks.thisCompilation.tap(`ext-this-compilation`, (compilation) => {
-      require(`./pluginUtil`)._thisCompilation(compiler, compilation, vars, options)
+      l(vars.app + `thisCompilation`)
+      p._thisCompilation(compiler, compilation, vars, options)
       if (vars.pluginErrors.length > 0) {
         compilation.errors.push( new Error(vars.pluginErrors.join("")) )
         return
@@ -21,19 +25,23 @@ export default class ExtWebpackPlugin {
     })
 
     compiler.hooks.compilation.tap(`ext-compilation`, (compilation) => {
-      require(`./pluginUtil`)._compilation(compiler, compilation, vars, options)
+      l(vars.app + `thisCompilation`)
+      p._compilation(compiler, compilation, vars, options)
     })
 
     compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
-      require(`./pluginUtil`)._emit(compiler, compilation, vars, options, callback)
+      l(vars.app + `emit`)
+      p._emit(compiler, compilation, vars, options, callback)
     })
 
     compiler.hooks.afterCompile.tap('ext-after-compile', (compilation) => {
-      require(`./pluginUtil`)._afterCompile(compiler, compilation, vars, options)
+      l(vars.app + `afterCompile`)
+      p._afterCompile(compiler, compilation, vars, options)
     })
 
     compiler.hooks.done.tap(`ext-done`, () => {
-      require(`./pluginUtil`)._done(vars, options)
+      l(vars.app + `done`)
+      p._done(vars, options)
       require('./pluginUtil').log(vars.app + `Completed ext-webpack-plugin processing`)
     })
   }
