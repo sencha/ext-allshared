@@ -70,18 +70,21 @@ export function _constructor(options) {
   logv(options, `thisVars - ${JSON.stringify(thisVars)}`)
 
   if (thisVars.production == true && thisOptions.treeshake == true && options.framework == 'angular') {
-    log(thisVars.app + 'BUILD STEP 1')
+    log(thisVars.app + 'Production Build Step 1')
     thisVars.buildstep = 1
     require(`./angularUtil`)._toProd(thisVars, thisOptions)
   }
   if (thisVars.production == true && thisOptions.treeshake == false && options.framework == 'angular') {
     log(thisVars.app + '(check for prod folder and module change)')
-    log(thisVars.app + 'BUILD STEP 2')
+    log(thisVars.app + 'Production Build Step 2')
     thisVars.buildstep = 2
+  }
+  if (thisVars.buildstep == 0) {
+    log(thisVars.app + 'Development Build')
   }
 
   //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
-  log(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
+  logv(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
 
   plugin.vars = thisVars
   plugin.options = thisOptions
@@ -100,7 +103,7 @@ export function _thisCompilation(compiler, compilation, vars, options) {
         if (options.script != null) {
           runScript(options.script, function (err) {
             if (err) throw err;
-            require('./pluginUtil').log(vars.app + `finished running ${options.script}`)
+            require('./pluginUtil').logv(vars.app + `Finished running ${options.script}`)
         });
         }
       }
@@ -502,6 +505,19 @@ export function log(s) {
   catch(e) {}
   process.stdout.write(s)
   process.stdout.write('\n')
+}
+
+export function logh(s) {
+  var h = false
+  if (h == true) {
+    require('readline').cursorTo(process.stdout, 0)
+    try {
+      process.stdout.clearLine()
+    }
+    catch(e) {}
+    process.stdout.write(s)
+    process.stdout.write('\n')
+  }
 }
 
 export function logv(options, s) {
