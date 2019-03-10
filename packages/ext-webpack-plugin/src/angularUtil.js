@@ -58,11 +58,11 @@ function toXtype(str) {
   return str.toLowerCase().replace(/_/g, '-')
 }
 
-export function extractFromSource(module, options, compilation, extComponents) {
+export function _extractFromSource(module, options, compilation, extComponents) {
   try {
     var js = module._source._value
     const logv = require('./pluginUtil').logv
-    //logv(options,'HOOK succeedModule, FUNCTION extractFromSource: ' + module.resource)
+    //logv(options,'HOOK succeedModule, FUNCTION _extractFromSource: ' + module.resource)
 
     var statements = []
 
@@ -128,7 +128,7 @@ export function extractFromSource(module, options, compilation, extComponents) {
   }
   catch(e) {
     console.log(e)
-    compilation.errors.push('extractFromSource: ' + e)
+    compilation.errors.push('_extractFromSource: ' + e)
     return []
   }
 }
@@ -216,6 +216,7 @@ export function _getAllComponents(vars, options) {
     const path = require('path')
     const fsx = require('fs-extra')
 
+    log(vars.app + `Getting all referenced ext-${options.framework} modules`)
     var extComponents = []
     const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src/lib')
     var files = fsx.readdirSync(packageLibPath)
@@ -227,6 +228,7 @@ export function _getAllComponents(vars, options) {
         }
       }
     })
+    log(vars.app + `Writing all referenced ext-${options.framework} modules`)
     return extComponents
 
   }
