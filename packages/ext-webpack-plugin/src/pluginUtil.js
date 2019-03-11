@@ -44,12 +44,12 @@ export function _constructor(options) {
       {thisVars.production = false}
     logv(options, `thisVars - ${JSON.stringify(thisVars)}`)
 
-    if (thisVars.production == true && thisOptions.treeshake == true && options.framework == 'angular') {
+    if (thisVars.production == true && thisOptions.treeshake == true && (options.framework == 'angular' || options.framework == 'components') ) {
       log(thisVars.app + 'Starting Production Build - Step 1')
       thisVars.buildstep = 1
-      require(`./angularUtil`)._toProd(thisVars, thisOptions)
+      require(`./${thisOptions.framework}Util`)._toProd(thisVars, thisOptions)
     }
-    if (thisVars.production == true && thisOptions.treeshake == false && options.framework == 'angular') {
+    if (thisVars.production == true && thisOptions.treeshake == false && (options.framework == 'angular' || options.framework == 'components')) {
       //mjg log(thisVars.app + '(check for prod folder and module change)')
       log(thisVars.app + 'Starting Production Build - Step 2')
       thisVars.buildstep = 2
@@ -104,8 +104,8 @@ export function _compilation(compiler, compilation, vars, options) {
     if (options.framework != 'extjs') {
       var extComponents = []
       if (vars.production) {
-        if (options.framework == 'angular' && options.treeshake == true) {
-          extComponents = require('./angularUtil')._getAllComponents(vars, options)
+        if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
+          extComponents = require('./${options.framework}Util')._getAllComponents(vars, options)
         }
         compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
           if (module.resource && !module.resource.match(/node_modules/)) {
@@ -123,9 +123,9 @@ export function _compilation(compiler, compilation, vars, options) {
             }
           }
         })
-        if (options.framework == 'angular' && options.treeshake == true) {
+        if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
           compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
-            require('./angularUtil')._writeFilesToProdFolder(vars, options)
+            require('./${options.framework}Util')._writeFilesToProdFolder(vars, options)
           })
         }
       }

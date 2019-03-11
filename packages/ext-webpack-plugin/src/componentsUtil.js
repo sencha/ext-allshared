@@ -60,7 +60,9 @@ function toXtype(str) {
 
 export function _extractFromSource(module, options, compilation, extComponents) {
   try {
-    var statements = ['Ext.require("Ext.*")']
+    var statements = [
+      'Ext.require("Ext.*")',
+    ]
     return statements
 
     var js = module._source._value
