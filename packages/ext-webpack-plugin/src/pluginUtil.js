@@ -105,7 +105,7 @@ export function _compilation(compiler, compilation, vars, options) {
       var extComponents = []
       if (vars.production) {
         if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
-          extComponents = require('./${options.framework}Util')._getAllComponents(vars, options)
+          extComponents = require(`./${options.framework}Util`)._getAllComponents(vars, options)
         }
         compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
           if (module.resource && !module.resource.match(/node_modules/)) {
@@ -125,7 +125,7 @@ export function _compilation(compiler, compilation, vars, options) {
         })
         if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
           compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
-            require('./${options.framework}Util')._writeFilesToProdFolder(vars, options)
+            require(`./${options.framework}Util`)._writeFilesToProdFolder(vars, options)
           })
         }
       }
