@@ -73,18 +73,21 @@ export function _constructor(options) {
 export function _thisCompilation(compiler, compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options, 'FUNCTION _thisCompilation')
+    require('./pluginUtil').logv(options + `options.script: ${options.script }`)
+    require('./pluginUtil').logv(options + `buildstep: ${vars.buildstep}`)
+
      if (vars.buildstep == 0 || vars.buildstep == 1) {
       if (options.script != undefined) {
         if (options.script != null) {
           runScript(options.script, function (err) {
             if (err) throw err;
-            require('./pluginUtil').logv(vars.app + `Finished running ${options.script}`)
+            require('./pluginUtil').logv(options + `Finished running ${options.script}`)
         });
         }
       }
       else {
-        require('./pluginUtil').logv(vars.app + `options.script: ${options.script }`)
-        require('./pluginUtil').logv(vars.app + `buildstep: ${vars.buildstep}`)
+        require('./pluginUtil').logv(options + `options.script: ${options.script }`)
+        require('./pluginUtil').logv(options + `buildstep: ${vars.buildstep}`)
       }
     }
   }
