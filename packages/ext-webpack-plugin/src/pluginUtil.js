@@ -13,43 +13,54 @@ export function _constructor(options) {
     }
     const validateOptions = require('schema-utils')
     validateOptions(require(`./${options.framework}Util`).getValidateOptions(), options, '')
-    thisVars = require(`./${options.framework}Util`).getDefaultVars()
-    thisVars.framework = options.framework
-    switch(thisVars.framework) {
-      case 'extjs':
-        thisVars.pluginName = 'ext-webpack-plugin'
-        break;
-      case 'react':
-        thisVars.pluginName = 'ext-react-webpack-plugin'
-        break;
-      case 'angular':
-        thisVars.pluginName = 'ext-angular-webpack-plugin'
-        break;
-        case 'components':
-        thisVars.pluginName = 'ext-webpack-plugin'
-        break;
-      default:
-        thisVars.pluginName = 'ext-webpack-plugin'
-    }
-    thisVars.app = require('./pluginUtil')._getApp()
-    require(`./pluginUtil`).logh(thisVars.app + `HOOK constructor`)
-    logv(options, `pluginName - ${thisVars.pluginName}`)
-    logv(options, `thisVars.app - ${thisVars.app}`)
-    const rc = (fs.existsSync(`.ext-${thisVars.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${thisVars.framework}rc`, 'utf-8')) || {})
+
+    const rc = (fs.existsSync(`.ext-${options.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${options.framework}rc`, 'utf-8')) || {})
     thisOptions = { ...require(`./${thisVars.framework}Util`).getDefaultOptions(), ...options, ...rc }
-    logv(options, `thisOptions - ${JSON.stringify(thisOptions)}`)
+
+    thisVars = require(`./${thisOptions.framework}Util`).getDefaultVars()
+
+    //thisVars.framework = thisOptions.framework
+    thisVars.pluginName = 'ext-webpack-plugin'
+
+    // switch(thisVars.framework) {
+    //   case 'extjs':
+    //     thisVars.pluginName = 'ext-webpack-plugin'
+    //     break;
+    //   case 'react':
+    //     thisVars.pluginName = 'ext-webpack-plugin'
+    //     break;
+    //   case 'angular':
+    //     thisVars.pluginName = 'ext-webpack-plugin'
+    //     break;
+    //     case 'components':
+    //     thisVars.pluginName = 'ext-webpack-plugin'
+    //     break;
+    //   default:
+    //     thisVars.pluginName = 'ext-webpack-plugin'
+    // }
+
+    thisVars.app = require('./pluginUtil')._getApp()
+
+    logh(thisVars.app + `HOOK constructor`)
+    logv(thisOptions, `pluginName - ${thisVars.pluginName}`)
+    logv(thisOptions, `thisVars.app - ${thisVars.app}`)
+
+    // const rc = (fs.existsSync(`.ext-${thisVars.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${thisVars.framework}rc`, 'utf-8')) || {})
+    // thisOptions = { ...require(`./${thisVars.framework}Util`).getDefaultOptions(), ...options, ...rc }
+    
+    logv(thisOptions, `thisOptions - ${JSON.stringify(thisOptions)}`)
     if (thisOptions.environment == 'production') 
       {thisVars.production = true}
     else 
       {thisVars.production = false}
-    logv(options, `thisVars - ${JSON.stringify(thisVars)}`)
+    logv(thisOptions, `thisVars - ${JSON.stringify(thisVars)}`)
 
-    if (thisVars.production == true && thisOptions.treeshake == true && (options.framework == 'angular' || options.framework == 'components') ) {
+    if (thisVars.production == true && thisOptions.treeshake == true && (thisOptions.framework == 'angular' || thisOptions.framework == 'components') ) {
       log(thisVars.app + 'Starting Production Build - Step 1')
       thisVars.buildstep = 1
       require(`./${thisOptions.framework}Util`)._toProd(thisVars, thisOptions)
     }
-    if (thisVars.production == true && thisOptions.treeshake == false && (options.framework == 'angular' || options.framework == 'components')) {
+    if (thisVars.production == true && thisOptions.treeshake == false && (thisOptions.framework == 'angular' || thisOptions.framework == 'components')) {
       //mjg log(thisVars.app + '(check for prod folder and module change)')
       log(thisVars.app + 'Starting Production Build - Step 2')
       thisVars.buildstep = 2
@@ -59,9 +70,11 @@ export function _constructor(options) {
     }
     //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
     logv(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
+
     plugin.vars = thisVars
     plugin.options = thisOptions
-    require('./pluginUtil').logv(options, 'FUNCTION _constructor')
+
+    require('./pluginUtil').logv(thisOptions, 'FUNCTION _constructor')
     return plugin
   }
   catch (e) {
@@ -113,13 +126,13 @@ export function _compilation(compiler, compilation, vars, options) {
               if(module._source._value.toLowerCase().includes('doctype html') == false) {
                 vars.deps = [
                   ...(vars.deps || []),
-                  ...require(`./${vars.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+                  ...require(`./${options.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
               }
             }
             else {
               vars.deps = [
                 ...(vars.deps || []),
-                ...require(`./${vars.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+                ...require(`./${options.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
             }
           }
         })
