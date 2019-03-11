@@ -6,15 +6,15 @@ export function getValidateOptions() {
     "properties": {
       "framework":   {"type": [ "string" ]},
       "toolkit":     {"type": [ "string" ]},
+      "theme":       {"type": [ "string" ]},
+      "profile":     {"type": [ "string" ]},
+      "environment": {"type": [ "string" ]},
+      "treeshake":   {"type": [ "boolean" ]},
       "port":        {"type": [ "integer" ]},
       "emit":        {"type": [ "boolean" ]},
       "browser":     {"type": [ "boolean" ]},
       "watch":       {"type": [ "string" ]},
-      "profile":     {"type": [ "string" ]},
-      "environment": {"type": [ "string" ]},
       "verbose":     {"type": [ "string" ]},
-      "theme":       {"type": [ "string" ]},
-      "treeshake": {"type": [ "boolean" ]},
       "script":      {"type": [ "string" ]},
       "packages":    {"type": [ "string", "array" ]}
     },
@@ -24,16 +24,18 @@ export function getValidateOptions() {
 
 export function getDefaultOptions() {
   return {
+    framework: null,
+    toolkit: 'modern',
+    theme: 'theme-material',
+    profile: 'desktop', 
+    environment: 'development', 
+    treeshake: false,
     port: 1962,
     emit: true,
     browser: true,
     watch: 'yes',
-    profile: '', 
-    treeshake: false,
-    script: null,
-    environment: 'development', 
     verbose: 'no',
-    toolkit: 'modern',
+    script: null,
     packages: null
   }
 }

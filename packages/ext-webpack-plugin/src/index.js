@@ -5,13 +5,15 @@ const p = require(`./pluginUtil`)
 export default class ExtWebpackPlugin {
 
   constructor(options) {
-    this.plugin = p._constructor(options)
+    var o = p._constructor(options)
+    this.vars = o.vars
+    this.options = o.options
   }
 
   apply(compiler) {
-    const vars = this.plugin.vars
-    const options = this.plugin.options
-    
+    const vars = this.vars
+    const options = this.options
+
     if (!compiler.hooks) {console.log('not webpack 4');return}
 
     compiler.hooks.thisCompilation.tap(`ext-this-compilation`, (compilation) => {
