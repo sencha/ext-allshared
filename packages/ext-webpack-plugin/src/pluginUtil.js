@@ -11,34 +11,17 @@ export function _constructor(options) {
       plugin.vars = thisVars
       return plugin
     }
+    var framework = options.framework
+    var treeshake = options.treeshake
+
     const validateOptions = require('schema-utils')
-    validateOptions(require(`./${options.framework}Util`).getValidateOptions(), options, '')
+    validateOptions(require(`./${framework}Util`).getValidateOptions(), options, '')
 
-    const rc = (fs.existsSync(`.ext-${options.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${options.framework}rc`, 'utf-8')) || {})
-    thisOptions = { ...require(`./${thisVars.framework}Util`).getDefaultOptions(), ...options, ...rc }
+    const rc = (fs.existsSync(`.ext-${framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${options.framework}rc`, 'utf-8')) || {})
+    thisOptions = { ...require(`./${framework}Util`).getDefaultOptions(), ...options, ...rc }
 
-    thisVars = require(`./${thisOptions.framework}Util`).getDefaultVars()
-
-    //thisVars.framework = thisOptions.framework
+    thisVars = require(`./${framework}Util`).getDefaultVars()
     thisVars.pluginName = 'ext-webpack-plugin'
-
-    // switch(thisVars.framework) {
-    //   case 'extjs':
-    //     thisVars.pluginName = 'ext-webpack-plugin'
-    //     break;
-    //   case 'react':
-    //     thisVars.pluginName = 'ext-webpack-plugin'
-    //     break;
-    //   case 'angular':
-    //     thisVars.pluginName = 'ext-webpack-plugin'
-    //     break;
-    //     case 'components':
-    //     thisVars.pluginName = 'ext-webpack-plugin'
-    //     break;
-    //   default:
-    //     thisVars.pluginName = 'ext-webpack-plugin'
-    // }
-
     thisVars.app = require('./pluginUtil')._getApp()
 
     logh(thisVars.app + `HOOK constructor`)
@@ -55,12 +38,12 @@ export function _constructor(options) {
       {thisVars.production = false}
     logv(thisOptions, `thisVars - ${JSON.stringify(thisVars)}`)
 
-    if (thisVars.production == true && thisOptions.treeshake == true && (thisOptions.framework == 'angular' || thisOptions.framework == 'components') ) {
+    if (thisVars.production == true && treeshake == true && (framework == 'angular' || framework == 'components') ) {
       log(thisVars.app + 'Starting Production Build - Step 1')
       thisVars.buildstep = 1
-      require(`./${thisOptions.framework}Util`)._toProd(thisVars, thisOptions)
+      require(`./${framework}Util`)._toProd(thisVars, thisOptions)
     }
-    if (thisVars.production == true && thisOptions.treeshake == false && (thisOptions.framework == 'angular' || thisOptions.framework == 'components')) {
+    if (thisVars.production == true && treeshake == false && (framework == 'angular' || framework == 'components')) {
       //mjg log(thisVars.app + '(check for prod folder and module change)')
       log(thisVars.app + 'Starting Production Build - Step 2')
       thisVars.buildstep = 2
@@ -68,7 +51,7 @@ export function _constructor(options) {
     if (thisVars.buildstep == 0) {
       log(thisVars.app + 'Starting Development Build')
     }
-    //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, thisVars.framework))
+    //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, framework))
     logv(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
 
     plugin.vars = thisVars
