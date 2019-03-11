@@ -24,6 +24,9 @@ export function _constructor(options) {
     case 'angular':
       thisVars.pluginName = 'ext-angular-webpack-plugin'
       break;
+      case 'components':
+      thisVars.pluginName = 'ext-webpack-plugin'
+      break;
     default:
       thisVars.pluginName = 'ext-webpack-plugin'
   }

@@ -45,7 +45,7 @@ export function getDefaultVars() {
     firstCompile: true,
     browserCount : 0,
     manifest: null,
-    extPath: 'ext-angular',
+    extPath: 'ext-components',
     pluginErrors: [],
     deps: [],
     usedExtComponents: [],
@@ -57,13 +57,16 @@ function toXtype(str) {
   return str.toLowerCase().replace(/_/g, '-')
 }
 
-export function extractFromSource(module, options, compilation, extComponents) {
+export function _extractFromSource(module, options, compilation, extComponents) {
   try {
+    var statements = []
+    return statements
+
     var js = module._source._value
     const logv = require('./pluginUtil').logv
     //logv(options,'HOOK succeedModule, FUNCTION extractFromSource: ' + module.resource)
 
-    var statements = []
+
 
     var generate = require("@babel/generator").default
     var parse = require("babylon").parse
@@ -142,6 +145,8 @@ function changeIt(o) {
 }
 
 export function _toProd(vars, options) {
+  return
+
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
   logv(options,'FUNCTION _toProd')
@@ -179,6 +184,8 @@ export function _toProd(vars, options) {
 }
 
 export function _toDev(vars, options) {
+  return
+
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
   logv(options,'FUNCTION _toDev')
@@ -207,6 +214,9 @@ export function _toDev(vars, options) {
 
 
 export function _getAllComponents(vars, options) {
+  var extComponents = []
+  return extComponents
+
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
   logv(options,'FUNCTION _getAllComponents')
@@ -236,6 +246,8 @@ export function _getAllComponents(vars, options) {
 }
 
 export function _writeFilesToProdFolder(vars, options) {
+  return
+  
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
   logv(options,'FUNCTION _writeFilesToProdFolder')
