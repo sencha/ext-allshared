@@ -104,14 +104,15 @@ export function _thisCompilation(compiler, compilation, vars, options) {
 export function _compilation(compiler, compilation, vars, options) {
   try {
     var verbose = options.verbose
+    var framework = options.framework
     require('./pluginUtil').logv(verbose, 'FUNCTION _compilation')
-    if (options.framework != 'extjs') {
+    if (framework != 'extjs') {
       var extComponents = []
 //      if (vars.production) {
         //if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
         //if (options.treeshake == true) {
       if (vars.buildstep == '1 of 2') {
-        extComponents = require(`./${options.framework}Util`)._getAllComponents(vars, options)
+        extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
       }
       compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
         if (module.resource && !module.resource.match(/node_modules/)) {
@@ -119,19 +120,19 @@ export function _compilation(compiler, compilation, vars, options) {
             if(module._source._value.toLowerCase().includes('doctype html') == false) {
               vars.deps = [
                 ...(vars.deps || []),
-                ...require(`./${options.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
             }
           }
           else {
             vars.deps = [
               ...(vars.deps || []),
-              ...require(`./${options.framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+              ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
           }
         }
       })
       if (vars.buildstep == '1 of 2') {
         compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
-          require(`./${options.framework}Util`)._writeFilesToProdFolder(vars, options)
+          require(`./${framework}Util`)._writeFilesToProdFolder(vars, options)
         })
       }
     }
@@ -157,13 +158,13 @@ export function _compilation(compiler, compilation, vars, options) {
 export async function _emit(compiler, compilation, vars, options, callback) {
   try {
     var verbose = options.verbose
-    const log = require('./pluginUtil').log
+    //const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
     logv(verbose,'FUNCTION _emit')
     var emit = options.emit
-    var treeshake = options.treeshake
+    //var treeshake = options.treeshake
     var framework = options.framework
-    var environment =  options.environment
+    //var environment =  options.environment
     if (emit) {
       // if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
       //     (environment != 'production' && treeshake == false && framework == 'angular') ||
@@ -171,9 +172,9 @@ export async function _emit(compiler, compilation, vars, options, callback) {
       //     (framework == 'components')
       // ) {
 
-      if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
+      if (vars.buildstep == '1 of 1' || vars.buildstep == '1 of 2') {
         var app = vars.app
-        var framework = vars.framework
+//        var framework = options.framework
         const path = require('path')
 //        const _buildExtBundle = require('./pluginUtil')._buildExtBundle
         let outputPath = path.join(compiler.outputPath,vars.extPath)
