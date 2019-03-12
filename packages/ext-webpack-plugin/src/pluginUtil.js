@@ -248,10 +248,20 @@ export async function _emit(compiler, compilation, vars, options, callback) {
 
 //**********
 export function _afterCompile(compiler, compilation, vars, options) {
-  var verbose = options.verbose
-  require('./pluginUtil').logv(verbose, 'FUNCTION _afterCompile')
-  if (options.framework == 'extjs') {
-    require(`./extjsUtil`)._afterCompile(compilation, vars, options)
+  try {
+    var verbose = options.verbose
+    require('./pluginUtil').logv(verbose, 'FUNCTION _afterCompile')
+    if (options.framework == 'extjs') {
+      require(`./extjsUtil`)._afterCompile(compilation, vars, options)
+    }
+    else {
+      require('./pluginUtil').logv(verbose, 'FUNCTION _afterCompile not run')
+    }
+  }
+  catch(e) {
+    compilation.errors.push('_afterCompile: ' + e)
+    require('./pluginUtil').logv(options.verbose,e)
+
   }
 }
 
