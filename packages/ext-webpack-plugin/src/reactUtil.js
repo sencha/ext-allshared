@@ -6,15 +6,15 @@ export function getValidateOptions() {
     "properties": {
       "framework":   {"type": [ "string" ]},
       "toolkit":     {"type": [ "string" ]},
+      "theme":       {"type": [ "string" ]},
+      "profile":     {"type": [ "string" ]},
+      "environment": {"type": [ "string" ]},
+      "treeshake":   {"type": [ "boolean" ]},
       "port":        {"type": [ "integer" ]},
       "emit":        {"type": [ "boolean" ]},
       "browser":     {"type": [ "boolean" ]},
       "watch":       {"type": [ "string" ]},
-      "profile":     {"type": [ "string" ]},
-      "environment": {"type": [ "string" ]},
       "verbose":     {"type": [ "string" ]},
-      "theme":       {"type": [ "string" ]},
-      "treeshake":   {"type": [ "boolean" ]},
       "script":      {"type": [ "string" ]},
       "packages":    {"type": [ "string", "array" ]}
     },
@@ -27,16 +27,18 @@ export function getValidateOptions() {
 
 export function getDefaultOptions() {
   return {
+    framework: null,
+    toolkit: 'modern',
+    theme: 'theme-material',
+    profile: 'desktop', 
+    environment: 'development', 
+    treeshake: false,
     port: 1962,
     emit: true,
     browser: true,
     watch: 'yes',
-    profile: '', 
-    treeshake: false,
-    script: null,
-    environment: 'development', 
     verbose: 'no',
-    toolkit: 'modern',
+    script: null,
     packages: null
   }
 }
@@ -44,6 +46,7 @@ export function getDefaultOptions() {
 export function getDefaultVars() {
   return {
     watchStarted : false,
+    buildstep: 0,
     firstTime : true,
     firstCompile: true,
     browserCount : 0,
@@ -51,6 +54,7 @@ export function getDefaultVars() {
     extPath: 'ext-react',
     pluginErrors: [],
     deps: [],
+    usedExtComponents: [],
     rebuild: true
   }
 }
@@ -153,21 +157,67 @@ export function extractFromSource(module, options, compilation) {
   }
 }
 
-//**********
-export function _done(vars, options) {
+export function _toProd(vars, options) {
+  const logv = require('./pluginUtil').logv
+  logv(options,'FUNCTION _toProd')
   try {
-    const log = require('./pluginUtil').log
-    const logv = require('./pluginUtil').logv
-    logv(options,'FUNCTION _done')
-
-    try {
-    }
-    catch (e) {
-      console.log(e)
-      return []
-    }
   }
-  catch(e) {
-    require('./pluginUtil').logv(options,e)
+  catch (e) {
+    console.log(e)
+    return []
   }
 }
+
+export function _toDev(vars, options) {
+  const logv = require('./pluginUtil').logv
+  logv(options,'FUNCTION _toProd')
+  try {
+  }
+  catch (e) {
+    console.log(e)
+    return []
+  }
+}
+
+export function _getAllComponents(vars, options) {
+   const logv = require('./pluginUtil').logv
+  logv(options,'FUNCTION _getAllComponents')
+  try {
+    var extComponents = []
+     return extComponents
+  }
+  catch (e) {
+    console.log(e)
+    return []
+  }
+}
+
+export function _writeFilesToProdFolder(vars, options) {
+  const logv = require('./pluginUtil').logv
+  logv(options,'FUNCTION _writeFilesToProdFolder')
+  try {
+  }
+  catch (e) {
+    console.log(e)
+  }
+}
+
+
+// //**********
+// export function _done(vars, options) {
+//   try {
+//     const log = require('./pluginUtil').log
+//     const logv = require('./pluginUtil').logv
+//     logv(options,'FUNCTION _done')
+
+//     try {
+//     }
+//     catch (e) {
+//       console.log(e)
+//       return []
+//     }
+//   }
+//   catch(e) {
+//     require('./pluginUtil').logv(options,e)
+//   }
+// }
