@@ -62,11 +62,11 @@ function toXtype(str) {
 
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _extractFromSource')
+  logv(options.verbose,'FUNCTION _extractFromSource')
   try {
     var js = module._source._value
     const logv = require('./pluginUtil').logv
-    //logv(options,'HOOK succeedModule, FUNCTION _extractFromSource: ' + module.resource)
+    //logv(options.verbose,'HOOK succeedModule, FUNCTION _extractFromSource: ' + module.resource)
 
     var statements = []
 
@@ -149,7 +149,7 @@ function changeIt(o) {
 export function _toProd(vars, options) {
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _toProd')
+  logv(options.verbose,'FUNCTION _toProd')
   try {
     const fsx = require('fs-extra')
     const fs = require('fs')
@@ -186,7 +186,7 @@ export function _toProd(vars, options) {
 export function _toDev(vars, options) {
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _toDev')
+  logv(options.verbose,'FUNCTION _toDev')
   try {
     const path = require('path')
     const pathExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-prod`);
@@ -214,7 +214,7 @@ export function _toDev(vars, options) {
 export function _getAllComponents(vars, options) {
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _getAllComponents')
+  logv(options.verbose,'FUNCTION _getAllComponents')
 
   try {
     const path = require('path')
@@ -245,7 +245,7 @@ export function _getAllComponents(vars, options) {
 export function _writeFilesToProdFolder(vars, options) {
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _writeFilesToProdFolder')
+  logv(options.verbose,'FUNCTION _writeFilesToProdFolder')
 
   try {
     const path = require('path')

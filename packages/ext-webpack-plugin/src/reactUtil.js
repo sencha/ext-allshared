@@ -65,11 +65,11 @@ function toXtype(str) {
 
 export function extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _extractFromSource')
+  logv(options.verbose,'FUNCTION _extractFromSource')
   try {
     var js = module._source._value
     const logv = require('./pluginUtil').logv
-    logv(options,'FUNCTION extractFromSource')
+    logv(options.verbose,'FUNCTION extractFromSource')
     var generate = require("@babel/generator").default
     var parse = require("babylon").parse
     var traverse = require("ast-traverse")
@@ -161,7 +161,7 @@ export function extractFromSource(module, options, compilation, extComponents) {
 
 export function _toProd(vars, options) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _toProd (empty')
+  logv(options.verbose,'FUNCTION _toProd (empty)')
   try {
   }
   catch (e) {
@@ -172,7 +172,7 @@ export function _toProd(vars, options) {
 
 export function _toDev(vars, options) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _toDev (empty)')
+  logv(options.verbose,'FUNCTION _toDev (empty)')
   try {
   }
   catch (e) {
@@ -183,7 +183,7 @@ export function _toDev(vars, options) {
 
 export function _getAllComponents(vars, options) {
    const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _getAllComponents (empty)')
+  logv(options.verbose,'FUNCTION _getAllComponents (empty)')
   try {
     var extComponents = []
      return extComponents
@@ -196,7 +196,7 @@ export function _getAllComponents(vars, options) {
 
 export function _writeFilesToProdFolder(vars, options) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _writeFilesToProdFolder (empty)')
+  logv(options.verbose,'FUNCTION _writeFilesToProdFolder (empty)')
   try {
   }
   catch (e) {
