@@ -26,34 +26,29 @@ export function _constructor(initialOptions) {
     vars.pluginName = 'ext-webpack-plugin'
     vars.app = _getApp()
     var app = vars.app
+    var pluginName = vars.pluginName
 
     logv(verbose, 'FUNCTION _constructor')
-    logv(verbose, `pluginName - ${vars.pluginName}`)
-    logv(verbose, `vars.app - ${vars.app}`)
+    logv(verbose, `pluginName - ${pluginName}`)
+    logv(verbose, `app - ${app}`)
 
-    // const rc = (fs.existsSync(`.ext-${vars.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${vars.framework}rc`, 'utf-8')) || {})
-    // options = { ...require(`./${vars.framework}Util`).getDefaultOptions(), ...options, ...rc }
+    if (options.environment == 'production') {vars.production = true}
+    else {vars.production = false}
     
     //logv(verbose, `options:`);if (verbose == 'yes') {console.dir(options)}
-
-    if (options.environment == 'production') 
-      {vars.production = true}
-    else 
-      {vars.production = false}
     //logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
-
+    
+    log(app, _getVersions(pluginName, framework))
 
     if (framework == 'react') {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
-        log(app, 'Starting Production Build - ' + vars.buildstep)
-  
+        log(app, 'Starting Production Build')
       }
       else {
         vars.buildstep = '1 of 1'
-        log(app, 'Starting Development Build - ' + vars.buildstep)
+        log(app, 'Starting Development Build')
       }
-
     }
     else if (vars.production == true) {
       if (treeshake == true) {
@@ -68,7 +63,7 @@ export function _constructor(initialOptions) {
     }
     else {
       vars.buildstep = '1 of 1'
-      log(app, 'Starting Development Build - ' + vars.buildstep)
+      log(app, 'Starting Development Build')
     }
     logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
 
@@ -520,7 +515,7 @@ export function _getApp() {
 }
 
 //**********
-export function _getVersions(app, pluginName, frameworkName) {
+export function _getVersions(pluginName, frameworkName) {
   const path = require('path')
   const fs = require('fs')
   var v = {}
@@ -566,7 +561,7 @@ export function _getVersions(app, pluginName, frameworkName) {
     v.frameworkVersion = frameworkPkg.version
     frameworkInfo = ', ' + frameworkName + ' v' + v.frameworkVersion
   }
-  return app + 'ext-webpack-plugin v' + v.pluginVersion + ', Ext JS v' + v.extVersion + ' ' + v.edition + ' Edition, Sencha Cmd v' + v.cmdVersion + ', webpack v' + v.webpackVersion + frameworkInfo
+  return 'ext-webpack-plugin v' + v.pluginVersion + ', Ext JS v' + v.extVersion + ' ' + v.edition + ' Edition, Sencha Cmd v' + v.cmdVersion + ', webpack v' + v.webpackVersion + frameworkInfo
  }
 
 //**********
