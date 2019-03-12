@@ -17,7 +17,7 @@ export function _constructor(options) {
     const validateOptions = require('schema-utils')
     validateOptions(require(`./${framework}Util`).getValidateOptions(), options, '')
 
-    const rc = (fs.existsSync(`.ext-${framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${options.framework}rc`, 'utf-8')) || {})
+    const rc = (fs.existsSync(`.ext-${framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${framework}rc`, 'utf-8')) || {})
     thisOptions = { ...require(`./${framework}Util`).getDefaultOptions(), ...options, ...rc }
 
     thisVars = require(`./${framework}Util`).getDefaultVars()
@@ -38,12 +38,12 @@ export function _constructor(options) {
       {thisVars.production = false}
     logv(thisOptions, `thisVars - ${JSON.stringify(thisVars)}`)
 
-    if (thisVars.production == true && treeshake == true && (framework == 'angular' || framework == 'components') ) {
+    if (thisVars.production == true && treeshake == true) {
       log(thisVars.app + 'Starting Production Build - Step 1')
       thisVars.buildstep = 1
       require(`./${framework}Util`)._toProd(thisVars, thisOptions)
     }
-    if (thisVars.production == true && treeshake == false && (framework == 'angular' || framework == 'components')) {
+    if (thisVars.production == true && treeshake == false) {
       //mjg log(thisVars.app + '(check for prod folder and module change)')
       log(thisVars.app + 'Starting Production Build - Step 2')
       thisVars.buildstep = 2
@@ -100,7 +100,8 @@ export function _compilation(compiler, compilation, vars, options) {
     if (options.framework != 'extjs') {
       var extComponents = []
       if (vars.production) {
-        if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
+        //if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
+        if (options.treeshake == true) {
           extComponents = require(`./${options.framework}Util`)._getAllComponents(vars, options)
         }
         compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
@@ -119,7 +120,7 @@ export function _compilation(compiler, compilation, vars, options) {
             }
           }
         })
-        if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
+        if (options.treeshake == true) {
           compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
             require(`./${options.framework}Util`)._writeFilesToProdFolder(vars, options)
           })
@@ -145,14 +146,6 @@ export function _compilation(compiler, compilation, vars, options) {
 }
 
 //**********
-export function _afterCompile(compiler, compilation, vars, options) {
-  require('./pluginUtil').logv(options, 'FUNCTION _afterCompile')
-  if (options.framework == 'extjs') {
-    require(`./extjsUtil`)._afterCompile(compilation, vars, options)
-  }
-}
-
-//**********
 export async function _emit(compiler, compilation, vars, options, callback) {
   try {
     const log = require('./pluginUtil').log
@@ -163,15 +156,18 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     var framework = options.framework
     var environment =  options.environment
     if (emit) {
-      if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
-          (environment != 'production' && treeshake == false && framework == 'angular') ||
-          (framework == 'react') ||
-          (framework == 'components')
+      // if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
+      //     (environment != 'production' && treeshake == false && framework == 'angular') ||
+      //     (framework == 'react') ||
+      //     (framework == 'components')
+      // ) {
+      if ((environment == 'production' && treeshake == true) ||
+        (environment != 'production' && treeshake == false)
       ) {
         var app = vars.app
         var framework = vars.framework
         const path = require('path')
-        const _buildExtBundle = require('./pluginUtil')._buildExtBundle
+//        const _buildExtBundle = require('./pluginUtil')._buildExtBundle
         let outputPath = path.join(compiler.outputPath,vars.extPath)
         if (compiler.outputPath === '/' && compiler.options.devServer) {
           outputPath = path.join(compiler.options.devServer.contentBase, outputPath)
@@ -181,14 +177,14 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         if (framework != 'extjs') {
           _prepareForBuild(app, vars, options, outputPath, compilation)
         }
-        else {
-          if (options.framework == 'angular' && options.treeshake == false) {
-            require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
-          }
-          else {
-            require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
-          }
-        }
+        // else {
+        //   if (options.framework == 'angular' && options.treeshake == false) {
+        //     require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
+        //   }
+        //   else {
+        //     require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
+        //   }
+        // }
         var command = ''
         if (options.watch == 'yes' && vars.production == false) {
           command = 'watch'
@@ -215,6 +211,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
             }
           }
           if (vars.watchStarted == false) {
+            const _buildExtBundle = require('./pluginUtil')._buildExtBundle
             await _buildExtBundle(app, compilation, outputPath, parms, options)
             vars.watchStarted = true
           }
@@ -238,6 +235,50 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     require('./pluginUtil').logv(options,e)
     compilation.errors.push('emit: ' + e)
     callback()
+  }
+}
+
+//**********
+export function _afterCompile(compiler, compilation, vars, options) {
+  require('./pluginUtil').logv(options, 'FUNCTION _afterCompile')
+  if (options.framework == 'extjs') {
+    require(`./extjsUtil`)._afterCompile(compilation, vars, options)
+  }
+}
+
+//**********
+export function _done(vars, options) {
+  try {
+    const log = require('./pluginUtil').log
+    const logv = require('./pluginUtil').logv
+    logv(options,'FUNCTION _done')
+    if (vars.production == true && options.treeshake == false && options.framework == 'angular') {
+      require(`./${options.framework}Util`)._toDev(vars, options)
+    }
+    try {
+      if(options.browser == true && options.watch == 'yes' && vars.production == false) {
+        if (vars.browserCount == 0) {
+          var url = 'http://localhost:' + options.port
+          require('./pluginUtil').log(vars.app + `Opening browser at ${url}`)
+          vars.browserCount++
+          const opn = require('opn')
+          opn(url)
+        }
+      }
+    }
+    catch (e) {
+      console.log(e)
+      //compilation.errors.push('show browser window - ext-done: ' + e)
+    }
+    if (vars.buildstep == 0) {
+      require('./pluginUtil').log(vars.app + `Ending Development Build`)
+    }
+    if (vars.buildstep == 2) {
+      require('./pluginUtil').log(vars.app + `Ending Production Build`)
+    }
+  }
+  catch(e) {
+    require('./pluginUtil').logv(options,e)
   }
 }
 
@@ -351,42 +392,6 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
     require('./pluginUtil').logv(options,e)
     compilation.errors.push('_buildExtBundle: ' + e)
     callback()
-  }
-}
-
-//**********
-export function _done(vars, options) {
-  try {
-    const log = require('./pluginUtil').log
-    const logv = require('./pluginUtil').logv
-    logv(options,'FUNCTION _done')
-    if (vars.production == true && options.treeshake == false && options.framework == 'angular') {
-      require(`./${options.framework}Util`)._toDev(vars, options)
-    }
-    try {
-      if(options.browser == true && options.watch == 'yes' && vars.production == false) {
-        if (vars.browserCount == 0) {
-          var url = 'http://localhost:' + options.port
-          require('./pluginUtil').log(vars.app + `Opening browser at ${url}`)
-          vars.browserCount++
-          const opn = require('opn')
-          opn(url)
-        }
-      }
-    }
-    catch (e) {
-      console.log(e)
-      //compilation.errors.push('show browser window - ext-done: ' + e)
-    }
-    if (vars.buildstep == 0) {
-      require('./pluginUtil').log(vars.app + `Ending Development Build`)
-    }
-    if (vars.buildstep == 2) {
-      require('./pluginUtil').log(vars.app + `Ending Production Build`)
-    }
-  }
-  catch(e) {
-    require('./pluginUtil').logv(options,e)
   }
 }
 
