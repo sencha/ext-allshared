@@ -277,7 +277,12 @@ export function _done(vars, options) {
       //compilation.errors.push('show browser window - ext-done: ' + e)
     }
     if (vars.buildstep == '1 of 1') {
-      require('./pluginUtil').log(vars.app, `Ending Development Build`)
+      if (vars.production == true) {
+        require('./pluginUtil').log(vars.app, `Ending Production Build`)
+      }
+      else {
+        require('./pluginUtil').log(vars.app, `Ending Development Build`)
+      }
     }
     if (vars.buildstep == '2 of 2') {
       require('./pluginUtil').log(vars.app, `Ending Production Build`)
