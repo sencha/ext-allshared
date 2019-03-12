@@ -62,7 +62,7 @@ function toXtype(str) {
 
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _extractFromSource (empty)')
+  logv(options.verbose,'FUNCTION _extractFromSource (empty)')
   try {
     var statements = [
       'Ext.require("Ext.*")',
@@ -87,7 +87,7 @@ function changeIt(o) {
 
 export function _toProd(vars, options) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _toProd (empty')
+  logv(options.verbose,'FUNCTION _toProd (empty')
   try {
   }
   catch (e) {
@@ -108,7 +108,7 @@ export function _toDev(vars, options) {
 
 export function _getAllComponents(vars, options) {
    const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _getAllComponents (empty)')
+  logv(options.verbose,'FUNCTION _getAllComponents (empty)')
   try {
     var extComponents = []
      return extComponents
@@ -121,7 +121,7 @@ export function _getAllComponents(vars, options) {
 
 export function _writeFilesToProdFolder(vars, options) {
   const logv = require('./pluginUtil').logv
-  logv(options,'FUNCTION _writeFilesToProdFolder (empty)')
+  logv(options.verbose,'FUNCTION _writeFilesToProdFolder (empty)')
   try {
   }
   catch (e) {

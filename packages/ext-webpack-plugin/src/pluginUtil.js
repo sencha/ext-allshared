@@ -1,64 +1,68 @@
 //**********
-export function _constructor(options) {
+export function _constructor(initialOptions) {
   const fs = require('fs')
-  var thisVars = {}
-  var thisOptions = {}
-  var plugin = {}
+  var vars = {}
+  var options = {}
+  //var plugin = {}
   try {
-    if (options.framework == undefined) {
-      thisVars.pluginErrors = []
-      thisVars.pluginErrors.push('webpack config: framework parameter on ext-webpack-plugin is not defined - values: react, angular, extjs, components')
-      plugin.vars = thisVars
-      return plugin
+    if (initialOptions.framework == undefined) {
+      vars.pluginErrors = []
+      vars.pluginErrors.push('webpack config: framework parameter on ext-webpack-plugin is not defined - values: react, angular, extjs, components')
+      var o = {}
+      o.vars = vars
+      return o
     }
-    var framework = options.framework
-    var treeshake = options.treeshake
+    var framework = initialOptions.framework
+    var treeshake = initialOptions.treeshake
+    var verbose = initialOptions.verbose
 
     const validateOptions = require('schema-utils')
-    validateOptions(require(`./${framework}Util`).getValidateOptions(), options, '')
+    validateOptions(require(`./${framework}Util`).getValidateOptions(), initialOptions, '')
 
     const rc = (fs.existsSync(`.ext-${framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${framework}rc`, 'utf-8')) || {})
-    thisOptions = { ...require(`./${framework}Util`).getDefaultOptions(), ...options, ...rc }
+    options = { ...require(`./${framework}Util`).getDefaultOptions(), ...initialOptions, ...rc }
 
-    thisVars = require(`./${framework}Util`).getDefaultVars()
-    thisVars.pluginName = 'ext-webpack-plugin'
-    thisVars.app = require('./pluginUtil')._getApp()
+    vars = require(`./${framework}Util`).getDefaultVars()
+    vars.pluginName = 'ext-webpack-plugin'
+    vars.app = require('./pluginUtil')._getApp()
 
-    logh(thisVars.app + `HOOK constructor`)
-    logv(thisOptions, `pluginName - ${thisVars.pluginName}`)
-    logv(thisOptions, `thisVars.app - ${thisVars.app}`)
+    logh(vars.app, `HOOK constructor`)
+    logv(verbose, `pluginName - ${vars.pluginName}`)
+    logv(verbose, `vars.app - ${vars.app}`)
 
-    // const rc = (fs.existsSync(`.ext-${thisVars.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${thisVars.framework}rc`, 'utf-8')) || {})
-    // thisOptions = { ...require(`./${thisVars.framework}Util`).getDefaultOptions(), ...options, ...rc }
+    // const rc = (fs.existsSync(`.ext-${vars.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${vars.framework}rc`, 'utf-8')) || {})
+    // options = { ...require(`./${vars.framework}Util`).getDefaultOptions(), ...options, ...rc }
     
-    logv(thisOptions, `thisOptions - ${JSON.stringify(thisOptions)}`)
-    if (thisOptions.environment == 'production') 
-      {thisVars.production = true}
+    logv(verbose, `options:`);if (verbose == 'yes') {console.dir(options)}
+
+    if (options.environment == 'production') 
+      {vars.production = true}
     else 
-      {thisVars.production = false}
-    logv(thisOptions, `thisVars - ${JSON.stringify(thisVars)}`)
+      {vars.production = false}
+    logv(verbose, `vars - ${JSON.stringify(vars)}`)
 
-    if (thisVars.production == true && treeshake == true) {
-      log(thisVars.app + 'Starting Production Build - Step 1')
-      thisVars.buildstep = 1
-      require(`./${framework}Util`)._toProd(thisVars, thisOptions)
+    if (vars.production == true && treeshake == true) {
+      log(vars.app + 'Starting Production Build - Step 1')
+      vars.buildstep = 1
+      require(`./${framework}Util`)._toProd(vars, options)
     }
-    if (thisVars.production == true && treeshake == false) {
-      //mjg log(thisVars.app + '(check for prod folder and module change)')
-      log(thisVars.app + 'Starting Production Build - Step 2')
-      thisVars.buildstep = 2
+    if (vars.production == true && treeshake == false) {
+      //mjg log(vars.app + '(check for prod folder and module change)')
+      log(vars.app + 'Starting Production Build - Step 2')
+      vars.buildstep = 2
     }
-    if (thisVars.buildstep == 0) {
-      log(thisVars.app + 'Starting Development Build')
+    if (vars.buildstep == 0) {
+      log(vars.app + 'Starting Development Build')
     }
-    //mjg log(require('./pluginUtil')._getVersions(thisVars.app, thisVars.pluginName, framework))
-    logv(thisVars.app + 'Building for ' + thisOptions.environment + ', ' + 'Treeshake is ' + thisOptions.treeshake)
+    //mjg log(require('./pluginUtil')._getVersions(vars.app, vars.pluginName, framework))
+    logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
 
-    plugin.vars = thisVars
-    plugin.options = thisOptions
+    var o = {}
+    o.vars = vars
+    o.options = options
 
-    require('./pluginUtil').logv(thisOptions, 'FUNCTION _constructor')
-    return plugin
+    require('./pluginUtil').logv(verbose, 'FUNCTION _constructor')
+    return o
   }
   catch (e) {
     console.log(e)
@@ -564,8 +568,9 @@ export function log(s) {
 }
 
 //**********
-export function logh(s) {
+export function logh(app,message) {
   var h = false
+  var s = app + message 
   if (h == true) {
     require('readline').cursorTo(process.stdout, 0)
     try {
@@ -578,8 +583,8 @@ export function logh(s) {
 }
 
 //**********
-export function logv(options, s) {
-  if (options.verbose == 'yes') {
+export function logv(verbose, s) {
+  if (verbose == 'yes') {
     require('readline').cursorTo(process.stdout, 0)
     try {
       process.stdout.clearLine()
