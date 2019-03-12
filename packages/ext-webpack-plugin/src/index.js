@@ -31,14 +31,14 @@ export default class ExtWebpackPlugin {
       p._compilation(compiler, compilation, vars, options)
     })
 
-    compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
-      p.logh(app, `HOOK emit (async)`)
-      p._emit(compiler, compilation, vars, options, callback)
-    })
-
     compiler.hooks.afterCompile.tap('ext-after-compile', (compilation) => {
       p.logh(app, `HOOK afterCompile`)
       p._afterCompile(compiler, compilation, vars, options)
+    })
+
+    compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
+      p.logh(app, `HOOK emit (async)`)
+      p._emit(compiler, compilation, vars, options, callback)
     })
 
     compiler.hooks.done.tap(`ext-done`, () => {

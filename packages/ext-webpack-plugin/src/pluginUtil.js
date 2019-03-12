@@ -42,7 +42,20 @@ export function _constructor(initialOptions) {
       {vars.production = false}
     //logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
 
-    if (vars.production == true) {
+
+    if (framework == 'react') {
+      if (vars.production == true) {
+        vars.buildstep = '1 of 1'
+        log(app, 'Starting Production Build - ' + vars.buildstep)
+  
+      }
+      else {
+        vars.buildstep = '1 of 1'
+        log(app, 'Starting Development Build - ' + vars.buildstep)
+      }
+
+    }
+    else if (vars.production == true) {
       if (treeshake == true) {
         vars.buildstep = '1 of 2'
         log(app, 'Starting Production Build - ' + vars.buildstep)
@@ -105,32 +118,34 @@ export function _compilation(compiler, compilation, vars, options) {
     var verbose = options.verbose
     var framework = options.framework
     logv(verbose, 'FUNCTION _compilation')
-    if (framework != 'extjs') {
-      var extComponents = []
-      if (vars.buildstep == '1 of 2') {
-        extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
-      }
-      compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
-        if (module.resource && !module.resource.match(/node_modules/)) {
-          if(module.resource.match(/\.html$/) != null) {
-            if(module._source._value.toLowerCase().includes('doctype html') == false) {
-              vars.deps = [
-                ...(vars.deps || []),
-                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
-            }
-          }
-          else {
+    
+    if (framework == 'extjs') {
+      return
+    }
+    var extComponents = []
+    if (vars.buildstep == '1 of 2') {
+      extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
+    }
+    compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
+      if (module.resource && !module.resource.match(/node_modules/)) {
+        if(module.resource.match(/\.html$/) != null) {
+          if(module._source._value.toLowerCase().includes('doctype html') == false) {
             vars.deps = [
               ...(vars.deps || []),
               ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
           }
         }
-      })
-      if (vars.buildstep == '1 of 2') {
-        compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
-          require(`./${framework}Util`)._writeFilesToProdFolder(vars, options)
-        })
+        else {
+          vars.deps = [
+            ...(vars.deps || []),
+            ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+        }
       }
+    })
+    if (vars.buildstep == '1 of 2') {
+      compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
+        require(`./${framework}Util`)._writeFilesToProdFolder(vars, options)
+      })
     }
     if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
       compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
@@ -226,17 +241,17 @@ export async function _emit(compiler, compilation, vars, options, callback) {
 export function _afterCompile(compiler, compilation, vars, options) {
   try {
     var verbose = options.verbose
-    require('./pluginUtil').logv(verbose, 'FUNCTION _afterCompile')
+    logv(verbose, 'FUNCTION _afterCompile')
     if (options.framework == 'extjs') {
       require(`./extjsUtil`)._afterCompile(compilation, vars, options)
     }
     else {
-      require('./pluginUtil').logv(verbose, 'FUNCTION _afterCompile not run')
+      logv(verbose, 'FUNCTION _afterCompile not run')
     }
   }
   catch(e) {
     compilation.errors.push('_afterCompile: ' + e)
-    require('./pluginUtil').logv(options.verbose,e)
+    logv(options.verbose,e)
 
   }
 }
