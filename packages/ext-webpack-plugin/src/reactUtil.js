@@ -63,7 +63,7 @@ function toXtype(str) {
   return str.toLowerCase().replace(/_/g, '-')
 }
 
-export function extractFromSource(module, options, compilation, extComponents) {
+export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _extractFromSource')
   try {
