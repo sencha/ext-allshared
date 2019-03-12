@@ -3,7 +3,6 @@ export function _constructor(initialOptions) {
   const fs = require('fs')
   var vars = {}
   var options = {}
-  //var plugin = {}
   try {
     if (initialOptions.framework == undefined) {
       vars.pluginErrors = []
@@ -25,8 +24,9 @@ export function _constructor(initialOptions) {
     vars = require(`./${framework}Util`).getDefaultVars()
     vars.pluginName = 'ext-webpack-plugin'
     vars.app = require('./pluginUtil')._getApp()
+    var app = vars.app
 
-    logh(vars.app, `HOOK constructor`)
+    logh(app, `HOOK constructor`)
     logv(verbose, `pluginName - ${vars.pluginName}`)
     logv(verbose, `vars.app - ${vars.app}`)
 
@@ -39,20 +39,20 @@ export function _constructor(initialOptions) {
       {vars.production = true}
     else 
       {vars.production = false}
-    logv(verbose, `vars - ${JSON.stringify(vars)}`)
+    logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
 
     if (vars.production == true && treeshake == true) {
-      log(vars.app + 'Starting Production Build - Step 1')
+      log(app, 'Starting Production Build - Step 1')
       vars.buildstep = 1
       require(`./${framework}Util`)._toProd(vars, options)
     }
     if (vars.production == true && treeshake == false) {
       //mjg log(vars.app + '(check for prod folder and module change)')
-      log(vars.app + 'Starting Production Build - Step 2')
+      log(app, 'Starting Production Build - Step 2')
       vars.buildstep = 2
     }
     if (vars.buildstep == 0) {
-      log(vars.app + 'Starting Development Build')
+      log(app, 'Starting Development Build')
     }
     //mjg log(require('./pluginUtil')._getVersions(vars.app, vars.pluginName, framework))
     logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
@@ -72,27 +72,29 @@ export function _constructor(initialOptions) {
 //**********
 export function _thisCompilation(compiler, compilation, vars, options) {
   try {
-    require('./pluginUtil').logv(options, 'FUNCTION _thisCompilation')
-    require('./pluginUtil').logv(options, `options.script: ${options.script }`)
-    require('./pluginUtil').logv(options, `buildstep: ${vars.buildstep}`)
+    var app = vars.app
+    var verbose = options.verbose
+    require('./pluginUtil').logv(verbose, 'FUNCTION _thisCompilation')
+    require('./pluginUtil').logv(verbose, `options.script: ${options.script }`)
+    require('./pluginUtil').logv(verbose, `buildstep: ${vars.buildstep}`)
 
      if (vars.buildstep == 0 || vars.buildstep == 1) {
       if (options.script != undefined) {
         if (options.script != null) {
           runScript(options.script, function (err) {
             if (err) throw err;
-            require('./pluginUtil').log(vars.app + `Finished running ${options.script}`)
+            require('./pluginUtil').log(vars.app, `Finished running ${options.script}`)
         });
         }
       }
       else {
-        require('./pluginUtil').logv(options, `options.script: ${options.script }`)
-        require('./pluginUtil').logv(options, `buildstep: ${vars.buildstep}`)
+        require('./pluginUtil').logv(verbose, `options.script: ${options.script }`)
+        require('./pluginUtil').logv(verbose, `buildstep: ${vars.buildstep}`)
       }
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options,e)
+    require('./pluginUtil').logv(verbose,e)
     compilation.errors.push('_thisCompilation: ' + e)
   }
 }
@@ -100,7 +102,8 @@ export function _thisCompilation(compiler, compilation, vars, options) {
 //**********
 export function _compilation(compiler, compilation, vars, options) {
   try {
-    require('./pluginUtil').logv(options, 'FUNCTION _compilation')
+    var verbose = options.verbose
+    require('./pluginUtil').logv(verbose, 'FUNCTION _compilation')
     if (options.framework != 'extjs') {
       var extComponents = []
       if (vars.production) {
@@ -132,19 +135,19 @@ export function _compilation(compiler, compilation, vars, options) {
       }
       if (vars.buildstep != 1) {
         compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
-          logv(options,'htmlWebpackPluginBeforeHtmlGeneration')
+          logv(verbose,'htmlWebpackPluginBeforeHtmlGeneration')
           const path = require('path')
           var jsPath = path.join(vars.extPath, 'ext.js')
           var cssPath = path.join(vars.extPath, 'ext.css')
           data.assets.js.unshift(jsPath)
           data.assets.css.unshift(cssPath)
-          log(vars.app + `Adding ${jsPath} and ${cssPath} to index.html`)
+          log(vars.app, `Adding ${jsPath} and ${cssPath} to index.html`)
         })
       }
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options,e)
+    require('./pluginUtil').logv(options.verbose,e)
     compilation.errors.push('_compilation: ' + e)
   }
 }
@@ -152,9 +155,10 @@ export function _compilation(compiler, compilation, vars, options) {
 //**********
 export async function _emit(compiler, compilation, vars, options, callback) {
   try {
+    var verbose = options.verbose
     const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
-    logv(options,'FUNCTION _emit')
+    logv(verbose,'FUNCTION _emit')
     var emit = options.emit
     var treeshake = options.treeshake
     var framework = options.framework
@@ -176,8 +180,8 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         if (compiler.outputPath === '/' && compiler.options.devServer) {
           outputPath = path.join(compiler.options.devServer.contentBase, outputPath)
         }
-        logv(options,'outputPath: ' + outputPath)
-        logv(options,'framework: ' + framework)
+        logv(verbose,'outputPath: ' + outputPath)
+        logv(verbose,'framework: ' + framework)
         if (framework != 'extjs') {
           _prepareForBuild(app, vars, options, outputPath, compilation)
         }
@@ -226,17 +230,17 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         }
       }
       else {
-        logv(options,'NOT running emit')
+        logv(verbose,'NOT running emit')
         callback()
       }
     }
     else {
-      logv(options,'emit is false')
+      logv(verbose,'emit is false')
       callback()
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options,e)
+    require('./pluginUtil').logv(options.verbose,e)
     compilation.errors.push('emit: ' + e)
     callback()
   }
@@ -244,7 +248,8 @@ export async function _emit(compiler, compilation, vars, options, callback) {
 
 //**********
 export function _afterCompile(compiler, compilation, vars, options) {
-  require('./pluginUtil').logv(options, 'FUNCTION _afterCompile')
+  var verbose = options.verbose
+  require('./pluginUtil').logv(verbose, 'FUNCTION _afterCompile')
   if (options.framework == 'extjs') {
     require(`./extjsUtil`)._afterCompile(compilation, vars, options)
   }
@@ -253,9 +258,10 @@ export function _afterCompile(compiler, compilation, vars, options) {
 //**********
 export function _done(vars, options) {
   try {
+    var verbose = options.verbose
     const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
-    logv(options,'FUNCTION _done')
+    logv(verbose,'FUNCTION _done')
     if (vars.production == true && options.treeshake == false && options.framework == 'angular') {
       require(`./${options.framework}Util`)._toDev(vars, options)
     }
@@ -263,7 +269,7 @@ export function _done(vars, options) {
       if(options.browser == true && options.watch == 'yes' && vars.production == false) {
         if (vars.browserCount == 0) {
           var url = 'http://localhost:' + options.port
-          require('./pluginUtil').log(vars.app + `Opening browser at ${url}`)
+          require('./pluginUtil').log(vars.app, `Opening browser at ${url}`)
           vars.browserCount++
           const opn = require('opn')
           opn(url)
@@ -275,21 +281,22 @@ export function _done(vars, options) {
       //compilation.errors.push('show browser window - ext-done: ' + e)
     }
     if (vars.buildstep == 0) {
-      require('./pluginUtil').log(vars.app + `Ending Development Build`)
+      require('./pluginUtil').log(vars.app, `Ending Development Build`)
     }
     if (vars.buildstep == 2) {
-      require('./pluginUtil').log(vars.app + `Ending Production Build`)
+      require('./pluginUtil').log(vars.app, `Ending Production Build`)
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options,e)
+    require('./pluginUtil').logv(options.verbose,e)
   }
 }
 
 //**********
 export function _prepareForBuild(app, vars, options, output, compilation) {
   try {
-    logv(options,'FUNCTION _prepareForBuild')
+    var verbose = options.verbose
+    logv(verbose,'FUNCTION _prepareForBuild')
     const rimraf = require('rimraf')
     const mkdirp = require('mkdirp')
     const fsx = require('fs-extra')
@@ -299,7 +306,7 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
     var toolkit = options.toolkit
     var theme = options.theme
     theme = theme || (toolkit === 'classic' ? 'theme-triton' : 'theme-material')
-    logv(options,'firstTime: ' + vars.firstTime)
+    logv(verbose,'firstTime: ' + vars.firstTime)
     if (vars.firstTime) {
       rimraf.sync(output)
       mkdirp.sync(output)
@@ -317,25 +324,25 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
         var fromPath = path.join(process.cwd(), `ext-${framework}/ux/`)
         var toPath = path.join(output, 'ux')
         fsx.copySync(fromPath, toPath)
-        log(app + 'Copying (ux) ' + fromPath.replace(process.cwd(), '') + ' to: ' + toPath.replace(process.cwd(), ''))
+        log(app, 'Copying (ux) ' + fromPath.replace(process.cwd(), '') + ' to: ' + toPath.replace(process.cwd(), ''))
       }
       if (fs.existsSync(path.join(process.cwd(),`ext-${framework}/packages/`))) {
         var fromPath = path.join(process.cwd(), `ext-${framework}/packages/`)
         var toPath = path.join(output, 'packages')
         fsx.copySync(fromPath, toPath)
-        log(app + 'Copying ' + fromPath.replace(process.cwd(), '') + ' to: ' + toPath.replace(process.cwd(), ''))
+        log(app, 'Copying ' + fromPath.replace(process.cwd(), '') + ' to: ' + toPath.replace(process.cwd(), ''))
       }
       if (fs.existsSync(path.join(process.cwd(),`ext-${framework}/overrides/`))) {
         var fromPath = path.join(process.cwd(), `ext-${framework}/overrides/`)
         var toPath = path.join(output, 'overrides')
         fsx.copySync(fromPath, toPath)
-        log(app + 'Copying ' + fromPath.replace(process.cwd(), '') + ' to: ' + toPath.replace(process.cwd(), ''))
+        log(app, 'Copying ' + fromPath.replace(process.cwd(), '') + ' to: ' + toPath.replace(process.cwd(), ''))
       }
       if (fs.existsSync(path.join(process.cwd(),'resources/'))) {
         var fromResources = path.join(process.cwd(), 'resources/')
         var toResources = path.join(output, '../resources')
         fsx.copySync(fromResources, toResources)
-        log(app + 'Copying ' + fromResources.replace(process.cwd(), '') + ' to: ' + toResources.replace(process.cwd(), ''))
+        log(app, 'Copying ' + fromResources.replace(process.cwd(), '') + ' to: ' + toResources.replace(process.cwd(), ''))
       }
     }
     vars.firstTime = false
@@ -353,15 +360,15 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
       vars.rebuild = true
       var bundleDir = output.replace(process.cwd(), '')
       if (bundleDir.trim() == '') {bundleDir = './'}
-      log(app + 'Building Ext bundle at: ' + bundleDir)
+      log(app, 'Building Ext bundle at: ' + bundleDir)
     }
     else {
       vars.rebuild = false
-      log(app + 'Ext rebuild NOT needed')
+      log(app, 'Ext rebuild NOT needed')
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options,e)
+    require('./pluginUtil').logv(options.verbose,e)
     compilation.errors.push('_prepareForBuild: ' + e)
   }
 }
@@ -369,19 +376,20 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
 //**********
 export function _buildExtBundle(app, compilation, outputPath, parms, options) {
   try {
+    var verbose = options.verbose
     const fs = require('fs')
     const logv = require('./pluginUtil').logv
-    logv(options,'FUNCTION _buildExtBundle')
+    logv(verbose,'FUNCTION _buildExtBundle')
     let sencha; try { sencha = require('@sencha/cmd') } catch (e) { sencha = 'sencha' }
     if (fs.existsSync(sencha)) {
-      logv(options,'sencha folder exists')
+      logv(verbose,'sencha folder exists')
     }
     else {
-      logv(options,'sencha folder DOES NOT exist')
+      logv(verbose,'sencha folder DOES NOT exist')
     }
     return new Promise((resolve, reject) => {
       const onBuildDone = () => {
-        logv(options,'onBuildDone')
+        logv(verbose,'onBuildDone')
         resolve()
       }
       var opts = { cwd: outputPath, silent: true, stdio: 'pipe', encoding: 'utf-8'}
@@ -393,7 +401,7 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
   }
   catch(e) {
     console.log('e')
-    require('./pluginUtil').logv(options,e)
+    require('./pluginUtil').logv(options.verbose,e)
     compilation.errors.push('_buildExtBundle: ' + e)
     callback()
   }
@@ -402,48 +410,49 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
 //**********
 export async function executeAsync (app, command, parms, opts, compilation, options) {
   try {
+    var verbose = options.verbose
     //const DEFAULT_SUBSTRS = ['[INF] Loading', '[INF] Processing', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Server", "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
     const DEFAULT_SUBSTRS = ["[INF] xServer", '[INF] Loading', '[INF] Append', '[INF] Processing', '[INF] Processing Build', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
     var substrings = DEFAULT_SUBSTRS 
     var chalk = require('chalk')
     const crossSpawn = require('cross-spawn')
     const log = require('./pluginUtil').log
-    logv(options, 'FUNCTION executeAsync')
+    logv(verbose, 'FUNCTION executeAsync')
     await new Promise((resolve, reject) => {
-      logv(options,`command - ${command}`)
-      logv(options, `parms - ${parms}`)
-      logv(options, `opts - ${JSON.stringify(opts)}`)
+      logv(verbose,`command - ${command}`)
+      logv(verbose, `parms - ${parms}`)
+      logv(verbose, `opts - ${JSON.stringify(opts)}`)
       let child = crossSpawn(command, parms, opts)
       child.on('close', (code, signal) => {
-        logv(options, `on close: ` + code) 
+        logv(verbose, `on close: ` + code) 
         if(code === 0) { resolve(0) }
         else { compilation.errors.push( new Error(code) ); resolve(0) }
       })
       child.on('error', (error) => { 
-        logv(options, `on error`) 
+        logv(verbose, `on error`) 
         compilation.errors.push(error)
         resolve(0)
       })
       child.stdout.on('data', (data) => {
         var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
-        logv(options, `${str}`)
+        logv(verbose, `${str}`)
         if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
 
           // const fs = require('fs');
           // var filename = process.cwd()+'/src/index.js';
           // var data = fs.readFileSync(filename);
           // fs.writeFileSync(filename, data + ' ', 'utf8')
-          // logv(options, `touching ${filename}`)
+          // logv(verbose, `touching ${filename}`)
 
           const fs = require('fs');
           var filename = process.cwd() + '/src/index.js';
           try {
             var data = fs.readFileSync(filename);
             fs.writeFileSync(filename, data + ' ', 'utf8');
-            log(options, `touching ${filename}`);
+            log(app, `touching ${filename}`);
           }
           catch(e) {
-            log(options, `NOT touching ${filename}`);
+            log(app, `NOT touching ${filename}`);
           }
 
           resolve(0)
@@ -457,7 +466,7 @@ export async function executeAsync (app, command, parms, opts, compilation, opti
               compilation.errors.push(app + str.replace(/^\[ERR\] /gi, ''));
               str = str.replace("[ERR]", `${chalk.red("[ERR]")}`)
             }
-            log(`${app}${str}`) 
+            log(app, str) 
           }
         }
       })
@@ -561,7 +570,8 @@ export function _getVersions(app, pluginName, frameworkName) {
  }
 
 //**********
-export function log(s) {
+export function log(app,message) {
+  var s = app + message 
   require('readline').cursorTo(process.stdout, 0)
   try {process.stdout.clearLine()}catch(e) {}
   process.stdout.write(s);process.stdout.write('\n')
