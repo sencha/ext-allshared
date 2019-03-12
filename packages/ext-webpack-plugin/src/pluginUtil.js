@@ -41,21 +41,21 @@ export function _constructor(initialOptions) {
       {vars.production = false}
     logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
 
-    if (vars.production == true && treeshake == true) {
-      log(app, 'Starting Production Build - Step 1')
-      vars.buildstep = 1
-      require(`./${framework}Util`)._toProd(vars, options)
+    if (vars.production == true) {
+      if (treeshake == true) {
+        vars.buildstep = '1 of 2'
+        log(app, 'Starting Production Build - ' + vars.buildstep)
+        require(`./${framework}Util`)._toProd(vars, options)
+      }
+      else {
+        vars.buildstep = '2 of 2'
+        log(app, 'Starting Production Build - ' + vars.buildstep)
+      }
     }
-    if (vars.production == true && treeshake == false) {
-      //mjg log(vars.app + '(check for prod folder and module change)')
-      log(app, 'Starting Production Build - Step 2')
-      vars.buildstep = 2
+    else {
+      vars.buildstep = '1 of 1'
+      log(app, 'Starting Development Build - ' + vars.buildstep)
     }
-    if (vars.buildstep == 0) {
-      vars.buildstep = 0
-      log(app, 'Starting Development Build')
-    }
-    //mjg log(require('./pluginUtil')._getVersions(vars.app, vars.pluginName, framework))
     logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
 
     var o = {}
@@ -79,7 +79,7 @@ export function _thisCompilation(compiler, compilation, vars, options) {
     require('./pluginUtil').logv(verbose, `options.script: ${options.script }`)
     require('./pluginUtil').logv(verbose, `buildstep: ${vars.buildstep}`)
 
-    if (vars.buildstep == 0 || vars.buildstep == 1) {
+    if (vars.buildstep == '1 of 1' || vars.buildstep == '1 of 2') {
       if (options.script != undefined) {
         if (options.script != null) {
           runScript(options.script, function (err) {
@@ -110,7 +110,7 @@ export function _compilation(compiler, compilation, vars, options) {
 //      if (vars.production) {
         //if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
         //if (options.treeshake == true) {
-      if (vars.buildstep == 1) {
+      if (vars.buildstep == '1 of 2') {
         extComponents = require(`./${options.framework}Util`)._getAllComponents(vars, options)
       }
       compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
@@ -129,13 +129,13 @@ export function _compilation(compiler, compilation, vars, options) {
           }
         }
       })
-      if (vars.buildstep == 1) {
+      if (vars.buildstep == '1 of 2') {
         compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
           require(`./${options.framework}Util`)._writeFilesToProdFolder(vars, options)
         })
       }
     }
-    if (vars.buildstep == 0 || vars.buildstep == 2) {
+    if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
       compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
         logv(verbose,'htmlWebpackPluginBeforeHtmlGeneration')
         const path = require('path')
@@ -171,7 +171,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
       //     (framework == 'components')
       // ) {
 
-      if (vars.buildstep == 0 || vars.buildstep == 2) {
+      if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
         var app = vars.app
         var framework = vars.framework
         const path = require('path')
@@ -280,10 +280,10 @@ export function _done(vars, options) {
       console.log(e)
       //compilation.errors.push('show browser window - ext-done: ' + e)
     }
-    if (vars.buildstep == 0) {
+    if (vars.buildstep == '1 of 1') {
       require('./pluginUtil').log(vars.app, `Ending Development Build`)
     }
-    if (vars.buildstep == 2) {
+    if (vars.buildstep == '2 of 2') {
       require('./pluginUtil').log(vars.app, `Ending Production Build`)
     }
   }

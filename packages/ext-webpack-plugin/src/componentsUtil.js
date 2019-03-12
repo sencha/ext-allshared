@@ -43,7 +43,7 @@ export function getDefaultOptions() {
 export function getDefaultVars() {
   return {
     watchStarted : false,
-    buildstep: 0,
+    buildstep: '1 of 1',
     firstTime : true,
     firstCompile: true,
     browserCount : 0,
