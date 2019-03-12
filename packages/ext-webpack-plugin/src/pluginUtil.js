@@ -1,5 +1,6 @@
 //**********
 export function _constructor(initialOptions) {
+  //const logv = require('./pluginUtil').logv
   const fs = require('fs')
   var vars = {}
   var options = {}
@@ -23,23 +24,23 @@ export function _constructor(initialOptions) {
 
     vars = require(`./${framework}Util`).getDefaultVars()
     vars.pluginName = 'ext-webpack-plugin'
-    vars.app = require('./pluginUtil')._getApp()
+    vars.app = _getApp()
     var app = vars.app
 
-    logh(app, `HOOK constructor`)
+    logv(verbose, 'FUNCTION _constructor')
     logv(verbose, `pluginName - ${vars.pluginName}`)
     logv(verbose, `vars.app - ${vars.app}`)
 
     // const rc = (fs.existsSync(`.ext-${vars.framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${vars.framework}rc`, 'utf-8')) || {})
     // options = { ...require(`./${vars.framework}Util`).getDefaultOptions(), ...options, ...rc }
     
-    logv(verbose, `options:`);if (verbose == 'yes') {console.dir(options)}
+    //logv(verbose, `options:`);if (verbose == 'yes') {console.dir(options)}
 
     if (options.environment == 'production') 
       {vars.production = true}
     else 
       {vars.production = false}
-    logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
+    //logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
 
     if (vars.production == true) {
       if (treeshake == true) {
@@ -61,8 +62,6 @@ export function _constructor(initialOptions) {
     var o = {}
     o.vars = vars
     o.options = options
-
-    require('./pluginUtil').logv(verbose, 'FUNCTION _constructor')
     return o
   }
   catch (e) {
@@ -75,27 +74,27 @@ export function _thisCompilation(compiler, compilation, vars, options) {
   try {
     var app = vars.app
     var verbose = options.verbose
-    require('./pluginUtil').logv(verbose, 'FUNCTION _thisCompilation')
-    require('./pluginUtil').logv(verbose, `options.script: ${options.script }`)
-    require('./pluginUtil').logv(verbose, `buildstep: ${vars.buildstep}`)
+    logv(verbose, 'FUNCTION _thisCompilation')
+    logv(verbose, `options.script: ${options.script }`)
+    logv(verbose, `buildstep: ${vars.buildstep}`)
 
     if (vars.buildstep == '1 of 1' || vars.buildstep == '1 of 2') {
       if (options.script != undefined) {
         if (options.script != null) {
           runScript(options.script, function (err) {
             if (err) throw err;
-            require('./pluginUtil').log(vars.app, `Finished running ${options.script}`)
+            log(vars.app, `Finished running ${options.script}`)
         });
         }
       }
       else {
-        require('./pluginUtil').logv(verbose, `options.script: ${options.script }`)
-        require('./pluginUtil').logv(verbose, `buildstep: ${vars.buildstep}`)
+        logv(verbose, `options.script: ${options.script }`)
+        logv(verbose, `buildstep: ${vars.buildstep}`)
       }
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(verbose,e)
+    logv(verbose,e)
     compilation.errors.push('_thisCompilation: ' + e)
   }
 }
@@ -105,12 +104,9 @@ export function _compilation(compiler, compilation, vars, options) {
   try {
     var verbose = options.verbose
     var framework = options.framework
-    require('./pluginUtil').logv(verbose, 'FUNCTION _compilation')
+    logv(verbose, 'FUNCTION _compilation')
     if (framework != 'extjs') {
       var extComponents = []
-//      if (vars.production) {
-        //if ((options.framework == 'angular' || options.framework == 'components') && options.treeshake == true) {
-        //if (options.treeshake == true) {
       if (vars.buildstep == '1 of 2') {
         extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
       }
@@ -149,7 +145,7 @@ export function _compilation(compiler, compilation, vars, options) {
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options.verbose,e)
+    logv(options.verbose,e)
     compilation.errors.push('_compilation: ' + e)
   }
 }
@@ -157,26 +153,14 @@ export function _compilation(compiler, compilation, vars, options) {
 //**********
 export async function _emit(compiler, compilation, vars, options, callback) {
   try {
+    const path = require('path')
     var verbose = options.verbose
-    //const log = require('./pluginUtil').log
-    const logv = require('./pluginUtil').logv
-    logv(verbose,'FUNCTION _emit')
     var emit = options.emit
-    //var treeshake = options.treeshake
     var framework = options.framework
-    //var environment =  options.environment
+    var app = vars.app
+    logv(verbose,'FUNCTION _emit')
     if (emit) {
-      // if ((environment == 'production' && treeshake == true  && framework == 'angular') ||
-      //     (environment != 'production' && treeshake == false && framework == 'angular') ||
-      //     (framework == 'react') ||
-      //     (framework == 'components')
-      // ) {
-
       if (vars.buildstep == '1 of 1' || vars.buildstep == '1 of 2') {
-        var app = vars.app
-//        var framework = options.framework
-        const path = require('path')
-//        const _buildExtBundle = require('./pluginUtil')._buildExtBundle
         let outputPath = path.join(compiler.outputPath,vars.extPath)
         if (compiler.outputPath === '/' && compiler.options.devServer) {
           outputPath = path.join(compiler.options.devServer.contentBase, outputPath)
@@ -186,14 +170,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         if (framework != 'extjs') {
           _prepareForBuild(app, vars, options, outputPath, compilation)
         }
-        // else {
-        //   if (options.framework == 'angular' && options.treeshake == false) {
-        //     require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
-        //   }
-        //   else {
-        //     require(`./${framework}Util`)._prepareForBuild(app, vars, options, outputPath, compilation)
-        //   }
-        // }
         var command = ''
         if (options.watch == 'yes' && vars.production == false) {
           command = 'watch'
@@ -220,7 +196,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
             }
           }
           if (vars.watchStarted == false) {
-            const _buildExtBundle = require('./pluginUtil')._buildExtBundle
             await _buildExtBundle(app, compilation, outputPath, parms, options)
             vars.watchStarted = true
           }
@@ -241,8 +216,8 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options.verbose,e)
-    compilation.errors.push('emit: ' + e)
+    logv(options.verbose,e)
+    compilation.errors.push('_emit: ' + e)
     callback()
   }
 }
@@ -389,7 +364,6 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
   try {
     var verbose = options.verbose
     const fs = require('fs')
-    const logv = require('./pluginUtil').logv
     logv(verbose,'FUNCTION _buildExtBundle')
     let sencha; try { sencha = require('@sencha/cmd') } catch (e) { sencha = 'sencha' }
     if (fs.existsSync(sencha)) {
