@@ -2,6 +2,7 @@
 
 export function _getDefaultVars() {
   return {
+    rebuild: true,
     watchStarted : false,
     firstTime : true,
     browserCount : 0,
@@ -25,8 +26,6 @@ export function _afterCompile(compilation, vars, options) {
   const { cwd } = vars
   files = typeof files === 'string' ? [files] : files
   dirs = typeof dirs === 'string' ? [dirs] : dirs
-  logv(verbose, files)
-  logv(verbose, dirs)
   const {
     fileDependencies,
     contextDependencies,
@@ -44,7 +43,9 @@ export function _afterCompile(compilation, vars, options) {
 }
 
 function _getFileAndContextDeps(compilation, files, dirs, cwd, options) {
-  require('./pluginUtil').logv(options,'FUNCTION _getFileAndContextDeps')
+  var verbose = options.verbose
+  var logv = require('./pluginUtil').logv
+  logv(verbose,'FUNCTION _getFileAndContextDeps')
   const uniq = require('lodash.uniq')
   const isGlob = require('is-glob')
 
