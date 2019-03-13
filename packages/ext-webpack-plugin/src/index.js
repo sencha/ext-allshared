@@ -41,9 +41,9 @@ export default class ExtWebpackPlugin {
       p._emit(compiler, compilation, vars, options, callback)
     })
 
-    compiler.hooks.done.tap(`ext-done`, () => {
+    compiler.hooks.done.tap(`ext-done`, (stats) => {
       p.logh(app, `HOOK done`)
-      p._done(vars, options)
+      p._done(stats, vars, options)
     })
   }
 }

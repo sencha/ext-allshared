@@ -18,7 +18,8 @@ export function _getDefaultVars() {
 
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
-  logv(options.verbose,'FUNCTION _extractFromSource')
+  const verbose = options.verbose
+  logv(verbose,'FUNCTION _extractFromSource')
 //  try {
     var js = module._source._value
 
