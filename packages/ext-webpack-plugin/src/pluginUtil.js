@@ -72,7 +72,7 @@ export function _constructor(initialOptions) {
     return o
   }
   catch (e) {
-    console.log(e)
+    throw '_constructor: ' + e.toString()
   }
 }
 
@@ -100,8 +100,7 @@ export function _thisCompilation(compiler, compilation, vars, options) {
     }
   }
   catch(e) {
-    logv(verbose,e)
-    compilation.errors.push('_thisCompilation: ' + e)
+    throw '_thisCompilation: ' + e.toString()
   }
 }
 
@@ -154,8 +153,9 @@ export function _compilation(compiler, compilation, vars, options) {
     }
   }
   catch(e) {
-    logv(options.verbose,e)
-    compilation.errors.push('_compilation: ' + e)
+    throw '_compilation: ' + e.toString()
+//    logv(options.verbose,e)
+//    compilation.errors.push('_compilation: ' + e)
   }
 }
 
@@ -238,9 +238,11 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     }
   }
   catch(e) {
-    logv(options.verbose,e)
-    compilation.errors.push('_emit: ' + e)
     callback()
+    throw '_emit: ' + e.toString()
+    // logv(options.verbose,e)
+    // compilation.errors.push('_emit: ' + e)
+    // callback()
   }
 }
 
@@ -281,7 +283,8 @@ export function _done(vars, options) {
     }
   }
   catch(e) {
-    require('./pluginUtil').logv(options.verbose,e)
+//    require('./pluginUtil').logv(options.verbose,e)
+    throw '_done: ' + e.toString()
   }
 }
 
