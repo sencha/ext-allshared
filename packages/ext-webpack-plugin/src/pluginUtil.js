@@ -1,6 +1,5 @@
 //**********
 export function _constructor(initialOptions) {
-  //const logv = require('./pluginUtil').logv
   const fs = require('fs')
   var vars = {}
   var options = {}
@@ -17,12 +16,15 @@ export function _constructor(initialOptions) {
     var verbose = initialOptions.verbose
 
     const validateOptions = require('schema-utils')
-    validateOptions(require(`./${framework}Util`).getValidateOptions(), initialOptions, '')
+    //validateOptions(require(`./${framework}Util`).getValidateOptions(), initialOptions, '')
+    validateOptions(_getValidateOptions(), initialOptions, '')
 
     const rc = (fs.existsSync(`.ext-${framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${framework}rc`, 'utf-8')) || {})
-    options = { ...require(`./${framework}Util`).getDefaultOptions(), ...initialOptions, ...rc }
+    //options = { ...require(`./${framework}Util`).getDefaultOptions(), ...initialOptions, ...rc }
+    options = { ..._getDefaultOptions(), ...initialOptions, ...rc }
 
-    vars = require(`./${framework}Util`).getDefaultVars()
+    //vars = require(`./${framework}Util`).getDefaultVars()
+    vars = _getDefaultVars()
     vars.pluginName = 'ext-webpack-plugin'
     vars.app = _getApp()
     var app = vars.app
@@ -604,3 +606,60 @@ export function logv(verbose, s) {
     process.stdout.write('\n')
   }
 }
+
+function _getValidateOptions() {
+  return {
+    "type": "object",
+    "properties": {
+      "framework":   {"type": [ "string" ]},
+      "toolkit":     {"type": [ "string" ]},
+      "theme":       {"type": [ "string" ]},
+      "profile":     {"type": [ "string" ]},
+      "environment": {"type": [ "string" ]},
+      "treeshake":   {"type": [ "boolean" ]},
+      "port":        {"type": [ "integer" ]},
+      "emit":        {"type": [ "boolean" ]},
+      "browser":     {"type": [ "boolean" ]},
+      "watch":       {"type": [ "string" ]},
+      "verbose":     {"type": [ "string" ]},
+      "script":      {"type": [ "string" ]},
+      "packages":    {"type": [ "string", "array" ]}
+    },
+    "additionalProperties": false
+  }
+}
+
+function _getDefaultOptions() {
+  return {
+    framework: null,
+    toolkit: 'modern',
+    theme: 'theme-material',
+    profile: 'desktop', 
+    environment: 'development', 
+    treeshake: false,
+    port: 1962,
+    emit: true,
+    browser: true,
+    watch: 'yes',
+    verbose: 'no',
+    script: null,
+    packages: null
+  }
+}
+
+function _getDefaultVars() {
+  return {
+    watchStarted : false,
+    buildstep: '1 of 1',
+    firstTime : true,
+    firstCompile: true,
+    browserCount : 0,
+    manifest: null,
+    extPath: 'ext-angular',
+    pluginErrors: [],
+    deps: [],
+    usedExtComponents: [],
+    rebuild: true
+  }
+}
+

@@ -1,57 +1,57 @@
 "use strict"
 
-export function getValidateOptions() {
-  return {
-    "type": "object",
-    "properties": {
-      "framework":   {"type": [ "string" ]},
-      "port":        {"type": [ "integer" ]},
-      "emit":        {"type": [ "boolean" ]},
-      "browser":     {"type": [ "boolean" ]},
-      "watch":       {"type": [ "string" ]},
-      "profile":     {"type": [ "string" ]},
-      "environment": {"type": [ "string" ]},
-      "verbose":     {"type": [ "string" ]},
-//      "theme":       {"type": [ "string" ]},
-//      "toolkit":     {"type": [ "string" ]},
-      "treeshake":   {"type": [ "boolean" ]}
-//      "packages":    {"type": [ "string", "array" ]},
+// export function getValidateOptions() {
+//   return {
+//     "type": "object",
+//     "properties": {
+//       "framework":   {"type": [ "string" ]},
+//       "port":        {"type": [ "integer" ]},
+//       "emit":        {"type": [ "boolean" ]},
+//       "browser":     {"type": [ "boolean" ]},
+//       "watch":       {"type": [ "string" ]},
+//       "profile":     {"type": [ "string" ]},
+//       "environment": {"type": [ "string" ]},
+//       "verbose":     {"type": [ "string" ]},
+// //      "theme":       {"type": [ "string" ]},
+// //      "toolkit":     {"type": [ "string" ]},
+//       "treeshake":   {"type": [ "boolean" ]}
+// //      "packages":    {"type": [ "string", "array" ]},
 
-    },
-    "additionalProperties": false
-    // "errorMessage": {
-    //   "option": "should be {Boolean} (https:/github.com/org/repo#anchor)"
-    // }
-  }
-}
+//     },
+//     "additionalProperties": false
+//     // "errorMessage": {
+//     //   "option": "should be {Boolean} (https:/github.com/org/repo#anchor)"
+//     // }
+//   }
+// }
 
-export function getDefaultOptions() {
-  return {
-    port: 1962,
-    emit: true,
-    browser: true,
-    watch: 'yes',
-    profile: 'desktop', 
-    environment: 'development', 
-    verbose: 'no'
-  }
-}
+// export function getDefaultOptions() {
+//   return {
+//     port: 1962,
+//     emit: true,
+//     browser: true,
+//     watch: 'yes',
+//     profile: 'desktop', 
+//     environment: 'development', 
+//     verbose: 'no'
+//   }
+// }
 
-export function getDefaultVars() {
-  return {
-    watchStarted : false,
-    firstTime : true,
-    browserCount : 0,
-    cwd: process.cwd(),
-    extPath: '.',
-    pluginErrors: [],
-    lastNumFiles: 0,
-    lastMilliseconds: 0,
-    lastMillisecondsAppJson: 0,
-    files: ['./app.json'],
-    dirs: ['./app','./packages']
-  }
-}
+// export function getDefaultVars() {
+//   return {
+//     watchStarted : false,
+//     firstTime : true,
+//     browserCount : 0,
+//     cwd: process.cwd(),
+//     extPath: '.',
+//     pluginErrors: [],
+//     lastNumFiles: 0,
+//     lastMilliseconds: 0,
+//     lastMillisecondsAppJson: 0,
+//     files: ['./app.json'],
+//     dirs: ['./app','./packages']
+//   }
+// }
 
 export function _afterCompile(compilation, vars, options) {
   try {
