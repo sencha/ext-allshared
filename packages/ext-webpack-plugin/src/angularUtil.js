@@ -175,7 +175,7 @@ export function _getAllComponents(vars, options) {
     const path = require('path')
     const fsx = require('fs-extra')
 
-    log(vars.app + `Getting all referenced ext-${options.framework} modules`)
+//    log(vars.app, `Getting all referenced ext-${options.framework} modules`)
     var extComponents = []
     const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src/lib')
     var files = fsx.readdirSync(packageLibPath)
@@ -187,7 +187,7 @@ export function _getAllComponents(vars, options) {
         }
       }
     })
-    log(vars.app + `Writing all referenced ext-${options.framework} modules`)
+    log(vars.app, `Writing all referenced ext-${options.framework} modules`)
     return extComponents
 
   // }

@@ -249,18 +249,18 @@ export async function _emit(compiler, compilation, vars, options, callback) {
 //**********
 export function _done(stats, vars, options) {
   try {
-    if (stats.compilation.errors && stats.compilation.errors.length) // && process.argv.indexOf('--watch') == -1)
-    {
-      //var prefix = 'i [ext]:'
-      console.log(chalk.red('**************'))
-      console.log(chalk.red('Error:'))
-      console.log(stats.compilation.errors[0]);
-      console.log(chalk.red('**************'))
-      process.exit(0);
-    }
     var verbose = options.verbose
     var framework = options.framework
     logv(verbose,'FUNCTION _done')
+    if (stats.compilation.errors && stats.compilation.errors.length) // && process.argv.indexOf('--watch') == -1)
+    {
+      var chalk = require('chalk');
+      console.log(chalk.red('******************************************'));
+      console.log(stats.compilation.errors[0]);
+      console.log(chalk.red('******************************************'));
+      process.exit(0);
+    }
+
     //mjg refactor
     if (vars.production == true && options.treeshake == 'no' && framework == 'angular') {
       require(`./${options.framework}Util`)._toDev(vars, options)
