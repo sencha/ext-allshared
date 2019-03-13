@@ -614,16 +614,17 @@ function _getValidateOptions() {
       "framework":   {"type": [ "string" ]},
       "toolkit":     {"type": [ "string" ]},
       "theme":       {"type": [ "string" ]},
+      "emit":        {"type": [ "string" ]},
+      "script":      {"type": [ "string" ]},
+      "port":        {"type": [ "integer" ]},
+      "packages":    {"type": [ "string", "array" ]},
+
       "profile":     {"type": [ "string" ]},
       "environment": {"type": [ "string" ]},
       "treeshake":   {"type": [ "string" ]},
-      "port":        {"type": [ "integer" ]},
-      "emit":        {"type": [ "string" ]},
       "browser":     {"type": [ "string" ]},
       "watch":       {"type": [ "string" ]},
-      "verbose":     {"type": [ "string" ]},
-      "script":      {"type": [ "string" ]},
-      "packages":    {"type": [ "string", "array" ]}
+      "verbose":     {"type": [ "string" ]}
     },
     "additionalProperties": false
   }
@@ -634,16 +635,17 @@ function _getDefaultOptions() {
     framework: 'extjs',
     toolkit: 'modern',
     theme: 'theme-material',
+    emit: 'yes',
+    script: null,
+    port: 1962,
+    packages: [],
+
     profile: 'desktop', 
     environment: 'development', 
     treeshake: 'no',
-    port: 1962,
-    emit: 'yes',
     browser: 'yes',
     watch: 'yes',
-    verbose: 'no',
-    script: null,
-    packages: []
+    verbose: 'no'
   }
 }
 
