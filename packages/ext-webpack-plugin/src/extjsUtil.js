@@ -1,58 +1,5 @@
 "use strict"
 
-// export function getValidateOptions() {
-//   return {
-//     "type": "object",
-//     "properties": {
-//       "framework":   {"type": [ "string" ]},
-//       "port":        {"type": [ "integer" ]},
-//       "emit":        {"type": [ "boolean" ]},
-//       "browser":     {"type": [ "boolean" ]},
-//       "watch":       {"type": [ "string" ]},
-//       "profile":     {"type": [ "string" ]},
-//       "environment": {"type": [ "string" ]},
-//       "verbose":     {"type": [ "string" ]},
-// //      "theme":       {"type": [ "string" ]},
-// //      "toolkit":     {"type": [ "string" ]},
-//       "treeshake":   {"type": [ "boolean" ]}
-// //      "packages":    {"type": [ "string", "array" ]},
-
-//     },
-//     "additionalProperties": false
-//     // "errorMessage": {
-//     //   "option": "should be {Boolean} (https:/github.com/org/repo#anchor)"
-//     // }
-//   }
-// }
-
-// export function getDefaultOptions() {
-//   return {
-//     port: 1962,
-//     emit: true,
-//     browser: true,
-//     watch: 'yes',
-//     profile: 'desktop', 
-//     environment: 'development', 
-//     verbose: 'no'
-//   }
-// }
-
-// export function getDefaultVars() {
-//   return {
-//     watchStarted : false,
-//     firstTime : true,
-//     browserCount : 0,
-//     cwd: process.cwd(),
-//     extPath: '.',
-//     pluginErrors: [],
-//     lastNumFiles: 0,
-//     lastMilliseconds: 0,
-//     lastMillisecondsAppJson: 0,
-//     files: ['./app.json'],
-//     dirs: ['./app','./packages']
-//   }
-// }
-
 export function _afterCompile(compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options,'FUNCTION ext-after-compile')
@@ -120,16 +67,6 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
     var currentNumFiles = watchedFiles.length
     logv(options,'watchedFiles: ' + currentNumFiles)
     var doBuild = true
-
-    // var doBuild = false
-    // for (var file in watchedFiles) {
-    //   if (vars.lastMilliseconds < fs.statSync(watchedFiles[file]).mtimeMs) {
-    //     if (watchedFiles[file].indexOf("scss") != -1) {doBuild=true;break;}
-    //   }
-    // }
-    // if (vars.lastMilliseconds < fs.statSync('./app.json').mtimeMs) {
-    //   doBuild=true
-    // }
     
     logv(options,'doBuild: ' + doBuild)
 

@@ -1,68 +1,5 @@
 "use strict"
 
-// export function getValidateOptions() {
-//   return {
-//     "type": "object",
-//     "properties": {
-//       "framework":   {"type": [ "string" ]},
-//       "toolkit":     {"type": [ "string" ]},
-//       "theme":       {"type": [ "string" ]},
-//       "profile":     {"type": [ "string" ]},
-//       "environment": {"type": [ "string" ]},
-//       "treeshake":   {"type": [ "boolean" ]},
-//       "port":        {"type": [ "integer" ]},
-//       "emit":        {"type": [ "boolean" ]},
-//       "browser":     {"type": [ "boolean" ]},
-//       "watch":       {"type": [ "string" ]},
-//       "verbose":     {"type": [ "string" ]},
-//       "script":      {"type": [ "string" ]},
-//       "packages":    {"type": [ "string", "array" ]}
-//     },
-//     "additionalProperties": false
-//     // "errorMessage": {
-//     //   "option": "should be {Boolean} (https:/github.com/org/repo#anchor)"
-//     // }
-//   }
-// }
-
-// export function getDefaultOptions() {
-//   return {
-//     framework: null,
-//     toolkit: 'modern',
-//     theme: 'theme-material',
-//     profile: 'desktop', 
-//     environment: 'development', 
-//     treeshake: false,
-//     port: 1962,
-//     emit: true,
-//     browser: true,
-//     watch: 'yes',
-//     verbose: 'no',
-//     script: null,
-//     packages: null
-//   }
-// }
-
-// export function getDefaultVars() {
-//   return {
-//     watchStarted : false,
-//     buildstep: '1 of 1',
-//     firstTime : true,
-//     firstCompile: true,
-//     browserCount : 0,
-//     manifest: null,
-//     extPath: 'ext-react',
-//     pluginErrors: [],
-//     deps: [],
-//     usedExtComponents: [],
-//     rebuild: true
-//   }
-// }
-
-function toXtype(str) {
-  return str.toLowerCase().replace(/_/g, '-')
-}
-
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _extractFromSource')
@@ -94,9 +31,9 @@ export function _extractFromSource(module, options, compilation, extComponents) 
     function addType(argNode) {
       var type
       if (argNode.type === 'StringLiteral') {
-        var xtype = toXtype(argNode.value)
+        var xtype = require('./pluginUtil')._toXtype(argNode.value)
         if (xtype != 'extreact') {
-          type = { xtype: toXtype(argNode.value) }
+          type = { xtype: require('./pluginUtil')._toXtype(argNode.value) }
         }
       } else {
         type = { xclass: js.slice(argNode.start, argNode.end) }
@@ -159,47 +96,47 @@ export function _extractFromSource(module, options, compilation, extComponents) 
   }
 }
 
-export function _toProd(vars, options) {
-  const logv = require('./pluginUtil').logv
-  logv(options.verbose,'FUNCTION _toProd (empty)')
-  try {
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
-}
+// export function _toProd(vars, options) {
+//   const logv = require('./pluginUtil').logv
+//   logv(options.verbose,'FUNCTION _toProd (empty)')
+//   try {
+//   }
+//   catch (e) {
+//     console.log(e)
+//     return []
+//   }
+// }
 
-export function _toDev(vars, options) {
-  const logv = require('./pluginUtil').logv
-  logv(options.verbose,'FUNCTION _toDev (empty)')
-  try {
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
-}
+// export function _toDev(vars, options) {
+//   const logv = require('./pluginUtil').logv
+//   logv(options.verbose,'FUNCTION _toDev (empty)')
+//   try {
+//   }
+//   catch (e) {
+//     console.log(e)
+//     return []
+//   }
+// }
 
-export function _getAllComponents(vars, options) {
-   const logv = require('./pluginUtil').logv
-  logv(options.verbose,'FUNCTION _getAllComponents (empty)')
-  try {
-    var extComponents = []
-     return extComponents
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
-}
+// export function _getAllComponents(vars, options) {
+//    const logv = require('./pluginUtil').logv
+//   logv(options.verbose,'FUNCTION _getAllComponents (empty)')
+//   try {
+//     var extComponents = []
+//      return extComponents
+//   }
+//   catch (e) {
+//     console.log(e)
+//     return []
+//   }
+// }
 
-export function _writeFilesToProdFolder(vars, options) {
-  const logv = require('./pluginUtil').logv
-  logv(options.verbose,'FUNCTION _writeFilesToProdFolder (empty)')
-  try {
-  }
-  catch (e) {
-    console.log(e)
-  }
-}
+// export function _writeFilesToProdFolder(vars, options) {
+//   const logv = require('./pluginUtil').logv
+//   logv(options.verbose,'FUNCTION _writeFilesToProdFolder (empty)')
+//   try {
+//   }
+//   catch (e) {
+//     console.log(e)
+//   }
+// }

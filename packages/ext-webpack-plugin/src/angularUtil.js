@@ -1,72 +1,10 @@
 "use strict"
 
-// export function getValidateOptions() {
-//   return {
-//     "type": "object",
-//     "properties": {
-//       "framework":   {"type": [ "string" ]},
-//       "toolkit":     {"type": [ "string" ]},
-//       "theme":       {"type": [ "string" ]},
-//       "profile":     {"type": [ "string" ]},
-//       "environment": {"type": [ "string" ]},
-//       "treeshake":   {"type": [ "boolean" ]},
-//       "port":        {"type": [ "integer" ]},
-//       "emit":        {"type": [ "boolean" ]},
-//       "browser":     {"type": [ "boolean" ]},
-//       "watch":       {"type": [ "string" ]},
-//       "verbose":     {"type": [ "string" ]},
-//       "script":      {"type": [ "string" ]},
-//       "packages":    {"type": [ "string", "array" ]}
-//     },
-//     "additionalProperties": false
-//   }
-// }
-
-// export function getDefaultOptions() {
-//   return {
-//     framework: null,
-//     toolkit: 'modern',
-//     theme: 'theme-material',
-//     profile: 'desktop', 
-//     environment: 'development', 
-//     treeshake: false,
-//     port: 1962,
-//     emit: true,
-//     browser: true,
-//     watch: 'yes',
-//     verbose: 'no',
-//     script: null,
-//     packages: null
-//   }
-// }
-
-// export function getDefaultVars() {
-//   return {
-//     watchStarted : false,
-//     buildstep: '1 of 1',
-//     firstTime : true,
-//     firstCompile: true,
-//     browserCount : 0,
-//     manifest: null,
-//     extPath: 'ext-angular',
-//     pluginErrors: [],
-//     deps: [],
-//     usedExtComponents: [],
-//     rebuild: true
-//   }
-// }
-
-function toXtype(str) {
-  return str.toLowerCase().replace(/_/g, '-')
-}
-
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _extractFromSource')
   try {
     var js = module._source._value
-    const logv = require('./pluginUtil').logv
-    //logv(options.verbose,'HOOK succeedModule, FUNCTION _extractFromSource: ' + module.resource)
 
     var statements = []
 
@@ -110,7 +48,7 @@ export function _extractFromSource(module, options, compilation, extComponents) 
                 var tagEnd = start.indexOf('>')
                 var end = Math.min(spaceEnd, newlineEnd, tagEnd)
                 if (end >= 0) {
-                  var xtype = toXtype(start.substring(1, end))
+                  var xtype = require('./pluginUtil')._toXtype(start.substring(1, end))
                   if(extComponents.includes(xtype)) {
                     var theValue = node.value.toLowerCase()
                     if (theValue.indexOf('doctype html') == -1) {
