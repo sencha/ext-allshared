@@ -2,6 +2,7 @@
 
 export function _getDefaultVars() {
   return {
+    touchFile: '/app.js',
     rebuild: true,
     watchStarted : false,
     firstTime : true,

@@ -2,6 +2,7 @@
 
 function _getDefaultVars() {
   return {
+    touchFile: '/src/app.ts',
     watchStarted : false,
     buildstep: '1 of 1',
     firstTime : true,
