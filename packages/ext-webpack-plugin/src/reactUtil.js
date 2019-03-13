@@ -1,63 +1,63 @@
 "use strict"
 
-export function getValidateOptions() {
-  return {
-    "type": "object",
-    "properties": {
-      "framework":   {"type": [ "string" ]},
-      "toolkit":     {"type": [ "string" ]},
-      "theme":       {"type": [ "string" ]},
-      "profile":     {"type": [ "string" ]},
-      "environment": {"type": [ "string" ]},
-      "treeshake":   {"type": [ "boolean" ]},
-      "port":        {"type": [ "integer" ]},
-      "emit":        {"type": [ "boolean" ]},
-      "browser":     {"type": [ "boolean" ]},
-      "watch":       {"type": [ "string" ]},
-      "verbose":     {"type": [ "string" ]},
-      "script":      {"type": [ "string" ]},
-      "packages":    {"type": [ "string", "array" ]}
-    },
-    "additionalProperties": false
-    // "errorMessage": {
-    //   "option": "should be {Boolean} (https:/github.com/org/repo#anchor)"
-    // }
-  }
-}
+// export function getValidateOptions() {
+//   return {
+//     "type": "object",
+//     "properties": {
+//       "framework":   {"type": [ "string" ]},
+//       "toolkit":     {"type": [ "string" ]},
+//       "theme":       {"type": [ "string" ]},
+//       "profile":     {"type": [ "string" ]},
+//       "environment": {"type": [ "string" ]},
+//       "treeshake":   {"type": [ "boolean" ]},
+//       "port":        {"type": [ "integer" ]},
+//       "emit":        {"type": [ "boolean" ]},
+//       "browser":     {"type": [ "boolean" ]},
+//       "watch":       {"type": [ "string" ]},
+//       "verbose":     {"type": [ "string" ]},
+//       "script":      {"type": [ "string" ]},
+//       "packages":    {"type": [ "string", "array" ]}
+//     },
+//     "additionalProperties": false
+//     // "errorMessage": {
+//     //   "option": "should be {Boolean} (https:/github.com/org/repo#anchor)"
+//     // }
+//   }
+// }
 
-export function getDefaultOptions() {
-  return {
-    framework: null,
-    toolkit: 'modern',
-    theme: 'theme-material',
-    profile: 'desktop', 
-    environment: 'development', 
-    treeshake: false,
-    port: 1962,
-    emit: true,
-    browser: true,
-    watch: 'yes',
-    verbose: 'no',
-    script: null,
-    packages: null
-  }
-}
+// export function getDefaultOptions() {
+//   return {
+//     framework: null,
+//     toolkit: 'modern',
+//     theme: 'theme-material',
+//     profile: 'desktop', 
+//     environment: 'development', 
+//     treeshake: false,
+//     port: 1962,
+//     emit: true,
+//     browser: true,
+//     watch: 'yes',
+//     verbose: 'no',
+//     script: null,
+//     packages: null
+//   }
+// }
 
-export function getDefaultVars() {
-  return {
-    watchStarted : false,
-    buildstep: '1 of 1',
-    firstTime : true,
-    firstCompile: true,
-    browserCount : 0,
-    manifest: null,
-    extPath: 'ext-react',
-    pluginErrors: [],
-    deps: [],
-    usedExtComponents: [],
-    rebuild: true
-  }
-}
+// export function getDefaultVars() {
+//   return {
+//     watchStarted : false,
+//     buildstep: '1 of 1',
+//     firstTime : true,
+//     firstCompile: true,
+//     browserCount : 0,
+//     manifest: null,
+//     extPath: 'ext-react',
+//     pluginErrors: [],
+//     deps: [],
+//     usedExtComponents: [],
+//     rebuild: true
+//   }
+// }
 
 function toXtype(str) {
   return str.toLowerCase().replace(/_/g, '-')
