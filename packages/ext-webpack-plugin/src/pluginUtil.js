@@ -31,8 +31,14 @@ export function _constructor(initialOptions) {
     logv(verbose, `pluginName - ${pluginName}`)
     logv(verbose, `app - ${app}`)
 
-    if (options.environment == 'production') {vars.production = true}
-    else {vars.production = false}
+    if (options.environment == 'production') {
+      vars.production = true
+      options.browser = 'no'
+      options.watch = 'no'
+    }
+    else {
+      vars.production = false
+    }
     
     //logv(verbose, `options:`);if (verbose == 'yes') {console.dir(options)}
     //logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
