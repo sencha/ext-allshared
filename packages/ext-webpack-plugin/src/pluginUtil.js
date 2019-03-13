@@ -97,10 +97,6 @@ export function _thisCompilation(compiler, compilation, vars, options) {
           }
         }
       }
-      else {
-        logv(verbose, `options.script: ${options.script }`)
-        logv(verbose, `buildstep: ${vars.buildstep}`)
-      }
     }
   }
   catch(e) {
@@ -118,6 +114,7 @@ export function _compilation(compiler, compilation, vars, options) {
     logv(verbose, 'FUNCTION _compilation')
     
     if (framework == 'extjs') {
+      logv(verbose, 'FUNCTION _compilation end (extjs)')
       return
     }
     var extComponents = []
@@ -159,6 +156,25 @@ export function _compilation(compiler, compilation, vars, options) {
   catch(e) {
     logv(options.verbose,e)
     compilation.errors.push('_compilation: ' + e)
+  }
+}
+
+//**********
+export function _afterCompile(compiler, compilation, vars, options) {
+  try {
+    var app = vars.app
+    var verbose = options.verbose
+    var framework = options.framework
+    logv(verbose, 'FUNCTION _afterCompile')
+    if (framework == 'extjs') {
+      require(`./extjsUtil`)._afterCompile(compilation, vars, options)
+    }
+    else {
+      logv(verbose, 'FUNCTION _afterCompile not run')
+    }
+  }
+  catch(e) {
+    throw '_afterCompile: ' + e.toString()
   }
 }
 
@@ -227,27 +243,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     logv(options.verbose,e)
     compilation.errors.push('_emit: ' + e)
     callback()
-  }
-}
-
-//**********
-export function _afterCompile(compiler, compilation, vars, options) {
-  try {
-    var app = vars.app
-    var verbose = options.verbose
-    var framework = options.framework
-    logv(verbose, 'FUNCTION _afterCompile')
-    if (framework == 'extjs') {
-      require(`./extjsUtil`)._afterCompile(compilation, vars, options)
-    }
-    else {
-      logv(verbose, 'FUNCTION _afterCompile not run')
-    }
-  }
-  catch(e) {
-    compilation.errors.push('_afterCompile: ' + e)
-    logv(options.verbose,e)
-
   }
 }
 

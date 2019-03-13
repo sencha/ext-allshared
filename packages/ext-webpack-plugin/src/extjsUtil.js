@@ -17,31 +17,29 @@ export function _getDefaultVars() {
 }
 
 export function _afterCompile(compilation, vars, options) {
-  try {
-    require('./pluginUtil').logv(options,'FUNCTION ext-after-compile')
-    const path = require('path')
-    let { files, dirs } = vars
-    const { cwd } = vars
-    files = typeof files === 'string' ? [files] : files
-    dirs = typeof dirs === 'string' ? [dirs] : dirs
-    const {
-      fileDependencies,
-      contextDependencies,
-    } = _getFileAndContextDeps(compilation, files, dirs, cwd, options);
-    if (files.length > 0) {
-      fileDependencies.forEach((file) => {
-        compilation.fileDependencies.add(path.resolve(file));
-      })
-    }
-    if (dirs.length > 0) {
-      contextDependencies.forEach((context) => {
-        compilation.contextDependencies.add(context);
-      })
-    }
+  var verbose = options.verbose
+  var logv = require('./pluginUtil').logv
+  logv(verbose,'FUNCTION extjs _afterCompile')
+  const path = require('path')
+  let { files, dirs } = vars
+  const { cwd } = vars
+  files = typeof files === 'string' ? [files] : files
+  dirs = typeof dirs === 'string' ? [dirs] : dirs
+  logv(verbose, files)
+  logv(verbose, dirs)
+  const {
+    fileDependencies,
+    contextDependencies,
+  } = _getFileAndContextDeps(compilation, files, dirs, cwd, options);
+  if (files.length > 0) {
+    fileDependencies.forEach((file) => {
+      compilation.fileDependencies.add(path.resolve(file));
+    })
   }
-  catch(e) {
-    console.log(e)
-    compilation.errors.push('_afterCompile: ' + e)
+  if (dirs.length > 0) {
+    contextDependencies.forEach((context) => {
+      compilation.contextDependencies.add(context);
+    })
   }
 }
 
