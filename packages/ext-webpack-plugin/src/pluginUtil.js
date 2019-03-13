@@ -198,32 +198,25 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         if (framework != 'extjs') {
           _prepareForBuild(app, vars, options, outputPath, compilation)
         }
-        console.log('after fr')
         var command = ''
         console.log(options.watch)
-        if (options.watch == 'yes' && vars.production == false) {
-          command = 'watch'
-        }
-        else {command = 'build'}
-        console.log(command)
-        console.log(vars.rebuild)
+        if (options.watch == 'yes' && vars.production == false)
+          {command = 'watch'}
+        else 
+          {command = 'build'}
         if (vars.rebuild == true) {
           var parms = []
           if (options.profile == undefined || options.profile == '' || options.profile == null) {
-            if (command == 'build') {
-              parms = ['app', command, options.environment]
-            }
-            else {
-              parms = ['app', command, '--web-server', 'false', options.environment]
-            }
+            if (command == 'build')
+              { parms = ['app', command, options.environment] }
+            else 
+              { parms = ['app', command, '--web-server', 'false', options.environment] }
           }
           else {
-            if (command == 'build') {
-              parms = ['app', command, options.profile, options.environment]
-            }
-            else {
-              parms = ['app', command, '--web-server', 'false', options.profile, options.environment]
-            }
+            if (command == 'build') 
+              {parms = ['app', command, options.profile, options.environment]}
+            else 
+              {parms = ['app', command, '--web-server', 'false', options.profile, options.environment]}
           }
           if (vars.watchStarted == false) {
             await _buildExtBundle(app, compilation, outputPath, parms, options)
@@ -275,7 +268,6 @@ export function _done(vars, options) {
     }
     catch (e) {
       console.log(e)
-      //compilation.errors.push('show browser window - ext-done: ' + e)
     }
     if (vars.buildstep == '1 of 1') {
       if (vars.production == true) {
