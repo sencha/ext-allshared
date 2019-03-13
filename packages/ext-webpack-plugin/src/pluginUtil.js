@@ -371,7 +371,7 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
 
 //**********
 export function _buildExtBundle(app, compilation, outputPath, parms, options) {
-  try {
+//  try {
     var verbose = options.verbose
     const fs = require('fs')
     logv(verbose,'FUNCTION _buildExtBundle')
@@ -393,18 +393,18 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
         function(reason) { reject(reason) }
       )
     })
-  }
-  catch(e) {
-    console.log('e')
-    require('./pluginUtil').logv(options.verbose,e)
-    compilation.errors.push('_buildExtBundle: ' + e)
-    callback()
-  }
+  // }
+  // catch(e) {
+  //   console.log('e')
+  //   require('./pluginUtil').logv(options.verbose,e)
+  //   compilation.errors.push('_buildExtBundle: ' + e)
+  //   callback()
+  // }
 }
 
 //**********
 export async function _executeAsync (app, command, parms, opts, compilation, options) {
-  try {
+//  try {
     var verbose = options.verbose
     //const DEFAULT_SUBSTRS = ['[INF] Loading', '[INF] Processing', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Server", "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
     const DEFAULT_SUBSTRS = ["[INF] xServer", '[INF] Loading', '[INF] Append', '[INF] Processing', '[INF] Processing Build', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
@@ -474,12 +474,12 @@ export async function _executeAsync (app, command, parms, opts, compilation, opt
         }
       })
     })
-  }
-  catch(e) {
-    logv(options,e)
-    compilation.errors.push('_executeAsync: ' + e)
-    callback()
-  } 
+  // }
+  // catch(e) {
+  //   logv(options,e)
+  //   compilation.errors.push('_executeAsync: ' + e)
+  //   callback()
+  // } 
 }
 
 //**********
