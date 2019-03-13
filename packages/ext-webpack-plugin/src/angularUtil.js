@@ -19,7 +19,7 @@ export function _getDefaultVars() {
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _extractFromSource')
-  try {
+//  try {
     var js = module._source._value
 
     var statements = []
@@ -83,12 +83,12 @@ export function _extractFromSource(module, options, compilation, extComponents) 
     })
 
     return statements
-  }
-  catch(e) {
-    console.log(e)
-    compilation.errors.push('_extractFromSource: ' + e)
-    return []
-  }
+  // }
+  // catch(e) {
+  //   console.log(e)
+  //   compilation.errors.push('_extractFromSource: ' + e)
+  //   return []
+  // }
 }
 
 function changeIt(o) {
@@ -104,7 +104,7 @@ export function _toProd(vars, options) {
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _toProd')
-  try {
+//  try {
     const fsx = require('fs-extra')
     const fs = require('fs')
     const mkdirp = require('mkdirp')
@@ -130,18 +130,18 @@ export function _toProd(vars, options) {
     o.from = `bootstrapModule( AppModule );`
     o.to = `enableProdMode();bootstrapModule(AppModule);`
     changeIt(o)
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
+  // }
+  // catch (e) {
+  //   console.log(e)
+  //   return []
+  // }
 }
 
 export function _toDev(vars, options) {
   const log = require('./pluginUtil').log
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _toDev')
-  try {
+//  try {
     const path = require('path')
     const pathExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-prod`);
     require('rimraf').sync(pathExtAngularProd);
@@ -157,11 +157,11 @@ export function _toDev(vars, options) {
     o.from = `enableProdMode();bootstrapModule(AppModule);`
     o.to = `bootstrapModule( AppModule );`
     changeIt(o)
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
+  //}
+  // catch (e) {
+  //   console.log(e)
+  //   return []
+  // }
 }
 
 
@@ -170,7 +170,7 @@ export function _getAllComponents(vars, options) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _getAllComponents')
 
-  try {
+//  try {
     const path = require('path')
     const fsx = require('fs-extra')
 
@@ -189,11 +189,11 @@ export function _getAllComponents(vars, options) {
     log(vars.app + `Writing all referenced ext-${options.framework} modules`)
     return extComponents
 
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
+  // }
+  // catch (e) {
+  //   console.log(e)
+  //   return []
+  // }
 }
 
 export function _writeFilesToProdFolder(vars, options) {
@@ -201,7 +201,7 @@ export function _writeFilesToProdFolder(vars, options) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _writeFilesToProdFolder')
 
-  try {
+//  try {
     const path = require('path')
     const fsx = require('fs-extra')
 
@@ -245,9 +245,9 @@ export function _writeFilesToProdFolder(vars, options) {
     const baseContent = fsx.readFileSync(`${packageLibPath}/base.ts`).toString()
     fsx.writeFileSync(`${pathToExtAngularProd}/base.ts`, baseContent, 'utf-8', ()=>{return})
 
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
+  // }
+  // catch (e) {
+  //   console.log(e)
+  //   return []
+  // }
 }
