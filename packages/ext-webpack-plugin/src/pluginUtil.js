@@ -50,7 +50,7 @@ export function _constructor(initialOptions) {
       }
     }
     else if (vars.production == true) {
-      if (treeshake == true) {
+      if (treeshake == 'yes') {
         vars.buildstep = '1 of 2'
         log(app, 'Starting Production Build - ' + vars.buildstep)
         require(`./${framework}Util`)._toProd(vars, options)
@@ -169,7 +169,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     var emit = options.emit
     var framework = options.framework
     logv(verbose,'FUNCTION _emit')
-    if (emit) {
+    if (emit == 'yes') {
       if (vars.buildstep == '1 of 1' || vars.buildstep == '1 of 2') {
         let outputPath = path.join(compiler.outputPath,vars.extPath)
         if (compiler.outputPath === '/' && compiler.options.devServer) {
@@ -217,7 +217,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
       }
     }
     else {
-      logv(verbose,'emit is false')
+      logv(verbose,'emit is no')
       callback()
     }
   }
@@ -255,11 +255,12 @@ export function _done(vars, options) {
     var verbose = options.verbose
     var framework = options.framework
     logv(verbose,'FUNCTION _done')
-    if (vars.production == true && options.treeshake == false && framework == 'angular') {
+    //mjg refactor
+    if (vars.production == true && options.treeshake == 'no' && framework == 'angular') {
       require(`./${options.framework}Util`)._toDev(vars, options)
     }
     try {
-      if(options.browser == true && options.watch == 'yes' && vars.production == false) {
+      if(options.browser == 'yes' && options.watch == 'yes' && vars.production == false) {
         if (vars.browserCount == 0) {
           var url = 'http://localhost:' + options.port
           require('./pluginUtil').log(vars.app, `Opening browser at ${url}`)
@@ -615,10 +616,10 @@ function _getValidateOptions() {
       "theme":       {"type": [ "string" ]},
       "profile":     {"type": [ "string" ]},
       "environment": {"type": [ "string" ]},
-      "treeshake":   {"type": [ "boolean" ]},
+      "treeshake":   {"type": [ "string" ]},
       "port":        {"type": [ "integer" ]},
-      "emit":        {"type": [ "boolean" ]},
-      "browser":     {"type": [ "boolean" ]},
+      "emit":        {"type": [ "string" ]},
+      "browser":     {"type": [ "string" ]},
       "watch":       {"type": [ "string" ]},
       "verbose":     {"type": [ "string" ]},
       "script":      {"type": [ "string" ]},
@@ -630,19 +631,19 @@ function _getValidateOptions() {
 
 function _getDefaultOptions() {
   return {
-    framework: null,
+    framework: 'extjs',
     toolkit: 'modern',
     theme: 'theme-material',
     profile: 'desktop', 
     environment: 'development', 
-    treeshake: false,
+    treeshake: 'no',
     port: 1962,
-    emit: true,
-    browser: true,
+    emit: 'yes',
+    browser: 'yes',
     watch: 'yes',
     verbose: 'no',
     script: null,
-    packages: null
+    packages: []
   }
 }
 
