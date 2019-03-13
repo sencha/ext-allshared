@@ -198,9 +198,15 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         if (framework != 'extjs') {
           _prepareForBuild(app, vars, options, outputPath, compilation)
         }
+        console.log('after fr')
         var command = ''
-        if (options.watch == 'yes' && vars.production == false) {command = 'watch'}
+        console.log(options.watch)
+        if (options.watch == 'yes' && vars.production == false) {
+          command = 'watch'
+        }
         else {command = 'build'}
+        console.log(command)
+        console.log(vars.rebuild)
         if (vars.rebuild == true) {
           var parms = []
           if (options.profile == undefined || options.profile == '' || options.profile == null) {
