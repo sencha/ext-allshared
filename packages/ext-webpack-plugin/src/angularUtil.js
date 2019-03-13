@@ -1,6 +1,6 @@
 "use strict"
 
-function _getDefaultVars() {
+export function _getDefaultVars() {
   return {
     watchStarted : false,
     buildstep: '1 of 1',
