@@ -1,5 +1,21 @@
 "use strict"
 
+export function _getDefaultVars() {
+  return {
+    watchStarted : false,
+    firstTime : true,
+    browserCount : 0,
+    cwd: process.cwd(),
+    extPath: '.',
+    pluginErrors: [],
+    lastNumFiles: 0,
+    lastMilliseconds: 0,
+    lastMillisecondsAppJson: 0,
+    files: ['./app.json'],
+    dirs: ['./app','./packages']
+  }
+}
+
 export function _afterCompile(compilation, vars, options) {
   try {
     require('./pluginUtil').logv(options,'FUNCTION ext-after-compile')

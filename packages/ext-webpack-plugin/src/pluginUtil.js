@@ -21,7 +21,7 @@ export function _constructor(initialOptions) {
     const rc = (fs.existsSync(`.ext-${framework}rc`) && JSON.parse(fs.readFileSync(`.ext-${framework}rc`, 'utf-8')) || {})
     options = { ..._getDefaultOptions(), ...initialOptions, ...rc }
 
-    vars = _getDefaultVars()
+    vars = require(`./${framework}Util`)._getDefaultVars()
     vars.pluginName = 'ext-webpack-plugin'
     vars.app = _getApp()
     var pluginName = vars.pluginName
@@ -649,19 +649,4 @@ function _getDefaultOptions() {
   }
 }
 
-function _getDefaultVars() {
-  return {
-    watchStarted : false,
-    buildstep: '1 of 1',
-    firstTime : true,
-    firstCompile: true,
-    browserCount : 0,
-    manifest: null,
-    extPath: 'ext-angular',
-    pluginErrors: [],
-    deps: [],
-    usedExtComponents: [],
-    rebuild: true
-  }
-}
 
