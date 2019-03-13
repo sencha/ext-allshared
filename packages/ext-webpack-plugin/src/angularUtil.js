@@ -1,5 +1,21 @@
 "use strict"
 
+function _getDefaultVars() {
+  return {
+    watchStarted : false,
+    buildstep: '1 of 1',
+    firstTime : true,
+    firstCompile: true,
+    browserCount : 0,
+    manifest: null,
+    extPath: 'ext',
+    pluginErrors: [],
+    deps: [],
+    usedExtComponents: [],
+    rebuild: true
+  }
+}
+
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _extractFromSource')
