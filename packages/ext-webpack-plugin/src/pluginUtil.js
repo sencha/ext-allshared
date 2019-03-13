@@ -87,12 +87,14 @@ export function _thisCompilation(compiler, compilation, vars, options) {
 
     if (vars.buildstep == '1 of 1' || vars.buildstep == '1 of 2') {
       if (options.script != undefined) {
-        if (options.script != null) {
-          log(app, `Started running ${options.script}`)
-          runScript(options.script, function (err) {
-            if (err) throw err;
-            log(app, `Finished running ${options.script}`)
-        });
+          if (options.script != null) {
+            if (options.script != '') {
+            log(app, `Started running ${options.script}`)
+            runScript(options.script, function (err) {
+              if (err) throw err;
+              log(app, `Finished running ${options.script}`)
+          });
+          }
         }
       }
       else {
