@@ -39,30 +39,30 @@ export function _constructor(initialOptions) {
     
     log(app, _getVersions(pluginName, framework))
 
-    if (framework == 'react') { // || framework == 'extjs'
+    if (framework == 'react' || framework == 'extjs') {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
-        log(app, 'Starting Production Build')
+        log(app, 'Starting Production Build for ' + framework)
       }
       else {
         vars.buildstep = '1 of 1'
-        log(app, 'Starting Development Build')
+        log(app, 'Starting Development Build for ' + framework)
       }
     }
     else if (vars.production == true) {
       if (treeshake == 'yes') {
         vars.buildstep = '1 of 2'
-        log(app, 'Starting Production Build - ' + vars.buildstep)
+        log(app, 'Starting Production Build for ' + framework + ' - ' + vars.buildstep)
         require(`./${framework}Util`)._toProd(vars, options)
       }
       else {
         vars.buildstep = '2 of 2'
-        log(app, 'Starting Production Build - ' + vars.buildstep)
+        log(app, 'Continuing Production Build for ' + framework + ' - ' + vars.buildstep)
       }
     }
     else {
       vars.buildstep = '1 of 1'
-      log(app, 'Starting Development Build')
+      log(app, 'Starting Production Build for ' + framework)
     }
     logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
 
@@ -199,7 +199,6 @@ export async function _emit(compiler, compilation, vars, options, callback) {
           _prepareForBuild(app, vars, options, outputPath, compilation)
         }
         var command = ''
-        console.log(options.watch)
         if (options.watch == 'yes' && vars.production == false)
           {command = 'watch'}
         else 
