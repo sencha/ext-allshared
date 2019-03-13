@@ -52,23 +52,23 @@ export function _constructor(initialOptions) {
       }
       else {
         vars.buildstep = '1 of 1'
-        log(app, 'Starting Development Build for ' + framework)
+        log(app, 'Starting development build for ' + framework)
       }
     }
     else if (vars.production == true) {
       if (treeshake == 'yes') {
         vars.buildstep = '1 of 2'
-        log(app, 'Starting Production Build for ' + framework + ' - ' + vars.buildstep)
+        log(app, 'Starting production build for ' + framework + ' - ' + vars.buildstep)
         require(`./${framework}Util`)._toProd(vars, options)
       }
       else {
         vars.buildstep = '2 of 2'
-        log(app, 'Continuing Production Build for ' + framework + ' - ' + vars.buildstep)
+        log(app, 'Continuing production build for ' + framework + ' - ' + vars.buildstep)
       }
     }
     else {
       vars.buildstep = '1 of 1'
-      log(app, 'Starting Production Build for ' + framework)
+      log(app, 'Starting development build for ' + framework)
     }
     logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
 
@@ -224,7 +224,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
               {parms = ['app', command, '--web-server', 'false', options.profile, options.environment]}
           }
           if (vars.watchStarted == false) {
-            await _buildExtBundle(app, compilation, outputPath, parms, options)
+            await _buildExtBundle(app, compilation, outputPath, parms, vars, options)
             vars.watchStarted = true
           }
           callback()
@@ -287,14 +287,14 @@ export function _done(stats, vars, options) {
     }
     if (vars.buildstep == '1 of 1') {
       if (vars.production == true) {
-        require('./pluginUtil').log(vars.app, `Ending Production Build`)
+        require('./pluginUtil').log(vars.app, `Ending production build`)
       }
       else {
-        require('./pluginUtil').log(vars.app, `Ending Development Build`)
+        require('./pluginUtil').log(vars.app, `Ending development build`)
       }
     }
     if (vars.buildstep == '2 of 2') {
-      require('./pluginUtil').log(vars.app, `Ending Production Build`)
+      require('./pluginUtil').log(vars.app, `Ending production build`)
     }
   }
   catch(e) {
@@ -385,7 +385,7 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
 }
 
 //**********
-export function _buildExtBundle(app, compilation, outputPath, parms, options) {
+export function _buildExtBundle(app, compilation, outputPath, parms, vars, options) {
 //  try {
     var verbose = options.verbose
     const fs = require('fs')
@@ -403,7 +403,7 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
         resolve()
       }
       var opts = { cwd: outputPath, silent: true, stdio: 'pipe', encoding: 'utf-8'}
-      _executeAsync(app, sencha, parms, opts, compilation, options).then (
+      _executeAsync(app, sencha, parms, opts, compilation, vars, options).then (
         function() { onBuildDone() }, 
         function(reason) { reject(reason) }
       )
@@ -418,9 +418,10 @@ export function _buildExtBundle(app, compilation, outputPath, parms, options) {
 }
 
 //**********
-export async function _executeAsync (app, command, parms, opts, compilation, options) {
+export async function _executeAsync (app, command, parms, opts, compilation, vars, options) {
 //  try {
     var verbose = options.verbose
+    var framework = options.framework
     //const DEFAULT_SUBSTRS = ['[INF] Loading', '[INF] Processing', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Server", "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
     const DEFAULT_SUBSTRS = ["[INF] xServer", '[INF] Loading', '[INF] Append', '[INF] Processing', '[INF] Processing Build', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
     var substrings = DEFAULT_SUBSTRS 
@@ -447,14 +448,8 @@ export async function _executeAsync (app, command, parms, opts, compilation, opt
         logv(verbose, `${str}`)
         if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
 
-          // const fs = require('fs');
-          // var filename = process.cwd()+'/src/index.js';
-          // var data = fs.readFileSync(filename);
-          // fs.writeFileSync(filename, data + ' ', 'utf8')
-          // logv(verbose, `touching ${filename}`)
-
           const fs = require('fs');
-          var filename = process.cwd() + '/src/index.js';
+          var filename = process.cwd() + vars.touchFile;
           try {
             var data = fs.readFileSync(filename);
             fs.writeFileSync(filename, data + ' ', 'utf8');
