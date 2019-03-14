@@ -618,24 +618,56 @@ function _getValidateOptions() {
   return {
     "type": "object",
     "properties": {
-      "framework":   {"type": [ "string" ]},
-      "toolkit":     {"type": [ "string" ]},
-      "theme":       {"type": [ "string" ]},
-      "emit":        {"type": [ "string" ]},
-      "script":      {"type": [ "string" ]},
-      "port":        {"type": [ "integer" ]},
-      "packages":    {"type": [ "string", "array" ]},
-
-      "profile":     {"type": [ "string" ]},
-      "environment": {"type": [ "string" ]},
-      "treeshake":   {"type": [ "string" ]},
-      "browser":     {"type": [ "string" ]},
-      "watch":       {"type": [ "string" ]},
-      "verbose":     {"type": [ "string" ]}
+      "framework": {
+        "type": ["string"]
+      },
+      "toolkit": {
+        "type": ["string"]
+      },
+      "theme": {
+        "type": ["string"]
+      },
+      "emit": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      },
+      "script": {
+        "type": ["string"]
+      },
+      "port": {
+        "type": ["integer"]
+      },
+      "packages": {
+        "type": ["string", "array"]
+      },
+      "profile": {
+        "type": ["string"]
+      },
+      "environment": {
+        "errorMessage": "should be 'development' or 'production' string value",
+        "type": ["string"]
+      },
+      "treeshake": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      },
+      "browser": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      },
+      "watch": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      },
+      "verbose": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      }
     },
     "additionalProperties": false
-  }
+  };
 }
+
 
 function _getDefaultOptions() {
   return {
@@ -647,7 +679,7 @@ function _getDefaultOptions() {
     port: 1962,
     packages: [],
 
-    profile: 'desktop', 
+    profile: '', 
     environment: 'development', 
     treeshake: 'no',
     browser: 'yes',
