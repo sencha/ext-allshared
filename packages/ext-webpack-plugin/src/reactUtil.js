@@ -2,7 +2,7 @@
 
 function _getDefaultVars() {
   return {
-    touchFile: '/src/index.js',
+    touchFile: '/src/themer.js',
     watchStarted : false,
     buildstep: '1 of 1',
     firstTime : true,
