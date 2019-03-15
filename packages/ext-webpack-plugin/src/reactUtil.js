@@ -1,6 +1,6 @@
 "use strict"
 
-function _getDefaultVars() {
+export function _getDefaultVars() {
   return {
     touchFile: '/src/themer.js',
     watchStarted : false,
