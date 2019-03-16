@@ -2,7 +2,7 @@
 
 export function _getDefaultVars() {
   return {
-    touchFile: '/src/themer.ts',
+    touchFile: '/src/themer.js',
     watchStarted : false,
     buildstep: '1 of 1',
     firstTime : true,
