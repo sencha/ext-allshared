@@ -362,7 +362,7 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
       js = vars.deps.join(';\n');
     }
     else {
-      js = 'Ext.require("Ext.*")'
+      js = 'Ext.require(["Ext.*","Ext.data.TreeStore"])'
     }
     if (vars.manifest === null || js !== vars.manifest) {
       vars.manifest = js
