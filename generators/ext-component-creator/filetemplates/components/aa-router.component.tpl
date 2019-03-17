@@ -7,7 +7,6 @@ export function getRoutes(items) {
 }
 
 function _getRoutes(items) {
-  console.log('here')
   items.forEach(function(item){
     item.leaf = !item.hasOwnProperty('children');
     item.hash = item.text.toLowerCase().replace(/\s/g, '');
