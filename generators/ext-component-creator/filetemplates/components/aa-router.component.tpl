@@ -1,3 +1,17 @@
+export function getRoutes(items) {
+  var routes = []
+  items.forEach(function(item){
+    item.leaf = !item.hasOwnProperty('children');
+    item.hash = item.text.toLowerCase().replace(/\s/g, '');
+    if (item.children == undefined) {
+      routes.push(new Route(item.hash, item.component, item.default))
+    }
+    else {
+      getRoutes(item.children)
+    }
+  })
+  return routes
+}
 export class Route {
 
   constructor (hash, component, defaultRoute) {
