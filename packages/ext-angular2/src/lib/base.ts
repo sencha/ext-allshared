@@ -170,11 +170,7 @@ export class base {
       parentCmp.setPlugin(childCmp)
       return
     } 
-    else if (
-      parentxtype === 'button' || 
-      parentxtype === 'menuitem' ||
-      parentxtype === 'menucheckitem'
-      ) {
+    else if (parentxtype === 'button') {
       if (childxtype === 'menu') {
         parentCmp.setMenu(childCmp)
         return
