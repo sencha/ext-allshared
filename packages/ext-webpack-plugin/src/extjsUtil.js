@@ -71,7 +71,7 @@ function _getFileAndContextDeps(compilation, files, dirs, cwd, options) {
 }
 
 export function _prepareForBuild(app, vars, options, output, compilation) {
-  try {
+//  try {
     const log = require('./pluginUtil').log
     const logv = require('./pluginUtil').logv
     logv(options,'_prepareForBuild')
@@ -107,9 +107,9 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
       vars.rebuild = false
     }
     vars.lastNumFiles = currentNumFiles
-  }
-  catch(e) {
-    console.log(e)
-    compilation.errors.push('_prepareForBuild: ' + e)
-  }
+  // }
+  // catch(e) {
+  //   console.log(e)
+  //   compilation.errors.push('_prepareForBuild: ' + e)
+  // }
 }

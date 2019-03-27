@@ -20,9 +20,8 @@ export function _getDefaultVars() {
 export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _extractFromSource')
-  try {
+//  try {
     var js = module._source._value
-    const logv = require('./pluginUtil').logv
     logv(options.verbose,'FUNCTION extractFromSource')
     var generate = require("@babel/generator").default
     var parse = require("babylon").parse
@@ -103,57 +102,12 @@ export function _extractFromSource(module, options, compilation, extComponents) 
       }
     })
     return statements
-  }
-  catch(e) {
-    console.log(module.resource)
-    console.log(js)
-    console.log(e)
-    compilation.errors.push('extractFromSource: ' + e)
-    return []
-  }
+  // }
+  // catch(e) {
+  //   console.log(module.resource)
+  //   console.log(js)
+  //   console.log(e)
+  //   compilation.errors.push('extractFromSource: ' + e)
+  //   return []
+  // }
 }
-
-// export function _toProd(vars, options) {
-//   const logv = require('./pluginUtil').logv
-//   logv(options.verbose,'FUNCTION _toProd (empty)')
-//   try {
-//   }
-//   catch (e) {
-//     console.log(e)
-//     return []
-//   }
-// }
-
-// export function _toDev(vars, options) {
-//   const logv = require('./pluginUtil').logv
-//   logv(options.verbose,'FUNCTION _toDev (empty)')
-//   try {
-//   }
-//   catch (e) {
-//     console.log(e)
-//     return []
-//   }
-// }
-
-// export function _getAllComponents(vars, options) {
-//    const logv = require('./pluginUtil').logv
-//   logv(options.verbose,'FUNCTION _getAllComponents (empty)')
-//   try {
-//     var extComponents = []
-//      return extComponents
-//   }
-//   catch (e) {
-//     console.log(e)
-//     return []
-//   }
-// }
-
-// export function _writeFilesToProdFolder(vars, options) {
-//   const logv = require('./pluginUtil').logv
-//   logv(options.verbose,'FUNCTION _writeFilesToProdFolder (empty)')
-//   try {
-//   }
-//   catch (e) {
-//     console.log(e)
-//   }
-// }
