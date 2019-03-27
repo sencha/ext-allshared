@@ -18,5 +18,9 @@
   "license": "MIT",
   "devDependencies": {
     "lerna": "^3.13.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sencha/ext-allshared"
+  },
 }
