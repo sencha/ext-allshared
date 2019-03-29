@@ -276,21 +276,28 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
   if (configsArray.length == 1) {
     var haveResponsiveConfig = false
     configsArray[0].items.forEach(function (config, index, array) {
-      sPROPERTIES = `${sPROPERTIES}    '${config.name}',${newLine}`
-      var type = ''
-      if (config.type == undefined) {
-        //log('', `${xtype}${tb}${config.name}`)
-        type = 'any'
+      if (config.deprecatedMessage == undefined) {
+        // console.log(config.name)
+        // console.log(config.deprecatedMessage)
+        // console.log(config.deprecatedVersion)
+        //console.dir(config)
+        sPROPERTIES = `${sPROPERTIES}    '${config.name}',${newLine}`
+        var type = ''
+        if (config.type == undefined) {
+          //log('', `${xtype}${tb}${config.name}`)
+          type = 'any'
+        }
+        else {
+          type = config.type.replace(/"/g, "\'");
+        }
+        if (config.name == 'responsiveConfig') {
+          haveResponsiveConfig = true
+        }
+        sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}    "${config.name}": "${type}",${newLine}`;
+        sGETSET = sGETSET + tab + `get ${config.name}(){return this.getAttribute('${config.name}')};set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`
       }
-      else {
-        type = config.type.replace(/"/g, "\'");
-      }
-      if (config.name == 'responsiveConfig') {
-        haveResponsiveConfig = true
-      }
-      sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}    "${config.name}": "${type}",${newLine}`;
-      sGETSET = sGETSET + tab + `get ${config.name}(){return this.getAttribute('${config.name}')};set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`
-    });
+    }
+  );
 
     sPROPERTIES = `${sPROPERTIES}    'platformConfig',${newLine}`
     if (haveResponsiveConfig == false) {
