@@ -112,25 +112,14 @@ export default class ExtBase extends HTMLElement {
             }
           }
           else {
-            console.log(i)
             var par = item.parentNode
-
-            console.dir(this.parentNode.children)
             var cln = par.removeChild(item);
-            console.dir(this.parentNode.children)
-
-            //var cln = item.cloneNode(true);
             var el = Ext.get(cln);
             var ext = Ext.create({xtype:'widget', element:el})
             this.parentNode.extChildren.push({ADDORDER:i,XTYPE:'widget',EXT:ext})
-            //item.style.display = 'none';
-            //removeItems.push(item)
           }
         }
       }
-      // for (let item of removeItems) {
-      //   item.remove(); 
-      // }
     }
 
     //deal with children
