@@ -3,6 +3,7 @@ import App from './App.vue'
 
 import '@sencha/ext-components/lib/ext-button.component';
 import '@sencha/ext-components/lib/ext-panel.component';
+import '@sencha/ext-components/lib/ext-grid.component';
 
 Vue.config.productionTip = false
 
