@@ -1,11 +1,23 @@
 <template>
   <div class="hello">
 
-  <ext-panel :title="'gus'">
-    <ext-button :text="'mjg'"></ext-button>
-  </ext-panel>
-
-
+    <ext-grid 
+      title="Ext Web Components Grid"
+      height="260px"
+      columns='[
+        {"text": "Name", "width": "250", "dataIndex": "name", "cell": {"style": {"text-align": "left"}}},
+        {"text": "Email Address", "flex": "1", "dataIndex": "email", "cell": {"style": {"text-align": "left"}}},
+        {"text": "Phone Number", "width": "250", "dataIndex": "phone", "cell": {"style": {"text-align": "left"}}}
+      ]'
+      data='[
+        {"name": "Lisa", "email": "lisa@simpsons.com", "phone": "555-111-1224"},
+        {"name": "Bart", "email": "bart@simpsons.com", "phone": "555-222-1234"},
+        {"name": "Homer", "email": "homer@simpsons.com", "phone": "555-222-1244"},
+        {"name": "Marge", "email": "marge@simpsons.com", "phone": "555-222-1254"}
+      ]'
+    >
+    </ext-grid>
+    
     <h1>{{ msg }}</h1>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
