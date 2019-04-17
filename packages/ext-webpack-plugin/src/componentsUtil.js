@@ -53,6 +53,12 @@ export function _extractFromSource(module, options, compilation) {
       if (node.type === 'CallExpression' && node.callee && node.callee.object && node.callee.object.name === 'Ext') {
         statements.push(generate(node).code)
       }
+      if (node.type === 'CallExpression') {
+        if (module.resource === '/Users/rahulgarg/Projects/ext7_parent/ext-components/packages/ext-components-boilerplate/src/view/home/HomeComponent.js') {
+          const code = generate(node).code;
+          statements = statements.concat(getXtypeFromHTMLJS(code));
+        }
+      }
       if(node.type === 'StringLiteral') {
         let code = node.value
         for (var i = 0; i < code.length; ++i) {
@@ -80,27 +86,38 @@ export function _extractFromSource(module, options, compilation) {
             }
           }
 
-          const xtypeRepetitons = (code.match(/xtype/g) || []).length;
-          if (xtypeRepetitons > 0) {
-            for (var j=0; j<xtypeRepetitons; j++) {
-              var start = code.substring(code.indexOf('xtype') + 5);
-              var ifAsProps = start.indexOf(':');
-              var ifAsAttribute = start.indexOf('=');
-              start = start.substring(Math.min(ifAsProps, ifAsAttribute) + 1);
-              var end = getEnd(start, [' ', '\n', '>','}'])
-              var xtype = start.substring(1, end).trim().replace(/['"]/g, '');
-              var config = `Ext.create(${JSON.stringify({xtype: xtype})})`;
-
-              if(allComponents.includes('ext-' + xtype) && statements.indexOf(config) === -1) {
-                statements.push(config);
-              }
-            }
-          }
+          statements = statements.concat(getXtypeFromHTMLJS(code));
         }
       }
   });
 
   return statements
+}
+
+function getXtypeFromHTMLJS(code) {
+  const logv = require('./pluginUtil').logv
+  const result = [];
+  const xtypeRepetitons = (code.match(/xtype/g) || []).length;
+
+  if (xtypeRepetitons > 0) {
+    for (var j=0; j<xtypeRepetitons; j++) {
+      var start = code.substring(code.indexOf('xtype') + 5);
+      var ifAsProps = start.indexOf(':');
+      var ifAsAttribute = start.indexOf('=');
+      start = start.substring(Math.min(ifAsProps, ifAsAttribute) + 1);
+      start = start.trim();
+      var end = getEnd(start, ['\n', '>','}', '\r'])
+      var xtype = start.substring(1, end).trim().replace(/['",]/g, '');
+
+      var config = `Ext.create(${JSON.stringify({xtype: xtype})})`;
+      if(allComponents.includes('ext-' + xtype) && result.indexOf(config) === -1) {
+        result.push(config);
+      }
+      code = start.substr(end).trim();
+    }
+  }
+
+  return result;
 }
 
 export function _toProd(vars, options) {

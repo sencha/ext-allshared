@@ -117,7 +117,7 @@ export function _compilation(compiler, compilation, vars, options) {
 
     if (framework != 'extjs') {
       if (framework === 'components') {
-        // if (options.treeshake === 'yes' && options.environment === 'production') {
+        if (options.treeshake === 'yes' && options.environment === 'production') {
           compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
             if (module.resource && !module.resource.match(/node_modules/)) {
               if(module.resource.match(/\.html$/) != null
@@ -134,7 +134,7 @@ export function _compilation(compiler, compilation, vars, options) {
               }
             }
           });
-        // }
+        }
       } else {
         var extComponents = []
         if (vars.buildstep == '1 of 2') {
