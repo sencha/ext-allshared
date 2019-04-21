@@ -124,18 +124,22 @@ export function _compilation(compiler, compilation, vars, options) {
         extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
       }
       compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
-        if (module.resource && !module.resource.match(/node_modules/)) {
-          if(module.resource.match(/\.html$/) != null) {
-            if(module._source._value.toLowerCase().includes('doctype html') == false) {
-              vars.deps = [
-                ...(vars.deps || []),
-                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+        if (vars.production) {
+          if (module.resource && !module.resource.match(/node_modules/)) {
+            if(module.resource.match(/\.html$/) != null) {
+              if(module._source._value.toLowerCase().includes('doctype html') == false) {
+                  vars.deps = [
+                    ...(vars.deps || []),
+                    ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
+                  ]
+              }
             }
-          }
-          else {
-            vars.deps = [
-              ...(vars.deps || []),
-              ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+            else {
+                vars.deps = [
+                  ...(vars.deps || []),
+                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
+                ]
+            }
           }
         }
       })
