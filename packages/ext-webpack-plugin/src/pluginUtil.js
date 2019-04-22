@@ -171,8 +171,8 @@ export function _compilation(compiler, compilation, vars, options) {
         var cssPath = path.join(vars.extPath, 'ext.css')
         data.assets.js.unshift(jsPath)
         data.assets.css.unshift(cssPath)
-        logv('yes', 'ALL DEPS');
-        logv('yes', JSON.stringify(vars.deps));
+        logv(verbose, 'ALL DEPS');
+        logv(verbose, JSON.stringify(vars.deps));
         log(app, `Adding ${jsPath} and ${cssPath} to index.html`)
       })
     }
