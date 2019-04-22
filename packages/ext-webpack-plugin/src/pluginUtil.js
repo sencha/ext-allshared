@@ -115,32 +115,88 @@ export function _compilation(compiler, compilation, vars, options) {
     var framework = options.framework
     logv(verbose, 'FUNCTION _compilation')
 
-    if (framework != 'extjs') {
+    if (framework != 'extjs' && vars.production == true) {
 
       var extComponents = []
-      if (vars.buildstep == '1 of 2') {
-        extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
-      }
-      compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
-        if (vars.production) {
+      if (framework === 'components') {
+        if (options.treeshake === 'yes') {
+          compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
+            if (module.resource && !module.resource.match(/node_modules/)) {
+              if(module.resource.match(/\.html$/) != null
+                && module._source._value.toLowerCase().includes('doctype html') == false
+              ) {
+                vars.deps = [
+                  ...(vars.deps || []),
+                  //...require(`./${framework}Util`)._extractFromSource(module, options, compilation, true)]
+                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+              }
+              else {
+                vars.deps = [
+                  ...(vars.deps || []),
+                  //...require(`./${framework}Util`)._extractFromSource(module, options, compilation, false)]
+                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+              }
+            }
+          });
+        }
+      } 
+      else {
+        //var extComponents = []
+        if (vars.buildstep == '1 of 2') {
+          extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
+        }
+
+        compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
           if (module.resource && !module.resource.match(/node_modules/)) {
             if(module.resource.match(/\.html$/) != null) {
               if(module._source._value.toLowerCase().includes('doctype html') == false) {
-                  vars.deps = [
-                    ...(vars.deps || []),
-                    ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
-                  ]
+                vars.deps = [
+                  ...(vars.deps || []),
+                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
               }
             }
             else {
-                vars.deps = [
-                  ...(vars.deps || []),
-                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
-                ]
+              vars.deps = [
+                ...(vars.deps || []),
+                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
             }
           }
-        }
-      })
+        })
+      }
+
+
+
+
+
+
+    }
+
+    // if (framework != 'extjs') {
+
+    //   var extComponents = []
+    //   if (vars.buildstep == '1 of 2') {
+    //     extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
+    //   }
+    //   compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
+    //     if (vars.production) {
+    //       if (module.resource && !module.resource.match(/node_modules/)) {
+    //         if(module.resource.match(/\.html$/) != null) {
+    //           if(module._source._value.toLowerCase().includes('doctype html') == false) {
+    //               vars.deps = [
+    //                 ...(vars.deps || []),
+    //                 ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
+    //               ]
+    //           }
+    //         }
+    //         else {
+    //             vars.deps = [
+    //               ...(vars.deps || []),
+    //               ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
+    //             ]
+    //         }
+    //       }
+    //     }
+    //   })
 
 //       if (framework === 'components') {
 //         if (options.treeshake === 'yes' && options.environment === 'production') {
@@ -186,24 +242,24 @@ export function _compilation(compiler, compilation, vars, options) {
 //       }
 
 
-      if (vars.buildstep == '1 of 2') {
-        compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
-          require(`./${framework}Util`)._writeFilesToProdFolder(vars, options)
-        })
-      }
-      if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
-        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
-          const path = require('path')
-          var jsPath = path.join(vars.extPath, 'ext.js')
-          var cssPath = path.join(vars.extPath, 'ext.css')
-          data.assets.js.unshift(jsPath)
-          data.assets.css.unshift(cssPath)
-          logv('yes', 'ALL DEPS');
-          logv('yes', JSON.stringify(vars.deps));
-          log(app, `Adding ${jsPath} and ${cssPath} to index.html`)
-        })
-      }
-    }
+    //   if (vars.buildstep == '1 of 2') {
+    //     compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
+    //       require(`./${framework}Util`)._writeFilesToProdFolder(vars, options)
+    //     })
+    //   }
+    //   if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
+    //     compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
+    //       const path = require('path')
+    //       var jsPath = path.join(vars.extPath, 'ext.js')
+    //       var cssPath = path.join(vars.extPath, 'ext.css')
+    //       data.assets.js.unshift(jsPath)
+    //       data.assets.css.unshift(cssPath)
+    //       logv('yes', 'ALL DEPS');
+    //       logv('yes', JSON.stringify(vars.deps));
+    //       log(app, `Adding ${jsPath} and ${cssPath} to index.html`)
+    //     })
+    //   }
+    // }
 
   }
   catch(e) {
