@@ -116,48 +116,75 @@ export function _compilation(compiler, compilation, vars, options) {
     logv(verbose, 'FUNCTION _compilation')
 
     if (framework != 'extjs') {
-      if (framework === 'components') {
-        if (options.treeshake === 'yes' && options.environment === 'production') {
-          compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
-            if (module.resource && !module.resource.match(/node_modules/)) {
-              if(module.resource.match(/\.html$/) != null
-                && module._source._value.toLowerCase().includes('doctype html') == false
-              ) {
-                vars.deps = [
-                  ...(vars.deps || []),
-                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, true)]
-              }
-              else {
-                vars.deps = [
-                  ...(vars.deps || []),
-                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, false)]
-              }
-            }
-          });
-        }
-      } else {
-        var extComponents = []
-        if (vars.buildstep == '1 of 2') {
-          extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
-        }
 
-        compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
+      var extComponents = []
+      if (vars.buildstep == '1 of 2') {
+        extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
+      }
+      compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
+        if (vars.production) {
           if (module.resource && !module.resource.match(/node_modules/)) {
             if(module.resource.match(/\.html$/) != null) {
               if(module._source._value.toLowerCase().includes('doctype html') == false) {
-                vars.deps = [
-                  ...(vars.deps || []),
-                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+                  vars.deps = [
+                    ...(vars.deps || []),
+                    ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
+                  ]
               }
             }
             else {
-              vars.deps = [
-                ...(vars.deps || []),
-                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+                vars.deps = [
+                  ...(vars.deps || []),
+                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)
+                ]
             }
           }
-        })
-      }
+        }
+      })
+
+//       if (framework === 'components') {
+//         if (options.treeshake === 'yes' && options.environment === 'production') {
+//           compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
+//             if (module.resource && !module.resource.match(/node_modules/)) {
+//               if(module.resource.match(/\.html$/) != null
+//                 && module._source._value.toLowerCase().includes('doctype html') == false
+//               ) {
+//                 vars.deps = [
+//                   ...(vars.deps || []),
+//                   ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, true)]
+//               }
+//               else {
+//                 vars.deps = [
+//                   ...(vars.deps || []),
+//                   ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, false)]
+//               }
+//             }
+//           });
+//         }
+//       } else {
+//         var extComponents = []
+//         if (vars.buildstep == '1 of 2') {
+//           extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
+//         }
+
+//         compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
+//           if (module.resource && !module.resource.match(/node_modules/)) {
+//             if(module.resource.match(/\.html$/) != null) {
+//               if(module._source._value.toLowerCase().includes('doctype html') == false) {
+//                 vars.deps = [
+//                   ...(vars.deps || []),
+//                   ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+//               }
+//             }
+//             else {
+//               vars.deps = [
+//                 ...(vars.deps || []),
+//                 ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+//             }
+//           }
+//         })
+//       }
+
 
       if (vars.buildstep == '1 of 2') {
         compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
