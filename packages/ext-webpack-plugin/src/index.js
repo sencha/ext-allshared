@@ -9,12 +9,6 @@ export default class ExtWebpackPlugin {
     var constructorOutput = pluginUtil._constructor(options)
     this.vars = constructorOutput.vars
     this.options = constructorOutput.options
-
-    pluginUtil.logv('yes', 'VARS');
-    pluginUtil.logv('yes', JSON.stringify(this.vars));
-
-    pluginUtil.logv('yes', 'OPTIONS');
-    pluginUtil.logv('yes', JSON.stringify(this.options));
   }
 
   apply(compiler) {
