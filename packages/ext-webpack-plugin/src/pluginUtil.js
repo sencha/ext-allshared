@@ -40,9 +40,6 @@ export function _constructor(initialOptions) {
       vars.production = false
     }
 
-    //logv(verbose, `options:`);if (verbose == 'yes') {console.dir(options)}
-    //logv(verbose, `vars:`);if (verbose == 'yes') {console.dir(vars)}
-
     log(app, _getVersions(pluginName, framework))
 
     if (framework == 'react' || framework == 'extjs' || framework === 'components') {
