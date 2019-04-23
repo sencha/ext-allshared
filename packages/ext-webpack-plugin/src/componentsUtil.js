@@ -1,6 +1,5 @@
 
 "use strict"
-import allComponents from './allComponents';
 
 export function _getDefaultVars() {
   return {
@@ -19,7 +18,7 @@ export function _getDefaultVars() {
   }
 }
 
-export function _extractFromSource(module, options, compilation) {
+export function _extractFromSource(module, options, compilation, extComponents) {
   const logv = require('./pluginUtil').logv
   const verbose = options.verbose
   logv(verbose,'FUNCTION _extractFromSource')
@@ -54,10 +53,8 @@ export function _extractFromSource(module, options, compilation) {
         statements.push(generate(node).code)
       }
       if (node.type === 'CallExpression') {
-        if (module.resource === '/Users/rahulgarg/Projects/ext7_parent/ext-components/packages/ext-components-boilerplate/src/view/home/HomeComponent.js') {
-          const code = generate(node).code;
-          statements = statements.concat(getXtypeFromHTMLJS(code));
-        }
+        const code = generate(node).code;
+        statements = statements.concat(getXtypeFromHTMLJS(code, statements, extComponents));
       }
       if(node.type === 'StringLiteral') {
         let code = node.value
@@ -71,12 +68,13 @@ export function _extractFromSource(module, options, compilation) {
               var end = getEnd(start, [' ', '\n', '>']);
 
                 var xtype = start.substring(1, end)
-                if(allComponents.includes(xtype)) {
+                if(extComponents.includes(xtype)) {
                   xtype = xtype.substring(4, end);
                   var theValue = node.value.toLowerCase()
                   if (theValue.indexOf('doctype html') == -1) {
                     var config = `Ext.create(${JSON.stringify({xtype: xtype})})`;
-                    if (statements.indexOf(config) === -1) {
+
+                    if (statements.indexOf(config) < 0) {
                       statements.push(config);
                     }
                   }
@@ -86,7 +84,7 @@ export function _extractFromSource(module, options, compilation) {
             }
           }
 
-          statements = statements.concat(getXtypeFromHTMLJS(code));
+          statements = statements.concat(getXtypeFromHTMLJS(code, statements, extComponents));
         }
       }
   });
@@ -94,7 +92,7 @@ export function _extractFromSource(module, options, compilation) {
   return statements
 }
 
-function getXtypeFromHTMLJS(code) {
+function getXtypeFromHTMLJS(code, statements, extComponents) {
   const logv = require('./pluginUtil').logv
   const result = [];
   const xtypeRepetitons = (code.match(/xtype/g) || []).length;
@@ -110,7 +108,7 @@ function getXtypeFromHTMLJS(code) {
       var xtype = start.substring(1, end).trim().replace(/['",]/g, '');
 
       var config = `Ext.create(${JSON.stringify({xtype: xtype})})`;
-      if(allComponents.includes('ext-' + xtype) && result.indexOf(config) === -1) {
+      if(extComponents.includes('ext-' + xtype) && statements.indexOf(config) === -1) {
         result.push(config);
       }
       code = start.substr(end).trim();
@@ -141,16 +139,27 @@ export function _toDev(vars, options) {
 }
 
 export function _getAllComponents(vars, options) {
-   const logv = require('./pluginUtil').logv
-  logv(options.verbose,'FUNCTION _getAllComponents (empty)')
-  try {
-    var extComponents = []
-     return extComponents
-  }
-  catch (e) {
-    console.log(e)
-    return []
-  }
+  const log = require('./pluginUtil').log
+  const logv = require('./pluginUtil').logv
+  logv(options.verbose,'FUNCTION _getAllComponents')
+
+  const path = require('path')
+  const fsx = require('fs-extra')
+
+//    log(vars.app, `Getting all referenced ext-${options.framework} modules`)
+  var extComponents = []
+  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-web-components/lib')
+  var files = fsx.readdirSync(packageLibPath)
+  files.forEach((fileName) => {
+    if (fileName && fileName.substr(0, 4) == 'ext-') {
+      var end = fileName.substr(4).indexOf('.component')
+      if (end >= 0) {
+        extComponents.push(fileName.substring(0, end + 4))
+      }
+    }
+  })
+  log(vars.app, `Writing all referenced ext-${options.framework} modules`)
+  return extComponents
 }
 
 export function _writeFilesToProdFolder(vars, options) {

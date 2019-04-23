@@ -116,39 +116,19 @@ export function _compilation(compiler, compilation, vars, options) {
     logv(verbose, 'FUNCTION _compilation')
 
     if (framework != 'extjs') {
-      if (framework === 'components') {
-        if (options.treeshake === 'yes' && options.environment === 'production') {
-          compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
-            if (module.resource && !module.resource.match(/node_modules/)) {
-              if(module.resource.match(/\.html$/) != null
-                && module._source._value.toLowerCase().includes('doctype html') == false
-              ) {
-                vars.deps = [
-                  ...(vars.deps || []),
-                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, true)]
-              }
-              else {
-                vars.deps = [
-                  ...(vars.deps || []),
-                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, false)]
-              }
-            }
-          });
-        }
-      } else {
-        var extComponents = []
-        if (vars.buildstep == '1 of 2') {
+      if (options.treeshake === 'yes' && options.environment === 'production') {
+        var extComponents = [];
+        if (vars.buildstep == '1 of 2' || (vars.buildstep == '1 of 1' && framework === 'components')) {
           extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
         }
-
         compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
           if (module.resource && !module.resource.match(/node_modules/)) {
-            if(module.resource.match(/\.html$/) != null) {
-              if(module._source._value.toLowerCase().includes('doctype html') == false) {
-                vars.deps = [
-                  ...(vars.deps || []),
-                  ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
-              }
+            if(module.resource.match(/\.html$/) != null
+              && module._source._value.toLowerCase().includes('doctype html') == false
+            ) {
+              vars.deps = [
+                ...(vars.deps || []),
+                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
             }
             else {
               vars.deps = [
@@ -156,9 +136,8 @@ export function _compilation(compiler, compilation, vars, options) {
                 ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
             }
           }
-        })
+        });
       }
-
       if (vars.buildstep == '1 of 2') {
         compilation.hooks.finishModules.tap(`ext-finish-modules`, modules => {
           require(`./${framework}Util`)._writeFilesToProdFolder(vars, options)
@@ -171,13 +150,10 @@ export function _compilation(compiler, compilation, vars, options) {
           var cssPath = path.join(vars.extPath, 'ext.css')
           data.assets.js.unshift(jsPath)
           data.assets.css.unshift(cssPath)
-          logv('yes', 'ALL DEPS');
-          logv('yes', JSON.stringify(vars.deps));
           log(app, `Adding ${jsPath} and ${cssPath} to index.html`)
         })
       }
     }
-
   }
   catch(e) {
     throw '_compilation: ' + e.toString()
@@ -380,6 +356,7 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
     vars.firstTime = false
     var js = ''
     if (vars.production) {
+      vars.deps = vars.deps.filter(function(value, index){ return vars.deps.indexOf(value) == index });
       js = vars.deps.join(';\n');
     }
     else {
