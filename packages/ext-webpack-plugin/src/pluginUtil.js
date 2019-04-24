@@ -519,7 +519,7 @@ export function _getApp() {
   var chalk = require('chalk')
   var prefix = ``
   const platform = require('os').platform()
-  if (platform == 'darwin') { prefix = `ℹ 「ext」:` }
+  if (platform == 'darwin') { prefix = `ℹ ｢ext｣:` }
   else { prefix = `i [ext]:` }
   return `${chalk.green(prefix)} `
 }
