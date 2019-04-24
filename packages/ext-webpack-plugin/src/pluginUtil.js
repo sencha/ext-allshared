@@ -42,7 +42,7 @@ export function _constructor(initialOptions) {
 
     log(app, _getVersions(pluginName, framework))
 
-    if (framework == 'react' || framework == 'extjs' || framework === 'webcomponents') {
+    if (framework == 'react' || framework == 'extjs' || framework == 'webcomponents') {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
         log(app, 'Starting production build for ' + framework)
