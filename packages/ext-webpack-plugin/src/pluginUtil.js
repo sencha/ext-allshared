@@ -7,7 +7,7 @@ export function _constructor(initialOptions) {
   try {
     if (initialOptions.framework == undefined) {
       vars.pluginErrors = []
-      vars.pluginErrors.push('webpack config: framework parameter on ext-webpack-plugin is not defined - values: react, angular, extjs, components')
+      vars.pluginErrors.push('webpack config: framework parameter on ext-webpack-plugin is not defined - values: react, angular, extjs, webcomponents')
       var result = { vars: vars };
       return result;
     }
@@ -42,7 +42,7 @@ export function _constructor(initialOptions) {
 
     log(app, _getVersions(pluginName, framework))
 
-    if (framework == 'react' || framework == 'extjs' || framework === 'components') {
+    if (framework == 'react' || framework == 'extjs' || framework === 'webcomponents') {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
         log(app, 'Starting production build for ' + framework)
@@ -115,7 +115,7 @@ export function _compilation(compiler, compilation, vars, options) {
     if (framework != 'extjs') {
       if (options.treeshake === 'yes' && options.environment === 'production') {
         var extComponents = [];
-        if (vars.buildstep == '1 of 2' || (vars.buildstep == '1 of 1' && framework === 'components')) {
+        if (vars.buildstep == '1 of 2' || (vars.buildstep == '1 of 1' && framework === 'webcomponents')) {
           extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
         }
         compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
