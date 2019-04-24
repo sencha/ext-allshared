@@ -45,7 +45,7 @@ export function _constructor(initialOptions) {
     if (framework == 'react' || framework == 'extjs' || framework === 'components') {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
-        log(app, 'Starting Production Build for ' + framework)
+        log(app, 'Starting production build for ' + framework)
       }
       else {
         vars.buildstep = '1 of 1'
@@ -281,14 +281,14 @@ export function _done(stats, vars, options) {
     }
     if (vars.buildstep == '1 of 1') {
       if (vars.production == true) {
-        require('./pluginUtil').log(vars.app, `Ending production build`)
+        require('./pluginUtil').log(vars.app, `Ending production build for ${framework}`)
       }
       else {
-        require('./pluginUtil').log(vars.app, `Ending development build`)
+        require('./pluginUtil').log(vars.app, `Ending development build for ${framework}`)
       }
     }
     if (vars.buildstep == '2 of 2') {
-      require('./pluginUtil').log(vars.app, `Ending production build`)
+      require('./pluginUtil').log(vars.app, `Ending production build for ${framework}`)
     }
   }
   catch(e) {
@@ -569,7 +569,12 @@ export function _getVersions(pluginName, frameworkName) {
     }
     var frameworkPkg = (fs.existsSync(frameworkPath+'/package.json') && JSON.parse(fs.readFileSync(frameworkPath+'/package.json', 'utf-8')) || {});
     v.frameworkVersion = frameworkPkg.version
-    frameworkInfo = ', ' + frameworkName + ' v' + v.frameworkVersion
+    if (v.frameworkVersion == undefined) {
+      frameworkInfo = ', ' + frameworkName
+    }
+    else {
+      frameworkInfo = ', ' + frameworkName + ' v' + v.frameworkVersion
+    }
   }
   return 'ext-webpack-plugin v' + v.pluginVersion + ', Ext JS v' + v.extVersion + ' ' + v.edition + ' Edition, Sencha Cmd v' + v.cmdVersion + ', webpack v' + v.webpackVersion + frameworkInfo
  }
