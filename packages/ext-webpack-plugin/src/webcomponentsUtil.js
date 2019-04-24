@@ -13,12 +13,12 @@ export function _getDefaultVars() {
     extPath: 'ext',
     pluginErrors: [],
     deps: [],
-    usedExtComponents: [],
+    usedExtWebComponents: [],
     rebuild: true
   }
 }
 
-export function _extractFromSource(module, options, compilation, extComponents) {
+export function _extractFromSource(module, options, compilation, ExtWebComponents) {
   const logv = require('./pluginUtil').logv
   const verbose = options.verbose
   logv(verbose,'FUNCTION _extractFromSource')
@@ -54,7 +54,7 @@ export function _extractFromSource(module, options, compilation, extComponents) 
       }
       if (node.type === 'CallExpression') {
         const code = generate(node).code;
-        statements = statements.concat(getXtypeFromHTMLJS(code, statements, extComponents));
+        statements = statements.concat(getXtypeFromHTMLJS(code, statements, ExtWebComponents));
       }
       if(node.type === 'StringLiteral') {
         let code = node.value
@@ -68,7 +68,7 @@ export function _extractFromSource(module, options, compilation, extComponents) 
               var end = getEnd(start, [' ', '\n', '>']);
 
                 var xtype = start.substring(1, end)
-                if(extComponents.includes(xtype)) {
+                if(ExtWebComponents.includes(xtype)) {
                   xtype = xtype.substring(4, end);
                   var theValue = node.value.toLowerCase()
                   if (theValue.indexOf('doctype html') == -1) {
@@ -84,7 +84,7 @@ export function _extractFromSource(module, options, compilation, extComponents) 
             }
           }
 
-          statements = statements.concat(getXtypeFromHTMLJS(code, statements, extComponents));
+          statements = statements.concat(getXtypeFromHTMLJS(code, statements, ExtWebComponents));
         }
       }
   });
@@ -92,7 +92,7 @@ export function _extractFromSource(module, options, compilation, extComponents) 
   return statements
 }
 
-function getXtypeFromHTMLJS(code, statements, extComponents) {
+function getXtypeFromHTMLJS(code, statements, ExtWebComponents) {
   const logv = require('./pluginUtil').logv
   const result = [];
   const xtypeRepetitons = (code.match(/xtype/g) || []).length;
@@ -108,7 +108,7 @@ function getXtypeFromHTMLJS(code, statements, extComponents) {
       var xtype = start.substring(1, end).trim().replace(/['",]/g, '');
 
       var config = `Ext.create(${JSON.stringify({xtype: xtype})})`;
-      if(extComponents.includes('ext-' + xtype) && statements.indexOf(config) === -1) {
+      if(ExtWebComponents.includes('ext-' + xtype) && statements.indexOf(config) === -1) {
         result.push(config);
       }
       code = start.substr(end).trim();
@@ -147,19 +147,19 @@ export function _getAllComponents(vars, options) {
   const fsx = require('fs-extra')
 
 //    log(vars.app, `Getting all referenced ext-${options.framework} modules`)
-  var extComponents = []
+  var ExtWebComponents = []
   const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-web-components/lib')
   var files = fsx.readdirSync(packageLibPath)
   files.forEach((fileName) => {
     if (fileName && fileName.substr(0, 4) == 'ext-') {
       var end = fileName.substr(4).indexOf('.component')
       if (end >= 0) {
-        extComponents.push(fileName.substring(0, end + 4))
+        ExtWebComponents.push(fileName.substring(0, end + 4))
       }
     }
   })
   log(vars.app, `Writing all referenced ext-${options.framework} modules`)
-  return extComponents
+  return ExtWebComponents
 }
 
 export function _writeFilesToProdFolder(vars, options) {
