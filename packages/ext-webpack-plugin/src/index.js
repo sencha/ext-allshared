@@ -31,13 +31,13 @@ export default class ExtWebpackPlugin {
       }
     })
 
-    var cRun = 0;
+    //var cRun = 0;
     compiler.hooks.compilation.tap(`ext-compilation`, (compilation) => {
       pluginUtil.logh(app, `HOOK compilation`)
-      if (cRun == 0) {
+      //if (cRun == 0) {
         pluginUtil._compilation(compiler, compilation, vars, options);
-      }
-      cRun++;
+      //}
+      //cRun++;
     })
 
     compiler.hooks.afterCompile.tap('ext-after-compile', (compilation) => {
