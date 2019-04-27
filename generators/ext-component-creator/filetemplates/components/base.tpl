@@ -8,7 +8,7 @@ export default class ExtBase extends HTMLElement {
     try {
       const parsedProp = JSON.parse(propertyValue);
 
-      if (parsedProp === null || parsedProp === undefined || parsedProp === true || parsedProp === false || parsedProp === Object(parsedProp)) {
+      if (parsedProp === null || parsedProp === undefined || parsedProp === true || parsedProp === false || parsedProp === Object(parsedProp) || !isNaN(parsedProp) ) {
         return parsedProp;
       } else {
         return propertyValue;
@@ -58,7 +58,12 @@ export default class ExtBase extends HTMLElement {
     for (var property in this.PROPERTIESOBJECT) {
       if (this.PROPERTIESOBJECT.hasOwnProperty(property)) {
         if(this.getAttribute(property) !== null) {
-          this.props[property] = this.filterProperty(this[property]);
+          if (property == 'handler') {
+            this.props[property] = eval(this[property])
+          }
+          else {
+            this.props[property] = this.filterProperty(this[property]);
+          }
         }
       }
     }
@@ -173,6 +178,7 @@ export default class ExtBase extends HTMLElement {
   }
 
   doCreate() {
+    console.dir(this.props)
     this.ext = Ext.create(this.props)
     if (this.parentNode.childrenCounter != undefined) {
       this.parentNode.childrenCounter--

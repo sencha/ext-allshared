@@ -3,6 +3,13 @@
 require('@babel/polyfill')
 const pluginUtil = require(`./pluginUtil`)
 
+// process.stdin.resume();
+
+// process.on('SIGINT', function () {
+//   console.log('Got SIGINT.  Press Control-D to exit.');
+// });
+
+
 export default class ExtWebpackPlugin {
 
   constructor(options) {
