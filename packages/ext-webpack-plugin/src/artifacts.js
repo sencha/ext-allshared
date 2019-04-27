@@ -229,6 +229,8 @@ export function createWorkspaceJson(options, output) {
         "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-${toolkit.name}-theme-neptune-touch",
         "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-${toolkit.name}-theme-triton",
         "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-${toolkit.name}-theme-graphite",
+        "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-react-renderercell",
+        "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-web-components-renderercell",
         "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-calendar",
         "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-charts",
         "${workspace.dir}/" + nodeModulePath + "node_modules/@sencha/ext-d3",
