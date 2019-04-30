@@ -1,4 +1,4 @@
-## Getting Started with EWC and Vue.js
+## Getting Started with ExtWebComponents and Vue.js
 
   Note:  This approach does not utilize @sencha/ext-webpack-plugin
 
@@ -18,7 +18,7 @@
 
     -  in 'dependencies' section: 
 
-    "@sencha/ext-components": "~7.0.0",
+    "@sencha/ext-web-components": "~7.0.0",
     "@sencha/ext-all": "~7.0.0",
 
 

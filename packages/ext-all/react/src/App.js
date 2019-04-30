@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '@sencha/ext-components';
+import '@sencha/ext-web-components';
 import { set } from './extwc';
 
 class App extends Component {
