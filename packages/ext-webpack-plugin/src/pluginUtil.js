@@ -93,7 +93,6 @@ export function _thisCompilation(compiler, compilation, vars, options) {
           if (err) {
             throw err;
           }
-
           log(app, `Finished running ${options.script}`)
         });
       }

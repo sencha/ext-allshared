@@ -10,19 +10,25 @@ var pkg = (fs.existsSync(currDir + '/package.json') && JSON.parse(fs.readFileSyn
 var isReact = pkg.dependencies['react-scripts']
 
 if (isReact != undefined) {
-  var fromDir = path.resolve(nodeDir, 'react')
-  fs.copy(path.resolve(fromDir, 'common'), path.resolve(currDir, 'public'), function (err) {
+  //var fromDir = path.resolve(nodeDir, 'react')
+  fs.copy(path.resolve(nodeDir, 'react', 'public'), path.resolve(currDir, 'public'), function (err) {
     if (err){
-      console.log('An error occured while copying the folder.')
+      console.log('An error occured while copying the react/public folder')
       return console.error(err)
     }
-    fs.copy(path.resolve(fromDir, 'src'), path.resolve(currDir, 'src'), function (err) {
-      if (err){
-        console.log('An error occured while copying the folder.')
-        return console.error(err)
-      }
-      console.log('Install completed')
-    });
+  })
+  fs.copy(path.resolve(nodeDir, 'common', 'public'), path.resolve(currDir, 'public'), function (err) {
+    if (err){
+      console.log('An error occured while copying the common/public folder')
+      return console.error(err)
+    }
+  });
+  fs.copy(path.resolve(nodeDir, 'react', 'src'), path.resolve(currDir, 'src'), function (err) {
+    if (err){
+      console.log('An error occured while copying the src folder')
+      return console.error(err)
+    }
+    console.log('Install completed')
   });
 }
 else {
