@@ -26,3 +26,5 @@
   3 - run 'npm install' (for lerna: run 'npm install' at the root)
 
   4 - run 'ng serve'
+
+  5 - go to http://localhost:4200 in a browser
