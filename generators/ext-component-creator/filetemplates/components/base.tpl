@@ -4,11 +4,28 @@ export default class ExtBase extends HTMLElement {
     super()
   }
 
+  filterProperty2(propertyValue) {
+    try {
+      var opts = [null, undefined, true, false]
+      if (opts.includes(parsedProp) || parsedProp === Object(parsedProp)) {
+        return parsedProp;
+      } else {
+        return propertyValue;
+      }
+    }
+    catch(e) {
+      return propertyValue;
+    }
+  }
+
   filterProperty(propertyValue) {
     try {
       const parsedProp = JSON.parse(propertyValue);
-
-      if (parsedProp === null || parsedProp === undefined || parsedProp === true || parsedProp === false || parsedProp === Object(parsedProp) || !isNaN(parsedProp) ) {
+      if (parsedProp === null ||
+          parsedProp === undefined ||
+          parsedProp === true ||
+          parsedProp === false ||
+          parsedProp === Object(parsedProp)) {
         return parsedProp;
       } else {
         return propertyValue;
@@ -67,7 +84,13 @@ export default class ExtBase extends HTMLElement {
       if (this.PROPERTIESOBJECT.hasOwnProperty(property)) {
         if(this.getAttribute(property) !== null) {
           if (property == 'handler') {
-            this.props[property] = eval(this[property])
+            var functionString = this[property];
+            //error check for only 1 dot
+            var r = functionString.split('.');
+            var obj = r[0];
+            var func = r[1];
+            this.props[property] = window[obj][func];
+            //this.props[property] = eval(this[property])
           }
           else {
             this.props[property] = this.filterProperty(this[property]);
@@ -81,7 +104,7 @@ export default class ExtBase extends HTMLElement {
       me.setEvent(eventparameter,me.props,me)
     })
 
-    //mjg this should not be hard-coded to APP-ROOT
+    //mjg this should not be hard-coded to APP-ROOT or root
     if (this.nodeParentName == 'APP-ROOT' || this.parentElement.id == 'root') {
       //this.props.renderTo = this.parentNode
       //this.doCreate()
@@ -91,6 +114,13 @@ export default class ExtBase extends HTMLElement {
         name: 'MyEWCApp',
         launch: function () {
           Ext.Viewport.add([me.ext])
+
+          // if (window.router) {
+          //   console.log('router.init called')
+          //   window.router.init()
+          //   //new Router(window.routes);
+          // }
+
         }
       });
     }
@@ -101,6 +131,12 @@ export default class ExtBase extends HTMLElement {
         name: 'MyEWCApp',
         launch: function () {
           Ext.Viewport.add([me.ext])
+
+          if (window.router) {
+            //console.log('router.init called')
+            window.router.init()
+          }
+
         }
       });
     }
@@ -314,8 +350,13 @@ export default class ExtBase extends HTMLElement {
       if (newVal) {
         //mjg check if this event exists for this component
         this.addEventListener(attr.slice(2), function(event) {
+          var functionString = newVal;
+          //error check for only 1 dot
+          var r = functionString.split('.');
+          var obj = r[0];
+          var func = r[1];
+          window[obj][func](event);
           //eval(newVal + '(event)')
-          eval(newVal)
         });
       } else {
         //delete this[attr];
