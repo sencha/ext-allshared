@@ -1,7 +1,7 @@
 /* global Ext */
 import React, { Component } from 'react';
 import '@sencha/ext-web-components';
-import { set } from './extwc';
+import { set } from './ewc';
 import { SampleData } from './SampleData';
 class App extends Component {
 
@@ -35,12 +35,13 @@ class App extends Component {
     return (
       <ext-panel title="Sencha ExtWebComponents 7.0 in React" layout="vbox" fitToParent="true" padding="10">
         <div style={{textAlign:'center',marginTop:'20px',marginBottom:'25px','fontSize':'24px'}}>
-          <img width="250" alt="React" src="react.png"/>
-          <div>React.JS</div>
+          <img width="150" alt="React" src="react.png"/>
+          <div>React</div>
         </div>
         <ext-grid 
           flex="1"
           title="Employees"
+          shadow="true"
           ref={set({
             columns: this.columns,
             onready: this.readyGrid
@@ -59,7 +60,7 @@ class App extends Component {
         </ext-grid>
       </ext-panel>
     );
-  }
+  };
 }
 
 export default App;
