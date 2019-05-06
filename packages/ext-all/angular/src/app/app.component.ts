@@ -1,59 +1,51 @@
-declare var Ext: any
+declare var Ext: any;
 import { Component } from '@angular/core';
+import { SampleData } from './SampleData';
 
 @Component({
   selector: 'app-root',
   styles: [``],
   template: `
-  
-  <ext-grid fitToParent=true
-    (ready)="readyGrid($event)">
-
-   <!-- Titlebar starts-->
-   <ext-titlebar docked="top" weight="10">
-     <ext-button iconCls="x-fa fa-bars" onTap="main.toggleTree()"></ext-button>
-     <span class="ext ext-sencha" style="margin: '0 5px 0 7px;'; font-size: '20px'; width: '20px'"></span>
-     <span extjs href="#" class="app-title">Sencha Ext Web Components in Angular</span>
-   </ext-titlebar>
-   <!-- Titlebar ends-->
-
-  </ext-grid>
-
-  <ext-tabpanel 
-    height="600px"
-    [shadow]="true"
-    [tabBar]="{layout: {pack: 'left'}}">
-    <ext-panel *ngFor="let file of files" [hidden]="files.length > 0 ? false: true"
-      layout="fit"
-      height="600px"
-      [scrollable]="true"
-      [title]="file.name"
-      [ui]="'code-panel'"
-      tab="{ui: 'app-code-tab', flex: 0, minWidth: 120}"
-      [userSelectable]="{element: true, bodyElement: true}"
-      [html]="'file.code'">
-      <ext-button text="tab detail"></ext-button>
-    </ext-panel>
-  </ext-tabpanel>
-
+  <ext-panel title="Sencha ExtWebComponents 7.0 in Angular" layout="vbox" fitToParent="true" padding="10">
+    <div style="text-align:center;margin-top:20px;margin-bottom:25px;font-size:24px;">
+      <img width="250" alt="Angular" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+      <div>Angular</div>
+    </div>
+    <ext-grid flex="1" fitToParent="true" title="Employees" shadow="true" (ready)="this.readyGrid($event)">
+      <ext-toolbar docked="top">
+        <ext-searchfield ui="faded" placeholder="Search..." (change)="this.onSearch($event)"></ext-searchfield>
+      </ext-toolbar>
+      <ext-column text="ID"    dataIndex="id"    width="50"></ext-column>
+      <ext-column text="Name"  dataIndex="name"  flex="2">  </ext-column>
+      <ext-column text="Email" dataIndex="email" flex="3">  </ext-column>
+      <ext-column text="Phone" dataIndex="phone" flex="2">  </ext-column>
+    </ext-grid>
+  </ext-panel>
   `
 })
 export class AppComponent {
 
-  //  <ext-button text="hi"></ext-button>
+  store:any = Ext.create('Ext.data.Store', {
+    fields: ['name', 'email', 'phone', 'hoursTaken', 'hoursRemaining'],
+    data: new SampleData(50).data
+  });
 
-  files = [
-    { name: 'tab 1', code: "123" },
-    { name: 'tab 2', code: "123" },
-    { name: 'tab 3', code: "123" }
-  ]
+  gridCmp: any;
 
-  gridTitle = "my grid title"
-    // [title]="gridTitle"
+  readyGrid = (event) => {
+    this.gridCmp = event.detail.cmp
+    this.gridCmp.setStore(this.store)
+  }
 
-
-  readyGrid($event) {
-    console.log($event)
+  onSearch = (event) => {
+    const query = event.detail.newValue.toLowerCase();
+    this.store.clearFilter();
+    if (query.length) this.store.filterBy(record => {
+      const { name, email, phone } = record.data;
+      return name.toLowerCase().indexOf(query) !== -1 ||
+        email.toLowerCase().indexOf(query) !== -1 ||
+        phone.toLowerCase().indexOf(query) !== -1;
+    });
   }
 
 }
