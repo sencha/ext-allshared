@@ -76,21 +76,24 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
 
   var extension
   switch(framework) {
+    case 'studio':
+        extension = 'js';
+        break;
     case 'angular':
-      extension = 'ts'
-      break;
+        extension = 'ts';
+        break;
     case 'components':
-      extension = 'js'
-      break;
+        extension = 'js';
+        break;
     default:
-      extension = 'js'
-      break;
+        extension = 'js';
+        break;
   }
 
-
-
   switch(framework) {
-    case 'angular':
+        case 'studio':
+            break;
+        case 'angular':
 
     // moduleVars.imports = moduleVars.imports + `import { ExtAngularLaunchComponent } from './ext-angular-launch.component';${newLine}`
     // moduleVars.exports = moduleVars.exports + `    ExtAngularLaunchComponent,${newLine}`
@@ -197,31 +200,32 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
   exportall = exportall + `export * from './lib/${baseFolder}.module';${newLine}`
 
   switch(framework) {
+    case 'studio':
+        //nothing
+        break;
     case 'angular':
-      var publicApiFile = `${srcFolder}public_api.${extension}`
-      fs.writeFile(publicApiFile, doPublic_Api(exportall, templateToolkitFolder), function(err) {if(err) { return console.log(err); } });
-      log(`publicApiFile`,`${publicApiFile}`)
-      //var classFile = `${libFolder}ext-class.component.${extension}`
-      //fs.writeFile(classFile, doExtClass(), function(err) {if(err){return console.log(err);} })
-      //log(`classFile`,`${classFile}`)
-      var baseFile = `${libFolder}base.${extension}`
-      fs.writeFile(baseFile, doExtBase(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
-      log(`baseFile`,`${baseFile}`)
-      var moduleFile = `${libFolder}${baseFolder}.module.ts`
-      //var moduleFile = `${libFolder}ext-${framework}-${toolkit}.module.ts`
-      fs.writeFile(moduleFile, doModule(moduleVars), function(err) {if(err) { return console.log(err); } });
-      log(`moduleFile`,`${moduleFile}`)
-    break
+        var publicApiFile = `${srcFolder}public_api.${extension}`
+        fs.writeFile(publicApiFile, doPublic_Api(exportall, templateToolkitFolder), function(err) {if(err) { return console.log(err); } });
+        log(`publicApiFile`,`${publicApiFile}`)
+        //var classFile = `${libFolder}ext-class.component.${extension}`
+        //fs.writeFile(classFile, doExtClass(), function(err) {if(err){return console.log(err);} })
+        //log(`classFile`,`${classFile}`)
+        var baseFile = `${libFolder}base.${extension}`
+        fs.writeFile(baseFile, doExtBase(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
+        log(`baseFile`,`${baseFile}`)
+        var moduleFile = `${libFolder}${baseFolder}.module.ts`
+        //var moduleFile = `${libFolder}ext-${framework}-${toolkit}.module.ts`
+        fs.writeFile(moduleFile, doModule(moduleVars), function(err) {if(err) { return console.log(err); } });
+        log(`moduleFile`,`${moduleFile}`)
+        break
     case 'components':
-      fs.writeFile(`${libFolder}base.${extension}`, doExtBase(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
-
-      var indexFile = `${libFolder}index.js`
-      fs.writeFile(indexFile, doIndex(moduleVars), function(err) {if(err) { return console.log(err); } });
-      log(`indexFile`,`${indexFile}`)
-
-      break
+        fs.writeFile(`${libFolder}base.${extension}`, doExtBase(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
+        var indexFile = `${libFolder}index.js`
+        fs.writeFile(indexFile, doIndex(moduleVars), function(err) {if(err) { return console.log(err); } });
+        log(`indexFile`,`${indexFile}`)
+        break
     default:
-      break
+        break
   }
 
 }
@@ -241,12 +245,16 @@ function doIndex(moduleVars) {
 
 
 function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVars) {
+//    console.log(o);
+//    var sALIAS = o.alias;
   var classname =  o.xtype.replace(/-/g, "_")
   var capclassname = classname.charAt(0).toUpperCase() + classname.slice(1)
   var classFile = `${libFolder}ext-${o.xtype}.component.${extension}`
   //console.log(`${xtype}${tb}${tb}${('  ' + num).substr(-3)}_${alias}${tb}${classFile}`)
   var commaOrBlank = "";
-  var tab = "\t";
+  //var tab = "\t";
+  var tab = "";
+
 
   var sMETHODS = "";
   var methodsArray = o.items.filter(function(obj) {return obj.$type == 'methods';});
@@ -272,6 +280,58 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
   var sPROPERTIESOBJECT = "";
   var sGETSET = "";
 
+  if (o.xtype == 'grid') {
+        console.log('&&&&&&&&&&&&&&&&')
+
+        o.items.forEach(function (val1,index,arr) {
+            //console.log(val1.$type)
+            //console.log(val.items)
+            val1.items.forEach(function (val,index,arr) {
+
+                if (val.$type == 'property') {
+
+                    if (val.optional == undefined) { val.optional = false}
+                    if (val.inheritdoc == undefined) { val.optional = false}
+                    console.log(  ' optional '  + val.optional  )
+                    // console.log(
+                    //     ' $type ' + val.$type + 
+                    //     ' inheritdoc ' + val.inheritdoc + 
+                    //     ' access ' + val.access + 
+
+                    //     ' from '  + val.from  +
+                    //     ' name '  + val.name  +
+                    //     ' optional '  + val.optional  +
+                    // //    ' text '  + val.text  +
+                    //     ' type '  + val.type  
+                    // //    ' value '  + val.value  +
+                    // //    ' src '  + val.srcFolde
+                    // )
+                    // //    val.name+ ' (' + val.type + ') ' +  ' value: ' + 'val.value' + ' text: ' + val.text)
+
+                    if (val.name == 'classCls') {
+                        console.log(val)
+                    }
+                }
+            })
+            
+            //console.log(val.items.name + ' ' + val.items.$type )
+
+        })
+
+
+
+//      console.log(o)
+//      console.log(o.items)
+
+    //   var configs = o.items.filter(function(obj) {return obj.$type == 'configs';});
+    // console.log(configs[0].items)
+      console.log('&&&&&&&&&&&&&&&&')
+
+  }
+
+
+
+
   var configsArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
   if (configsArray.length == 1) {
     var haveResponsiveConfig = false
@@ -293,7 +353,28 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
         if (config.name == 'responsiveConfig') {
           haveResponsiveConfig = true
         }
-        sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}    "${config.name}": "${type}",${newLine}`;
+
+        var typeArray = type.split("/");
+        var s = '[';
+        var i = 0;
+        typeArray.forEach(function (currentValue,index,arr) {
+            var comma = ''
+            if (i > 0) {
+                comma = ','
+            }
+            i++;
+            var newVal;
+            if (currentValue.startsWith("Ext.")) {
+                newVal = currentValue
+            }
+            else {
+                newVal = currentValue.toLowerCase()
+            }
+            s = s + `${comma}"${newVal}"`
+        })
+        s = s + `]`
+
+        sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"${config.name}":${s},${newLine}`;
         sGETSET = sGETSET + tab + `get ${config.name}(){return this.getAttribute('${config.name}')};set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`
       }
     }
@@ -362,7 +443,31 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
   var allClasses = "";
   allClasses = allClasses + tab + "'" + o.name + "'," + tab + "// xtype='" + classname + "'" + newLine;
 
+  var values = {
+    alias: o.alias,
+    xtype: o.xtype,
+    sGETSET: sGETSET,
+    sMETHODS: sMETHODS,
+    sPROPERTIES: sPROPERTIES,
+    sPROPERTIESOBJECT: sPROPERTIESOBJECT,
+    sEVENTS: sEVENTS,
+    sEVENTNAMES: sEVENTNAMES,
+    name: o.name,
+    classname: classname,
+    capclassname: capclassname,
+    templateToolkitFolder: templateToolkitFolder
+  }
+
+
   switch(framework) {
+    case 'studio':
+            fs.writeFile(`${classFile}`, doClassStudio(values), function(err) {if(err) { return console.log(err); }});
+
+
+
+
+        //fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
+        break;
     case 'angular':
       fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
       break;
@@ -392,6 +497,29 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
 //   delete tpl
 //   fs.writeFile(generatedFolders + '/' + fileName, t, function(err) {if(err) { return console.log(err) }})
 // }
+
+
+function doClassStudio(values) {
+    var p = path.resolve(values.templateToolkitFolder + '/class.tpl')
+    var content = fs.readFileSync(p).toString()
+    // var values = {
+    //   xtype: xtype,
+    //   sGETSET: sGETSET,
+    //   sMETHODS: sMETHODS,
+    //   sPROPERTIES: sPROPERTIES,
+    //   sPROPERTIESOBJECT: sPROPERTIESOBJECT,
+    //   sEVENTS: sEVENTS,
+    //   sEVENTNAMES: sEVENTNAMES,
+    //   name: name,
+    //   capclassname: capclassname,
+    //   classname: classname
+    // }
+    console.log(values.alias)
+    var tpl = new Ext.XTemplate(content)
+    var t = tpl.apply(values)
+    delete tpl
+    return t
+   }
 
 function doClass(xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, name, classname, capclassname, templateToolkitFolder) {
   var p = path.resolve(templateToolkitFolder + '/class.tpl')
@@ -527,8 +655,8 @@ function processArgs(framework, toolkit) {
     log(``,`framework: ${framework} is incorrect.  should be components or angular`)
     return -1
   }
-  if ((framework != 'components') && (framework != 'angular')) {
-    log(``,`framework: ${framework} is incorrect.  should be components or angular`)
+  if ((framework != 'components') && (framework != 'angular') && (framework != 'studio')) {
+    log(``,`framework: ${framework} is incorrect.  should be components or angular or studio`)
     return -1
   }
   if(toolkit == undefined) {
@@ -553,5 +681,5 @@ function log(v,s) {
     blanks = new Array((25 - v.length) + 1).join( ' ' )
     blanks = blanks + ': '
   }
-  console.log(`${v}${blanks}${s}`)
+  //console.log(`${v}${blanks}${s}`)
 }
