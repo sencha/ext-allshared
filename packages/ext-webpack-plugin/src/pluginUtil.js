@@ -119,17 +119,22 @@ export function _compilation(compiler, compilation, vars, options) {
         }
         compilation.hooks.succeedModule.tap(`ext-succeed-module`, module => {
           if (module.resource && !module.resource.match(/node_modules/)) {
-            if(module.resource.match(/\.html$/) != null
-              && module._source._value.toLowerCase().includes('doctype html') == false
-            ) {
-              vars.deps = [
-                ...(vars.deps || []),
-                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+            try {
+                if (module.resource.match(/\.html$/) != null
+                && module._source._value.toLowerCase().includes('doctype html') == false
+                ) {
+                    vars.deps = [
+                        ...(vars.deps || []),
+                        ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+                    }
+                else {
+                    vars.deps = [
+                        ...(vars.deps || []),
+                        ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+                    }
             }
-            else {
-              vars.deps = [
-                ...(vars.deps || []),
-                ...require(`./${framework}Util`)._extractFromSource(module, options, compilation, extComponents)]
+            catch(e) {
+                console.log(e)
             }
           }
         });

@@ -2,7 +2,9 @@ async function main() {
   var path = require('path')
 
 // var framework = 'angular'
-  var framework = 'components'
+ // var framework = 'components'
+  var framework = 'studio'
+
 
   var environment = 'dev'
   var components = ['container','button']
