@@ -82,7 +82,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
     case 'angular':
         extension = 'ts';
         break;
-    case 'components':
+    case 'web-components':
         extension = 'js';
         break;
     default:
@@ -133,7 +133,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
       // log(`transitionFile`,`${transitionFile}`)
 
       break
-    case 'components':
+    case 'web-components':
       var routerFile = `${libFolder}aa-router.component.js`
       fs.writeFile(routerFile, doRouter(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
       log(`routerFile`,`${routerFile}`);
@@ -218,7 +218,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
         fs.writeFile(moduleFile, doModule(moduleVars), function(err) {if(err) { return console.log(err); } });
         log(`moduleFile`,`${moduleFile}`)
         break
-    case 'components':
+    case 'web-components':
         fs.writeFile(`${libFolder}base.${extension}`, doExtBase(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
         var indexFile = `${libFolder}index.js`
         fs.writeFile(indexFile, doIndex(moduleVars), function(err) {if(err) { return console.log(err); } });
@@ -471,7 +471,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
     case 'angular':
       fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
       break;
-    case 'components':
+    case 'web-components':
       fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
       break;
     default:
@@ -652,11 +652,11 @@ export class ExtClassComponent {
 
 function processArgs(framework, toolkit) {
   if(framework == undefined) {
-    log(``,`framework: ${framework} is incorrect.  should be components or angular`)
+    log(``,`framework: ${framework} is incorrect.  should be web-components or angular`)
     return -1
   }
-  if ((framework != 'components') && (framework != 'angular') && (framework != 'studio')) {
-    log(``,`framework: ${framework} is incorrect.  should be components or angular or studio`)
+  if ((framework != 'web-components') && (framework != 'angular') && (framework != 'studio')) {
+    log(``,`framework: ${framework} is incorrect.  should be web-components or angular or studio`)
     return -1
   }
   if(toolkit == undefined) {
