@@ -530,9 +530,18 @@ export function _getApp() {
 
 //**********
 export function _getVersions(pluginName, frameworkName) {
+try {
   const path = require('path')
   const fs = require('fs')
   var v = {}
+  var frameworkInfo = 'n/a'
+
+  v.pluginVersion = 'n/a';
+  v.extVersion = 'n/a';
+  v.edition = 'n/a';
+  v.cmdVersion = 'n/a';
+  v.webpackVersion = 'n/a';
+
   var pluginPath = path.resolve(process.cwd(),'node_modules/@sencha', pluginName)
   var pluginPkg = (fs.existsSync(pluginPath+'/package.json') && JSON.parse(fs.readFileSync(pluginPath+'/package.json', 'utf-8')) || {});
   v.pluginVersion = pluginPkg.version
@@ -562,7 +571,7 @@ export function _getVersions(pluginName, frameworkName) {
     var cmdPkg = (fs.existsSync(cmdPath+'/package.json') && JSON.parse(fs.readFileSync(cmdPath+'/package.json', 'utf-8')) || {});
     v.cmdVersion = cmdPkg.version_full
   }
-  var frameworkInfo = ''
+
    if (frameworkName != undefined && frameworkName != 'extjs') {
     var frameworkPath = ''
     if (frameworkName == 'react') {
@@ -581,7 +590,13 @@ export function _getVersions(pluginName, frameworkName) {
     }
   }
   return 'ext-webpack-plugin v' + v.pluginVersion + ', Ext JS v' + v.extVersion + ' ' + v.edition + ' Edition, Sencha Cmd v' + v.cmdVersion + ', webpack v' + v.webpackVersion + frameworkInfo
- }
+
+}
+catch (e) {
+  return 'ext-webpack-plugin v' + v.pluginVersion + ', Ext JS v' + v.extVersion + ' ' + v.edition + ' Edition, Sencha Cmd v' + v.cmdVersion + ', webpack v' + v.webpackVersion + frameworkInfo
+}
+
+}
 
 //**********
 export function log(app,message) {
