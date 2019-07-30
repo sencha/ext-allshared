@@ -1,7 +1,43 @@
-export default class ExtBase extends HTMLElement {
+export default class {classname} extends HTMLElement {
+//events
+{sEVENTGETSET}//configs
+{sGETSET}
+static XTYPE() {return '{xtype}'}
+static PROPERTIESOBJECT() { return {
+{sPROPERTIESOBJECT}}}
+static EVENTS() { return [
+{sEVENTS}]}
+static METHODS() { return [
+{sMETHODS}]}
 
-    constructor() {
-        super()
+constructor() {
+    super (
+        {classname}.METHODS(),
+        {classname}.XTYPE(),
+        {classname}.PROPERTIESOBJECT(),
+        {classname}.EVENTS()
+    )
+    this.XTYPE = {classname}.XTYPE()
+    this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
+    this.METHODS = this.extendArray(this.METHODS, {classname}.METHODS());
+    this.EVENTS = this.extendArray(this.EVENTS, {classname}.EVENTS());
+}
+
+
+
+
+    extendObject(obj, src) {
+        if (obj == undefined) {obj = {}}
+        for (var key in src) {
+            if (src.hasOwnProperty(key)) obj[key] = src[key];
+        }
+        return obj;
+    }
+
+    extendArray(obj, src) {
+        if (obj == undefined) {obj = []}
+        Array.prototype.push.apply(obj,src);
+        return obj;
     }
 
     filterProperty(propertyValue) {
@@ -41,7 +77,6 @@ export default class ExtBase extends HTMLElement {
             this.extParentDefined = true;
         }
         this.rawChildren = Array.from(this.children)
-        //console.dir(`connectedCallback: ${this.nodeName} parent: ${this.nodeParentName} extParentDefined: ${this.extParentDefined} extChildrenDefined: ${this.extChildrenDefined} this.children.length: ${this.children.length}`)
 
         if (this.extChildrenDefined == false && this.children.length > 0) {
             this.childrenCounter = this.children.length
@@ -185,7 +220,7 @@ export default class ExtBase extends HTMLElement {
                     var item = this.parentNode.children[i]
                     if (item.nodeName.substring(0, 3) == "EXT") {
                         if (item.props == this.props) {
-                            //mjgComment console.log(`added the child ${item.nodeName} to extChildren array of ${this.parentNode.nodeName}`)
+                            //mjgComment console.log(`added the child item.nodeName} to extChildren array of this.parentNode.nodeName}`)
                             this.parentNode.extChildren.push({ADDORDER:i,XTYPE:item.XTYPE,EXT:this.ext})
                         }
                     }
@@ -203,12 +238,12 @@ export default class ExtBase extends HTMLElement {
 
         //deal with children
 
-        //mjgComment console.log(`deal with this item's ${this.children.length} extChildren`)
+        //mjgComment console.log(`deal with this item's this.children.length} extChildren`)
         //mjg figure out how to make this 1 loop so items added in order
 
         for (var i = 0; i < this.extChildren.length; i++) {
             var item = this.extChildren[i]
-            //mjgComment console.log(`item ${i} ext child`)
+            //mjgComment console.log(`item i} ext child`)
             var parentCmp = this.ext;
             var childCmp = item.EXT;
             var location = item.ADDORDER
@@ -220,7 +255,7 @@ export default class ExtBase extends HTMLElement {
         for (var i = this.rawChildren.length-1; i > -1; i--) {
             var item = this.rawChildren[i]
             if (item.nodeName.substring(0, 3) != "EXT") {
-            //mjgComment console.log(`item ${i} NON ext child`)
+            //mjgComment console.log(`item i} NON ext child`)
         //        var cln = item.cloneNode(true);
             //var cln = this.parentNode.removeChild(item);
             var par = item.parentNode
@@ -247,7 +282,7 @@ export default class ExtBase extends HTMLElement {
         if (this.parentNode.childrenCounter != undefined) {
             this.parentNode.childrenCounter--
             if (this.parentNode.childrenCounter == 0) {
-            //console.log(`ready event for ${this.parentNode.nodeName}`)
+            //console.log(`ready event for this.parentNode.nodeName}`)
             this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
             }
         }
@@ -295,7 +330,7 @@ export default class ExtBase extends HTMLElement {
             if(location == null) {
 
                 parentCmp.addColumn(childCmp)
-                console.log(`${parentCmp.xtype}.addColumn(${childCmp.xtype})`)
+                //console.log(`parentCmp.xtype}.addColumn(childCmp.xtype})`)
                 return
             }
             else {
@@ -304,7 +339,7 @@ export default class ExtBase extends HTMLElement {
                     regCols = parentCmp.registeredColumns.length;
                 }
                 parentCmp.insertColumn(location + regCols, childCmp)
-                //console.log(`${parentCmp.xtype}.insertColumn(${location}, ${childCmp.xtype})`)
+                //console.log(`parentCmp.xtype}.insertColumn(location}, childCmp.xtype})`)
                 return
             }
             }
@@ -359,7 +394,7 @@ export default class ExtBase extends HTMLElement {
             return
             } else {
             parentCmp.add(childCmp)
-        //        console.log(`${parentCmp.xtype}.add(${childCmp.xtype})`)
+        //        console.log(`parentCmp.xtype}.add(childCmp.xtype})`)
             return
             }
         }
@@ -367,12 +402,12 @@ export default class ExtBase extends HTMLElement {
 
             if(location == null) {
                 parentCmp.add(childCmp)
-        //          console.log(`${parentCmp.xtype}.add(${childCmp.xtype})`)
+        //          console.log(`parentCmp.xtype}.add(childCmp.xtype})`)
                 return
             }
             else {
                 parentCmp.insert(location, childCmp)
-                //mjgComment console.log(`${parentCmp.xtype}.insert(${location}, ${childCmp.xtype})`)
+                //mjgComment console.log(`parentCmp.xtype}.insert(location}, childCmp.xtype})`)
                 return
             }
         }
