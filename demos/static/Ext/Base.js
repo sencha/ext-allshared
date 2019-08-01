@@ -1,53 +1,69 @@
-export default class {classname} extends HTMLElement {
+class Ext_Base_Component {
 //events
-{sEVENTGETSET}//configs
-{sGETSET}
-static XTYPE() {return '{xtype}'}
+//configs
+
+static XTYPE() {return ''}
 static PROPERTIESOBJECT() { return {
-{sPROPERTIESOBJECT}}}
+}}
 static EVENTS() { return [
-{sEVENTS}]}
+]}
 static METHODS() { return [
-{sMETHODS}]}
+{ name:'addDeprecations',function: function(deprecations) { return this.ext.addDeprecations(deprecations) } },
+{ name:'callOverridden',function: function(args) { return this.ext.callOverridden(args) } },
+{ name:'callParent',function: function(args) { return this.ext.callParent(args) } },
+{ name:'callSuper',function: function(args) { return this.ext.callSuper(args) } },
+{ name:'destroy',function: function() { return this.ext.destroy() } },
+{ name:'destroyMembers',function: function(args) { return this.ext.destroyMembers(args) } },
+{ name:'getConfig',function: function(name,peek,ifInitialized) { return this.ext.getConfig(name,peek,ifInitialized) } },
+{ name:'getCurrentConfig',function: function() { return this.ext.getCurrentConfig() } },
+{ name:'getInitialConfig',function: function(name) { return this.ext.getInitialConfig(name) } },
+{ name:'hasConfig',function: function(name) { return this.ext.hasConfig(name) } },
+{ name:'initConfig',function: function(instanceConfig) { return this.ext.initConfig(instanceConfig) } },
+{ name:'link',function: function(name,value) { return this.ext.link(name,value) } },
+{ name:'setConfig',function: function(name,value,options) { return this.ext.setConfig(name,value,options) } },
+{ name:'statics',function: function() { return this.ext.statics() } },
+{ name:'unlink',function: function(names) { return this.ext.unlink(names) } },
+{ name:'watchConfig',function: function(name,fn,scope) { return this.ext.watchConfig(name,fn,scope) } },
+]}
 
-    static get observedAttributes() {
-        var attrs = []
-        for (var property in {classname}.PROPERTIESOBJECT()) {
-            attrs.push(property)
-        }
-        {classname}.EVENTS().forEach(function (eventparameter, index, array) {
-            attrs.push('on' + eventparameter.name)
-        })
-        attrs.push('on' + 'ready')
-        return attrs
+static get observedAttributes() {
+    var attrs = []
+    for (var property in this.PROPERTIESOBJECT()) {
+        attrs.push(property)
     }
+    this.EVENTS().forEach(function (eventparameter, index, array) {
+        attrs.push('on' + eventparameter.name)
+    })
+    attrs.push('on' + 'ready')
+    return attrs
+}
 
-    constructor() {
-        super (
-            {classname}.METHODS(),
-            {classname}.XTYPE(),
-            {classname}.PROPERTIESOBJECT(),
-            {classname}.EVENTS()
-        )
-        this.XTYPE = {classname}.XTYPE()
-        this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
-        this.METHODS = this.extendArray(this.METHODS, {classname}.METHODS());
-        this.EVENTS = this.extendArray(this.EVENTS, {classname}.EVENTS());
-    }
+constructor() {
+    Ext_Base_Component.super (
+        Ext_Base_Component.METHODS(),
+        Ext_Base_Component.XTYPE(),
+        Ext_Base_Component.PROPERTIESOBJECT(),
+        Ext_Base_Component.EVENTS()
+    )
+    this.XTYPE = Ext_Base_Component.XTYPE()
+    this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, Ext_Base_Component.PROPERTIESOBJECT());
+    this.METHODS = this.extendArray(this.METHODS, Ext_Base_Component.METHODS());
+    this.EVENTS = this.extendArray(this.EVENTS, Ext_Base_Component.EVENTS());
+}
 
-    extendObject(obj, src) {
-        if (obj == undefined) {obj = {}}
-        for (var key in src) {
-            if (src.hasOwnProperty(key)) obj[key] = src[key];
-        }
-        return obj;
+extendObject(obj, src) {
+    if (obj == undefined) {obj = {}}
+    for (var key in src) {
+        if (src.hasOwnProperty(key)) obj[key] = src[key];
     }
+    return obj;
+}
 
-    extendArray(obj, src) {
-        if (obj == undefined) {obj = []}
-        Array.prototype.push.apply(obj,src);
-        return obj;
-    }
+extendArray(obj, src) {
+    if (obj == undefined) {obj = []}
+    Array.prototype.push.apply(obj,src);
+    return obj;
+}
 
     filterProperty(propertyValue) {
         try {
@@ -114,17 +130,19 @@ static METHODS() { return [
         }
 
         for (var property in this.PROPERTIESOBJECT) {
-            if (this.getAttribute(property) !== null) {
-                if (property == 'handler') {
-                    var functionString = this.getAttribute(property);
+            if (this.PROPERTIESOBJECT.hasOwnProperty(property)) {
+                if (this.getAttribute(property) !== null) {
+                    if (property == 'handler') {
+                    var functionString = this[property];
                     //error check for only 1 dot
                     var r = functionString.split('.');
                     var obj = r[0];
                     var func = r[1];
                     this.props[property] = window[obj][func];
-                }
-                else {
-                    this.props[property] = this.filterProperty(this.getAttribute(property));
+                    }
+                    else {
+                    this.props[property] = this.filterProperty(this[property]);
+                    }
                 }
             }
         }
@@ -363,9 +381,9 @@ static METHODS() { return [
             }
             }
             else {
-                console.log('unhandled else in addTheChild')
-                console.log(parentxtype)
-                console.log(childxtype)
+            console.log('unhandled else in addTheChild')
+            console.log(parentxtype)
+            console.log(childxtype)
             }
         }
         if (childxtype === 'tooltip') {
@@ -471,5 +489,6 @@ static METHODS() { return [
         //console.log('ExtBase disconnectedCallback ' + this.ext.xtype)
         delete this.ext
     }
-
 }
+
+module.exports = Ext_Base_Component;

@@ -1,4 +1,4 @@
-import {extendsclassname} from './{classextendsfilename}';
+import {extendsclassname} from '{pathprefix}{extendpath}{classextendsfilename}';
 
 export default class {classname} extends {extendsclassname} {
 //events
@@ -12,26 +12,36 @@ static EVENTS() { return [
 static METHODS() { return [
 {sMETHODS}]}
 
-constructor() {
-    super (
-        {classname}.METHODS(),
-        {classname}.XTYPE(),
-        {classname}.PROPERTIESOBJECT(),
-        {classname}.EVENTS()
-    )
-    this.XTYPE = {classname}.XTYPE()
-    this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
-    this.METHODS = this.extendArray(this.METHODS, {classname}.METHODS());
-    this.EVENTS = this.extendArray(this.EVENTS, {classname}.EVENTS());
-  }
+    static get observedAttributes() {
+        var attrs = super.observedAttributes
+        for (var property in {classname}.PROPERTIESOBJECT()) {
+            attrs.push(property)
+        }
+        {classname}.EVENTS().forEach(function (eventparameter, index, array) {
+            attrs.push('on' + eventparameter.name)
+        })
+        return attrs
+    }
 
-connectedCallback() {
-    super.connectedCallback()
-}
+    constructor() {
+        super (
+            {classname}.METHODS(),
+            {classname}.XTYPE(),
+            {classname}.PROPERTIESOBJECT(),
+            {classname}.EVENTS()
+        )
+        this.XTYPE = {classname}.XTYPE()
+        this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
+        this.METHODS = this.extendArray(this.METHODS, {classname}.METHODS());
+        this.EVENTS = this.extendArray(this.EVENTS, {classname}.EVENTS());
+    }
 
-attributeChangedCallback(attrName, oldVal, newVal) {
-    super.attributeChangedCallback(attrName, oldVal, newVal)
-}
+    connectedCallback() {
+        super.connectedCallback()
+    }
+
+    attributeChangedCallback(attrName, oldVal, newVal) {
+        super.attributeChangedCallback(attrName, oldVal, newVal)
+    }
 
 }
-{webcomponentdef}
