@@ -4,7 +4,10 @@ export default class {classname} extends HTMLElement {
 {sGETSET}
 static XTYPE() {return '{xtype}'}
 static PROPERTIESOBJECT() { return {
-{sPROPERTIESOBJECT}}}
+{sPROPERTIESOBJECT}"plugins":["Array","Ext.enums.Plugin","Object","Ext.plugin.Abstract"],
+"responsiveConfig":["Object"],
+"responsiveFormulas":["Object"]
+}}
 static EVENTS() { return [
 {sEVENTS}]}
 static METHODS() { return [
@@ -110,7 +113,6 @@ static METHODS() { return [
             if (renderer != undefined) {
                 this.props.cell = this.cell || {}
                 this.props.cell.xtype = 'renderercell'
-                console.log(renderer)
                 this.props.cell.renderer = renderer
             }
         }
@@ -258,7 +260,8 @@ static METHODS() { return [
         //mjgComment console.log(`deal with this item's this.children.length} extChildren`)
         //mjg figure out how to make this 1 loop so items added in order
 
-        for (var i = 0; i < this.extChildren.length; i++) {
+        //for (var i = 0; i < this.extChildren.length; i++) {
+        for (var i = this.extChildren.length-1; i > -1; i--) {
             var item = this.extChildren[i]
             //mjgComment console.log(`item i} ext child`)
             var parentCmp = this.ext;
@@ -446,149 +449,6 @@ static METHODS() { return [
         if (this.parentNode.childrenYetToBeDefined == 0) {
             this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
         }
-        return
-
-
-
-        if (parentxtype === 'column' || childxtype === 'renderercell') {
-            parentCmp.setCell(childCmp)
-        }
-
-        else if (parentCmp.xtype == 'column' && childCmp.xtype == 'column') {
-            parentCmp.add(childCmp)
-        }
-
-        else if (parentCmp.xtype == 'gridcolumn' && childCmp.xtype == 'gridcolumn') {
-            parentCmp.add(childCmp)
-        }
-
-        else if (parentxtype === 'grid' || parentxtype === 'lockedgrid') {
-            if (childxtype === 'gridcolumn' || childxtype === 'column' || childxtype === 'treecolumn' || childxtype === 'textcolumn' || childxtype === 'checkcolumn' || childxtype === 'datecolumn' || childxtype === 'rownumberer' || childxtype === 'numbercolumn' || childxtype === 'booleancolumn' ) {
-            if(location == null) {
-
-                parentCmp.addColumn(childCmp)
-                // //console.log(`parentCmp.xtype}.addColumn(childCmp.xtype})`)
-
-                // if (this.parentNode.childrenYetToBeDefined > 0) {
-                //     this.parentNode.childrenYetToBeDefined--
-                // }
-                // console.log('childrenYetToBeDefined(after) '  + this.parentNode.childrenYetToBeDefined)
-                // if (this.parentNode.childrenYetToBeDefined == 0) {
-                //     this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
-                // }
-
-
-        //        return
-            }
-            else {
-                var regCols = 0;
-                if(parentCmp.registeredColumns != undefined) {
-                    regCols = parentCmp.registeredColumns.length;
-                }
-                parentCmp.insertColumn(location + regCols, childCmp)
-
-                // if (this.parentNode.childrenYetToBeDefined > 0) {
-                //     this.parentNode.childrenYetToBeDefined--
-                // }
-                // console.log('childrenYetToBeDefined(after) '  + this.parentNode.childrenYetToBeDefined)
-                // if (this.parentNode.childrenYetToBeDefined == 0) {
-                //     this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
-                // }
-
-
-
-
-                //console.log(`parentCmp.xtype}.insertColumn(location}, childCmp.xtype})`)
-                //return
-            }
-            }
-            else if ((childxtype === 'toolbar' || childxtype === 'titlebar') && parentCmp.getHideHeaders != undefined) {
-                if (parentCmp.getHideHeaders() === false) {
-                    parentCmp.insert(1, childCmp);
-            //          console.log('**')
-            //        return
-                }
-                else {
-                    parentCmp.add(childCmp);
-            //          console.log('**')
-            //        return
-                }
-            }
-            else {
-                console.log('unhandled else in addTheChild')
-                //console.log(parentxtype)
-                //console.log(childxtype)
-            }
-        }
-        else if (childxtype === 'tooltip') {
-            parentCmp.setTooltip(childCmp)
-        //      console.log('**')
-            //return
-        }
-        else if (childxtype === 'plugin') {
-            parentCmp.setPlugin(childCmp)
-        //      console.log('**')
-            //return
-        }
-        else if (parentxtype === 'button') {
-            if (childxtype === 'menu') {
-            parentCmp.setMenu(childCmp)
-        //        console.log('**')
-            //return
-            }
-            else {
-                console.log('child not added')
-                console.log(childCmp)
-                console.log(parentCmp)
-            }
-        }
-        else if (childxtype === 'toolbar' && Ext.isClassic === true) {
-            parentCmp.addDockedItems(childCmp)
-            //console.log('**')
-            //return
-        }
-        else if ((childxtype === 'toolbar' || childxtype === 'titlebar') && parentCmp.getHideHeaders != undefined) {
-            if (parentCmp.getHideHeaders() === false) {
-            parentCmp.insert(1, childCmp)
-        //        console.log('**')
-            //return
-            }
-            else {
-                parentCmp.add(childCmp)
-        //        console.log(`parentCmp.xtype}.add(childCmp.xtype})`)
-            //return
-            }
-        }
-        else if (parentCmp.add != undefined) {
-
-            if(location == null) {
-                parentCmp.add(childCmp)
-        //          console.log(`parentCmp.xtype}.add(childCmp.xtype})`)
-                //return
-            }
-            else {
-                parentCmp.insert(location, childCmp)
-                //mjgComment console.log(`parentCmp.xtype}.insert(location}, childCmp.xtype})`)
-                //return
-            }
-        }
-        else {
-            console.log('child not added')
-            console.log(childCmp)
-            console.log(parentCmp)
-        }
-
-
-        if (this.parentNode.childrenYetToBeDefined > 0) {
-            this.parentNode.childrenYetToBeDefined--
-        }
-        console.log('childrenYetToBeDefined(after) '  + this.parentNode.childrenYetToBeDefined)
-        if (this.parentNode.childrenYetToBeDefined == 0) {
-            this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
-        }
-
-
-
     }
 
     setEvent(eventparameters,o, me) {
