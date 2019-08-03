@@ -74,9 +74,17 @@ static METHODS() { return [
         if (this.extChildren == undefined) {
             this.extChildren = [];
             this.extChildrenDefined = false;
+            this.childrenYetToBeDefined = 0;
+            for (let i = 0; i < this.children.length; i++) {
+                console.dir(this.children[i])
+                if (this.children[i].nodeName.substring(0, 4) == "EXT-") {
+                    this.childrenYetToBeDefined++
+                }
+            }
         }
         else {
             this.extChildrenDefined = true;
+            this.childrenYetToBeDefined = 0;
         }
         this.nodeParentName = this.parentNode.nodeName;
         if (this.parentNode['ext'] == undefined) {
@@ -97,11 +105,13 @@ static METHODS() { return [
         this.props = {};
         this.props.xtype = this.XTYPE;
 
-        if (this.props.xtype == 'column') {
-            if (this.renderer != undefined) {
-            this.props.cell = this.cell || {}
-            this.props.cell.xtype = 'renderercell'
-            this.props.cell.renderer = this.renderer
+        if (this.props.xtype == 'column' || this.props.xtype == 'gridcolumn') {
+            var renderer = this.getAttribute('renderer')
+            if (renderer != undefined) {
+                this.props.cell = this.cell || {}
+                this.props.cell.xtype = 'renderercell'
+                console.log(renderer)
+                this.props.cell.renderer = renderer
             }
         }
 
@@ -186,7 +196,7 @@ static METHODS() { return [
                 }
             });
         }
-        else if (this.nodeParentName.substring(0, 3) != 'EXT') {
+        else if (this.nodeParentName.substring(0, 4) != 'EXT-') {
             this.props.renderTo = this
             this.doCreate()
         }
@@ -225,7 +235,7 @@ static METHODS() { return [
 
                 for (var i = this.parentNode.children.length-1; i > -1; i--) {
                     var item = this.parentNode.children[i]
-                    if (item.nodeName.substring(0, 3) == "EXT") {
+                    if (item.nodeName.substring(0, 4) == "EXT-") {
                         if (item.props == this.props) {
                             //mjgComment console.log(`added the child item.nodeName} to extChildren array of this.parentNode.nodeName}`)
                             this.parentNode.extChildren.push({ADDORDER:i,XTYPE:item.XTYPE,EXT:this.ext})
@@ -261,7 +271,7 @@ static METHODS() { return [
         //for (var i = 0; i < this.children.length; i++) {
         for (var i = this.rawChildren.length-1; i > -1; i--) {
             var item = this.rawChildren[i]
-            if (item.nodeName.substring(0, 3) != "EXT") {
+            if (item.nodeName.substring(0, 4) != "EXT-") {
             //mjgComment console.log(`item i} NON ext child`)
         //        var cln = item.cloneNode(true);
             //var cln = this.parentNode.removeChild(item);
@@ -290,55 +300,185 @@ static METHODS() { return [
             this.parentNode.childrenCounter--
             if (this.parentNode.childrenCounter == 0) {
             //console.log(`ready event for this.parentNode.nodeName}`)
-            this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
+            //this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
             }
         }
     }
 
     addTheChild(parentCmp, childCmp, location) {
-        //console.log('addTheChild')
-        var childxtype = childCmp.xtype
         var parentxtype = parentCmp.xtype
+        var childxtype = childCmp.xtype
+        //console.log('addTheChild')
+        //console.log('childrenYetToBeDefined(before) '  + this.parentNode.childrenYetToBeDefined)
+        //console.log('parent: ' + parentxtype)
+        //console.log('child: ' + childxtype)
 
         if (this.ext.initialConfig.align != undefined) {
-            if (parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'button') {
+            if (parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
             console.error('Can only use align property if parent is a Titlebar or Grid or Button')
             return
             }
         }
+        var defaultparent = false
+        var defaultchild = false
+
+        switch(parentxtype) {
+            case 'button':
+                switch(childxtype) {
+                    case 'menu':
+                        parentCmp.setMenu(childCmp)
+                        break;
+                    default:
+                        defaultparent = true
+                        break;
+                }
+                break;
+            case 'gridcolumn':
+            case 'column':
+            case 'treecolumn':
+            case 'textcolumn':
+            case 'checkcolumn':
+            case 'datecolumn':
+            case 'rownumberer':
+            case 'numbercolumn':
+            case 'booleancolumn':
+                switch(childxtype) {
+                    case 'renderercell':
+                        parentCmp.setCell(childCmp)
+                        break;
+                    case 'column':
+                    case 'gridcolumn':
+                        parentCmp.add(childCmp)
+                        break;
+                    default:
+                        defaultparent = true
+                        break;
+                }
+                break;
+            case 'grid':
+            case 'lockedgrid':
+                switch(childxtype) {
+                    case 'gridcolumn':
+                    case 'column':
+                    case 'treecolumn':
+                    case 'textcolumn':
+                    case 'checkcolumn':
+                    case 'datecolumn':
+                    case 'rownumberer':
+                    case 'numbercolumn':
+                    case 'booleancolumn':
+                        if (location == null) {
+                            if (parentxtype == 'grid') {
+                                parentCmp.addColumn(childCmp)
+                            }
+                            else {
+                                parentCmp.add(childCmp)
+                            }
+                        }
+                        else {
+                            var regCols = 0;
+                            if(parentCmp.registeredColumns != undefined) {
+                                regCols = parentCmp.registeredColumns.length;
+                            }
+                            if (parentxtype == 'grid') {
+                                parentCmp.insertColumn(location + regCols, childCmp)
+                            }
+                            else {
+                                parentCmp.insert(location + regCols, childCmp)
+                            }
+                        }
+                        break;
+                    default:
+                        defaultparent = true
+                        break;
+                }
+                break;
+            default:
+                defaultparent = true
+                break;
+        };
+
+        switch(childxtype) {
+            case 'toolbar':
+            case 'titlebar':
+                if (parentCmp.getHideHeaders != undefined) {
+                    if (parentCmp.getHideHeaders() === false) {
+                        parentCmp.insert(1, childCmp);
+                    }
+                    else {
+                        parentCmp.add(childCmp);
+                    }
+                }
+                else {
+                    if (parentCmp.add != undefined) {
+                        if(location == null) {
+                            parentCmp.add(childCmp)
+                        }
+                        else {
+                            parentCmp.insert(location, childCmp)
+                        }
+                    }
+                    else {
+                        parentCmp.add(childCmp);
+                    }
+                }
+                break;
+            case 'tooltip':
+                parentCmp.setTooltip(childCmp)
+                break;
+            case 'plugin':
+                parentCmp.setPlugin(childCmp)
+                break;
+            default:
+                defaultchild = true
+                break;
+        }
+
+        if (defaultparent == true && defaultchild == true) {
+            console.log(parentxtype + '.add(' + childxtype + ')')
+            parentCmp.add(childCmp)
+        }
+
+        if (this.parentNode.childrenYetToBeDefined > 0) {
+            this.parentNode.childrenYetToBeDefined--
+        }
+        //console.log('childrenYetToBeDefined(after) '  + this.parentNode.childrenYetToBeDefined)
+        if (this.parentNode.childrenYetToBeDefined == 0) {
+            this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
+        }
+        return
+
+
 
         if (parentxtype === 'column' || childxtype === 'renderercell') {
-        //      console.dir(parentCmp)
-        //      console.dir(childCmp)
             parentCmp.setCell(childCmp)
         }
 
-        //if (parentxtype === 'column' || childxtype === 'column') {
-        if (parentCmp.xtype == 'column' && childCmp.xtype == 'column') {
-            //console.log('grouped column child')
-
-            //console.dir(childCmp)
-            // var cols = parentCmp.getColumns();
-            // cols.push(childCmp)
-            // parentCmp.setColumns(cols);
-            // console.log('cols val')
-            // console.dir(parentCmp.getColumns())
-            //parentCmp.getItems()
-
+        else if (parentCmp.xtype == 'column' && childCmp.xtype == 'column') {
             parentCmp.add(childCmp)
-            console.log('column.add(column)')
-            console.dir(parentCmp)
-            console.dir(childCmp)
+        }
 
+        else if (parentCmp.xtype == 'gridcolumn' && childCmp.xtype == 'gridcolumn') {
+            parentCmp.add(childCmp)
+        }
 
-            }
-        if (parentxtype === 'grid' || parentxtype === 'lockedgrid') {
-            if (childxtype === 'column' || childxtype === 'treecolumn' || childxtype === 'textcolumn' || childxtype === 'checkcolumn' || childxtype === 'datecolumn' || childxtype === 'rownumberer' || childxtype === 'numbercolumn' || childxtype === 'booleancolumn' ) {
+        else if (parentxtype === 'grid' || parentxtype === 'lockedgrid') {
+            if (childxtype === 'gridcolumn' || childxtype === 'column' || childxtype === 'treecolumn' || childxtype === 'textcolumn' || childxtype === 'checkcolumn' || childxtype === 'datecolumn' || childxtype === 'rownumberer' || childxtype === 'numbercolumn' || childxtype === 'booleancolumn' ) {
             if(location == null) {
 
                 parentCmp.addColumn(childCmp)
-                //console.log(`parentCmp.xtype}.addColumn(childCmp.xtype})`)
-                return
+                // //console.log(`parentCmp.xtype}.addColumn(childCmp.xtype})`)
+
+                // if (this.parentNode.childrenYetToBeDefined > 0) {
+                //     this.parentNode.childrenYetToBeDefined--
+                // }
+                // console.log('childrenYetToBeDefined(after) '  + this.parentNode.childrenYetToBeDefined)
+                // if (this.parentNode.childrenYetToBeDefined == 0) {
+                //     this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
+                // }
+
+
+        //        return
             }
             else {
                 var regCols = 0;
@@ -346,81 +486,109 @@ static METHODS() { return [
                     regCols = parentCmp.registeredColumns.length;
                 }
                 parentCmp.insertColumn(location + regCols, childCmp)
+
+                // if (this.parentNode.childrenYetToBeDefined > 0) {
+                //     this.parentNode.childrenYetToBeDefined--
+                // }
+                // console.log('childrenYetToBeDefined(after) '  + this.parentNode.childrenYetToBeDefined)
+                // if (this.parentNode.childrenYetToBeDefined == 0) {
+                //     this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
+                // }
+
+
+
+
                 //console.log(`parentCmp.xtype}.insertColumn(location}, childCmp.xtype})`)
-                return
+                //return
             }
             }
             else if ((childxtype === 'toolbar' || childxtype === 'titlebar') && parentCmp.getHideHeaders != undefined) {
-            if (parentCmp.getHideHeaders() === false) {
-                parentCmp.insert(1, childCmp);
-        //          console.log('**')
-                return
-            }
-            else {
-                parentCmp.add(childCmp);
-        //          console.log('**')
-                return
-            }
+                if (parentCmp.getHideHeaders() === false) {
+                    parentCmp.insert(1, childCmp);
+            //          console.log('**')
+            //        return
+                }
+                else {
+                    parentCmp.add(childCmp);
+            //          console.log('**')
+            //        return
+                }
             }
             else {
                 console.log('unhandled else in addTheChild')
-                console.log(parentxtype)
-                console.log(childxtype)
+                //console.log(parentxtype)
+                //console.log(childxtype)
             }
         }
-        if (childxtype === 'tooltip') {
+        else if (childxtype === 'tooltip') {
             parentCmp.setTooltip(childCmp)
         //      console.log('**')
-            return
+            //return
         }
-        if (childxtype === 'plugin') {
+        else if (childxtype === 'plugin') {
             parentCmp.setPlugin(childCmp)
         //      console.log('**')
-            return
+            //return
         }
         else if (parentxtype === 'button') {
             if (childxtype === 'menu') {
             parentCmp.setMenu(childCmp)
         //        console.log('**')
-            return
-            } else {
-            console.log('child not added')
-            console.log(childCmp)
-            console.log(parentCmp)
+            //return
+            }
+            else {
+                console.log('child not added')
+                console.log(childCmp)
+                console.log(parentCmp)
             }
         }
-        if (childxtype === 'toolbar' && Ext.isClassic === true) {
+        else if (childxtype === 'toolbar' && Ext.isClassic === true) {
             parentCmp.addDockedItems(childCmp)
             //console.log('**')
-            return
+            //return
         }
         else if ((childxtype === 'toolbar' || childxtype === 'titlebar') && parentCmp.getHideHeaders != undefined) {
             if (parentCmp.getHideHeaders() === false) {
             parentCmp.insert(1, childCmp)
         //        console.log('**')
-            return
-            } else {
-            parentCmp.add(childCmp)
+            //return
+            }
+            else {
+                parentCmp.add(childCmp)
         //        console.log(`parentCmp.xtype}.add(childCmp.xtype})`)
-            return
+            //return
             }
         }
-            if (parentCmp.add != undefined) {
+        else if (parentCmp.add != undefined) {
 
             if(location == null) {
                 parentCmp.add(childCmp)
         //          console.log(`parentCmp.xtype}.add(childCmp.xtype})`)
-                return
+                //return
             }
             else {
                 parentCmp.insert(location, childCmp)
                 //mjgComment console.log(`parentCmp.xtype}.insert(location}, childCmp.xtype})`)
-                return
+                //return
             }
         }
-        console.log('child not added')
-        console.log(childCmp)
-        console.log(parentCmp)
+        else {
+            console.log('child not added')
+            console.log(childCmp)
+            console.log(parentCmp)
+        }
+
+
+        if (this.parentNode.childrenYetToBeDefined > 0) {
+            this.parentNode.childrenYetToBeDefined--
+        }
+        console.log('childrenYetToBeDefined(after) '  + this.parentNode.childrenYetToBeDefined)
+        if (this.parentNode.childrenYetToBeDefined == 0) {
+            this.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.parentNode.ext}}))
+        }
+
+
+
     }
 
     setEvent(eventparameters,o, me) {
