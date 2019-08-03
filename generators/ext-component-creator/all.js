@@ -7,6 +7,7 @@ var c = {
     webcomponents: 0
 }
 
+
 var path = require('path')
 require('./XTemplate')
 const rimraf = require('rimraf')
@@ -15,6 +16,8 @@ const ncp = require('ncp').ncp
 var fs = require('fs-extra')
 var newLine = '\n'
 var tb = '	'
+
+var allXtypes = `<div>${newLine}`;
 
 var moduleVars = {}
 moduleVars.imports = ''
@@ -63,6 +66,21 @@ var data = require(dataFile)
 //*************
 launch(framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder)
 
+allXtypes = allXtypes + `</div>${newLine}`
+
+var values7 = {
+    allXtypes: allXtypes
+}
+var template7 = '/index.tpl'
+var p7 = path.resolve(templateToolkitFolder + template7)
+var content7 = fs.readFileSync(p7).toString()
+var tpl7 = new Ext.XTemplate(content7)
+var t7 = tpl7.apply(values7)
+delete tpl7
+var classfile7 = `${libFolder}index.html`
+fs.writeFileSync(`${classfile7}`, t7);
+
+
 var val = 'copy';var str = new Array((19 - val.length) + 1).join( ' ' );
 //toFolder = path.resolve(`./../../generators/ext-${framework}-${toolkit}/src`)
 toFolder = path.resolve(`./../../generators/${baseFolder}/src`)
@@ -79,11 +97,13 @@ ncp(srcFolder, toFolder, function (err) {
 
 
 
+ var globalxtype = []
 
-function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder) {
+function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder, globalxtype) {
     c.all++
     var processIt = false
     var template = '/class.tpl'
+
 
     if (o.extended == undefined) {
         //console.log(o.name + ' not a widget')
@@ -164,6 +184,57 @@ function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkit
 
         if (webcomponent == true) {c.webcomponents++}
         //console.log('(' + names.length + ',' + xtypes.length + ') ' + names + ': ' + xtypes)
+
+
+
+//         var properties = `<div class="grid-row">${newLine}`
+//         var propertiesArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
+//         if (propertiesArray.length == 1) {
+//             propertiesArray[0].items.forEach(function (property, index, array) {
+//                 properties = properties +
+// `    <div class="grid-item tooltip">
+// ${property.name}
+//         <pre class="tooltiptext">
+// ${property.name}
+//         </pre>
+//     </div>
+// `
+//                 //properties = properties + `<div style="font-weight:bold;">${config.name}</div>${newLine}`
+//                 //properties = properties + `<div>${config.text}</div>${newLine}`
+//             })
+//         }
+//         properties = properties + `</div>${newLine}`
+
+        var properties = `<div class="select-div"><select id="properties" onchange="changeProperty()" name="properties">${newLine}`
+        var propertiesArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
+        if (propertiesArray.length == 1) {
+            propertiesArray[0].items.forEach(function (property, index, array) {
+                properties = properties + `    <option value="${property.text}">${property.name}</option>${newLine}`
+                //properties = properties + `<div style="font-weight:bold;">${config.name}</div>${newLine}`
+                //properties = properties + `<div>${config.text}</div>${newLine}`
+            })
+        }
+        properties = properties + `</select></div>${newLine}`
+
+        var methods = `<div class="select-div"><select id="methods" onchange="changeMethod()" name="methods">${newLine}`
+        var methodsArray = o.items.filter(function(obj) {return obj.$type == 'methods';});
+        if (methodsArray.length == 1) {
+            methodsArray[0].items.forEach(function (method, index, array) {
+                methods = methods + `    <option value="${method.text}">${method.name}</option>${newLine}`
+            })
+        }
+        methods = methods + `</select></div>${newLine}`
+
+        //https://www.rapidtables.com/web/color/red-color.html
+
+        var events = `<div class="select-div"><select id="events" onchange="changeEvent()" name="events">${newLine}`
+        var eventsArray = o.items.filter(function(obj) {return obj.$type == 'events';});
+        if (eventsArray.length == 1) {
+            eventsArray[0].items.forEach(function (event, index, array) {
+                events = events + `    <option value="${event.text}">${event.name}</option>${newLine}`
+            })
+        }
+        events = events + `</select></div>${newLine}`
 
         sPROPERTIES = ''
         sPROPERTIESOBJECT = ''
@@ -355,17 +426,14 @@ function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkit
             var tpl = new Ext.XTemplate(content)
             var t = tpl.apply(values)
             delete tpl
-
-
-
-
-            //console.log('write: ' + classfile)
             fs.writeFileSync(`${classfile}`, t);
 
-
             for (var j = 0; j < xtypes.length; j++) {
+
+                //console.log(names[i] + ' - ' + xtypes[j])
+                //globalxtype.push(xtypes[j])
+
                 var folder = '.'
-                console.log(xtypes[j])
                 var folders = classname.split('_')
                 for (var k = 0; k < folders.length-1; k++) {
                     folder = folder + '/' + folders[k]
@@ -384,12 +452,61 @@ function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkit
                 delete tpl2
                 var classfile2 = `${libFolder}ext-${xtypes[j]}.component.js`
                 fs.writeFileSync(`${classfile2}`, t2);
+
+                var text200 = ''
+                try {
+                    text200 = o.text.substring(1, 200)
+                }
+                catch(e) {}
+
+
+                var values3 = {
+                    properties: properties,
+                    methods: methods,
+                    events: events,
+                    sPROPERTIESGETSET: sPROPERTIESGETSET,
+                    sMETHODS: sMETHODS,
+                    sPROPERTIES: sPROPERTIES,
+                    sPROPERTIESOBJECT: sPROPERTIESOBJECT,
+                    sEVENTS: sEVENTS,
+                    sEVENTNAMES: sEVENTNAMES,
+                    sEVENTGETSET: sEVENTGETSET,
+                    classname: classname,
+                    folder: folder,
+                    Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
+                    xtype: xtypes[j],
+                    alias: o.alias,
+                    extend:o.extend,
+                    extenders:o.extenders,
+                    mixed:o.mixed,
+                    mixins:o.mixins,
+                    name:o.name,
+                    requires:o.requires,
+                    text:o.text,
+                    text200: text200,
+                    items:o.items,
+                    src:o.src
+                }
+                var template3 = '/doc.tpl'
+                var p3 = path.resolve(templateToolkitFolder + template3)
+                var content3 = fs.readFileSync(p3).toString()
+                var tpl3 = new Ext.XTemplate(content3)
+                var t3 = tpl3.apply(values3)
+                delete tpl3
+                var classfile3 = `${libFolder}ext-${xtypes[j]}.doc.html`
+                fs.writeFileSync(`${classfile3}`, t3);
+
+                allXtypes = allXtypes + `  <div onclick="selectDoc('${xtypes[j]}')">ext-${xtypes[j]}</div><br>${newLine}`
+
+// if (xtype == 'grid') {
+//     console.dir(o)
+// }
+
             }
+
 
             webcomponent = false
         }
-
-
 
 
 
@@ -478,7 +595,14 @@ function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkit
       //console.log('end')
 
     }
+
+
+
+
+
+
 }
+console.log(globalxtype)
 
 //*************
 function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder) {
@@ -556,7 +680,41 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
 
   log(``,`************** following items can be copy/pasted into excel (paste special... text)`)
 
+  if (framework == 'ewc') {
+    var theRoot = `${libFolder}Ext`
+    if (!fs.existsSync(theRoot)) {
+        mkdirp.sync(theRoot)
+        log(`created`,`${theRoot}`)
+    }
 
+    // var values2 = {
+    // }
+    // var template2 = '/style.tpl'
+    // var p2 = path.resolve(templateToolkitFolder + template2)
+    // var content2 = fs.readFileSync(p2).toString()
+    // var tpl2 = new Ext.XTemplate(content2)
+    // var t2 = tpl2.apply(values2)
+    // delete tpl2
+    // var classfile2 = `${libFolder}style.css`
+    // fs.writeFileSync(`${classfile2}`, t2);
+
+
+    // var values8 = {
+    // }
+    // var template8 = '/z-tabs.tpl'
+    // var p8 = path.resolve(templateToolkitFolder + template8)
+    // var content8 = fs.readFileSync(p8).toString()
+    // var tpl8 = new Ext.XTemplate(content8)
+    // var t8 = tpl8.apply(values8)
+    // delete tpl8
+    // var classfile8 = `${libFolder}z-tabs.js`
+    // fs.writeFileSync(`${classfile8}`, t8);
+
+
+
+
+
+  }
 
 
   for (i = 0; i < items.length; i++) {
@@ -565,15 +723,15 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
     if (framework == 'ewc') {
 
         //for ewc
-        var theRoot = `${libFolder}Ext`
-        if (!fs.existsSync(theRoot)) {
-            mkdirp.sync(theRoot)
-            log(`created`,`${theRoot}`)
-        }
+        // var theRoot = `${libFolder}Ext`
+        // if (!fs.existsSync(theRoot)) {
+        //     mkdirp.sync(theRoot)
+        //     log(`created`,`${theRoot}`)
+        // }
 //        return
 
 
-        doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder);
+        doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder, globalxtype);
         continue;
     }
 
