@@ -145,14 +145,16 @@ export function _compilation(compiler, compilation, vars, options) {
         })
       }
       if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
-        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
-          const path = require('path')
-          var jsPath = path.join(vars.extPath, 'ext.js')
-          var cssPath = path.join(vars.extPath, 'ext.css')
-          data.assets.js.unshift(jsPath)
-          data.assets.css.unshift(cssPath)
-          log(app, `Adding ${jsPath} and ${cssPath} to index.html`)
-        })
+        if (options.implicitInjection === 'yes') {
+          compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
+            const path = require('path')
+            var jsPath = path.join(vars.extPath, 'ext.js')
+            var cssPath = path.join(vars.extPath, 'ext.css')
+            data.assets.js.unshift(jsPath)
+            data.assets.css.unshift(cssPath)
+            log(app, `Adding ${jsPath} and ${cssPath} to index.html`)
+          })
+        }
       }
     }
   }
@@ -682,7 +684,11 @@ function _getValidateOptions() {
       "verbose": {
         "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
         "type": ["string"]
-      }
+      },
+      "implicitInjection": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      },
     },
     "additionalProperties": false
   };
@@ -704,6 +710,7 @@ function _getDefaultOptions() {
     treeshake: 'no',
     browser: 'yes',
     watch: 'yes',
-    verbose: 'no'
+    verbose: 'no',
+    implicitInjection: 'yes',
   }
 }
