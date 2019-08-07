@@ -145,7 +145,7 @@ export function _compilation(compiler, compilation, vars, options) {
         })
       }
       if (vars.buildstep == '1 of 1' || vars.buildstep == '2 of 2') {
-        if (options.implicitInjection === 'yes') {
+        if (options.inject === 'yes') {
           compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap(`ext-html-generation`,(data) => {
             const path = require('path')
             var jsPath = path.join(vars.extPath, 'ext.js')
@@ -685,7 +685,7 @@ function _getValidateOptions() {
         "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
         "type": ["string"]
       },
-      "implicitInjection": {
+      "inject": {
         "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
         "type": ["string"]
       },
