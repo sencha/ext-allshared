@@ -20,7 +20,12 @@ async function main() {
   var generatedToolkitSrcFolder = generatedToolkitFolder + '/src/';                                 log(`generatedToolkitSrcFolder`,`${generatedToolkitSrcFolder}`)
   var libFolder                 = generatedToolkitSrcFolder + 'lib/';                                      log(`libFolder`,`${libFolder}`)
 
-  await run(`node ./all.js ${framework} ${toolkit} ${environment} ${components}`)
+  if (framework == 'ewc') {
+    await run(`node ./all2.js ${framework} ${toolkit} ${environment} ${components}`)
+  }
+  else {
+    await run(`node ./all.js ${framework} ${toolkit} ${environment} ${components}`)
+  }
 //  return
   if (framework == 'angular') {
     await run(`cp -R ${forPackageFolder}/${toolkit}/. ../${baseFolder}/`)

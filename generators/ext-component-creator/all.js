@@ -1,13 +1,6 @@
 //node all.js angular modern
 //node all.js components modern
 
-var c = {
-    all: 0,
-    processed: 0,
-    webcomponents: 0
-}
-
-
 var path = require('path')
 require('./XTemplate')
 const rimraf = require('rimraf')
@@ -16,8 +9,6 @@ const ncp = require('ncp').ncp
 var fs = require('fs-extra')
 var newLine = '\n'
 var tb = '	'
-
-var allXtypes = `<div>${newLine}`;
 
 var moduleVars = {}
 moduleVars.imports = ''
@@ -66,21 +57,6 @@ var data = require(dataFile)
 //*************
 launch(framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder)
 
-allXtypes = allXtypes + `</div>${newLine}`
-
-var values7 = {
-    allXtypes: allXtypes
-}
-var template7 = '/index.tpl'
-var p7 = path.resolve(templateToolkitFolder + template7)
-var content7 = fs.readFileSync(p7).toString()
-var tpl7 = new Ext.XTemplate(content7)
-var t7 = tpl7.apply(values7)
-delete tpl7
-var classfile7 = `${libFolder}index.html`
-fs.writeFileSync(`${classfile7}`, t7);
-
-
 var val = 'copy';var str = new Array((19 - val.length) + 1).join( ' ' );
 //toFolder = path.resolve(`./../../generators/ext-${framework}-${toolkit}/src`)
 toFolder = path.resolve(`./../../generators/${baseFolder}/src`)
@@ -95,517 +71,9 @@ ncp(srcFolder, toFolder, function (err) {
   log(``,`done`)
  })
 
-
-
- var globalxtype = []
-
-function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder, globalxtype) {
-    c.all++
-    var processIt = false
-    var template = '/class.tpl'
-
-
-    if (o.extended == undefined) {
-        //console.log(o.name + ' not a widget')
-        processIt = false;
-    }
-    else {
-        var n = o.extended.indexOf("Ext.Widget");
-        if (n != -1) {
-            processIt = true;
-        }
-        else {
-            //console.log(o.name + ' not a decendant of Ext.Widget')
-            processIt = false;
-        }
-    }
-    if (o.name == 'Ext.Widget') {
-        processIt = true
-    }
-    if (o.name == 'Ext.Evented') {
-        processIt = true
-    }
-    if (o.name == 'Ext.Base') {
-        template = '/base.tpl'
-        processIt = true
-    }
-    if (o.items == undefined) {
-        //console.log(o.name + ' has no items')
-        processIt = false
-    }
-
-    if (processIt == true) {
-        c.processed++
-        var tab = "";
-        var webcomponent = true
-        //var xtype = ''
-        var sMETHODS = "";
-        var sEVENTS = "";
-        var sEVENTNAMES = "";
-        var sEVENTGETSET = ''
-        var sPROPERTIES = ''
-        var sPROPERTIESOBJECT = ''
-        var sPROPERTIESGETSET = ''
-
-        if (o.extends != undefined) {
-            var n = o.extends.indexOf(",");
-            if (n != -1) {
-                //console.log('mult extends: ' + o.name + ' - ' + o.extends)
-                o.extends = o.extends.substr(0,n)
-            }
-        }
-
-        var names = []
-        names.push(o.name)
-        if (o.alternateClassNames != undefined) {
-            var alt = o.alternateClassNames.split(",");
-            names = names.concat(alt)
-        }
-
-        var aliases = []
-        var xtypes = []
-        if (o.alias != undefined) {
-            if (o.alias.substring(0, 6) == 'widget') {
-              aliases = o.alias.split(",")
-              for (alias = 0; alias < aliases.length; alias++) {
-                if (aliases[alias].substring(0, 6) == 'widget') {
-                  xtypes.push(aliases[alias].substring(7))
-                }
-              }
-            }
-            else {
-                webcomponent = false
-            }
-        }
-        else {
-            webcomponent = false
-        }
-
-
-        if (webcomponent == true) {c.webcomponents++}
-        //console.log('(' + names.length + ',' + xtypes.length + ') ' + names + ': ' + xtypes)
-
-
-
-//         var properties = `<div class="grid-row">${newLine}`
-//         var propertiesArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
-//         if (propertiesArray.length == 1) {
-//             propertiesArray[0].items.forEach(function (property, index, array) {
-//                 properties = properties +
-// `    <div class="grid-item tooltip">
-// ${property.name}
-//         <pre class="tooltiptext">
-// ${property.name}
-//         </pre>
-//     </div>
-// `
-//                 //properties = properties + `<div style="font-weight:bold;">${config.name}</div>${newLine}`
-//                 //properties = properties + `<div>${config.text}</div>${newLine}`
-//             })
-//         }
-//         properties = properties + `</div>${newLine}`
-
-        var properties = `<div class="select-div"><select id="properties" onchange="changeProperty()" name="properties">${newLine}`
-        var propertiesArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
-        if (propertiesArray.length == 1) {
-            propertiesArray[0].items.forEach(function (property, index, array) {
-                properties = properties + `    <option value="${property.text}">${property.name}</option>${newLine}`
-                //properties = properties + `<div style="font-weight:bold;">${config.name}</div>${newLine}`
-                //properties = properties + `<div>${config.text}</div>${newLine}`
-            })
-        }
-        properties = properties + `</select></div>${newLine}`
-
-        var methods = `<div class="select-div"><select id="methods" onchange="changeMethod()" name="methods">${newLine}`
-        var methodsArray = o.items.filter(function(obj) {return obj.$type == 'methods';});
-        if (methodsArray.length == 1) {
-            methodsArray[0].items.forEach(function (method, index, array) {
-                methods = methods + `    <option value="${method.text}">${method.name}</option>${newLine}`
-            })
-        }
-        methods = methods + `</select></div>${newLine}`
-
-        //https://www.rapidtables.com/web/color/red-color.html
-
-        var events = `<div class="select-div"><select id="events" onchange="changeEvent()" name="events">${newLine}`
-        var eventsArray = o.items.filter(function(obj) {return obj.$type == 'events';});
-        if (eventsArray.length == 1) {
-            eventsArray[0].items.forEach(function (event, index, array) {
-                events = events + `    <option value="${event.text}">${event.name}</option>${newLine}`
-            })
-        }
-        events = events + `</select></div>${newLine}`
-
-        sPROPERTIES = ''
-        sPROPERTIESOBJECT = ''
-        sPROPERTIESGETSET = ''
-        var configsArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
-        if (configsArray.length == 1) {
-            configsArray[0].items.forEach(function (config, index, array) {
-                if (config.from == undefined) {
-                //console.log(config.name + ' - ' + config.type)
-                if (config.deprecatedMessage == undefined) {
-                    var type = ''
-                    if (config.type == undefined) {
-                        type = 'any'
-                    }
-                    else {
-                        type = config.type.replace(/"/g, "\'");
-                    }
-                    var typeArray = type.split("/");
-                    var s = '[';
-                    var i = 0;
-                    typeArray.forEach(function (currentValue,index,arr) {
-                        var comma = ''
-                        if (i > 0) {
-                            comma = ','
-                        }
-                        i++;
-                        var newVal;
-                        if (currentValue.startsWith("Ext.")) {
-                            newVal = currentValue
-                        }
-                        else {
-                            newVal = currentValue.toLowerCase()
-                        }
-                        s = s + `${comma}"${newVal}"`
-                    })
-                    s = s + `]`
-
-                    sPROPERTIES = `${sPROPERTIES}    '${config.name}',${newLine}`
-                    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"${config.name}":${s},${newLine}`;
-                    sPROPERTIESGETSET = sPROPERTIESGETSET + `get ${config.name}(){return this.getAttribute('${config.name}')};set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`
-                    }
-                }
-            })
-        }
-
-        sMETHODS = "";
-        var methodsArray = o.items.filter(function(obj) {return obj.$type == 'methods';});
-        if (methodsArray.length == 1) {
-            methodsArray[0].items.forEach(function (method, index, array) {
-                if (method.from == undefined) {
-                    //console.log(method.name + ' - ' + method.from)
-                    sMETHODS = sMETHODS + tab + tab + "{ name:'" + method.name + "',function: function"
-                    var sItems =''
-                    if (method.items !== undefined) {
-                        var arrayLength = method.items.length;
-                        for (var i = 0; i < arrayLength; i++) {
-                            if (method.items[i].$type == 'param') {
-                            if (i == arrayLength-1){commaOrBlank= ''} else {commaOrBlank= ','};
-                            sItems = sItems + method.items[i].name + ','
-                            }
-                        }
-                    }
-                    sItems = sItems.substring(0, sItems.length-1);
-                    sMETHODS = sMETHODS + "(" + sItems + ") { return this.ext." + method.name + "(" + sItems + ") } },\n";
-                }
-            });
-        }
-
-        sEVENTS = "";
-        sEVENTNAMES = "";
-        sEVENTGETSET = ''
-        var eventsArray = o.items.filter(function(obj) {return obj.$type == 'events';});
-        if (eventsArray.length == 1) {
-            eventsArray[0].items.forEach(function (event, index, array) {
-                if (event.from == undefined) {
-                    //console.log(event.name + ' - ' + event.from)
-
-                    // if (event.name == undefined) {
-                    // var s = event.inheritdoc;
-                    // event.name = s.substr(s.indexOf('#') + 1);
-                    // }
-                    //if (event.name == 'tap') { event.name = 'tapit' };
-
-                    var eventName = 'on' + event.name
-                    sEVENTGETSET = sEVENTGETSET + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
-
-                    sEVENTS = sEVENTS + tab + tab + "{name:'" + event.name + "',parameters:'";
-                    sEVENTNAMES = sEVENTNAMES + tab + tab + "'" + event.name + "'" + "," + newLine;
-                    if (event.items != undefined) {
-                        event.items.forEach(function (parameter, index, array) {
-                            if (index == array.length-1){commaOrBlank= ''} else {commaOrBlank= ','};
-                            if (parameter.name == 'this'){ parameter.name = o.xtype };
-                            sEVENTS = sEVENTS + "" + parameter.name + commaOrBlank;
-                        });
-                    }
-                    sEVENTS = sEVENTS + "'}" + "," + newLine;
-                }
-            })
-        }
-
-        var extension = 'js'
-        var p = path.resolve(templateToolkitFolder + template)
-        var content = fs.readFileSync(p).toString()
-
-        for (var i = 0; i < names.length; i++) {
-            var name = names[i];
-            var xtype = xtypes[0];
-            //console.log(names[i] + '_' + xtype + ' xtype: ' + xtype + ' - ' + xtypes)
-            var classfilename = `${name}.Component`
-            var classname = name.replace(/\./g,
-                 "_") + "_Component"
-            //var classfile = `${libFolder}${classfilename}.${extension}`
-
-            var folder = ''
-            var filename = ''
-            var parts = name.split(".")
-            var thePath = ''
-            var pathprefix = ''
-            for (var j = 0; j < parts.length-1; j++) {
-                thePath = thePath + parts[j] + '/'
-                pathprefix = pathprefix + '../'
-            }
-            folder = `${libFolder}${thePath}`
-            //console.log(folder + ': ' + parts[parts.length-1])
-            filename = parts[parts.length-1]
-
-            if (!fs.existsSync(folder)) {
-                mkdirp.sync(folder)
-                //log(`created`,`${folder}`)
-            }
-
-//             var webcomponentdef = ''
-//             var customelements = ''
-//             if (webcomponent == true) {
-//                 customelements = `window.customElements.define('ext-${xtypes[0]}', ${classname});`
-//                 webcomponentdef =
-// `(function () {
-//     Ext.onReady(function() {
-//         ${customelements}
-//     });
-// })();
-// `
-//         //}
-
-//             }
-//             else {
-//                 //console.log(name)
-//             }
-
-            var classfile = `${folder}${filename}.${extension}`
-            var extendparts = o.extends.split(".")
-            var extendpath = ''
-            for (var j = 0; j < extendparts.length-1; j++) {
-                extendpath = extendpath + extendparts[j] + '/'
-            }
-            //var classextendsfilename = o.extends + ".Component"
-            var classextendsfilename = extendparts[extendparts.length-1]
-            var extendsclassname = o.extends.replace(/\./g, "_") + "_Component"
-
-//  <tpl if="webcomponent == true">
-// (function () {
-//   Ext.onReady(function() {
-//     window.customElements.define('ext-{xtype}', {classname});
-//   });
-// })();
-// </tpl>
-
-            var values = {
-                sPROPERTIESGETSET: sPROPERTIESGETSET,
-                sMETHODS: sMETHODS,
-                sPROPERTIES: sPROPERTIES,
-                sPROPERTIESOBJECT: sPROPERTIESOBJECT,
-                sEVENTS: sEVENTS,
-                sEVENTNAMES: sEVENTNAMES,
-                sEVENTGETSET: sEVENTGETSET,
-                webcomponent: webcomponent,
-  //              webcomponentdef: webcomponentdef,
- //               alias: o.alias,
-                xtype: xtype,
-                classfilename : classfilename,
-                name: name,
-                classname: classname,
-                pathprefix: pathprefix,
-                extendpath: extendpath,
-                extends: o.extends,
-                extendsclassname: extendsclassname,
-                classextendsfilename: classextendsfilename
-            }
-            var tpl = new Ext.XTemplate(content)
-            var t = tpl.apply(values)
-            delete tpl
-            fs.writeFileSync(`${classfile}`, t);
-
-            for (var j = 0; j < xtypes.length; j++) {
-
-                //console.log(names[i] + ' - ' + xtypes[j])
-                //globalxtype.push(xtypes[j])
-
-                var folder = '.'
-                var folders = classname.split('_')
-                for (var k = 0; k < folders.length-1; k++) {
-                    folder = folder + '/' + folders[k]
-                }
-                var values = {
-                    classname: classname,
-                    folder: folder,
-                    Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
-                    xtype: xtypes[j]
-                }
-                var template2 = '/xtype.tpl'
-                var p2 = path.resolve(templateToolkitFolder + template2)
-                var content2 = fs.readFileSync(p2).toString()
-                var tpl2 = new Ext.XTemplate(content2)
-                var t2 = tpl2.apply(values)
-                delete tpl2
-                var classfile2 = `${libFolder}ext-${xtypes[j]}.component.js`
-                fs.writeFileSync(`${classfile2}`, t2);
-
-                var text200 = ''
-                try {
-                    text200 = o.text.substring(1, 200)
-                }
-                catch(e) {}
-
-
-                var values3 = {
-                    properties: properties,
-                    methods: methods,
-                    events: events,
-                    sPROPERTIESGETSET: sPROPERTIESGETSET,
-                    sMETHODS: sMETHODS,
-                    sPROPERTIES: sPROPERTIES,
-                    sPROPERTIESOBJECT: sPROPERTIESOBJECT,
-                    sEVENTS: sEVENTS,
-                    sEVENTNAMES: sEVENTNAMES,
-                    sEVENTGETSET: sEVENTGETSET,
-                    classname: classname,
-                    folder: folder,
-                    Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
-                    xtype: xtypes[j],
-                    alias: o.alias,
-                    extend:o.extend,
-                    extenders:o.extenders,
-                    mixed:o.mixed,
-                    mixins:o.mixins,
-                    name:o.name,
-                    requires:o.requires,
-                    text:o.text,
-                    text200: text200,
-                    items:o.items,
-                    src:o.src
-                }
-                var template3 = '/doc.tpl'
-                var p3 = path.resolve(templateToolkitFolder + template3)
-                var content3 = fs.readFileSync(p3).toString()
-                var tpl3 = new Ext.XTemplate(content3)
-                var t3 = tpl3.apply(values3)
-                delete tpl3
-                var classfile3 = `${libFolder}ext-${xtypes[j]}.doc.html`
-                fs.writeFileSync(`${classfile3}`, t3);
-
-                allXtypes = allXtypes + `  <div onclick="selectDoc('${xtypes[j]}')">ext-${xtypes[j]}</div><br>${newLine}`
-
-// if (xtype == 'grid') {
-//     console.dir(o)
-// }
-
-            }
-
-
-            webcomponent = false
-        }
-
-
-
-
-
-
-
-
-
-
-
-        // if (o.alternateClassNames != undefined) {
-        //     console.log(o.name + ' - ' + o.alternateClassNames)
-        // }
-
-
-
-        // if (xtype == 'calendar-multiview' ||
-        //     xtype == 'calendar-multiview'
-        // ) {
-        //     //console.log(xtype)
-        // }
-        // else {
-        //     //console.log(classname + ' - ' + xtype  + ' - ' + extendsclassname)
-        //     fs.writeFile(`${classfile}`, t, function(err) {if(err) { return console.log(err); }});
-        // }
-
-
-
-        // if (o.alias == 'widget.container') {
-        //     console.log(o)
-        // }
-        // if (xtype == 'calendar-multiview') {
-        //     console.log(o)
-        // }
-        //console.log("import '@sencha/ext-web-components/lib/" + classfile + "';")
-
-         if (o.xtype == 'zzgrid') {
-            console.log('&&&&&&&&&&&&&&&&')
-
-            o.items.forEach(function (val1,index,arr) {
-                //console.log(val1.$type)
-                //console.log(val.items)
-                val1.items.forEach(function (val,index,arr) {
-
-                    if (val.$type == 'property') {
-
-                        if (val.optional == undefined) { val.optional = false}
-                        if (val.inheritdoc == undefined) { val.optional = false}
-                        //console.log(  ' optional '  + val.optional  )
-                        // console.log(
-                        //     ' $type ' + val.$type +
-                        //     ' inheritdoc ' + val.inheritdoc +
-                        //     ' access ' + val.access +
-
-                        //     ' from '  + val.from  +
-                        //     ' name '  + val.name  +
-                        //     ' optional '  + val.optional  +
-                        // //    ' text '  + val.text  +
-                        //     ' type '  + val.type
-                        // //    ' value '  + val.value  +
-                        // //    ' src '  + val.srcFolde
-                        // )
-                        // //    val.name+ ' (' + val.type + ') ' +  ' value: ' + 'val.value' + ' text: ' + val.text)
-
-                        if (val.name == 'classCls') {
-                            console.log(val)
-                        }
-                    }
-                })
-
-                //console.log(val.items.name + ' ' + val.items.$type )
-
-            })
-
-
-
-    //      console.log(o)
-    //      console.log(o.items)
-
-        //   var configs = o.items.filter(function(obj) {return obj.$type == 'configs';});
-        // console.log(configs[0].items)
-          console.log('&&&&&&&&&&&&&&&&')
-
-      }
-      //console.log('end')
-
-    }
-
-
-
-
-
-
-}
-console.log(globalxtype)
-
 //*************
 function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder) {
+
   var extension
   switch(framework) {
     case 'studio':
@@ -666,9 +134,9 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
 
       break
     case 'web-components':
-    //   var routerFile = `${libFolder}aa-router.component.js`
-    //   fs.writeFile(routerFile, doRouter(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
-    //   log(`routerFile`,`${routerFile}`);
+      var routerFile = `${libFolder}aa-router.component.js`
+      fs.writeFile(routerFile, doRouter(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
+      log(`routerFile`,`${routerFile}`);
       break
     default:
       break
@@ -676,79 +144,31 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
 
     var num = 0
     var items = data.global.items
-    //console.log(`item count`,`${items.length}`)
+    log(`item count`,`${items.length}`)
 
   log(``,`************** following items can be copy/pasted into excel (paste special... text)`)
 
-  if (framework == 'ewc') {
-    var theRoot = `${libFolder}Ext`
-    if (!fs.existsSync(theRoot)) {
-        mkdirp.sync(theRoot)
-        log(`created`,`${theRoot}`)
-    }
-
-    // var values2 = {
-    // }
-    // var template2 = '/style.tpl'
-    // var p2 = path.resolve(templateToolkitFolder + template2)
-    // var content2 = fs.readFileSync(p2).toString()
-    // var tpl2 = new Ext.XTemplate(content2)
-    // var t2 = tpl2.apply(values2)
-    // delete tpl2
-    // var classfile2 = `${libFolder}style.css`
-    // fs.writeFileSync(`${classfile2}`, t2);
-
-
-    // var values8 = {
-    // }
-    // var template8 = '/z-tabs.tpl'
-    // var p8 = path.resolve(templateToolkitFolder + template8)
-    // var content8 = fs.readFileSync(p8).toString()
-    // var tpl8 = new Ext.XTemplate(content8)
-    // var t8 = tpl8.apply(values8)
-    // delete tpl8
-    // var classfile8 = `${libFolder}z-tabs.js`
-    // fs.writeFileSync(`${classfile8}`, t8);
-
-
-
-
-
-  }
-
-
   for (i = 0; i < items.length; i++) {
     var o = items[i];
-
-    if (framework == 'ewc') {
-
-        //for ewc
-        // var theRoot = `${libFolder}Ext`
-        // if (!fs.existsSync(theRoot)) {
-        //     mkdirp.sync(theRoot)
-        //     log(`created`,`${theRoot}`)
-        // }
-//        return
-
-
-        doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkitFolder, moduleVars, baseFolder, globalxtype);
-        continue;
-    }
-
     if (o.alias != undefined) {
       if (o.alias.substring(0, 6) == 'widget') {
-
         var aliases = o.alias.split(",")
         for (alias = 0; alias < aliases.length; alias++) {
           if (aliases[alias].substring(0, 6) == 'widget') {
             if (o.items != undefined) {
               num++;
               o.xtype = aliases[alias].substring(7)
-              //console.log('{"xtype":"' + o.xtype + '"},')
-              //console.log("import '@sencha/ext-web-components/lib/ext-" + o.xtype + ".component';")
-              //if (environment == 'dev') {
+              ///testing
+              if (environment == 'dev') {
+                //if (o.xtype == 'container'  || o.xtype == 'button') {
                   oneItem(o, libFolder, framework, extension, num, o.xtype, alias, moduleVars)
-              //}
+                //}
+              }
+              // else if (components.includes(o.xtype)) {
+              // if (o.xtype == 'container'  || o.xtype == 'button') {
+              //   oneItem(o, libFolder, framework, extension, num, o.xtype, alias, moduleVars)
+              // }
+              // }
             }
             else {
               //console.log(``,'not: ' + o.name + ' - ' + o.alias)
@@ -757,12 +177,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
         }
       }
     }
-
   }
-  console.log('all          : ' + c.all)
-  console.log('processed    : ' + c.processed)
-  console.log('webcomponents: ' + c.webcomponents)
-
 
   log(``,`**************`)
 
@@ -792,9 +207,9 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
         var publicApiFile = `${srcFolder}public_api.${extension}`
         fs.writeFile(publicApiFile, doPublic_Api(exportall, templateToolkitFolder), function(err) {if(err) { return console.log(err); } });
         log(`publicApiFile`,`${publicApiFile}`)
-        //var classfile = `${libFolder}ext-class.component.${extension}`
-        //fs.writeFile(classfile, doExtClass(), function(err) {if(err){return console.log(err);} })
-        //log(`classfile`,`${classfile}`)
+        //var classFile = `${libFolder}ext-class.component.${extension}`
+        //fs.writeFile(classFile, doExtClass(), function(err) {if(err){return console.log(err);} })
+        //log(`classFile`,`${classFile}`)
         var baseFile = `${libFolder}base.${extension}`
         fs.writeFile(baseFile, doExtBase(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
         log(`baseFile`,`${baseFile}`)
@@ -834,11 +249,12 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
 //    var sALIAS = o.alias;
   var classname =  o.xtype.replace(/-/g, "_")
   var capclassname = classname.charAt(0).toUpperCase() + classname.slice(1)
-  var classfile = `${libFolder}ext-${o.xtype}.component.${extension}`
-  //console.log(`${xtype}${tb}${tb}${('  ' + num).substr(-3)}_${alias}${tb}${classfile}`)
+  var classFile = `${libFolder}ext-${o.xtype}.component.${extension}`
+  //console.log(`${xtype}${tb}${tb}${('  ' + num).substr(-3)}_${alias}${tb}${classFile}`)
   var commaOrBlank = "";
   //var tab = "\t";
   var tab = "";
+
 
   var sMETHODS = "";
   var methodsArray = o.items.filter(function(obj) {return obj.$type == 'methods';});
@@ -862,7 +278,59 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
 
   var sPROPERTIES = "";
   var sPROPERTIESOBJECT = "";
-  var sPROPERTIESGETSET = "";
+  var sGETSET = "";
+
+  if (o.xtype == 'grid') {
+        console.log('&&&&&&&&&&&&&&&&')
+
+        o.items.forEach(function (val1,index,arr) {
+            //console.log(val1.$type)
+            //console.log(val.items)
+            val1.items.forEach(function (val,index,arr) {
+
+                if (val.$type == 'property') {
+
+                    if (val.optional == undefined) { val.optional = false}
+                    if (val.inheritdoc == undefined) { val.optional = false}
+                    console.log(  ' optional '  + val.optional  )
+                    // console.log(
+                    //     ' $type ' + val.$type +
+                    //     ' inheritdoc ' + val.inheritdoc +
+                    //     ' access ' + val.access +
+
+                    //     ' from '  + val.from  +
+                    //     ' name '  + val.name  +
+                    //     ' optional '  + val.optional  +
+                    // //    ' text '  + val.text  +
+                    //     ' type '  + val.type
+                    // //    ' value '  + val.value  +
+                    // //    ' src '  + val.srcFolde
+                    // )
+                    // //    val.name+ ' (' + val.type + ') ' +  ' value: ' + 'val.value' + ' text: ' + val.text)
+
+                    if (val.name == 'classCls') {
+                        console.log(val)
+                    }
+                }
+            })
+
+            //console.log(val.items.name + ' ' + val.items.$type )
+
+        })
+
+
+
+//      console.log(o)
+//      console.log(o.items)
+
+    //   var configs = o.items.filter(function(obj) {return obj.$type == 'configs';});
+    // console.log(configs[0].items)
+      console.log('&&&&&&&&&&&&&&&&')
+
+  }
+
+
+
 
   var configsArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
   if (configsArray.length == 1) {
@@ -907,7 +375,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
         s = s + `]`
 
         sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"${config.name}":${s},${newLine}`;
-        sPROPERTIESGETSET = sPROPERTIESGETSET + tab + `get ${config.name}(){return this.getAttribute('${config.name}')};set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`
+        sGETSET = sGETSET + tab + `get ${config.name}(){return this.getAttribute('${config.name}')};set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`
       }
     }
   );
@@ -929,13 +397,13 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
     sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}    "config": "Object",${newLine}`;
 
     var eventName = ''
-    eventName = 'platformConfig';sPROPERTIESGETSET = sPROPERTIESGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
+    eventName = 'platformConfig';sGETSET = sGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
     if (haveResponsiveConfig == false) {
-      eventName = 'responsiveConfig';sPROPERTIESGETSET = sPROPERTIESGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
+      eventName = 'responsiveConfig';sGETSET = sGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
     }
-    eventName = 'align';sPROPERTIESGETSET = sPROPERTIESGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
-    eventName = 'fitToParent';sPROPERTIESGETSET = sPROPERTIESGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
-    eventName = 'config';sPROPERTIESGETSET = sPROPERTIESGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
+    eventName = 'align';sGETSET = sGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
+    eventName = 'fitToParent';sGETSET = sGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
+    eventName = 'config';sGETSET = sGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
 
   }
 
@@ -951,7 +419,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
       //if (event.name == 'tap') { event.name = 'tapit' };
 
       var eventName = 'on' + event.name
-      sPROPERTIESGETSET = sPROPERTIESGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
+      sGETSET = sGETSET + tab + `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`
 
       sEVENTS = sEVENTS + tab + tab + "{name:'" + event.name + "',parameters:'";
       sEVENTNAMES = sEVENTNAMES + tab + tab + "'" + event.name + "'" + "," + newLine;
@@ -978,7 +446,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
   var values = {
     alias: o.alias,
     xtype: o.xtype,
-    sPROPERTIESGETSET: sPROPERTIESGETSET,
+    sGETSET: sGETSET,
     sMETHODS: sMETHODS,
     sPROPERTIES: sPROPERTIES,
     sPROPERTIESOBJECT: sPROPERTIESOBJECT,
@@ -993,18 +461,18 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
 
   switch(framework) {
     case 'studio':
-            fs.writeFile(`${classfile}`, doClassStudio(values), function(err) {if(err) { return console.log(err); }});
+            fs.writeFile(`${classFile}`, doClassStudio(values), function(err) {if(err) { return console.log(err); }});
 
 
 
 
-        //fs.writeFile(`${classfile}`, doClass(o.xtype, sPROPERTIESGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
+        //fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
         break;
     case 'angular':
-      fs.writeFile(`${classfile}`, doClass(o.xtype, sPROPERTIESGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
+      fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
       break;
     case 'web-components':
-      fs.writeFile(`${classfile}`, doClass(o.xtype, sPROPERTIESGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
+      fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
       break;
     default:
       break;
@@ -1036,7 +504,7 @@ function doClassStudio(values) {
     var content = fs.readFileSync(p).toString()
     // var values = {
     //   xtype: xtype,
-    //   sPROPERTIESGETSET: sPROPERTIESGETSET,
+    //   sGETSET: sGETSET,
     //   sMETHODS: sMETHODS,
     //   sPROPERTIES: sPROPERTIES,
     //   sPROPERTIESOBJECT: sPROPERTIESOBJECT,
@@ -1046,19 +514,19 @@ function doClassStudio(values) {
     //   capclassname: capclassname,
     //   classname: classname
     // }
-    //console.log(values.alias)
+    console.log(values.alias)
     var tpl = new Ext.XTemplate(content)
     var t = tpl.apply(values)
     delete tpl
     return t
    }
 
-function doClass(xtype, sPROPERTIESGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, name, classname, capclassname, templateToolkitFolder) {
+function doClass(xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, name, classname, capclassname, templateToolkitFolder) {
   var p = path.resolve(templateToolkitFolder + '/class.tpl')
   var content = fs.readFileSync(p).toString()
   var values = {
     xtype: xtype,
-    sPROPERTIESGETSET: sPROPERTIESGETSET,
+    sGETSET: sGETSET,
     sMETHODS: sMETHODS,
     sPROPERTIES: sPROPERTIES,
     sPROPERTIESOBJECT: sPROPERTIESOBJECT,
@@ -1106,11 +574,11 @@ function doBootstrapService(templateToolkitFolder) {
   return content
 }
 
-// function doRouter(templateToolkitFolder) {
-//   var p = path.resolve(templateToolkitFolder + '/aa-router.component.tpl')
-//   var content = fs.readFileSync(p).toString()
-//   return content
-// }
+function doRouter(templateToolkitFolder) {
+  var p = path.resolve(templateToolkitFolder + '/aa-router.component.tpl')
+  var content = fs.readFileSync(p).toString()
+  return content
+}
 
 
 
@@ -1187,7 +655,7 @@ function processArgs(framework, toolkit) {
     log(``,`framework: ${framework} is incorrect.  should be web-components or angular`)
     return -1
   }
-  if ((framework != 'web-components') && (framework != 'angular') && (framework != 'studio') && (framework != 'ewc')) {
+  if ((framework != 'web-components') && (framework != 'angular') && (framework != 'studio')) {
     log(``,`framework: ${framework} is incorrect.  should be web-components or angular or studio`)
     return -1
   }
@@ -1213,5 +681,5 @@ function log(v,s) {
     blanks = new Array((25 - v.length) + 1).join( ' ' )
     blanks = blanks + ': '
   }
-  console.log(`${v}${blanks}${s}`)
+  //console.log(`${v}${blanks}${s}`)
 }
