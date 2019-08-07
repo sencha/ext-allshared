@@ -711,6 +711,6 @@ function _getDefaultOptions() {
     browser: 'yes',
     watch: 'yes',
     verbose: 'no',
-    implicitInjection: 'yes',
+    inject: 'yes'
   }
 }
