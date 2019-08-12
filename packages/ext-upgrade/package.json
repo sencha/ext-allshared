@@ -10,7 +10,8 @@
   },
   "keywords": [
     "Ext JS",
-    "ext-upgrade"
+    "ext-upgrade",
+    "ext-movetolatest"
   ],
   "directories": {
     "lib": "lib"

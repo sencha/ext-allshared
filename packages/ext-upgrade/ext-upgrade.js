@@ -60,8 +60,8 @@ function upgrade() {
     return
   }
 
-  if (o.foundVersion == '6.7.1') {
-    console.log(boldRed('Upgrade Not Needed: ') + ' project is already upgraded to version 6.7.1')
+  if (o.foundVersion == '7.0.0') {
+    console.log(boldRed('Upgrade Not Needed: ') + ' project is already upgraded to version 7.0.0')
     return
   }
 
@@ -73,7 +73,7 @@ function upgrade() {
   archive(themerts)
   archive(polyfillsts)
 
-  console.log(boldGreen('Upgrading ') + o.foundFramework + ': version ' + o.foundVersion + ' to version 6.7.1')
+  console.log(boldGreen('Upgrading ') + o.foundFramework + ': version ' + o.foundVersion + ' to version 7.0.0')
  
   var frameworkTemplateFolder = path.join(upgradeDir, o.foundFramework)
   packageJson.new = JSON.parse(fs.readFileSync(path.join(frameworkTemplateFolder, 'package.json'), {encoding: 'utf8'}))
