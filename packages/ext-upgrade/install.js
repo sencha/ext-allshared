@@ -11,12 +11,12 @@ var nodeDir = path.resolve(__dirname)
 var pkg = (fs.existsSync(nodeDir + '/package.json') && JSON.parse(fs.readFileSync(nodeDir + '/package.json', 'utf-8')) || {});
 version = pkg.version
 
-console.log (`Welcome to ${boldGreen('Sencha ExtUpgrade')} v${version}
+console.log (`Welcome to ${boldGreen('Sencha Ext MoveToLatest')} v${version}
 
-This tool upgrades applications generated with ext-gen, ext-react-gen or ext-angular-gen
+This tool upgrades applications generated with previous versions of ext-gen, ext-react-gen, ext-angular-gen, or ExtJSReactor to the 7.0.0 version of the same product.
 
-It must be run in an existing ExtGen, ExtReact or ExtAngular project folder
+Ext MoveToLatest must be run in an existing ExtGen, ExtReact, ExtAngular, or ExtJSReactor project folder
 
 ${boldGreen('Quick Start:')} 
-ext-upgrade
+ext-movetolatest
 `)

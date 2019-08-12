@@ -1,16 +1,15 @@
 {
-  "name": "@sencha/ext-upgrade",
+  "name": "@sencha/ext-movetolatest",
   "version": "7.0.0",
-  "description": "Sencha ExtUpgrade",
+  "description": "Sencha ExtMoveToLatest",
   "bin": {
-    "ext-upgrade": "ext-upgrade.js"
+    "ext-movetolatest": "ext-movetolatest.js"
   },
   "scripts": {
     "install": "node ./install.js"
   },
   "keywords": [
     "Ext JS",
-    "ext-upgrade",
     "ext-movetolatest"
   ],
   "directories": {
