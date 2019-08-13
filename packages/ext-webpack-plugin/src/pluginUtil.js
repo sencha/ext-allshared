@@ -44,7 +44,7 @@ export function _constructor(initialOptions) {
 
     //mjg added for angular cli build
     if (framework == 'angular' &&
-        options.inject == 'no' &&
+        options.intellishake == 'no' &&
         vars.production == true
         && treeshake == 'yes') {
             vars.buildstep = '1 of 1';
@@ -125,7 +125,7 @@ export function _compilation(compiler, compilation, vars, options) {
         var extComponents = [];
 
         //mjg for 1 step build
-        if (vars.buildstep == '1 of 1' && framework === 'angular') {
+        if (vars.buildstep == '1 of 1' && framework === 'angular' && options.intellishake == 'no') {
             extComponents = require(`./${framework}Util`)._getAllComponents(vars, options);
             console.log(extComponents)
         }
@@ -706,6 +706,10 @@ function _getValidateOptions() {
         "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
         "type": ["string"]
       },
+      "intellishake": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      },
     },
     "additionalProperties": false
   };
@@ -728,6 +732,7 @@ function _getDefaultOptions() {
     browser: 'yes',
     watch: 'yes',
     verbose: 'no',
-    inject: 'yes'
+    inject: 'yes',
+    intellishake: 'yes'
   }
 }
