@@ -158,7 +158,8 @@ export function _getAllComponents(vars, options) {
 
 //    log(vars.app, `Getting all referenced ext-${options.framework} modules`)
   var extComponents = []
-  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src/lib')
+  //const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src/lib')
+  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src')
   var files = fsx.readdirSync(packageLibPath)
   files.forEach((fileName) => {
     if (fileName && fileName.substr(0, 4) == 'ext-') {

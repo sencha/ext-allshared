@@ -123,6 +123,14 @@ export function _compilation(compiler, compilation, vars, options) {
     if (framework != 'extjs') {
       if (options.treeshake === 'yes' && options.environment === 'production') {
         var extComponents = [];
+
+        //mjg for 1 step build
+        if (vars.buildstep == '1 of 1' && framework === 'angular') {
+            extComponents = require(`./${framework}Util`)._getAllComponents(vars, options);
+            console.log(extComponents)
+        }
+
+
         if (vars.buildstep == '1 of 2' || (vars.buildstep == '1 of 1' && framework === 'web-components')) {
           extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
         }
