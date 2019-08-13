@@ -106,10 +106,10 @@ export class base {
       o.renderTo = undefined;
     }
 
-    //this.ext = Ext.create(o)
     Ext.onReady(function() {
         me.ext = Ext.create(o)
     });
+
   }
 
   @ContentChild('extroute',{ static : false }) _extroute: any;

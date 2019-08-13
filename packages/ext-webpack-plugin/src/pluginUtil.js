@@ -42,7 +42,16 @@ export function _constructor(initialOptions) {
 
     log(app, _getVersions(pluginName, framework))
 
-    if (framework == 'react' || framework == 'extjs' || framework == 'web-components') {
+    //mjg added for angular cli build
+    if (framework == 'angular' &&
+        options.inject == 'no' &&
+        vars.production == true
+        && treeshake == 'yes') {
+            vars.buildstep = '1 of 1';
+            log(app, 'Starting production build for ' + framework);
+    }
+
+    else if (framework == 'react' || framework == 'extjs' || framework == 'web-components') {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
         log(app, 'Starting production build for ' + framework)
