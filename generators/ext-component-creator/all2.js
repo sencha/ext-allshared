@@ -7,7 +7,6 @@ var c = {
     webcomponents: 0
 }
 
-
 var path = require('path')
 require('./XTemplate')
 const rimraf = require('rimraf')
@@ -53,11 +52,13 @@ var baseFolder = 'ext-' + framework; log(`baseFolder`,`${baseFolder}`)
 var toolkitFolder = generatedFolders + baseFolder;         log(`toolkitFolder`,`${toolkitFolder}`)
 var srcFolder = toolkitFolder + '/src/';             log(`srcFolder`,`${srcFolder}`)
 var libFolder = srcFolder + 'lib/';                  log(`libFolder`,`${libFolder}`)
+var docFolder = srcFolder + 'doc/';                  log(`docFolder`,`${docFolder}`)
 
 rimraf.sync(toolkitFolder);log(`deleted`,`${toolkitFolder}`)
 mkdirp.sync(toolkitFolder);log(`created`,`${toolkitFolder}`)
 mkdirp.sync(srcFolder);    log(`created`,`${srcFolder}`)
 mkdirp.sync(libFolder);    log(`created`,`${libFolder}`)
+mkdirp.sync(docFolder);    log(`created`,`${docFolder}`)
 
 var dataFile = `${allClassesFilesFolder}${toolkit}-all-classes-flatten.json`
 log(`dataFile`,`${dataFile}`)
@@ -77,7 +78,7 @@ var content7 = fs.readFileSync(p7).toString()
 var tpl7 = new Ext.XTemplate(content7)
 var t7 = tpl7.apply(values7)
 delete tpl7
-var classfile7 = `${libFolder}index.html`
+var classfile7 = `${docFolder}index.html`
 fs.writeFileSync(`${classfile7}`, t7);
 
 
@@ -487,14 +488,11 @@ function doNewApproach(o, framework, data, srcFolder, libFolder, templateToolkit
                     items:o.items,
                     src:o.src
                 }
-                var template3 = '/doc.tpl'
-                var p3 = path.resolve(templateToolkitFolder + template3)
-                var content3 = fs.readFileSync(p3).toString()
-                var tpl3 = new Ext.XTemplate(content3)
+                var tpl3 = new Ext.XTemplate(fs.readFileSync(path.resolve(templateToolkitFolder + '/doc.tpl')).toString())
                 var t3 = tpl3.apply(values3)
+                fs.writeFileSync(`${docFolder}ext-${xtypes[j]}.doc.html`, t3);
                 delete tpl3
-                var classfile3 = `${libFolder}ext-${xtypes[j]}.doc.html`
-                fs.writeFileSync(`${classfile3}`, t3);
+
 
                 allXtypes = allXtypes + `  <div onclick="selectDoc('${xtypes[j]}')">ext-${xtypes[j]}</div><br>${newLine}`
 
@@ -686,6 +684,17 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
         mkdirp.sync(theRoot)
         log(`created`,`${theRoot}`)
     }
+
+    var tpl_ewcbase = new Ext.XTemplate(fs.readFileSync(path.resolve(templateToolkitFolder + '/ewcbase.tpl')).toString())
+    var t_ewcbase = tpl_ewcbase.apply({})
+    fs.writeFileSync(`${libFolder}ewc-base.component.js`, t_ewcbase);
+    delete tpl_ewcbase
+
+    var tpl_style = new Ext.XTemplate(fs.readFileSync(path.resolve(templateToolkitFolder + '/style.tpl')).toString())
+    var t_style = tpl_style.apply({})
+    fs.writeFileSync(`${docFolder}style.css`, t_style);
+    delete tpl_style
+
 
     // var values2 = {
     // }

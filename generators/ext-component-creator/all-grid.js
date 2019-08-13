@@ -79,7 +79,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
     case 'studio':
         extension = 'js';
         break;
-    case 'angular':
+    case 'angular-grid':
         extension = 'ts';
         break;
     case 'web-components':
@@ -93,7 +93,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
   switch(framework) {
         case 'studio':
             break;
-        case 'angular':
+        case 'angular-grid':
 
     // moduleVars.imports = moduleVars.imports + `import { ExtAngularLaunchComponent } from './ext-angular-launch.component';${newLine}`
     // moduleVars.exports = moduleVars.exports + `    ExtAngularLaunchComponent,${newLine}`
@@ -103,19 +103,19 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
     // log(`launchFile`,`${launchFile}`);
 
 
-      moduleVars.imports = moduleVars.imports + `import { ExtAngularBootstrapComponent } from './ext-angular-bootstrap.component';${newLine}`
-      moduleVars.exports = moduleVars.exports + `    ExtAngularBootstrapComponent,${newLine}`
-      moduleVars.declarations = moduleVars.declarations + `    ExtAngularBootstrapComponent,${newLine}`
-      var bootstrapComponentFile = `${libFolder}ext-angular-bootstrap.component.${extension}`
-      fs.writeFile(bootstrapComponentFile, doBootstrapComponent(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
-      log(`bootstrapComponentFile`,`${bootstrapComponentFile}`);
+//       moduleVars.imports = moduleVars.imports + `import { ExtAngularGridBootstrapComponent } from './ext-angular-bootstrap.component';${newLine}`
+//       moduleVars.exports = moduleVars.exports + `    ExtAngularGridBootstrapComponent,${newLine}`
+//       moduleVars.declarations = moduleVars.declarations + `    ExtAngularBootstrapComponent,${newLine}`
+//       var bootstrapComponentFile = `${libFolder}ext-angular-bootstrap.component.${extension}`
+//       fs.writeFile(bootstrapComponentFile, doBootstrapComponent(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
+//       log(`bootstrapComponentFile`,`${bootstrapComponentFile}`);
 
-      moduleVars.imports = moduleVars.imports + `import { ExtAngularBootstrapService } from './ext-angular-bootstrap.service';${newLine}`
-//     moduleVars.exports = moduleVars.exports + `    ExtAngularBootstrapService,${newLine}`
-//     moduleVars.declarations = moduleVars.declarations + `    ExtAngularBootstrapService,${newLine}`
-      var bootstrapServiceFile = `${libFolder}ext-angular-bootstrap.service.${extension}`
-      fs.writeFile(bootstrapServiceFile, doBootstrapService(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
-      log(`bootstrapServiceFile`,`${bootstrapServiceFile}`);
+//       moduleVars.imports = moduleVars.imports + `import { ExtAngularBootstrapService } from './ext-angular-bootstrap.service';${newLine}`
+// //     moduleVars.exports = moduleVars.exports + `    ExtAngularBootstrapService,${newLine}`
+// //     moduleVars.declarations = moduleVars.declarations + `    ExtAngularBootstrapService,${newLine}`
+//       var bootstrapServiceFile = `${libFolder}ext-angular-bootstrap.service.${extension}`
+//       fs.writeFile(bootstrapServiceFile, doBootstrapService(templateToolkitFolder), function(err) {if(err){return console.log(err);} })
+//       log(`bootstrapServiceFile`,`${bootstrapServiceFile}`);
 
 
       // moduleVars.imports = moduleVars.imports + `import { ExtOrgChartComponent } from './ext-orgchart.component';${newLine}`
@@ -160,9 +160,9 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
               o.xtype = aliases[alias].substring(7)
               ///testing
               if (environment == 'dev') {
-                //if (o.xtype == 'grid') {
+                if (o.xtype == 'grid') {
                   oneItem(o, libFolder, framework, extension, num, o.xtype, alias, moduleVars)
-                //}
+                }
               }
               // else if (components.includes(o.xtype)) {
               // if (o.xtype == 'container'  || o.xtype == 'button') {
@@ -203,7 +203,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
     case 'studio':
         //nothing
         break;
-    case 'angular':
+    case 'angular-grid':
         var publicApiFile = `${srcFolder}public_api.${extension}`
         fs.writeFile(publicApiFile, doPublic_Api(exportall, templateToolkitFolder), function(err) {if(err) { return console.log(err); } });
         log(`publicApiFile`,`${publicApiFile}`)
@@ -281,7 +281,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
   var sGETSET = "";
 
   if (o.xtype == 'grid') {
-        console.log('&&&&&&&&&&&&&&&&')
+        //console.log('&&&&&&&&&&&&&&&&')
 
         o.items.forEach(function (val1,index,arr) {
             //console.log(val1.$type)
@@ -292,7 +292,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
 
                     if (val.optional == undefined) { val.optional = false}
                     if (val.inheritdoc == undefined) { val.optional = false}
-                    console.log(  ' optional '  + val.optional  )
+                    //console.log(  ' optional '  + val.optional  )
                     // console.log(
                     //     ' $type ' + val.$type +
                     //     ' inheritdoc ' + val.inheritdoc +
@@ -325,7 +325,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
 
     //   var configs = o.items.filter(function(obj) {return obj.$type == 'configs';});
     // console.log(configs[0].items)
-      console.log('&&&&&&&&&&&&&&&&')
+      //console.log('&&&&&&&&&&&&&&&&')
 
   }
 
@@ -468,7 +468,7 @@ function oneItem(o, libFolder, framework, extension, num, xtype, alias, moduleVa
 
         //fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
         break;
-    case 'angular':
+    case 'angular-grid':
       fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
       break;
     case 'web-components':
@@ -562,17 +562,17 @@ function doExtBase(templateToolkitFolder) {
 //   return content
 // }
 
-function doBootstrapComponent(templateToolkitFolder) {
-  var p = path.resolve(templateToolkitFolder + '/ext-angular-bootstrap.component.tpl')
-  var content = fs.readFileSync(p).toString()
-  return content
-}
+// function doBootstrapComponent(templateToolkitFolder) {
+//   var p = path.resolve(templateToolkitFolder + '/ext-angular-bootstrap.component.tpl')
+//   var content = fs.readFileSync(p).toString()
+//   return content
+// }
 
-function doBootstrapService(templateToolkitFolder) {
-  var p = path.resolve(templateToolkitFolder + '/ext-angular-bootstrap.service.tpl')
-  var content = fs.readFileSync(p).toString()
-  return content
-}
+// function doBootstrapService(templateToolkitFolder) {
+//   var p = path.resolve(templateToolkitFolder + '/ext-angular-bootstrap.service.tpl')
+//   var content = fs.readFileSync(p).toString()
+//   return content
+// }
 
 function doRouter(templateToolkitFolder) {
   var p = path.resolve(templateToolkitFolder + '/aa-router.component.tpl')
@@ -652,16 +652,16 @@ export class ExtClassComponent {
 
 function processArgs(framework, toolkit) {
   if(framework == undefined) {
-    log(``,`framework: ${framework} is incorrect.  should be web-components or angular`)
+    log(``,`framework: ${framework} is incorrect.  should be web-components or angular-grid`)
     return -1
   }
-  if ((framework != 'web-components') && (framework != 'angular') && (framework != 'studio')) {
-    log(``,`framework: ${framework} is incorrect.  should be web-components or angular or studio`)
+  if ((framework != 'web-components') && (framework != 'angular-grid') && (framework != 'studio')) {
+    log(``,`framework: ${framework} is incorrect.  should be web-components or angular-grid or studio`)
     return -1
   }
   if(toolkit == undefined) {
     log(``,`toolkit: ${toolkit} is incorrect.  should be modern or classic`)
-    log(``,'node all.js modern angular')
+    log(``,'node all.js modern angular-grid')
     return -1
   }
   if ((toolkit != 'modern') && (toolkit != 'classic')) {
