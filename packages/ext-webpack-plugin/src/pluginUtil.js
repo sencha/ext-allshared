@@ -375,15 +375,15 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
     var js = ''
     if (vars.production) {
       vars.deps = vars.deps.filter(function(value, index){ return vars.deps.indexOf(value) == index });
-      js = vars.deps.join(';\nExt.require(["Ext.*","Ext.data.TreeStore"]);\n');
+      js = vars.deps.join(';\n');
     }
     else {
       js = `Ext.require(["Ext.*","Ext.data.TreeStore"])`
     }
     if (vars.manifest === null || js !== vars.manifest) {
-      vars.manifest = js
+      vars.manifest = js + ';\nExt.require(["Ext.layout.*"]);\n';
       const manifest = path.join(output, 'manifest.js')
-      fs.writeFileSync(manifest, js, 'utf8')
+      fs.writeFileSync(manifest, vars.manifest, 'utf8')
       vars.rebuild = true
       var bundleDir = output.replace(process.cwd(), '')
       if (bundleDir.trim() == '') {bundleDir = './'}
