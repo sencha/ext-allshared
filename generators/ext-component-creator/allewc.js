@@ -1,39 +1,34 @@
 //node ./allewc.js
+var framework = 'ewc'
 
-var c = {all: 0,processed: 0,webcomponents: 0}
-var path = require('path')
 require('./XTemplate')
+const path = require('path')
 const rimraf = require('rimraf')
 const mkdirp = require('mkdirp')
-var fs = require('fs-extra')
-var newLine = '\n'
+const fs = require('fs-extra')
+const newLine = '\n'
+const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
 
-var framework = 'ewc'
-//var toolkit  = 'modern'
-
-//var templateToolkitFolder = path.resolve('./filetemplates/' + framework);
-var data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
-
-var generatedFolders = './GeneratedFolders/';
-var toolkitFolder = generatedFolders + 'ext-' + framework;
-var srcFolder = toolkitFolder + '/src/';
-var libFolder = srcFolder + 'lib/';
-var extFolder = libFolder + 'Ext/';
-var docFolder = srcFolder + 'doc/';
-
+const generatedFolders = './GeneratedFolders/';
+const toolkitFolder = generatedFolders + 'ext-' + framework;
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
 rimraf.sync(toolkitFolder);
 mkdirp.sync(toolkitFolder);
+
+const srcFolder = toolkitFolder + '/src/';
+const libFolder = srcFolder + 'lib/';
+const extFolder = libFolder + 'Ext/';
+const docFolder = srcFolder + 'doc/';
+
 mkdirp.sync(srcFolder);
 mkdirp.sync(libFolder);
 mkdirp.sync(extFolder);
 mkdirp.sync(docFolder);
 
+var c = {all: 0,processed: 0,webcomponents: 0}
 var allXtypes = `<div>${newLine}`;
 
-//var items = data.global.items
 for (i = 0; i < data.global.items.length; i++) {
-    var o = data.global.items[i];
     doNewApproach(data.global.items[i], framework, libFolder);
 }
 
@@ -54,7 +49,6 @@ async function main() {
     await run(`cp -R ./GeneratedFolders/ext-ewc/src/ ../../../ext-web-components/packages/ext-web-components/`)
 }
 
-//return
 
 function doNewApproach(o, framework, libFolder) {
     c.all++
