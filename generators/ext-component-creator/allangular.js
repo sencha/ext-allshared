@@ -8,10 +8,6 @@ var newLine = '\n'
 //var tb = '	'
 
 var moduleVars = {imports: '',declarations: '',exports: ''}
-// var moduleVars = {}
-// moduleVars.imports = ''
-// moduleVars.declarations = ''
-// moduleVars.exports = ''
 
 log(``,`\n ext-component-generator \n`)
 
