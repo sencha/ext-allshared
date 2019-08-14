@@ -7,6 +7,7 @@ export default class {classname} extends EwcBaseComponent {
 static XTYPE() {return '{xtype}'}
 static PROPERTIESOBJECT() { return {
 {sPROPERTIESOBJECT}"ewc": ["string"],
+"align": ["string"],
 "viewport":["boolean"],
 "plugins":["Array","Ext.enums.Plugin","Object","Ext.plugin.Abstract"],
 "responsiveConfig":["Object"],

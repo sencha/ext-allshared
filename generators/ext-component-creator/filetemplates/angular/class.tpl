@@ -22,7 +22,7 @@ export class {classname}MetaData {
 {sEVENTNAMES}];
 }
 @Component({
-  selector: '{xtype}', 
+  selector: 'ext-{xtype}',
   inputs: {classname}MetaData.PROPERTIES,
   outputs: {classname}MetaData.EVENTNAMES,
   providers: [{provide: base, useExisting: forwardRef(() => Ext{capclassname}Component)}],

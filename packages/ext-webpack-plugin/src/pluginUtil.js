@@ -76,7 +76,7 @@ export function _constructor(initialOptions) {
       vars.buildstep = '1 of 1'
       log(app, 'Starting development build for ' + framework)
     }
-    logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
+    logv(verbose, 'Building for ' + options.environment + ', ' + 'treeshake is ' + options.treeshake+ ', ' + 'intellishake is ' + options.intellishake)
 
     var configObj = { vars: vars, options: options };
     return configObj;
@@ -127,9 +127,7 @@ export function _compilation(compiler, compilation, vars, options) {
         //mjg for 1 step build
         if (vars.buildstep == '1 of 1' && framework === 'angular' && options.intellishake == 'no') {
             extComponents = require(`./${framework}Util`)._getAllComponents(vars, options);
-            console.log(extComponents)
         }
-
 
         if (vars.buildstep == '1 of 2' || (vars.buildstep == '1 of 1' && framework === 'web-components')) {
           extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
@@ -377,7 +375,7 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
     var js = ''
     if (vars.production) {
       vars.deps = vars.deps.filter(function(value, index){ return vars.deps.indexOf(value) == index });
-      js = vars.deps.join(';\n');
+      js = vars.deps.join(';\nExt.require(["Ext.*","Ext.data.TreeStore"]);\n');
     }
     else {
       js = `Ext.require(["Ext.*","Ext.data.TreeStore"])`
