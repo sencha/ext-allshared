@@ -1,4 +1,4 @@
-//node ./allweb-components.js
+//node ./generate-ext-web-components.js
 var framework = 'web-components'
 
 require('./XTemplate')
@@ -10,18 +10,25 @@ const newLine = '\n'
 const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
 
 const generatedFolders = './GeneratedFolders/';
-const toolkitFolder = generatedFolders + 'ext-' + framework;
+const toolkitFolder = generatedFolders + 'ext-' + framework + '/';
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
 rimraf.sync(toolkitFolder);
 mkdirp.sync(toolkitFolder);
 
-const srcFolder = toolkitFolder + '/src/';
-const libFolder = srcFolder + 'lib/';
-const extFolder = libFolder + 'Ext/';
-const docFolder = srcFolder + 'doc/';
+// const srcFolder = toolkitFolder + '/src/';
+// const libFolder = srcFolder + 'lib/';
+// const extFolder = libFolder + 'Ext/';
+// const docFolder = srcFolder + 'doc/';
 
-mkdirp.sync(srcFolder);
+//const srcFolder = toolkitFolder + '/src/';
+const libFolder = toolkitFolder + 'lib/';
+const binFolder = toolkitFolder + 'bin/';
+const extFolder = libFolder + 'Ext/';
+const docFolder = toolkitFolder + 'doc/';
+
+//mkdirp.sync(srcFolder);
 mkdirp.sync(libFolder);
+mkdirp.sync(binFolder);
 mkdirp.sync(extFolder);
 mkdirp.sync(docFolder);
 
@@ -43,7 +50,13 @@ for (i = 0; i < data.global.items.length; i++) {
 
 allXtypes = allXtypes + `</div>${newLine}`
 
-writeFile(framework, '/index.tpl', `${docFolder}index.html`, {allXtypes: allXtypes})
+copyFile('.babelrc');
+copyFile('package.json');
+copyFile('bin/ext-web-components.js');
+
+
+writeFile(framework, '/index.tpl', `${docFolder}docs.html`, {allXtypes: allXtypes})
+//writeFile(framework, '/index.tpl', `${docFolder}index.html`, {allXtypes: allXtypes})
 writeFile(framework, '/ewcbase.tpl', `${libFolder}ewc-base.component.js`, {})
 writeFile(framework, '/router.tpl', `${libFolder}ext-router.component.js`, {})
 writeFile(framework, '/style.tpl', `${docFolder}style.css`, {})
@@ -51,11 +64,20 @@ writeFile(framework, '/style.tpl', `${docFolder}style.css`, {})
 console.log(c)
 
 let run = require('./util').run
-//main()
+main()
 async function main() {
-    await run(`rm -rf ../../../ext-web-components/packages/ext-web-components/doc`)
-    await run(`rm -rf ../../../ext-web-components/packages/ext-web-components/lib`)
-    await run(`cp -R ./GeneratedFolders/ext-web-components/src/ ../../../ext-web-components/packages/ext-web-components/`)
+    await run(`rm -rf ../../ext-web-components/packages/ext-web-components`)
+    //await run(`rm -rf ../../ext-web-components/packages/ext-web-components/lib`)
+    await run(`cp -R ./GeneratedFolders/ext-web-components/ ../../ext-web-components/packages/ext-web-components/`)
+}
+
+function copyFile(filename) {
+    var from = path.resolve(__dirname, 'filetemplates' + '/' + framework + '/' + filename)
+    var to = path.resolve(__dirname, toolkitFolder + '/' + filename)
+    fs.copyFile(from,to, (err) => {
+        if (err) throw err;
+        //console.log('source.txt was copied to destination.txt');
+      });
 }
 
 
