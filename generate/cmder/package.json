@@ -1,0 +1,31 @@
+{
+  "name": "cmd",
+  "version": "7.0.0",
+  "description": "cmd",
+  "scripts": {
+    "start": "npx sencha app build"
+  },
+  "author": "Marc Gusmano",
+  "license": "MIT",
+  "devDependencies": {
+    "@sencha/cmd": "~7.0.0",
+    "@sencha/ext": "~7.0.0",
+    "@sencha/ext-calendar": "~7.0.0",
+    "@sencha/ext-charts": "~7.0.0",
+    "@sencha/ext-d3": "~7.0.0",
+    "@sencha/ext-exporter": "~7.0.0",
+    "@sencha/ext-froala-editor": "~7.0.0",
+    "@sencha/ext-modern": "~7.0.0",
+    "@sencha/ext-modern-theme-material": "~7.0.0",
+    "@sencha/ext-modern-treegrid": "~7.0.0",
+    "@sencha/ext-pivot": "~7.0.0",
+    "@sencha/ext-pivot-d3": "~7.0.0",
+    "@sencha/ext-ux": "~7.0.0",
+    "@sencha/ext-web-components-renderercell": "~7.0.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mgusmano"
+  }
+}

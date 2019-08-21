@@ -7,11 +7,15 @@ r =
 `
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 //import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
-import '@sencha/ext-web-components-all/lib/ext-panel.component';
-import '@sencha/ext-web-components-all/lib/ext-toolbar.component';
-import '@sencha/ext-web-components-all/lib/ext-button.component';
-import '@sencha/ext-web-components-all/lib/ext-grid.component';
-import '@sencha/ext-web-components-all/lib/ext-column.component';{importsx}
+
+importsewc
+${info.importsewc}
+
+//import '@sencha/ext-web-components-all/lib/ext-panel.component';
+//import '@sencha/ext-web-components-all/lib/ext-toolbar.component';
+//import '@sencha/ext-web-components-all/lib/ext-button.component';
+//import '@sencha/ext-web-components-all/lib/ext-grid.component';
+//import '@sencha/ext-web-components-all/lib/ext-column.component';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -19,7 +23,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [{declarationsx}
+  declarations: [
     AppComponent
   ],
   imports: [

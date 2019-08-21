@@ -1,13 +1,67 @@
-//node ./generate-ext-angular.js all
+//node ./generate-ext-angular.js grid
+let run = require("./util").run;
+var fs = require("fs-extra");
 var install = true;
 var framework = "angular";
 var type = process.argv[2];
 let getBundleInfo = require("./getBundleInfo").getBundleInfo;
-console.log('hi')
 var info = getBundleInfo(framework, type)
 if (info == -1) {
     return
 }
+
+var runBundle = true;
+
+// let sencha; try { sencha = require('@sencha/cmd') } catch (e) { sencha = 'sencha' }
+// if (fs.existsSync(sencha)) {
+//     console.log('sencha folder exists')
+// }
+// else {
+//     console.log('sencha folder DOES NOT exist')
+// }
+
+
+
+
+// function _buildExtBundle() {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(function(){
+//             onBuildDone()
+//         }, 3000);
+
+//         const onBuildDone = () => {
+//         console.log('onBuildDone')
+//         resolve()
+//         }
+//         // var opts = { cwd: outputPath, silent: true, stdio: 'pipe', encoding: 'utf-8'}
+//         // _executeAsync(app, sencha, parms, opts, compilation, vars, options).then (
+//         //   function() { onBuildDone() },
+//         //   function(reason) { reject(reason) }
+//         // )
+//     });
+// }
+
+// _buildExtBundle()
+
+//console.log('after')
+//return
+
+// if (runBundle == true) {doBundle()}
+
+// async function doBundle() {
+//     await run(`sencha`);
+//     doEnd()
+// }
+
+// function doEnd() {
+//     console.log('end')
+// }
+
+
+// return
+
+
+
 //o.type = type;
 //o.now = new Date().toString();
 
@@ -23,7 +77,7 @@ var path = require("path");
 require("./XTemplate");
 const rimraf = require("rimraf");
 const mkdirp = require("mkdirp");
-var fs = require("fs-extra");
+
 var newLine = "\n";
 
 var moduleVars = { imports: "", declarations: "", exports: "" };
@@ -43,13 +97,13 @@ var toolkitFolder = generatedFolders + "ext-" + framework + info.bundle;
 var srcFolder = toolkitFolder + "/src/";
 log(`srcFolder`, `${srcFolder}`);
 var extFolder = toolkitFolder + "/ext/";
-var extTypeFolder = toolkitFolder + "/ext/" + info.type;
+//var extTypeFolder = toolkitFolder + "/ext/" + info.type;
 
 rimraf.sync(toolkitFolder);
 mkdirp.sync(toolkitFolder);
 mkdirp.sync(srcFolder);
 mkdirp.sync(extFolder);
-mkdirp.sync(extTypeFolder);
+//mkdirp.sync(extTypeFolder);
 
 var dataFile = `${allClassesFilesFolder}modern-all-classes-flatten.json`;
 //log(`dataFile`,`${dataFile}`)
@@ -67,16 +121,23 @@ writeFile(
     `${toolkitFolder}/README.md`,
     info
 );
-writeFile(
-    framework,
-    "/manifest.tpl",
-    `${toolkitFolder}/manifest.js`,
-    info
-);
+
+writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
+writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
+// writeFile(
+//     framework,
+//     "/manifest.tpl",
+//     `${toolkitFolder}/manifest.js`,
+//     info
+// );
 
 
-copyFile("ext/css.prod.js");
-copyFile("ext/ext." + info.type + ".prod.js");
+//new way
+//copyFile("ext/css.prod.js");
+//copyFile("ext/ext." + info.type + ".prod.js");
+
+
+
 //copyFile("ext/" + type + "/ext." + type + ".production.js");
 copyFile("tsconfig.json");
 copyFile("tsconfig.lib.json");
@@ -93,9 +154,21 @@ writeFile(
 //*************
 launch(framework, data, srcFolder, templateToolkitFolder, moduleVars);
 
-let run = require("./util").run;
+
+
+
+
+
 if (install == true) {doInstall()}
 async function doInstall() {
+
+    process.chdir(`./cmder`);
+    await run(`sencha app build`);
+    copyFile("ext/css.prod.js");
+    console.log('done with cmd')
+    process.chdir(`../`);
+
+
     process.chdir(toolkitFolder);
     await run(`npm install`);
     await run(`npm run packagr`);

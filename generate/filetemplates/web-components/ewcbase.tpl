@@ -1,4 +1,4 @@
-import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/ext.{name}.prod';
+import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/ext.{type}.prod';
 import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/css.prod';
 
 export default class EwcBaseComponent extends HTMLElement {

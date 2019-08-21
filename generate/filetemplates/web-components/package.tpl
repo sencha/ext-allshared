@@ -14,7 +14,8 @@
     "homepage": "https://github.com/sencha/ext-web-components#readme",
     "dependencies": {
       "@babel/runtime": "^7.5.5",
-      "script-loader": "^0.7.2"
+      "script-loader": "^0.7.2",
+      "comment-json": "^2.1.0"
     },
     "devDependencies": {
       "@babel/cli": "^7.5.5",
