@@ -1,6 +1,5 @@
 {
   "$schema": "./node_modules/ng-packagr/ng-package.schema.json",
-  "src": "./src/lib",
   "dest": "./dist/ext-angular-grid",
   "lib": {
     "entryFile": "./src/public_api.ts"

@@ -1,11 +1,7 @@
 import {classname} from '{folder}'
 
 export class Ext{Xtype}Component extends {classname} {
-
-    constructor() {
-        super ('','',{},'')
-    }
-
+    constructor() {super ('','',{},'')}
 }
 
 (function () {

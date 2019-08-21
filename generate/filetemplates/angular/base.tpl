@@ -1,13 +1,13 @@
+import 'script-loader!@sencha/ext-angular{bundle}/ext/ext.{name}.prod';
+import 'script-loader!@sencha/ext-angular{bundle}/ext/css.prod';
+//import { NgZone } from '@angular/core';
+//import { Router } from '@angular/router';
+
 declare var Ext: any
 import {
-  Host,
-  Optional,
-  SkipSelf,
-  ElementRef,
   EventEmitter,
   ContentChild,
   ContentChildren,
-  ViewChildren,
   QueryList,
   SimpleChanges
 } from '@angular/core'
@@ -22,7 +22,8 @@ export class base {
   constructor(
     nativeElement: any,
     private metaData: any,
-    public hostComponent : base
+    public hostComponent : base,
+
   ) {
     this.q = null
     this._nativeElement = nativeElement
@@ -38,11 +39,10 @@ export class base {
     })
   }
 
-  baseOnInit(metaData: any) {
-    //console.log(`ngOnInit: ${metaData.XTYPE}`)
-    let me: any = this
+  createProps(me, xtype, events) {
     let o: any = {}
-    o.xtype = metaData.XTYPE
+    //o.xtype = metaData.XTYPE
+    o.xtype = xtype
     let listenersProvided = false
     for (var i = 0; i < me.metaData.PROPERTIES.length; i++) {
       var prop = me.metaData.PROPERTIES[i];
@@ -81,7 +81,8 @@ export class base {
 
     if(!listenersProvided) {
       o.listeners = {}
-      var EVENTS = metaData.EVENTS
+      //var EVENTS = metaData.EVENTS
+      var EVENTS = events
       EVENTS.forEach(function (event: any, index: any, array: any) {
         let eventname: any = event.name
         let eventparameters: any = event.parameters
@@ -97,19 +98,37 @@ export class base {
         }
       })
     }
+    return o;
+  }
 
-    if (this._nativeElement.parentElement != null) {
-      o.renderTo = this._nativeElement
-    }
+  baseOnInit(metaData: any) {
+    //console.log(`ngOnInit:` + metaData.XTYPE)
+    let me: any = this
+    let o: any = {}
 
-    if (o.xtype == 'dialog') {
-      o.renderTo = undefined;
-    }
+    o = this.createProps(me, metaData.XTYPE, metaData.EVENTS)
 
-    //this.ext = Ext.create(o)
-    Ext.onReady(function() {
+    if (o['viewport'] == "true") {
         me.ext = Ext.create(o)
-    });
+        //console.log('Ext.application for ' + o.xtype + '(' + o.xng + ')')
+        Ext.application({
+            name: 'MyExtAngularApp',
+            launch: function () {
+                Ext.Viewport.add([me.ext])
+            }
+        });
+    }
+    else {
+        if (me._nativeElement.parentElement != null) {
+            o.renderTo = me._nativeElement
+        }
+
+        if (o.xtype == 'dialog') {
+            o.renderTo = undefined;
+        }
+        me.ext = Ext.create(o)
+        //console.log('Ext.create for ' + o.xtype + '(' + o.xng + ') renderTo: ' + o.renderTo)
+    }
   }
 
   @ContentChild('extroute',{ static : false }) _extroute: any;
@@ -117,21 +136,21 @@ export class base {
   @ContentChild('extitem',{ static : false }) _extitem: any;
   @ContentChildren('extitem') _extitems: QueryList<any>;
   baseAfterContentInit() {
-    if (this._extitems.length == 1) {
-        if (this._hostComponent != null) {
-          this.ext.setHtml(this._extitem.nativeElement)
+        if (this._extitems.length == 1) {
+            if (this._hostComponent != null) {
+                this.ext.setHtml(this._extitem.nativeElement);
+            }
         }
-    }
-    if (this._extroutes.length == 1) {
-      this.ext.setHtml(this._extroute.nativeElement)
-    }
-    if(this._hostComponent != null) {
-      var parentCmp = this._hostComponent.ext
-      var childCmp = this.ext
-      this.addTheChild(parentCmp,childCmp)
-    }
-    this['ready'].emit(this)
-  }
+        if (this._extroutes.length == 1) {
+            this.ext.setHtml(this._extroute.nativeElement);
+        }
+        if (this._hostComponent != null) {
+            var parentCmp = this._hostComponent.ext;
+            var childCmp = this.ext;
+            this.addTheChild(parentCmp, childCmp);
+        }
+        this['ready'].emit(this);
+    };
 
   addTheChild(parentCmp, childCmp) {
     var parentxtype = parentCmp.xtype
@@ -292,44 +311,5 @@ export class base {
     }
   }
 
-  // Beware! Called frequently!
-  // Called in every change detection cycle anywhere on the page
-  //ngDoCheck() {console.log(`DoCheck`)}
-  // Beware! Called frequently!
-  // Called in every change detection cycle anywhere on the page
-  //ngAfterContentChecked() { console.log(`AfterContentChecked`) }
-  //ngAfterViewInit() { console.log(`AfterViewInit`) }
-  // Beware! Called frequently!
-  // Called in every change detection cycle anywhere on the page
-  //ngAfterViewChecked() { console.log(`AfterViewChecked`) }
-
-
-//    metaData.EVENTS.forEach( (event: any, n: any) => {
-//      if (event.name != 'fullscreen') {
-//        (<any>this)[event.name] = new EventEmitter()
-//      }
-//      else {
-//        (<any>this)[event.name + 'event'] = new EventEmitter()
-//      }
-//    })
-
-//    let f = this.ngOnDestroy;
-//    this.ngOnDestroy = () => {
-//      f();
-//      this.unsubscribeAll();
-//    };
-
-  //private subscriptions: Subscription[] = [];
-
-//    protected safeSubscription (sub: Subscription): Subscription {
-//        this.subscriptions.push(sub);
-//        return sub;
-//    }
-
-//    private unsubscribeAll() {
-//        this.subscriptions.forEach(element => {
-//            !element.isUnsubscribed && element.unsubscribe();
-//        });
-//    }
-
 }
+

@@ -1,0 +1,75 @@
+
+
+------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Open the package.json file in the editor.
+
+In the package.json file under 'scripts', add the following:
+
+```sh
+"http": "npx http-server dist/ng{bundle} -g -o",
+```
+
+note: replace 'ng{bundle}' with actual project name
+
+
+
+
+
+???????
+### copy demo from npm package
+
+```sh
+cp -R ./node_modules/@sencha/ext-angular-grid/demo/src ./
+cp -R ./node_modules/@sencha/ext-angular-grid/demo/assets ./src
+```
+?????
+
+### run a production build
+
+```sh
+npm run build
+npm run http
+```
+
+the ExtAngular application will load in a browser - the application is a simple ext{bundle}
+
+----------------
+
+#### steps to build npm package
+
+```sh
+cd ~/_git/sencha/ext-allshared/generators/grid
+npm install
+npm run packagr; cp -R demo/ dist/demo/; cd dist; npm publish -force
+```
+
+#### steps for local npm build
+
+```sh
+npm pack (used to build a local zip package)
+cp -R  ./sencha-ext-angular-grid-7.0.0.tgz   ../../../../ext-angular/packages/
+cp -R  ./sencha-ext-angular-grid-7.0.0.tgz   /Volumes/BOOTCAMP/aaPlayground/
+cd /Volumes/BOOTCAMP/aaPlayground/
+
+npm install ../sencha-ext-angular-grid-7.0.0.tgz
+
+(results in...)
+"@sencha/ext-angular-grid": "file:../sencha-ext-angular-grid-7.0.0.tgz",
+```

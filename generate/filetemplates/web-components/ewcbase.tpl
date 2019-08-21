@@ -1,3 +1,6 @@
+import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/ext.{name}.prod';
+import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/css.prod';
+
 export default class EwcBaseComponent extends HTMLElement {
 
     constructor() {
@@ -130,6 +133,7 @@ export default class EwcBaseComponent extends HTMLElement {
     createProps() {
         this.props = {};
         this.props.xtype = this.XTYPE;
+        //if (this.props.xtype.substr(this.props.xtype.length - 6) == 'column') {
         if (this.props.xtype == 'column' ||
             this.props.xtype == 'gridcolumn') {
             var renderer = this.getAttribute('renderer')
@@ -237,15 +241,21 @@ export default class EwcBaseComponent extends HTMLElement {
                         break;
                 }
                 break;
+            case 'booleancolumn':
+            case 'checkcolumn':
             case 'gridcolumn':
             case 'column':
-            case 'treecolumn':
-            case 'textcolumn':
-            case 'checkcolumn':
+            case 'templatecolumn':
+            case 'gridcolumn':
+            case 'column':
+            case 'templatecolumn':
             case 'datecolumn':
-            case 'rownumberer':
+            case 'dragcolumn':
             case 'numbercolumn':
-            case 'booleancolumn':
+            case 'selectioncolumn':
+            case 'textcolumn':
+            case 'treecolumn':
+            case 'rownumberer':
                 switch(childxtype) {
                     case 'renderercell':
                         parentCmp.setCell(childCmp)

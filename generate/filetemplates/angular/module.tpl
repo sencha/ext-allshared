@@ -1,7 +1,3 @@
-
-
-
-
 import { NgModule } from '@angular/core';
 {imports}
 @NgModule({
@@ -15,5 +11,4 @@ import { NgModule } from '@angular/core';
 {exports}
   ]
 })
-export class ExtAngularModule { }
-
+export class ExtAngular{Bundle}Module { }
