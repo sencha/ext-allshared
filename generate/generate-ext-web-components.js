@@ -1,6 +1,16 @@
-//node ./generate-ext-web-components.js all
+//node ./generate-ext-web-components.js grid
 var install = true;
 var framework = 'web-components'
+
+require('./XTemplate')
+const path = require('path')
+const rimraf = require('rimraf')
+const mkdirp = require('mkdirp')
+const fs = require('fs-extra')
+const newLine = '\n'
+const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
+
+
 var type = process.argv[2];
 let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 var info = getBundleInfo(framework, type)
@@ -8,8 +18,8 @@ if (info == -1) {
     return
 }
 
-
-
+writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
+writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
 
 // console.log(info)
 // return
@@ -33,13 +43,7 @@ var bundle = info.bundle;
 
 
 
-require('./XTemplate')
-const path = require('path')
-const rimraf = require('rimraf')
-const mkdirp = require('mkdirp')
-const fs = require('fs-extra')
-const newLine = '\n'
-const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
+
 
 
 
@@ -115,16 +119,16 @@ for (i = 0; i < data.global.items.length; i++) {
 
 allXtypes = allXtypes + `</div>${newLine}`
 
-const sayHello = require('./examples').sayHello
-console.log(sayHello)
-fs.writeFileSync(`${toolkitFolder}hello.js`, sayHello({name: 'marc'}), 'utf8')
+//const sayHello = require('./examples').sayHello
+//console.log(sayHello)
+//fs.writeFileSync(`${toolkitFolder}hello.js`, sayHello({name: 'marc'}), 'utf8')
 
 //path.resolve('./filetemplates/' + framework);
 
 
 
 copyFile("ext/css.prod.js");
-copyFile("ext/ext." + type + ".prod.js");
+//copyFile("ext/ext." + type + ".prod.js");
 
 copyFile('.babelrc');
 copyFile(`bin/ext-web-components${bundle}.js`);
@@ -146,7 +150,7 @@ writeFile(
 
 writeFile(framework, '/index.tpl', `${docFolder}docs.html`, {allXtypes: allXtypes})
 //writeFile(framework, '/index.tpl', `${docFolder}index.html`, {allXtypes: allXtypes})
-writeFile(framework, '/ewcbase.tpl', `${libFolder}ewc-base.component.js`, {bundle: info,bundle, name: info.name})
+writeFile(framework, '/ewcbase.tpl', `${libFolder}ewc-base.component.js`, {bundle: info,bundle, type: info.type})
 writeFile(framework, '/router.tpl', `${libFolder}ext-router.component.js`, {})
 writeFile(framework, '/style.tpl', `${docFolder}style.css`, {})
 writeFile(framework, '/module.tpl', `${toolkitFolder}ext-web-components${bundle}.module.js`, {imports: moduleVars.imports})
@@ -165,6 +169,13 @@ let run = require("./util").run;
 if (install == true) {doInstall()}
 
 async function doInstall() {
+
+    process.chdir(`./cmder`);
+    await run(`sencha app build`);
+    copyFile("ext/css.prod.js");
+    console.log('done with cmd')
+    process.chdir(`../`);
+
     process.chdir(toolkitFolder);
     await run(`npm install`);
     await run(`npm publish --force`);
@@ -444,7 +455,8 @@ function doNewApproach(item, framework, libFolder) {
                     else if (xt.includes('pivot')) {c.pivot++}
                     else if (xt.includes('menu')) {c.menu++}
                     //else if (xt.includes('grid')) {c.grid++;console.log(name + "; \t\t"  + xt)}
-                    else if (name.toLowerCase().includes('ext.grid')) {c.grid++;}//console.log(name + "; \t\t"  + xt)}
+                    //else if (name.toLowerCase().includes('ext.grid')) {c.grid++;console.log("'" + name + "; \t\t"  + xt)}
+                    else if (name.toLowerCase().includes('ext.grid')) {c.grid++;console.log("'" + xt + "',")}
                     //else if (xt.includes('cell')) {c.cell++;console.log(name + "; \t\t"  + xt)}
                     else if (xt.includes('list')) {c.list++}
                     else if (xt.includes('row')) {c.row++}
@@ -507,13 +519,13 @@ function doNewApproach(item, framework, libFolder) {
 function shouldProcessIt(o) {
     var processIt = false
 
-    if (o.extended != undefined) {
-        if(o.extended.indexOf("Ext.plugin.Abstract") != -1) {
-            if (o.alias != undefined) {
-                console.log(o.name + ' - ' + o.alias + ': ' + o.extended)
-            }
-        }
-    }
+    // if (o.extended != undefined) {
+    //     if(o.extended.indexOf("Ext.plugin.Abstract") != -1) {
+    //         if (o.alias != undefined) {
+    //             console.log(o.name + ' - ' + o.alias + ': ' + o.extended)
+    //         }
+    //     }
+    // }
 
 
     if (o.extended == undefined) {

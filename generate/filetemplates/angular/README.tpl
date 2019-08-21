@@ -46,6 +46,30 @@ in a terminal window at the root of your application, run the following:
 npm install
 ```
 
+#### Add to src/index.html
+
+Add this BEFORE the ENDING </html> tag:
+
+```sh
+...
+<style>
+    :root {
+        --base-color:black;
+        --base-foreground-color:yellow;
+        --color:white;
+        --background-color:gray;
+        --hovered-background-color:lightgray;
+    }
+    body {
+        padding: '10px'
+    }
+    * {
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+</style>
+</html>
+```
+
 #### Replace src/app/app.module.js
 
 Open the src/app/app.module.js file in the editor and replace the contents with the following:
@@ -127,3 +151,7 @@ npm start
 ```
 
 open http://localhost:4200 in a browser - the ExtAngular application will load
+
+#### components in this package:
+
+{wantedxtypes}
