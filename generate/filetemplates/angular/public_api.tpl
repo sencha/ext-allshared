@@ -2,4 +2,4 @@
  * Public API Surface of ext-angular
  */
 
-{exportall}
+export * from './src/ext-angular{bundle}.module';
