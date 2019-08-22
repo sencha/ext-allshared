@@ -6,8 +6,7 @@ case 'module':
 r =
 `
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-//import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
-import '@sencha/ext-web-components-all/lib/ext-grid.component';
+import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -36,18 +35,14 @@ import { Component } from '@angular/core';
 @Component({
     selector: 'app-root',
     template: \`
-<ext-panel viewport="true" title="panel" layout="fit">
-    <ext-toolbar docked="top">
-        <ext-button text="click me please" (tap)="tapButton($event)"></ext-button>
-    </ext-toolbar>
-    <ext-grid
-        [title]="title"
-        (ready)="readyGrid($event)"
-    >
-        <ext-column text="name" dataIndex="name"></ext-column>
-        <ext-column text="email" dataIndex="email" flex="1"></ext-column>
-    </ext-grid>
-</ext-panel>
+<ext-grid
+    viewport="true"
+    [title]="title"
+    (ready)="readyGrid($event)"
+>
+    <ext-column text="name" dataIndex="name"></ext-column>
+    <ext-column text="email" dataIndex="email" flex="1"></ext-column>
+</ext-grid>
     \`,
     styles: []
 })
@@ -59,11 +54,8 @@ export class AppComponent {
         {name: 'Andy', email: 'andy@gmail.com'},
     ]
     readyGrid = (event) => {
-        var grid = event.ext;
+        var grid = event.detail.cmp;
         grid.setData(this.data)
-    }
-    tapButton = (event) => {
-        alert('button text: ' + event.button.getText())
     }
 }
 `

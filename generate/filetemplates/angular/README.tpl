@@ -147,7 +147,7 @@ export class AppComponent {
 Type the following in a command/terminal window:
 
 ```sh
-npm start
+ng serve --open
 ```
 
 open http://localhost:4200 in a browser - the ExtAngular application will load

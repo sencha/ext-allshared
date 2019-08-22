@@ -24,8 +24,7 @@ ng new ng-ewc{bundle} --minimal=true --interactive=false -g=true --skipInstall=t
 To open Visual Studio Code, type the following:
 
 ```sh
-cd ng-ewc{bundle}
-code .
+cd ng-ewc{bundle}; code .
 ```
 
 #### Add to package.json
@@ -44,19 +43,32 @@ in a terminal window at the root of your application, run the following:
 npm install
 ```
 
-#### Add to src/index.html
+#### Replace src/index.html (optional)
 
-Add this BEFORE the ENDING </html> tag:
+If you want to get a look at different styling...
+Open the src/index.html file in the editor and replace the contents with the following:
 
 ```sh
-...
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ext-web-components{bundle} example</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+</body>
 <style>
     :root {
         --base-color:black;
         --base-foreground-color:yellow;
-        --color:white;
-        --background-color:gray;
-        --hovered-background-color:lightgray;
+        --color:darkblue;
+        --background-color:lightgray;
+        --hovered-background-color:darkgray;
     }
     body {
         padding: '10px'
@@ -89,11 +101,12 @@ Open the src/app/app.component.ts file in the editor and replace the contents wi
 Type the following in a command/terminal window:
 
 ```sh
-npm start
+ng serve --open --port 4200
 ```
 
-open http://localhost:4200 in a browser - the EWC application will load
+a page at http://localhost:4200 opens in a browser window and the EWC application will load
 
-#### components in this package:
+#### imports in the npm package module:
+##### @sencha/ext-web-components{bundle}/ext-web-components{bundle}.module
 
-{wantedxtypes}
+{imports}

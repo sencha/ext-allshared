@@ -64,13 +64,34 @@
                 concatenate
                 +append
                     build/${app.folder}/ext.${app.type}.dev.js
-
+                    and
+                    scss
+                        -appName=App
+                        -imageSearchPath=resources
+                        -themeName=triton
+                        -resourceMapBase=.
+                        -output=ext.scss
+                    and
+                    resources
+                        -excludes=-all*.css
+                        -out=resources
+                    and
+                    resources
+                        -model=true
+                        -out=resources
             ]]>
         </x-compile>
     </target>
     <target name="build" depends="init-cmd,rebuild">
         <x-sencha-command dir="${basedir}">
             <![CDATA[
+                fashion
+                    -pwd=.
+                    -split=4095
+                    -compress
+                        ext.scss
+                    ext.css
+                then
                 fs
                 minify
                 -yui

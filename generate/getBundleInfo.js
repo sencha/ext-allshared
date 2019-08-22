@@ -1,89 +1,65 @@
-exports.getBundleInfo = (framework, type) => {
-
-    if (type == undefined) {
-        return -1
-    }
+var _ = require('lodash');
+exports.getBundleInfo = (framework, type, Items) => {
 
     var examplesSource = './filetemplates/' + framework + '/examples/' + type + '.js';
     var info = {};
+    var rows = [];
+    info.wantedxtypes = []
+    var theFunction = null
     switch(type) {
         case 'all':
-            info.wantedxtypes = [
-                'd3',
-                'pivot',
-                'calendar'
-            ];
+            theFunction = function(o) {
+                return o
+            }
             break;
         case 'button':
-            info.wantedxtypes = [
-                'button'
-            ];
+            theFunction = function(o) {
+                if (   o.xtype == 'button'
+                ) {return o}
+            }
             break;
         case 'panel':
-            info.wantedxtypes = [
-                'panel'
-            ];
+            theFunction = function(o) {
+                if (   o.xtype == 'panel'
+                ) {return o}
+            }
             break;
         case 'grid':
-            info.wantedxtypes = [
-                'panel',
-                'toolbar',
-                'button',
-                'column',
-                'gridcellbase',
-                'booleancell',
-                'gridcell',
-                'checkcell',
-                'datecell',
-                'numbercell',
-                'rownumberercell',
-                'textcell',
-                'treecell',
-                'widgetcell',
-                'celleditor',
-                'booleancolumn',
-                'checkcolumn',
-                'gridcolumn',
-                'datecolumn',
-                'dragcolumn',
-                'numbercolumn',
-                'rownumberer',
-                'selectioncolumn',
-                'textcolumn',
-                'treecolumn',
-                'grid',
-                'headercontainer',
-                'lockedgrid',
-                'lockedgridregion',
-                'pagingtoolbar',
-                'gridrow',
-                'rowbody',
-                'roweditorbar',
-                'roweditorcell',
-                'roweditor',
-                'roweditorgap',
-                'rowheader',
-                'gridsummaryrow',
-                'tree'
-            ];
+            theFunction = function(o) {
+                if (   o.name.toLowerCase().includes('ext.grid')
+                ) {return o}
+            }
             break;
         case 'gridall':
-            info.wantedxtypes = [
-                'grid',
-                'column',
-                'panel'
-            ];
+            theFunction = function(o) {
+                if (   o.xtype == 'd3'
+                    || o.xtype == 'pivot'
+                    || o.xtype == 'calendar'
+                ) {return o}
+            }
             break;
         default:
             console.log('not a valid bundle: ' + type)
             return -1;
     }
-
+    rows = _.map(Items, theFunction);
+    rows = _.without(rows, undefined)
+    var uniquerows = _.uniqBy(rows, 'xtype');
+    var count = 0
+    _.forEach(uniquerows, function(row){
+        info.wantedxtypes.push(row.xtype)
+        //console.log(row.xtype)
+        count++
+    })
+    //console.log(info.wantedxtypes)
+    console.log(count + ' xtypes')
 
     info.type = type;
     info.now = new Date().toString();
     info.Bundle = type.charAt(0).toUpperCase() + type.slice(1);
+//same thing
     info.bundle = '-' + type
+    info.name = info.bundle.substring(1)
 
     info.folder = '../../GeneratedFolders/ext-' + framework + info.bundle + '/ext';
 
