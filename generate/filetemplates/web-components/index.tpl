@@ -21,7 +21,7 @@ function selectDoc(xtype) {
 <div style="padding-left:10px;font-size:24px;">ExtWebComponents 7.0 Documentation</div>
 
 <div class="flex-container">
-  <div style="height:900px;padding:10px;" class="frame thelist">{allXtypes}</div>
+  <div style="height:900px;padding:10px;" class="frame thelist">{includedxtypes}</div>
   <div style="height:900px;width:100%;" class="theframe" id="contentFrame"></div>
 </div>
 

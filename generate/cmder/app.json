@@ -1,6 +1,6 @@
 {
     "framework": "ext",
     "toolkit": "modern",
-    "type": "grid",
-    "folder": "../../GeneratedFolders/ext-web-components-grid/ext"
+    "type": "all",
+    "folder": "../../GeneratedFolders/ext-web-components-all/ext"
 }

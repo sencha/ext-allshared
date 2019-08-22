@@ -1,83 +1,56 @@
-//node ./generate-ext-web-components.js grid
+//node ./generate-ext-web-components.js button
 var install = true;
+let run = require("./util").run;
+const fs = require('fs-extra')
 var framework = 'web-components'
 
 require('./XTemplate')
 const path = require('path')
 const rimraf = require('rimraf')
 const mkdirp = require('mkdirp')
-const fs = require('fs-extra')
-const newLine = '\n'
-const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
 
+const newLine = '\n'
 
 var type = process.argv[2];
-let getBundleInfo = require("./getBundleInfo").getBundleInfo;
-var info = getBundleInfo(framework, type)
-if (info == -1) {
-    return
+switch(type) {
+    case 'all':
+    case 'button':
+    case 'panel':
+    case 'grid':
+    case 'gridall':
+        break;
+    default:
+        console.log('not a valid bundle: ' + type)
+        return -1;
 }
 
-writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
-writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
+const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
 
-// console.log(info)
-// return
-
-
-// const angular_app_module = require(examplesSource).angular_app_module;
-// var angular_app_module_data = angular_app_module({name: 'marc'})
-// console.log(angular_app_module_data)
-// //fs.writeFileSync(`${toolkitFolder}hello.js`, sayHello({name: 'marc'}), 'utf8')
-// const angular_app_component = require(examplesSource).angular_app_component;
-// var angular_app_component_data = angular_app_component({name: 'marc'})
-// console.log(angular_app_module_data)
-
-var didXtype = false
-//var bundle = '-all'
-//var type = 'all'
-
-var bundle = info.bundle;
-
-
-
-
-
-
-
-
-
-var moduleVars = {
-    imports: ''
-}
-
+var moduleVars = {imports: ''}
 
 const generatedFolders = './GeneratedFolders/';
-//const toolkitFolder = generatedFolders + 'ext-' + framework + '/';
-const toolkitFolder = generatedFolders + "ext-" + framework + info.bundle + '/';
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
-rimraf.sync(toolkitFolder);
-mkdirp.sync(toolkitFolder);
 
+const toolkitFolder = generatedFolders + "ext-" + framework + '-' + type + '/';
 const binFolder = toolkitFolder + 'bin/';
 const docFolder = toolkitFolder + 'doc/';
 const libFolder = toolkitFolder + 'lib/';
 const extFolder = libFolder + 'Ext/';
-var extbinFolder = toolkitFolder + "/ext/";
+var extbinFolder = toolkitFolder + "ext/";
 
+rimraf.sync(toolkitFolder);
+mkdirp.sync(toolkitFolder);
 mkdirp.sync(binFolder);
 mkdirp.sync(docFolder);
 mkdirp.sync(libFolder);
 mkdirp.sync(extFolder);
 mkdirp.sync(extbinFolder);
 
-var d= [
-    {name: 'calendar', count: 0, xtypes: []},
-    {name: 'all', count: 0, xtypes: []}
-]
+var didXtype = false
 
 var c = {
     all: 0,
+    xtypenamecombo: 0,
     processed: 0,
     webcomponents: 0,
     unique: 0,
@@ -102,107 +75,77 @@ var c = {
     draw: 0,
     other: 0
 }
-var allXtypes = `<div>${newLine}`;
-//var imports = []
+//var allXtypes = `<div>${newLine}`;
 
+
+var Items = []
 for (i = 0; i < data.global.items.length; i++) {
     doNewApproach(data.global.items[i], framework, libFolder);
 }
 
-// var newimports = imports.sort().filter(function(item, pos, ary) {
-//     return !pos || item != ary[pos - 1];
-// })
-// for (var i = 0; i < newimports.length; i++) {
-//     var count = i + 1
-//     console.log(newimports[i] + ' //' + count);
-// }
+let getBundleInfo = require("./getBundleInfo").getBundleInfo;
+var info = getBundleInfo(framework, type, Items)
 
-allXtypes = allXtypes + `</div>${newLine}`
+info.imports = ''
+fs.readdirSync(`${libFolder}`).forEach(function(file) {
+    var stat = fs.statSync(`${libFolder}` + "/" + file);
+    if (stat.isDirectory()) {return;}
 
-//const sayHello = require('./examples').sayHello
-//console.log(sayHello)
-//fs.writeFileSync(`${toolkitFolder}hello.js`, sayHello({name: 'marc'}), 'utf8')
+    var f = file.split('.')
+    var xtype = f[0].substring(4)
+    if (info.wantedxtypes.indexOf(xtype) == -1) {
+        fs.unlinkSync(`${libFolder}` + "/" + file);
+    }
+    else {
+        moduleVars.imports = moduleVars.imports + `import './lib/ext-${xtype}.component';${newLine}`;
+        info.imports = info.imports + `import './lib/ext-${xtype}.component';<br/>`;
+    }
+});
 
-//path.resolve('./filetemplates/' + framework);
-
-
+info.includedxtypes = `<div>${newLine}`
+fs.readdirSync(`${docFolder}`).forEach(function(file) {
+    var f = file.split('.')
+    var xtype = f[0].substring(4)
+    if (info.wantedxtypes.indexOf(xtype) == -1) {
+        fs.unlinkSync(`${docFolder}` + "/" + file);
+    }
+    else {
+        info.includedxtypes = info.includedxtypes + `  <div onclick="selectDoc('${xtype}')">ext-${xtype}</div><br>${newLine}`
+    }
+});
+info.includedxtypes = info.includedxtypes + `</div>${newLine}`
 
 copyFile("ext/css.prod.js");
-//copyFile("ext/ext." + type + ".prod.js");
-
 copyFile('.babelrc');
-copyFile(`bin/ext-web-components${bundle}.js`);
 
-writeFile(
-    framework,
-    "/package.tpl",
-    `${toolkitFolder}package.json`,
-    {bundle: bundle}
-);
+writeFile(framework,`/ext-web-components.tpl`,`${toolkitFolder}bin/ext-web-components${info.bundle}.js`,info);
+writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
+writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
+writeFile(framework,`/package.tpl`,`${toolkitFolder}package.json`,info);
+writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
-writeFile(
-    framework,
-    "/README.tpl",
-    `${toolkitFolder}/README.md`,
-    info
-);
+writeFile(framework, '/ewcbase.tpl', `${libFolder}ewc-base.component.js`, info);
+writeFile(framework, '/module.tpl', `${toolkitFolder}ext-web-components${info.bundle}.module.js`, moduleVars);
 
+writeFile(framework, '/router.tpl', `${libFolder}ext-router.component.js`, {});
+writeFile(framework, '/index.tpl', `${docFolder}docs.html`, info);
+writeFile(framework, '/style.tpl', `${docFolder}style.css`, {});
 
-writeFile(framework, '/index.tpl', `${docFolder}docs.html`, {allXtypes: allXtypes})
-//writeFile(framework, '/index.tpl', `${docFolder}index.html`, {allXtypes: allXtypes})
-writeFile(framework, '/ewcbase.tpl', `${libFolder}ewc-base.component.js`, {bundle: info,bundle, type: info.type})
-writeFile(framework, '/router.tpl', `${libFolder}ext-router.component.js`, {})
-writeFile(framework, '/style.tpl', `${docFolder}style.css`, {})
-writeFile(framework, '/module.tpl', `${toolkitFolder}ext-web-components${bundle}.module.js`, {imports: moduleVars.imports})
+//allXtypes = allXtypes + `</div>${newLine}`
 
-console.log(c)
-
-// let run = require('./util').run
-// main()
-// async function main() {
-//     await run(`rm -rf ../../ext-web-components/packages/ext-web-components`)
-//     //await run(`rm -rf ../../ext-web-components/packages/ext-web-components/lib`)
-//     await run(`cp -R ./GeneratedFolders/ext-web-components/ ../../ext-web-components/packages/ext-web-components/`)
-// }
-
-let run = require("./util").run;
 if (install == true) {doInstall()}
-
 async function doInstall() {
-
     process.chdir(`./cmder`);
     await run(`sencha app build`);
-    copyFile("ext/css.prod.js");
+    //copyFile("ext/css.prod.js");
     console.log('done with cmd')
     process.chdir(`../`);
 
     process.chdir(toolkitFolder);
     await run(`npm install`);
     await run(`npm publish --force`);
-
-
-    //await run(`npm run packagr`);
-
-    // if (wantedxtypes.includes("all")) {
-    //     var dest = `../../../../ext-${framework}/packages/ext-${framework}`;
-    //     await run(`rm -rf ${dest}`);
-    //     mkdirp.sync(`${dest}`);
-    //     await run(`cp -R ./dist/. ${dest}`);
-    // }
-    // else {
-        //mkdirp.sync(`ext`);
-        //await run(`cp -R ./ext dist/ext`);
-        //process.chdir('dist');
-        //await run(`npm publish --force`);
-        //console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/@sencha/ext-angular${o.bundle}/7.0.0`)
-    // }
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/@sencha/ext-${framework}${info.bundle}/7.0.0`)
 }
-
-
-
-
-
-
 
 function doNewApproach(item, framework, libFolder) {
     c.all++
@@ -407,16 +350,12 @@ function doNewApproach(item, framework, libFolder) {
             }
             writeFile(framework, template, `${folder}${filename}.js`, values)
 
-            //console.log(`${folder}${filename}.js`)
-
 
             for (var j = 0; j < xtypes.length; j++) {
-
-                // if (xtypes[j].substr(xtypes[j].length - 6) == 'column') {
-                // //if (xtypes[j].includes('column')) {
-                //     console.log(xtypes[j])
-                // }
-
+                //for each name and each xtype
+                //Items.push(new Item(xtypes[j], names[i]))
+                Items.push({xtype: xtypes[j], name: names[i]})
+                c.xtypenamecombo++
 
                 var folder = '.'
                 var folders = classname.split('_')
@@ -435,8 +374,7 @@ function doNewApproach(item, framework, libFolder) {
                     //console.log(`${values.xtype} ${didXtype}`)
                     //                    `import { Ext${values.Xtype}Component } from './lib/ext-${values.xtype}.component';${newLine}`;
 
-                    moduleVars.imports = moduleVars.imports +
-                    `import './lib/ext-${values.xtype}.component';${newLine}`;
+                   // moduleVars.imports = moduleVars.imports + `import './lib/ext-${values.xtype}.component';${newLine}`;
                     c.unique = c.unique + 1
                     didXtype = true
 
@@ -456,7 +394,7 @@ function doNewApproach(item, framework, libFolder) {
                     else if (xt.includes('menu')) {c.menu++}
                     //else if (xt.includes('grid')) {c.grid++;console.log(name + "; \t\t"  + xt)}
                     //else if (name.toLowerCase().includes('ext.grid')) {c.grid++;console.log("'" + name + "; \t\t"  + xt)}
-                    else if (name.toLowerCase().includes('ext.grid')) {c.grid++;console.log("'" + xt + "',")}
+                    else if (name.toLowerCase().includes('ext.grid')) {c.grid++}//;console.log("'" + xt + "',")}
                     //else if (xt.includes('cell')) {c.cell++;console.log(name + "; \t\t"  + xt)}
                     else if (xt.includes('list')) {c.list++}
                     else if (xt.includes('row')) {c.row++}
@@ -509,7 +447,7 @@ function doNewApproach(item, framework, libFolder) {
                 }
                 writeFile(framework, '/doc.tpl', `${docFolder}ext-${xtypes[j]}.doc.html`, values3)
                 //imports.push(`import '@sencha/ext-web-components/lib/ext-${xtypes[j]}.component';`)
-                allXtypes = allXtypes + `  <div onclick="selectDoc('${xtypes[j]}')">ext-${xtypes[j]}</div><br>${newLine}`
+                //allXtypes = allXtypes + `  <div onclick="selectDoc('${xtypes[j]}')">ext-${xtypes[j]}</div><br>${newLine}`
             }
             webcomponent = false
         }
