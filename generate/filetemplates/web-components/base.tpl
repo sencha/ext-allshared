@@ -2,6 +2,7 @@ import EwcBaseComponent from '../ewc-base.component'
 
 export default class {classname} extends EwcBaseComponent {
 //events
+get onready(){return this.getAttribute('onready')};set onready(onready){this.setAttribute('onready',onready)}
 {sEVENTGETSET}//configs
 {sGETSET}
 static XTYPE() {return '{xtype}'}
@@ -14,6 +15,7 @@ static PROPERTIESOBJECT() { return {
 "responsiveFormulas":["Object"]
 }}
 static EVENTS() { return [
+{name:'ready',parameters:''},
 {sEVENTS}]}
 static METHODS() { return [
 {sMETHODS}]}
@@ -26,7 +28,7 @@ static METHODS() { return [
         {classname}.EVENTS().forEach(function (eventparameter, index, array) {
             attrs.push('on' + eventparameter.name)
         })
-        attrs.push('on' + 'ready')
+        attrs.push('onready')
         return attrs
     }
 

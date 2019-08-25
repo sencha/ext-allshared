@@ -75,8 +75,6 @@ var c = {
     draw: 0,
     other: 0
 }
-//var allXtypes = `<div>${newLine}`;
-
 
 var Items = []
 for (i = 0; i < data.global.items.length; i++) {
@@ -116,6 +114,7 @@ fs.readdirSync(`${docFolder}`).forEach(function(file) {
 info.includedxtypes = info.includedxtypes + `</div>${newLine}`
 
 copyFile("ext/css.prod.js");
+copyFile("lib/HTMLParsedElement.js");
 copyFile('.babelrc');
 
 writeFile(framework,`/ext-web-components.tpl`,`${toolkitFolder}bin/ext-web-components${info.bundle}.js`,info);

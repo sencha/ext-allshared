@@ -1,7 +1,5 @@
-import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/ext.{type}.prod';
-import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/css.prod';
-
-import HTMLParsedElement from './HTMLParsedElement'
+import 'script-loader!node_modules/@sencha/ext-web-components-grid/ext/ext.grid.prod';
+import 'script-loader!node_modules/@sencha/ext-web-components-grid/ext/css.prod';
 
 export default class EwcBaseComponent extends HTMLElement {
 
@@ -10,46 +8,106 @@ export default class EwcBaseComponent extends HTMLElement {
         //console.log('in EwcBaseComponent')
     }
 
-    parsedCallback() {
-      //this.innerHTML = 'always <strong>safe</strong>!';
-      //console.log(this.parsed); // always true here
-
-
+    connectedCallback() {
         var me = this;
-//        setTimeout(function() {
-            console.log('parsedCallback')
-            me.createProps(me)
+        // this.setAttribute('height','mjg')
+        // const returnedMe = Object.assign(me, {});
+        // console.log('in onReady2')
+        // console.dir(returnedMe)
+        // console.log(returnedMe['height'])
+        // console.dir(returnedMe.attributes)
+        // console.log(returnedMe.getAttribute('height'))
+        // var c1 = returnedMe.attributes.getNamedItem('height')
+        // console.log(c1)
 
-            if (me.props['viewport'] == true) {
-                me.doCreate()
-                //console.log('Ext.application for ' + me.props.xtype + '(' + me.props.ewc + ')')
-                Ext.application({
-                    name: 'MyEWCApp',
-                    launch: function () {
-                        Ext.Viewport.add([me.ext])
-                        if (window.router) {window.router.init();}
-                    }
-                });
-            }
-            else if (me.parentNode.nodeName.substring(0, 4) != 'EXT-') {
-                //console.log('parent of: ' + this.nodeName + ' is ' + this.parentNode.nodeName)
-                me.props.renderTo = this.newDiv;
+        // setTimeout(function(){
+        //     console.log('timeout')
+        //     console.log(returnedMe.getAttribute('columns'))
+        // }, 0);
+
+        // console.dir(me)
+        // console.dir(me.attributes)
+        // var columns = me.attributes.getNamedItem('columns')
+        // console.log(columns)
+
+
+        //Ext.onReady(function () {
+        setTimeout(function(){
+        me.createProps(me)
+
+        //console.log(me.props)
+// console.log('after')
+// console.dir(me)
+// console.dir(me.parentNode)
+        if (me.props['viewport'] == true) {
+            me.doCreate()
+            //console.log('Ext.application for ' + me.props.xtype + '(' + me.props.ewc + ')')
+            Ext.application({
+                name: 'MyEWCApp',
+                launch: function () {
+                    Ext.Viewport.add([me.ext])
+                    if (window.router) {window.router.init();}
+                }
+            });
+        }
+        else {
+            console.log('here here')
+
+            // me.props.renderTo = me
+            // console.log(me.props)
+            // me.ext = Ext.create(me.props)
+
+
+            if (me.parentNode.nodeName.substring(0, 4) != 'EXT-') {
+
+                var newDiv = document.createElement("div");
+                var newContent = document.createTextNode("Hi there and greetings!");
+                // add the text node to the newly created div
+                newDiv.appendChild(newContent);
+                me.parentNode.insertBefore(newDiv,me)
+                //newDiv.appendChild(newContent);
+
+
+
+                console.log('parent of: ' + me.nodeName + ' is ' + me.parentNode.nodeName)
+                console.dir(me)
+                console.dir(me.parentNode)
+                me.props.renderTo = newDiv; //me.parentNode
+                console.log(me.props)
                 me.ext = Ext.create(me.props)
-                //console.dir(me.ext.el.dom)
-                //var a = Ext.get(me.ext)
-                me.parentNode.replaceChild(me.ext.el.dom, this.newDiv)
+                //me.doCreate()
+
+                console.dir(me.ext.el.dom)
+                var a = Ext.get(me.ext)
+                //console.dir(me.ext.el.dom, newDiv)
+                me.parentNode.replaceChild(me.ext.el.dom, newDiv)
+
+
+
+
             }
             else {
                 // console.log('parent is EXT')
+                console.log('parent of: ' + this.nodeName + ' is EXT')
+                //console.log(me.props)
                 me.ext = Ext.create(me.props)
                 //me.doCreate()
             }
+        }
+
+
+
+
+            //Ext.onReady(function () {
+                //me.ext = Ext.create(me.props)
 
             var parentEWS = false
             var parentCONNECTED = false
             me.CONNECTED = true
             me.EWSCHILDRENCOUNT = 0
 
+            // console.log(me.children.length)
+            // console.dir(me)
             for (var i = 0; i < me.children.length; i++) {
                 if (me.children[i].nodeName.substring(0, 4) == 'EXT-') {
                     me.EWSCHILDRENCOUNT++
@@ -77,7 +135,12 @@ export default class EwcBaseComponent extends HTMLElement {
             // console.log('EWSCHILDRENLEFT: ' + me.EWSCHILDRENLEFT)
 
             if (me.EWSCHILDRENCOUNT == 0) {
-                me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
+        //        var me = this;
+                //setTimeout(function(){
+                    //console.log('d1')
+                    me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
+                //}, 0);
+                //me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
             }
 
             if (me.EWSCHILDREN == undefined) {
@@ -106,6 +169,7 @@ export default class EwcBaseComponent extends HTMLElement {
                     var children = me.parentNode.children
                     var child = me.parentNode
                     me.addChildren(child, children)
+                    //console.log('d2')
                     me.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.parentNode.ext}}))
                 }
                 else {
@@ -128,25 +192,15 @@ export default class EwcBaseComponent extends HTMLElement {
                 // console.dir(me.children)
                 // console.dir(child)
                 me.addChildren(child, children)
+                //console.log('d3')
                 me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
                 //console.log(me.parentNode.EWSCHILDRENLEFT)
             }
             else {
                 //console.log('after EWSCHILDREN.length: ' + me.EWSCHILDREN.length)
             }
-//        }, 0);
-
-
-
-    }
-
-
-    connectedCallback() {
-        this.newDiv = document.createElement("div");
-        //var newContent = document.createTextNode("Hi there and greetings!");
-        //this.newDiv.appendChild(newContent);
-        this.parentNode.insertBefore(this.newDiv,this)
-        //newDiv.appendChild(newContent);
+        //});
+        }, 0);
     }
 
     createProps(me) {
@@ -171,9 +225,38 @@ export default class EwcBaseComponent extends HTMLElement {
             me.props.height='100%'
         }
         for (var property in me.PROPERTIESOBJECT) {
-            if (me.getAttribute(property) !== null) {
+            if (property == 'height') {
+                console.log(property);
+                console.dir(me.attributes);
+                window['mjg'] = me.attributes
+                console.log(window['mjg'].columns)
+
+                for(var i=0;i<me.attributes.length;i++){
+                    if(me.attributes[i].specified){
+                       console.log(me.attributes[i].nodeName + ' = '
+                        + me.attributes[i].nodeValue);
+                    }
+                 }
+
+
+            // }
+            //if (property == 'columns') {
+                // console.log(property)
+                console.dir(me);
+                // console.log(me.attributes)
+                // console.log(me.attributes.getNamedItem('columns'))
+                // console.log(me.getAttribute(property))
+                // console.log(me.attributes.getNamedItem('title'))
+            }
+            //console.log(me.attributes.getNamedItem(property))
+
+            if (me.attributes.getNamedItem(property) !== null) {
+                //console.log('in')
+                //console.log(me.attributes.getNamedItem(property))
+            //if (me.getAttribute(property) !== null) {
                 if (property == 'handler') {
                     var functionString = me.getAttribute(property);
+                    //var functionString = me.attributes.getNamedItem(property);
                     //error check for only 1 dot
                     var r = functionString.split('.');
                     var obj = r[0];
@@ -181,10 +264,12 @@ export default class EwcBaseComponent extends HTMLElement {
                     me.props[property] = window[obj][func];
                 }
                 else {
+                    //console.log(property)
                     me.props[property] = me.filterProperty(me.getAttribute(property));
                 }
             }
         }
+        //console.log('here')
         me.props.listeners = {}
 
         // this would only add events to the ones that are
@@ -200,7 +285,7 @@ export default class EwcBaseComponent extends HTMLElement {
         //     }
         // }
 
-        var me = this;
+        //var me = this;
         me.EVENTS.forEach(function (eventparameter, index, array) {
             me.setEvent(eventparameter,me.props,me)
         })
@@ -311,6 +396,9 @@ export default class EwcBaseComponent extends HTMLElement {
     }
 
     addChildren(child, children) {
+        //console.log('addChildren')
+        //console.log(child)
+        //console.log(children)
         var childItems = []
         var childItem = {}
         for (var i = children.length-1; i > -1; i--) {
@@ -335,6 +423,11 @@ export default class EwcBaseComponent extends HTMLElement {
     }
 
     addTheChild(parentCmp, childCmp, location) {
+        console.log(parentCmp)
+        console.log(childCmp)
+        if (parentCmp == undefined) {
+            return
+        }
         var parentxtype = parentCmp.xtype
         var childxtype = childCmp.xtype
         //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.ewc + ')' + ' - ' + childxtype + '(' + childCmp.ewc + ')')
@@ -513,26 +606,14 @@ export default class EwcBaseComponent extends HTMLElement {
             //this.removeEventListener(attr.slice(2), this);
             }
         } else {
-
-            var ischanged
-            if (this.ext != undefined) {
-                ischanged = true
+            if (this.ext === undefined) {
+                //mjg ??
+            }
+            else {
+                //mjg check if this method exists for this component
                 var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
                 this.ext[method](newVal)
             }
-            else {
-                ischanged = false
-            }
-            console.log('attr: ' + attr + ', changed is ' + ischanged)
-
-            //if (this.ext === undefined) {
-            //    //mjg ??
-            //}
-            //else {
-            //    //mjg check if this method exists for this component
-            //    var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
-            //    this.ext[method](newVal)
-            //}
         }
     }
 
@@ -577,6 +658,116 @@ export default class EwcBaseComponent extends HTMLElement {
     }
 
 
+
+    assessChildren2() {
+        var me = this;
+
+        Ext.onReady(function () {
+
+
+
+
+
+        var parentEWS = false
+        var parentCONNECTED = false
+        me.CONNECTED = true
+        me.EWSCHILDRENCOUNT = 0
+
+        for (var i = 0; i < me.children.length; i++) {
+            if (me.children[i].nodeName.substring(0, 4) == 'EXT-') {
+                me.EWSCHILDRENCOUNT++
+            }
+        }
+        me.EWSCHILDRENLEFT = me.EWSCHILDRENCOUNT
+        if (me.EWSCHILDREN != undefined) {
+            me.EWSCHILDRENLEFT = me.EWSCHILDRENCOUNT - me.EWSCHILDREN.length
+        }
+        if (me.parentNode.nodeName.substring(0, 4) == 'EXT-') {
+            parentEWS = true
+            if (me.parentNode.CONNECTED == true) {
+                parentCONNECTED = true
+            }
+        }
+        else {
+            parentEWS = false
+            parentCONNECTED = true
+        }
+        // console.log('children: ' + me.children.length)
+        // console.log('parentEWS: ' + parentEWS)
+        // console.log('parentCONNECTED: ' + parentCONNECTED)
+        // console.log('EWSCHILDRENCOUNT: ' + me.EWSCHILDRENCOUNT)
+        // console.log('parent EWSCHILDRENCOUNT: ' + me.parentNode.EWSCHILDRENCOUNT)
+        // console.log('EWSCHILDRENLEFT: ' + me.EWSCHILDRENLEFT)
+
+        if (me.EWSCHILDRENCOUNT == 0) {
+            var me = this;
+            setTimeout(function(){
+                me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
+            }, 0);
+            //me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
+        }
+
+        if (me.EWSCHILDREN == undefined) {
+            if (me.EWSCHILDRENCOUNT != 0) {
+                // console.log('no children defined yet')
+            }
+        }
+        else {
+            // console.log('EWSCHILDREN.length: ' + me.EWSCHILDREN.length)
+        }
+
+        if (parentEWS == true) {
+            if (me.parentNode.EWSCHILDREN == undefined) {
+                me.parentNode.EWSCHILDREN = []
+            }
+            me.parentNode.EWSCHILDREN.push(this)
+            me.parentNode.EWSCHILDRENLEFT--
+            if (me.parentNode.EWSCHILDRENLEFT == 0) {
+                // console.log('TOP to BOTTOM')
+                // console.log('this is the last child')
+                // console.log('ready to go')
+                // console.dir(me.parentNode)
+                // console.dir(me.parentNode.children)
+                // console.dir(me.parentNode.EWSCHILDREN)
+
+                var children = me.parentNode.children
+                var child = me.parentNode
+                me.addChildren(child, children)
+                me.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.parentNode.ext}}))
+            }
+            else {
+                // console.log('after EWSCHILDRENLEFT: ' + me.EWSCHILDRENLEFT)
+            }
+        }
+
+        if(me.EWSCHILDREN == undefined) {me.EWSCHILDREN = []}
+
+        if ((me.EWSCHILDRENCOUNT > 0 && me.EWSCHILDRENCOUNT == me.EWSCHILDREN.length) ||
+            (me.children.length > 0 && me.EWSCHILDRENCOUNT == 0)) {
+            var children = me.children
+            var child = this
+            // console.log('BOTTOM to TOP')
+            // console.log('children were done first')
+            // console.log('ready to go')
+            // console.log(me.children)
+            // console.log(me.EWSCHILDREN)
+
+            // console.dir(me.children)
+            // console.dir(child)
+            me.addChildren(child, children)
+            me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
+            //console.log(me.parentNode.EWSCHILDRENLEFT)
+        }
+        else {
+            //console.log('after EWSCHILDREN.length: ' + me.EWSCHILDREN.length)
+        }
+
+
+        });
+
+
+
+    }
     connectedCallback2() {
         // console.log('Base connectedCallback ' + this.XTYPE)
         this.createProps()
@@ -663,116 +854,6 @@ export default class EwcBaseComponent extends HTMLElement {
             me.setEvent(eventparameter,me.props,me)
         })
     }
-
-assessChildren2() {
-    var me = this;
-
-    Ext.onReady(function () {
-
-
-
-
-
-    var parentEWS = false
-    var parentCONNECTED = false
-    me.CONNECTED = true
-    me.EWSCHILDRENCOUNT = 0
-
-    for (var i = 0; i < me.children.length; i++) {
-        if (me.children[i].nodeName.substring(0, 4) == 'EXT-') {
-            me.EWSCHILDRENCOUNT++
-        }
-    }
-    me.EWSCHILDRENLEFT = me.EWSCHILDRENCOUNT
-    if (me.EWSCHILDREN != undefined) {
-        me.EWSCHILDRENLEFT = me.EWSCHILDRENCOUNT - me.EWSCHILDREN.length
-    }
-    if (me.parentNode.nodeName.substring(0, 4) == 'EXT-') {
-        parentEWS = true
-        if (me.parentNode.CONNECTED == true) {
-            parentCONNECTED = true
-        }
-    }
-    else {
-        parentEWS = false
-        parentCONNECTED = true
-    }
-    // console.log('children: ' + me.children.length)
-    // console.log('parentEWS: ' + parentEWS)
-    // console.log('parentCONNECTED: ' + parentCONNECTED)
-    // console.log('EWSCHILDRENCOUNT: ' + me.EWSCHILDRENCOUNT)
-    // console.log('parent EWSCHILDRENCOUNT: ' + me.parentNode.EWSCHILDRENCOUNT)
-    // console.log('EWSCHILDRENLEFT: ' + me.EWSCHILDRENLEFT)
-
-    if (me.EWSCHILDRENCOUNT == 0) {
-        var me = this;
-        setTimeout(function(){
-            me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
-        }, 0);
-        //me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
-    }
-
-    if (me.EWSCHILDREN == undefined) {
-        if (me.EWSCHILDRENCOUNT != 0) {
-            // console.log('no children defined yet')
-        }
-    }
-    else {
-        // console.log('EWSCHILDREN.length: ' + me.EWSCHILDREN.length)
-    }
-
-    if (parentEWS == true) {
-        if (me.parentNode.EWSCHILDREN == undefined) {
-            me.parentNode.EWSCHILDREN = []
-        }
-        me.parentNode.EWSCHILDREN.push(this)
-        me.parentNode.EWSCHILDRENLEFT--
-        if (me.parentNode.EWSCHILDRENLEFT == 0) {
-            // console.log('TOP to BOTTOM')
-            // console.log('this is the last child')
-            // console.log('ready to go')
-            // console.dir(me.parentNode)
-            // console.dir(me.parentNode.children)
-            // console.dir(me.parentNode.EWSCHILDREN)
-
-            var children = me.parentNode.children
-            var child = me.parentNode
-            me.addChildren(child, children)
-            me.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.parentNode.ext}}))
-        }
-        else {
-            // console.log('after EWSCHILDRENLEFT: ' + me.EWSCHILDRENLEFT)
-        }
-    }
-
-    if(me.EWSCHILDREN == undefined) {me.EWSCHILDREN = []}
-
-    if ((me.EWSCHILDRENCOUNT > 0 && me.EWSCHILDRENCOUNT == me.EWSCHILDREN.length) ||
-        (me.children.length > 0 && me.EWSCHILDRENCOUNT == 0)) {
-        var children = me.children
-        var child = this
-        // console.log('BOTTOM to TOP')
-        // console.log('children were done first')
-        // console.log('ready to go')
-        // console.log(me.children)
-        // console.log(me.EWSCHILDREN)
-
-        // console.dir(me.children)
-        // console.dir(child)
-        me.addChildren(child, children)
-        me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
-        //console.log(me.parentNode.EWSCHILDRENLEFT)
-    }
-    else {
-        //console.log('after EWSCHILDREN.length: ' + me.EWSCHILDREN.length)
-    }
-
-
-    });
-
-
-
-}
 
 
 

@@ -5,6 +5,7 @@ exports.angular = (what, info) => {
 case 'module':
 r =
 `
+declare var Ext: any
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
 
@@ -22,9 +23,16 @@ import { AppComponent } from './app.component';
   ],
   providers: [ ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  bootstrap: [ AppComponent ]
+  //bootstrap: [ AppComponent ]
+  entryComponents: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+    ngDoBootstrap(app) {
+        Ext.onReady(function () {
+            app.bootstrap(AppComponent);
+        });
+    }
+}
 `
 break;
 
