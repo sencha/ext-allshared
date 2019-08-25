@@ -18,6 +18,7 @@
       "comment-json": "^2.1.0"
     },
     "devDependencies": {
+      "html-parsed-element": "^0.4.0",
       "@babel/cli": "^7.5.5",
       "@babel/core": "^7.5.5",
       "@babel/plugin-proposal-class-properties": "^7.5.5",

@@ -10,7 +10,7 @@ last run: {now}
 npm install -g @angular/cli
 ```
 
-should be @angular/cli@8.2.x
+should be @angular/cli@8.3.x
 
 
 #### Create a new Angular CLI application
@@ -32,7 +32,8 @@ cd ng-ewc{bundle}; code .
 In the dependencies section of package.json, add the following:
 
 ```sh
-"@sencha/ext-web-components{bundle}": "7.0.0",
+"@sencha/ext-web-components{bundle}": "~7.0.0",
+"@webcomponents/webcomponentsjs": "^2.2.10",
 ```
 
 #### Run npm install
@@ -78,6 +79,31 @@ Open the src/index.html file in the editor and replace the contents with the fol
     }
 </style>
 </html>
+```
+
+#### Replace src/main.js
+
+Open the src/main.js file in the editor and replace the contents with the following:
+
+```sh
+declare var Ext: any
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+function bootstrapModule() {
+    platformBrowserDynamic().bootstrapModule(AppModule)
+      .catch(err => console.log(err));
+}
+
+//Ext.onReady(bootstrapModule)
+window.addEventListener('WebComponentsReady', bootstrapModule);
 ```
 
 #### Replace src/app/app.module.js
