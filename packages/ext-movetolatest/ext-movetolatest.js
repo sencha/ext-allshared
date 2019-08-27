@@ -27,10 +27,6 @@ function movetolatest() {
     return
   }
 
-  if (!doesFileExist(indexJS)) {
-    createIndexJS();
-  }
-
   var packageJson = {}
   var webpackConfigJs = {}
   var babelrc = {}
@@ -60,6 +56,10 @@ function movetolatest() {
   findIt('angular', packageJson, o)
   findIt('components', packageJson, o)
   findIt('reactor', packageJson, o)
+
+  if (!doesFileExist(indexJS) && o.foundFramework == 'extjs') {
+    createIndexJS();
+  }
 
   if (o.foundFramework == '') {
     console.log(boldRed('Error: ') + 'no framework found')
