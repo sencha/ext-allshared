@@ -1,5 +1,5 @@
 //node ./generate-ext-angular.js grid
-var install = false;
+var install = true;
 let run = require("./util").run;
 var fs = require("fs-extra");
 var framework = "angular";
@@ -13,23 +13,90 @@ var newLine = "\n";
 const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
 
 var type = process.argv[2];
-let getBundleInfo = require("./getBundleInfo").getBundleInfo;
-var info = getBundleInfo(framework, type)
-if (info == -1) {
-    return
+var xtypelist = [];
+switch(type) {
+    case 'all':
+        break;
+    case 'button':
+        xtypelist = [
+            'button'
+        ]
+        break;
+    case 'panel':
+        break;
+    case 'grid':
+        xtypelist = [
+            'gridcellbase',
+            'booleancell',
+            'gridcell',
+            'checkcell',
+            'datecell',
+            'numbercell',
+            'rownumberercell',
+            'textcell',
+            'treecell',
+            'widgetcell',
+            'celleditor',
+            'booleancolumn',
+            'checkcolumn',
+            'gridcolumn',
+            'column',
+            'templatecolumn',
+            'datecolumn',
+            'dragcolumn',
+            'numbercolumn',
+            'rownumberer',
+            'selectioncolumn',
+            'textcolumn',
+            'treecolumn',
+            'grid',
+            'headercontainer',
+            'lockedgrid',
+            'lockedgridregion',
+            'gridcolumnsmenu',
+            'gridgroupbythismenuitem',
+            'gridshowingroupsmenuitem',
+            'gridsortascmenuitem',
+            'gridsortdescmenuitem',
+            'pagingtoolbar',
+            'gridrow',
+            'rowbody',
+            'roweditorbar',
+            'roweditorcell',
+            'roweditor',
+            'roweditorgap',
+            'rowheader',
+            'gridsummaryrow',
+            'tree'
+          ]
+          break;
+    case 'gridall':
+        break;
+    default:
+        console.log('not a valid bundle: ' + type)
+        return -1;
 }
 
-var moduleVars = { Bundle: info.Bundle, imports: "", declarations: "", exports: "" };
+
+
+
+
+
+
+
+
+
+//var moduleVars = { Bundle: info.Bundle, imports: "", declarations: "", exports: "" };
+var moduleVars = { imports: "", declarations: "", exports: "" };
 
 var generatedFolders = "./GeneratedFolders/";
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
 
 var templateToolkitFolder = path.resolve("./filetemplates/" + framework);
-var toolkitFolder = generatedFolders + "ext-" + framework + info.bundle + '/';
+const toolkitFolder = generatedFolders + "ext-" + framework + '-' + type + '/';
+//var toolkitFolder = generatedFolders + "ext-" + framework + info.bundle + '/';
 var srcFolder = toolkitFolder + "src/";
 var extFolder = toolkitFolder + "ext/";
-
-
 
 rimraf.sync(toolkitFolder);
 mkdirp.sync(toolkitFolder);
@@ -38,6 +105,20 @@ mkdirp.sync(extFolder);
 
 
 
+log(`item count`, `${data.global.items.length}`);
+
+var Items = []
+for (i = 0; i < data.global.items.length; i++) {
+    launch(data.global.items[i], framework, moduleVars);
+}
+
+
+
+
+let getBundleInfo = require("./getBundleInfo").getBundleInfo;
+var info = getBundleInfo(framework, type, Items)
+
+//console.log(info.wantedxtypes)
 
 if (info.wantedxtypes.includes("all")) {
     moduleVars.imports = moduleVars.imports + `import { ExtAngularBootstrapComponent } from './ext-angular-bootstrap.component';${newLine}`;
@@ -49,16 +130,15 @@ if (info.wantedxtypes.includes("all")) {
     copyFile("src/ext-angular-bootstrap.service.ts");
 }
 
-log(`item count`, `${data.global.items.length}`);
 
-for (i = 0; i < data.global.items.length; i++) {
-    launch(data.global.items[i], framework, moduleVars);
-}
 
 copyFile("ext/css.prod.js");
 copyFile("tsconfig.json");
 copyFile("tsconfig.lib.json");
 copyFile("ng-package.json");
+
+console.log(info)
+console.log(info.manifest)
 
 writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
 writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
@@ -67,6 +147,7 @@ writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
 writeFile(framework,`/base.tpl`,`${srcFolder}base.ts`,info);
 writeFile(framework,`/module.tpl`,`${srcFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
+
 
 writeFile(framework,`/public_api.tpl`,`${toolkitFolder}/public_api.ts`,info);
 
@@ -113,6 +194,7 @@ async function doInstall() {
 }
 
 function launch(o, framework, moduleVars) {
+
     if (o.alias != undefined) {
         if (o.alias.substring(0, 6) == "widget") {
             var aliases = o.alias.split(",");
@@ -121,11 +203,15 @@ function launch(o, framework, moduleVars) {
                     if (o.items != undefined) {
     //                           num++;
                         o.xtype = aliases[alias].substring(7);
-
+                        o.Xtype = o.xtype.charAt(0).toUpperCase() + o.xtype.slice(1).replace(/-/g,'_');
+                        //console.log(o.xtype)
                         if (
-                            info.wantedxtypes.includes(o.xtype) ||
-                            info.wantedxtypes.includes("all")
+                            xtypelist.includes(o.xtype) ||
+                            xtypelist.includes("all")
+                            // info.wantedxtypes.includes(o.xtype) ||
+                            // info.wantedxtypes.includes("all")
                         ) {
+                            //console.log(o.xtypes)
                             oneItem(o, framework, moduleVars);
                         }
                     } else {
@@ -138,6 +224,8 @@ function launch(o, framework, moduleVars) {
 }
 
 function oneItem(o, framework, moduleVars) {
+
+
     var classname = o.xtype.replace(/-/g, "_");
     var capclassname = classname.charAt(0).toUpperCase() + classname.slice(1);
     var classFile = `${srcFolder}ext-${o.xtype}.component.ts`;
@@ -365,6 +453,8 @@ function oneItem(o, framework, moduleVars) {
         templateToolkitFolder: templateToolkitFolder
     };
 
+    Items.push({xtype: o.xtype, name: o.name, extended: o.extended})
+
     writeFile(
         framework,
         "/class.tpl",
@@ -374,11 +464,10 @@ function oneItem(o, framework, moduleVars) {
 
     //     fs.writeFile(`${classFile}`, doClass(o.xtype, sGETSET, sMETHODS, sPROPERTIES, sPROPERTIESOBJECT, sEVENTS, sEVENTNAMES, o.name, classname, capclassname, templateToolkitFolder), function(err) {if(err) { return console.log(err); }});
 
-    moduleVars.imports =
-        moduleVars.imports +
-        `import { Ext${capclassname}Component } from './ext-${
-            o.xtype
-        }.component';${newLine}`;
+
+    //moduleVars.imports = moduleVars.imports +`import { Ext${capclassname}${o.Xtype}Component } from './ext-${o.xtype}.component';${newLine}`;
+    moduleVars.imports = moduleVars.imports +`import { Ext${capclassname}Component } from './ext-${o.xtype}.component';${newLine}`;
+
     moduleVars.exports =
         moduleVars.exports + `    Ext${capclassname}Component,${newLine}`;
     moduleVars.declarations =

@@ -1,6 +1,7 @@
 {
     "framework": "ext",
     "toolkit": "modern",
-    "type": "all",
-    "folder": "../../GeneratedFolders/ext-web-components-all/ext"
+    "theme": "theme-material",
+    "type": "button",
+    "folder": "../../GeneratedFolders/ext-web-components-button/ext"
 }

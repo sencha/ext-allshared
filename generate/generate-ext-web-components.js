@@ -12,11 +12,63 @@ const mkdirp = require('mkdirp')
 const newLine = '\n'
 
 var type = process.argv[2];
+var xtypelist = [];
 switch(type) {
     case 'all':
+        break;
     case 'button':
+        xtypelist = [
+            'button'
+        ]
+        break;
     case 'panel':
+        break;
     case 'grid':
+        xtypelist = [
+            'gridcellbase',
+            'booleancell',
+            'gridcell',
+            'checkcell',
+            'datecell',
+            'numbercell',
+            'rownumberercell',
+            'textcell',
+            'treecell',
+            'widgetcell',
+            'celleditor',
+            'booleancolumn',
+            'checkcolumn',
+            'gridcolumn',
+            'column',
+            'templatecolumn',
+            'datecolumn',
+            'dragcolumn',
+            'numbercolumn',
+            'rownumberer',
+            'selectioncolumn',
+            'textcolumn',
+            'treecolumn',
+            'grid',
+            'headercontainer',
+            'lockedgrid',
+            'lockedgridregion',
+            'gridcolumnsmenu',
+            'gridgroupbythismenuitem',
+            'gridshowingroupsmenuitem',
+            'gridsortascmenuitem',
+            'gridsortdescmenuitem',
+            'pagingtoolbar',
+            'gridrow',
+            'rowbody',
+            'roweditorbar',
+            'roweditorcell',
+            'roweditor',
+            'roweditorgap',
+            'rowheader',
+            'gridsummaryrow',
+            'tree'
+          ]
+          break;
     case 'gridall':
         break;
     default:
@@ -35,16 +87,25 @@ const toolkitFolder = generatedFolders + "ext-" + framework + '-' + type + '/';
 const binFolder = toolkitFolder + 'bin/';
 const docFolder = toolkitFolder + 'doc/';
 const libFolder = toolkitFolder + 'lib/';
-const extFolder = libFolder + 'Ext/';
+const tempFolder = toolkitFolder + 'temp/';
+const extFolder = tempFolder + 'Ext/';
+const extFinalFolder = libFolder + 'Ext/';
 var extbinFolder = toolkitFolder + "ext/";
+
+//const extFinalFolder = libFolder + 'Ext/';
+
 
 rimraf.sync(toolkitFolder);
 mkdirp.sync(toolkitFolder);
 mkdirp.sync(binFolder);
 mkdirp.sync(docFolder);
 mkdirp.sync(libFolder);
+mkdirp.sync(tempFolder);
 mkdirp.sync(extFolder);
+mkdirp.sync(extFinalFolder);
 mkdirp.sync(extbinFolder);
+
+//mkdirp.sync(extFinalFolder);
 
 var didXtype = false
 
@@ -83,6 +144,8 @@ for (i = 0; i < data.global.items.length; i++) {
 
 let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 var info = getBundleInfo(framework, type, Items)
+
+writeOnlyWantedExtended(info.wantedextended)
 
 info.imports = ''
 fs.readdirSync(`${libFolder}`).forEach(function(file) {
@@ -124,7 +187,7 @@ writeFile(framework,`/package.tpl`,`${toolkitFolder}package.json`,info);
 writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
 writeFile(framework, '/ewcbase.tpl', `${libFolder}ewc-base.component.js`, info);
-writeFile(framework, '/module.tpl', `${toolkitFolder}ext-web-components${info.bundle}.module.js`, moduleVars);
+writeFile(framework, '/module.tpl', `${toolkitFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
 
 writeFile(framework, '/router.tpl', `${libFolder}ext-router.component.js`, {});
 writeFile(framework, '/index.tpl', `${docFolder}docs.html`, info);
@@ -145,6 +208,27 @@ async function doInstall() {
     await run(`npm publish --force`);
     console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/@sencha/ext-${framework}${info.bundle}/7.0.0`)
 }
+
+
+function writeOnlyWantedExtended(wantedextended) {
+    //console.log(wantedextended)
+    var _ = require('lodash');
+    var a = []
+    for (item = 0; item < wantedextended.length; item++) {
+        //console.log(wantedextended[item])
+        var w = wantedextended[item].split(',')
+        a = a.concat(w)
+    }
+    //console.log(a)
+    var u = _.uniq(a);
+    for (item = 0; item < u.length; item++) {
+        var folder = u[item].replace(/\./g, "/");
+        //console.log(folder)
+        fs.copySync(`${tempFolder}` + "" + folder + '.js',`${libFolder}` + "" + folder + '.js')
+    }
+    rimraf.sync(tempFolder);
+}
+
 
 function doNewApproach(item, framework, libFolder) {
     c.all++
@@ -174,8 +258,9 @@ function doNewApproach(item, framework, libFolder) {
         var names = []
         names.push(item.name)
         if (item.alternateClassNames != undefined) {
-            var alt = item.alternateClassNames.split(",");
-            names = names.concat(alt)
+            //console.log(item.alternateClassNames)
+            //var alt = item.alternateClassNames.split(",");
+            //names = names.concat(alt)
         }
 
         var aliases = []
@@ -185,7 +270,18 @@ function doNewApproach(item, framework, libFolder) {
               aliases = item.alias.split(",")
               for (alias = 0; alias < aliases.length; alias++) {
                 if (aliases[alias].substring(0, 6) == 'widget') {
-                  xtypes.push(aliases[alias].substring(7))
+                    var xtypelocal = aliases[alias].substring(7)
+                  xtypes.push(xtypelocal)
+
+                  if (xtypelocal == 'lockedgrid') {
+                      console.log(item)
+                  }
+
+
+
+
+
+
                 }
               }
             }
@@ -313,7 +409,7 @@ function doNewApproach(item, framework, libFolder) {
                 thePath = thePath + parts[j] + '/'
                 pathprefix = pathprefix + '../'
             }
-            folder = `${libFolder}${thePath}`
+            folder = `${tempFolder}${thePath}`
             if (!fs.existsSync(folder)) {mkdirp.sync(folder)}
             //console.log(folder + ': ' + parts[parts.length-1])
             filename = parts[parts.length-1]
@@ -353,7 +449,7 @@ function doNewApproach(item, framework, libFolder) {
             for (var j = 0; j < xtypes.length; j++) {
                 //for each name and each xtype
                 //Items.push(new Item(xtypes[j], names[i]))
-                Items.push({xtype: xtypes[j], name: names[i]})
+                Items.push({xtype: xtypes[j], name: names[i], extended: item.extended})
                 c.xtypenamecombo++
 
                 var folder = '.'

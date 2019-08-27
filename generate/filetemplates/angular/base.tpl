@@ -102,6 +102,22 @@ export class base {
   }
 
   baseOnInit(metaData: any) {
+
+
+
+
+
+
+  }
+
+  @ContentChild('extroute',{ static : false }) _extroute: any;
+  @ContentChildren('extroute') _extroutes: QueryList<any>;
+  @ContentChild('extitem',{ static : false }) _extitem: any;
+  @ContentChildren('extitem') _extitems: QueryList<any>;
+  baseAfterViewInit(metaData: any) {
+
+
+
     //console.log(`ngOnInit:` + metaData.XTYPE)
     let me: any = this
     let o: any = {}
@@ -129,13 +145,14 @@ export class base {
         me.ext = Ext.create(o)
         //console.log('Ext.create for ' + o.xtype + '(' + o.xng + ') renderTo: ' + o.renderTo)
     }
-  }
 
-  @ContentChild('extroute',{ static : false }) _extroute: any;
-  @ContentChildren('extroute') _extroutes: QueryList<any>;
-  @ContentChild('extitem',{ static : false }) _extitem: any;
-  @ContentChildren('extitem') _extitems: QueryList<any>;
-  baseAfterContentInit() {
+
+
+
+
+
+
+
         if (this._extitems.length == 1) {
             if (this._hostComponent != null) {
                 this.ext.setHtml(this._extitem.nativeElement);

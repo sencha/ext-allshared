@@ -60,22 +60,42 @@
                 exclude
                 -f=manifest.js
                 and
-
                 concatenate
                 +append
                     build/${app.folder}/ext.${app.type}.dev.js
-
+                and
+                    scss
+                    -appName=App
+                    -imageSearchPath=resources
+                    -themeName=material
+                    -resourceMapBase=.
+                    -output=build/${app.folder}/ext.${app.type}.scss
+                and
+                resources
+                    -excludes=-all*.css
+                    -out=resources
+                and
+                resources
+                    -model=true
+                    -out=resources
             ]]>
         </x-compile>
     </target>
     <target name="build" depends="init-cmd,rebuild">
         <x-sencha-command dir="${basedir}">
             <![CDATA[
+                fashion
+                    -pwd=.
+                    -split=4095
+                    -compress
+                        build/${app.folder}/ext.${app.type}.scss
+                        build/${app.folder}/ext.${app.type}.css
+                then
                 fs
                 minify
-                -yui
-                -from=build/${app.folder}/ext.${app.type}.dev.js
-                -to=build/${app.folder}/ext.${app.type}.prod.js
+                    -yui
+                    -from=build/${app.folder}/ext.${app.type}.dev.js
+                    -to=build/${app.folder}/ext.${app.type}.prod.js
             ]]>
         </x-sencha-command>
     </target>
