@@ -7,7 +7,7 @@ get onready(){return this.getAttribute('onready')};set onready(onready){this.set
 {sGETSET}
 static XTYPE() {return '{xtype}'}
 static PROPERTIESOBJECT() { return {
-{sPROPERTIESOBJECT}"ewc": ["string"],
+{sPROPERTIESOBJECT}"ext": ["string"],
 "align": ["string"],
 "viewport":["boolean"],
 "plugins":["Array","Ext.enums.Plugin","Object","Ext.plugin.Abstract"],

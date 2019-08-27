@@ -2,6 +2,7 @@ import 'script-loader!@sencha/ext-angular{bundle}/ext/ext.{name}.prod';
 import 'script-loader!@sencha/ext-angular{bundle}/ext/css.prod';
 //import { NgZone } from '@angular/core';
 //import { Router } from '@angular/router';
+import Common from './Common'
 
 declare var Ext: any
 import {
@@ -18,6 +19,11 @@ export class base {
   private _hostComponent: any
   private _extChildren: any = false
   private q: QueryList<any>
+
+  @ContentChild('extroute',{ static : false }) _extroute: any;
+  @ContentChildren('extroute') _extroutes: QueryList<any>;
+  @ContentChild('extitem',{ static : false }) _extitem: any;
+  @ContentChildren('extitem') _extitems: QueryList<any>;
 
   constructor(
     nativeElement: any,
@@ -103,17 +109,11 @@ export class base {
 
   baseOnInit(metaData: any) {
 
-
-
-
-
-
   }
 
-  @ContentChild('extroute',{ static : false }) _extroute: any;
-  @ContentChildren('extroute') _extroutes: QueryList<any>;
-  @ContentChild('extitem',{ static : false }) _extitem: any;
-  @ContentChildren('extitem') _extitems: QueryList<any>;
+
+
+
   baseAfterViewInit(metaData: any) {
 
 
@@ -121,6 +121,7 @@ export class base {
     //console.log(`ngOnInit:` + metaData.XTYPE)
     let me: any = this
     let o: any = {}
+
 
     o = this.createProps(me, metaData.XTYPE, metaData.EVENTS)
 

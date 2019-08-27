@@ -178,6 +178,7 @@ info.includedxtypes = info.includedxtypes + `</div>${newLine}`
 
 copyFile("ext/css.prod.js");
 copyFile("lib/HTMLParsedElement.js");
+copyFile("lib/Common.js");
 copyFile('.babelrc');
 
 writeFile(framework,`/ext-web-components.tpl`,`${toolkitFolder}bin/ext-web-components${info.bundle}.js`,info);
