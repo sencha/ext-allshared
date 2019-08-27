@@ -1,8 +1,8 @@
 export default class Common {
 
-    static createProps(me) {
+    static createProps(me, xtype, properties, events) {
         me.props = {};
-        me.props.xtype = me.XTYPE;
+        me.props.xtype = xtype; //me.XTYPE;
         //if (me.props.xtype.substr(me.props.xtype.length - 6) == 'column') {
         if (me.props.xtype == 'column' ||
             me.props.xtype == 'gridcolumn') {
@@ -21,7 +21,7 @@ export default class Common {
             me.props.width='100%',
             me.props.height='100%'
         }
-        for (var property in me.PROPERTIESOBJECT) {
+        for (var property in properties) { //me.PROPERTIESOBJECT
             if (me.getAttribute(property) !== null) {
                 if (property == 'handler') {
                     var functionString = me.getAttribute(property);
@@ -51,7 +51,8 @@ export default class Common {
         //     }
         // }
 
-        me.EVENTS.forEach(function (eventparameter, index, array) {
+        //me.EVENTS
+        events.forEach(function (eventparameter, index, array) {
             me.setEvent(eventparameter,me.props,me)
         })
     }
@@ -161,7 +162,11 @@ export default class Common {
                 Common.addChildren(me.parentNode, me.parentNode.children, me)
                 me.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.parentNode.ext}}))
 
-                me.parentNode.remove(me)
+                // if (me.s.EWSCHILDRENCOUNT == 0) {
+                //     console.log('remove')
+                //     console.log(me)
+                //     me.parentNode.remove(me)
+                // }
 
             }
             else {

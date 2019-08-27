@@ -15,6 +15,243 @@ var type = process.argv[2];
 var xtypelist = [];
 switch(type) {
     case 'all':
+        xtypelist= [
+            'actionsheet',
+            'audio',
+            'breadcrumbbar',
+            'button',
+            'calendar-event',
+            'calendar-form-add',
+            'calendar-calendar-picker',
+            'calendar-form-edit',
+            'calendar-timefield',
+            'calendar-daysheader',
+            'calendar-weeksheader',
+            'calendar-list',
+            'calendar-day',
+            'calendar-days',
+            'calendar-month',
+            'calendar',
+            'calendar-week',
+            'calendar-weeks',
+            'calendar-dayview',
+            'calendar-daysview',
+            'calendar-monthview',
+            'calendar-multiview',
+            'calendar-weekview',
+            'calendar-weeksview',
+            'carousel',
+            'cartesian',
+            'chart',
+            'legend',
+            'chartnavigator',
+            'polar',
+            'spacefilling',
+            'chip',
+            'component',
+            'container',
+            'd3-canvas',
+            'd3-heatmap',
+            'd3-pack',
+            'd3-partition',
+            'd3-sunburst',
+            'd3-tree',
+            'd3-horizontal-tree',
+            'd3-treemap',
+            'd3-svg',
+            'd3',
+            'boundlist',
+            'chipview',
+            'componentdataview',
+            'dataitem',
+            'dataview',
+            'emptytext',
+            'indexbar',
+            'itemheader',
+            'list',
+            'listitem',
+            'listitemplaceholder',
+            'listswiperitem',
+            'listswiperstepper',
+            'nestedlist',
+            'pullrefreshbar',
+            'pullrefreshspinner',
+            'simplelistitem',
+            'dialog',
+            'window',
+            'draw',
+            'surface',
+            'editor',
+            'checkbox',
+            'checkboxfield',
+            'checkboxgroup',
+            'combobox',
+            'comboboxfield',
+            'containerfield',
+            'fieldcontainer',
+            'datefield',
+            'datepickerfield',
+            'datepickernativefield',
+            'displayfield',
+            'emailfield',
+            'field',
+            'groupcontainer',
+            'filefield',
+            'filebutton',
+            'hiddenfield',
+            'inputfield',
+            'numberfield',
+            'fieldpanel',
+            'passwordfield',
+            'pickerfield',
+            'radio',
+            'radiofield',
+            'radiogroup',
+            'searchfield',
+            'selectfield',
+            'singlesliderfield',
+            'sliderfield',
+            'spinnerfield',
+            'textfield',
+            'textareafield',
+            'timefield',
+            'togglefield',
+            'cleartrigger',
+            'datetrigger',
+            'expandtrigger',
+            'menutrigger',
+            'revealtrigger',
+            'spindowntrigger',
+            'spinuptrigger',
+            'timetrigger',
+            'trigger',
+            'urlfield',
+            'fieldset',
+            'formpanel',
+            'froalaeditor',
+            'froalaeditorfield',
+            'gridcellbase',
+            'booleancell',
+            'gridcell',
+            'checkcell',
+            'datecell',
+            'numbercell',
+            'rownumberercell',
+            'textcell',
+            'treecell',
+            'widgetcell',
+            'celleditor',
+            'booleancolumn',
+            'checkcolumn',
+            'gridcolumn',
+            'column',
+            'templatecolumn',
+            'datecolumn',
+            'dragcolumn',
+            'numbercolumn',
+            'rownumberer',
+            'selectioncolumn',
+            'textcolumn',
+            'treecolumn',
+            'grid',
+            'headercontainer',
+            'lockedgrid',
+            'lockedgridregion',
+            'gridcolumnsmenu',
+            'gridgroupbythismenuitem',
+            'gridshowingroupsmenuitem',
+            'gridsortascmenuitem',
+            'gridsortdescmenuitem',
+            'pagingtoolbar',
+            'gridrow',
+            'rowbody',
+            'roweditorbar',
+            'roweditorcell',
+            'roweditor',
+            'roweditorgap',
+            'rowheader',
+            'gridsummaryrow',
+            'tree',
+            'image',
+            'img',
+            'indicator',
+            'label',
+            'treelist',
+            'treelistitem',
+            'loadmask',
+            'mask',
+            'media',
+            'menucheckitem',
+            'menuitem',
+            'menu',
+            'menuradioitem',
+            'menuseparator',
+            'messagebox',
+            'navigationview',
+            'panel',
+            'accordion',
+            'datepanel',
+            'datetitle',
+            'panelheader',
+            'timepanel',
+            'paneltitle',
+            'yearpicker',
+            'datepicker',
+            'picker',
+            'selectpicker',
+            'pickerslot',
+            'tabletpicker',
+            'pivotgridcell',
+            'pivotgridgroupcell',
+            'pivotd3container',
+            'pivotheatmap',
+            'pivottreemap',
+            'pivotgrid',
+            'pivotconfigfield',
+            'pivotconfigcontainer',
+            'pivotconfigform',
+            'pivotconfigpanel',
+            'pivotsettings',
+            'pivotrangeeditor',
+            'pivotgridrow',
+            'progress',
+            'progressbarwidget',
+            'segmentedbutton',
+            'sheet',
+            'slider',
+            'thumb',
+            'toggleslider',
+            'spacer',
+            'sparklinebar',
+            'sparkline',
+            'sparklinebox',
+            'sparklinebullet',
+            'sparklinediscrete',
+            'sparklineline',
+            'sparklinepie',
+            'sparklinetristate',
+            'splitbutton',
+            'tabbar',
+            'tabpanel',
+            'tab',
+            'tooltip',
+            'title',
+            'titlebar',
+            'tool',
+            'paneltool',
+            'toolbar',
+            'colorbutton',
+            'colorpickercolorpreview',
+            'colorfield',
+            'colorselector',
+            'gauge',
+            'map',
+            'google-map',
+            'rating',
+            'video',
+            'viewport',
+            'widget',
+        ]
         break;
     case 'button':
         xtypelist = [
@@ -92,9 +329,6 @@ const extFolder = tempFolder + 'Ext/';
 const extFinalFolder = libFolder + 'Ext/';
 var extbinFolder = toolkitFolder + "ext/";
 
-//const extFinalFolder = libFolder + 'Ext/';
-
-
 rimraf.sync(toolkitFolder);
 mkdirp.sync(toolkitFolder);
 mkdirp.sync(binFolder);
@@ -104,8 +338,6 @@ mkdirp.sync(tempFolder);
 mkdirp.sync(extFolder);
 mkdirp.sync(extFinalFolder);
 mkdirp.sync(extbinFolder);
-
-//mkdirp.sync(extFinalFolder);
 
 var didXtype = false
 
@@ -145,7 +377,13 @@ for (i = 0; i < data.global.items.length; i++) {
 let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 var info = getBundleInfo(framework, type, Items)
 
-writeOnlyWantedExtended(info.wantedextended)
+if (info.type == 'all') {
+    fs.copySync(`${tempFolder}/Ext/`,`${libFolder}` + "/Ext/")
+    rimraf.sync(tempFolder);
+}
+else {
+    writeOnlyWantedExtended(info.wantedextended)
+}
 
 info.imports = ''
 fs.readdirSync(`${libFolder}`).forEach(function(file) {
@@ -220,12 +458,18 @@ function writeOnlyWantedExtended(wantedextended) {
         var w = wantedextended[item].split(',')
         a = a.concat(w)
     }
+
     //console.log(a)
     var u = _.uniq(a);
     for (item = 0; item < u.length; item++) {
         var folder = u[item].replace(/\./g, "/");
         //console.log(folder)
+        try {
         fs.copySync(`${tempFolder}` + "" + folder + '.js',`${libFolder}` + "" + folder + '.js')
+        }
+        catch (e) {
+            console.log(e.toString())
+        }
     }
     rimraf.sync(tempFolder);
 }
@@ -258,10 +502,11 @@ function doNewApproach(item, framework, libFolder) {
 
         var names = []
         names.push(item.name)
+        //mjg alternate
         if (item.alternateClassNames != undefined) {
             //console.log(item.alternateClassNames)
-            //var alt = item.alternateClassNames.split(",");
-            //names = names.concat(alt)
+            var alt = item.alternateClassNames.split(",");
+            names = names.concat(alt)
         }
 
         var aliases = []
@@ -272,17 +517,7 @@ function doNewApproach(item, framework, libFolder) {
               for (alias = 0; alias < aliases.length; alias++) {
                 if (aliases[alias].substring(0, 6) == 'widget') {
                     var xtypelocal = aliases[alias].substring(7)
-                  xtypes.push(xtypelocal)
-
-                  if (xtypelocal == 'lockedgrid') {
-                      console.log(item)
-                  }
-
-
-
-
-
-
+                    xtypes.push(xtypelocal)
                 }
               }
             }
@@ -444,6 +679,7 @@ function doNewApproach(item, framework, libFolder) {
                 extendsclassname: item.extends.replace(/\./g, "_") + "_Component",
                 classextendsfilename: extendparts[extendparts.length-1]
             }
+            //console.log(`${folder}${filename}.js`)
             writeFile(framework, template, `${folder}${filename}.js`, values)
 
 
@@ -465,6 +701,9 @@ function doNewApproach(item, framework, libFolder) {
                     xtype: xtypes[j]
                 }
                 writeFile(framework, '/xtype.tpl', `${libFolder}ext-${xtypes[j]}.component.js`, values)
+
+//console.log(`            '${xtypes[j]}',`)
+
 
                 if (didXtype == false) {
                     //console.log(`${values.xtype} ${didXtype}`)

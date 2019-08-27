@@ -21,9 +21,10 @@ export default class EwcBaseComponent extends HTMLElement {
 
     parsedCallback() {
         //console.log('parsedCallback')
-        Common.createProps(this)
-        Common.createExtComponent(this)
-        Common.assessChildren(this)
+        var me = this;
+        Common.createProps(me, me.XTYPE, me.PROPERTIESOBJECT, me.EVENTS)
+        Common.createExtComponent(me)
+        Common.assessChildren(me)
     }
 
     zzzcreateProps() {
