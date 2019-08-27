@@ -5,6 +5,9 @@ exports.getBundleInfo = (framework, type, Items) => {
     var info = {};
     var rows = [];
     info.wantedxtypes = []
+    info.wantedextended = []
+
+
     var theFunction = null
     switch(type) {
         case 'all':
@@ -42,17 +45,22 @@ exports.getBundleInfo = (framework, type, Items) => {
             console.log('not a valid bundle: ' + type)
             return -1;
     }
+    console.log(Items)
     rows = _.map(Items, theFunction);
     rows = _.without(rows, undefined)
     var uniquerows = _.uniqBy(rows, 'xtype');
     var count = 0
     _.forEach(uniquerows, function(row){
+        //console.log(row)
+        info.wantedextended.push(row.extended)
+        info.wantedextended.push(row.name)
         info.wantedxtypes.push(row.xtype)
         //console.log(row.xtype)
         count++
     })
+    //console.log('type: ' + type)
     //console.log(info.wantedxtypes)
-    console.log(count + ' xtypes')
+    //console.log(count + ' xtypes')
 
     info.type = type;
     info.now = new Date().toString();
