@@ -1,33 +1,11 @@
-import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/ext.{type}.prod';
-import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/css.prod';
+export default class Common {
 
-import HTMLParsedElement from './HTMLParsedElement'
-import Common from './Common'
-
-export default class EwcBaseComponent extends HTMLElement {
-
-    constructor() {
-        super ()
-        this.s = {}
+    static run(me) {
+        console.log('in run')
+        console.dir(me)
     }
 
-    connectedCallback() {
-        this.newDiv = document.createElement("div");
-        this.parentNode.insertBefore(this.newDiv,this);
-
-        //var newContent = document.createTextNode("newDiv");
-        //this.newDiv.appendChild(newContent);
-    }
-
-    parsedCallback() {
-        //console.log('parsedCallback')
-        Common.createProps(this)
-        Common.createExtComponent(this)
-        Common.assessChildren(this)
-    }
-
-    zzzcreateProps() {
-        var me = this;
+    static createProps(me) {
         me.props = {};
         me.props.xtype = me.XTYPE;
         //if (me.props.xtype.substr(me.props.xtype.length - 6) == 'column') {
@@ -83,8 +61,7 @@ export default class EwcBaseComponent extends HTMLElement {
         })
     }
 
-    zzzcreateExtComponent() {
-        var me = this;
+    static createExtComponent(me) {
         if (me.props['viewport'] == true) {
             me.ext = Ext.create(me.props)
             //console.log('Ext.application for ' + me.props.xtype + '(' + me.props.ewc + ')')
@@ -97,10 +74,10 @@ export default class EwcBaseComponent extends HTMLElement {
             });
         }
         else if (me.parentNode.nodeName.substring(0, 4) != 'EXT-') {
-            //console.log('parent of: ' + this.nodeName + ' is ' + this.parentNode.nodeName)
-            me.props.renderTo = this.newDiv;
+            console.log('parent of: ' + me.nodeName + ' is ' + me.parentNode.nodeName)
+            me.props.renderTo = me.newDiv;
             me.ext = Ext.create(me.props)
-            me.parentNode.replaceChild(me.ext.el.dom, this.newDiv)
+            me.parentNode.replaceChild(me.ext.el.dom, me.newDiv)
         }
         else {
             // console.log('parent is EXT')
@@ -108,7 +85,13 @@ export default class EwcBaseComponent extends HTMLElement {
         }
     }
 
-    zzzassessChildren(s, children, parentNode, me) {
+    static assessChildren(me) {
+        console.log('assessChildren')
+        console.dir(me)
+        var s = me.s;
+        var children = me.children;
+        var parentNode = me.parentNode;
+
         var parentEWS = false
         var parentCONNECTED = false
         s.CONNECTED = true
@@ -141,7 +124,7 @@ export default class EwcBaseComponent extends HTMLElement {
         // console.log('EWSCHILDRENLEFT: ' + s.EWSCHILDRENLEFT)
 
         if (s.EWSCHILDRENCOUNT == 0) {
-            var me = this;
+            //var me = this;
             //setTimeout(function(){
             me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
             //}, 0);
@@ -173,7 +156,7 @@ export default class EwcBaseComponent extends HTMLElement {
 
                 var children = parentNode.children
                 var child = parentNode
-                this.addChildren(child, children)
+                Common.addChildren(child, children)
                 parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: parentNode.ext}}))
             }
             else {
@@ -204,7 +187,7 @@ export default class EwcBaseComponent extends HTMLElement {
         }
     }
 
-    zzzaddChildren(child, children, me) {
+    static addChildren(child, children, me) {
         var childItems = []
         var childItem = {}
         for (var i = children.length-1; i > -1; i--) {
@@ -228,7 +211,7 @@ export default class EwcBaseComponent extends HTMLElement {
         }
     }
 
-    zzzaddTheChild(parentCmp, childCmp, me) {
+    addTheChild(parentCmp, childCmp, me) {
         var parentxtype = parentCmp.xtype
         var childxtype = childCmp.xtype
         //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.ewc + ')' + ' - ' + childxtype + '(' + childCmp.ewc + ')')
@@ -372,102 +355,6 @@ export default class EwcBaseComponent extends HTMLElement {
         if (me.parentNode.childrenYetToBeDefined == 0) {
             me.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.parentNode.ext}}))
         }
-    }
-
-    setEvent(eventparameters,o, me) {
-        o.listeners[eventparameters.name] = function() {
-            let eventname = eventparameters.name
-            //console.log('in event: ' + eventname + ' ' + o.xtype)
-            let parameters = eventparameters.parameters;
-            let parms = parameters.split(',');
-            let args = Array.prototype.slice.call(arguments);
-            let event = {};
-            for (let i = 0, j = parms.length; i < j; i++ ) {
-                event[parms[i]] = args[i];
-            }
-            me.dispatchEvent(new CustomEvent(eventname,{detail: event}))
-        }
-    }
-
-    attributeChangedCallback(attr, oldVal, newVal) {
-        if (/^on/.test(attr)) {
-            if (newVal) {
-            this.addEventListener(attr.slice(2), function(event) {
-                var functionString = newVal;
-                // todo: error check for only 1 dot
-                var r = functionString.split('.');
-                var obj = r[0];
-                var func = r[1];
-                if (obj && func) {
-                window[obj][func](event);
-                }
-            });
-            } else {
-            //delete this[attr];
-            //this.removeEventListener(attr.slice(2), this);
-            }
-        } else {
-
-            var ischanged
-            if (this.ext != undefined) {
-                ischanged = true
-                var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
-                this.ext[method](newVal)
-            }
-            else {
-                ischanged = false
-            }
-            console.log('attr: ' + attr + ', changed is ' + ischanged)
-
-            //if (this.ext === undefined) {
-            //    //mjg ??
-            //}
-            //else {
-            //    //mjg check if this method exists for this component
-            //    var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
-            //    this.ext[method](newVal)
-            //}
-        }
-    }
-
-    extendObject(obj, src) {
-        if (obj == undefined) {obj = {}}
-        for (var key in src) {
-            if (src.hasOwnProperty(key)) obj[key] = src[key];
-        }
-        return obj;
-    }
-
-    extendArray(obj, src) {
-        if (obj == undefined) {obj = []}
-        Array.prototype.push.apply(obj,src);
-        return obj;
-    }
-
-    filterProperty(propertyValue) {
-        try {
-            const parsedProp = JSON.parse(propertyValue);
-
-            if (parsedProp === null ||
-                parsedProp === undefined ||
-                parsedProp === true ||
-                parsedProp === false ||
-                parsedProp === Object(parsedProp) ||
-                (!isNaN(parsedProp) && parsedProp !== 0)
-            ) {
-                return parsedProp;
-            } else {
-                return propertyValue;
-            }
-        }
-        catch(e) {
-            return propertyValue;
-        }
-    }
-
-    disconnectedCallback() {
-        //console.log('ExtBase disconnectedCallback ' + this.ext.xtype)
-        delete this.ext
     }
 
 }

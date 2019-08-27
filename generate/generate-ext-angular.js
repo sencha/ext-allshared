@@ -1,6 +1,6 @@
 //node ./generate-ext-angular.js grid
 var install = true;
-let run = require("./util").run;
+
 var fs = require("fs-extra");
 var framework = "angular";
 
@@ -131,6 +131,7 @@ if (info.wantedxtypes.includes("all")) {
 }
 
 
+copyFile("lib/Common.js");
 
 copyFile("ext/css.prod.js");
 copyFile("tsconfig.json");
