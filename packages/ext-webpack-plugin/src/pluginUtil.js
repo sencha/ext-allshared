@@ -42,7 +42,16 @@ export function _constructor(initialOptions) {
 
     log(app, _getVersions(pluginName, framework))
 
-    if (framework == 'react' || framework == 'extjs' || framework == 'web-components') {
+    //mjg added for angular cli build
+    if (framework == 'angular' &&
+        options.intellishake == 'no' &&
+        vars.production == true
+        && treeshake == 'yes') {
+            vars.buildstep = '1 of 1';
+            log(app, 'Starting production build for ' + framework);
+    }
+
+    else if (framework == 'react' || framework == 'extjs' || framework == 'web-components') {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
         log(app, 'Starting production build for ' + framework)
@@ -67,7 +76,7 @@ export function _constructor(initialOptions) {
       vars.buildstep = '1 of 1'
       log(app, 'Starting development build for ' + framework)
     }
-    logv(verbose, 'Building for ' + options.environment + ', ' + 'Treeshake is ' + options.treeshake)
+    logv(verbose, 'Building for ' + options.environment + ', ' + 'treeshake is ' + options.treeshake+ ', ' + 'intellishake is ' + options.intellishake)
 
     var configObj = { vars: vars, options: options };
     return configObj;
@@ -114,6 +123,12 @@ export function _compilation(compiler, compilation, vars, options) {
     if (framework != 'extjs') {
       if (options.treeshake === 'yes' && options.environment === 'production') {
         var extComponents = [];
+
+        //mjg for 1 step build
+        if (vars.buildstep == '1 of 1' && framework === 'angular' && options.intellishake == 'no') {
+            extComponents = require(`./${framework}Util`)._getAllComponents(vars, options);
+        }
+
         if (vars.buildstep == '1 of 2' || (vars.buildstep == '1 of 1' && framework === 'web-components')) {
           extComponents = require(`./${framework}Util`)._getAllComponents(vars, options)
         }
@@ -150,6 +165,8 @@ export function _compilation(compiler, compilation, vars, options) {
             const path = require('path')
             var jsPath = path.join(vars.extPath, 'ext.js')
             var cssPath = path.join(vars.extPath, 'ext.css')
+            //var jsPath = vars.extPath + '/' +  'ext.js';
+            //var cssPath = vars.extPath + '/' + 'ext.css';
             data.assets.js.unshift(jsPath)
             data.assets.css.unshift(cssPath)
             log(app, `Adding ${jsPath} and ${cssPath} to index.html`)
@@ -366,9 +383,9 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
       js = `Ext.require(["Ext.*","Ext.data.TreeStore"])`
     }
     if (vars.manifest === null || js !== vars.manifest) {
-      vars.manifest = js
+      vars.manifest = js + ';\nExt.require(["Ext.layout.*"]);\n';
       const manifest = path.join(output, 'manifest.js')
-      fs.writeFileSync(manifest, js, 'utf8')
+      fs.writeFileSync(manifest, vars.manifest, 'utf8')
       vars.rebuild = true
       var bundleDir = output.replace(process.cwd(), '')
       if (bundleDir.trim() == '') {bundleDir = './'}
@@ -689,6 +706,10 @@ function _getValidateOptions() {
         "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
         "type": ["string"]
       },
+      "intellishake": {
+        "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
+        "type": ["string"]
+      },
     },
     "additionalProperties": false
   };
@@ -711,6 +732,7 @@ function _getDefaultOptions() {
     browser: 'yes',
     watch: 'yes',
     verbose: 'no',
-    inject: 'yes'
+    inject: 'yes',
+    intellishake: 'yes'
   }
 }

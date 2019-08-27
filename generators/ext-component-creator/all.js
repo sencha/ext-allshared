@@ -160,7 +160,7 @@ function launch(framework, data, srcFolder, libFolder, templateToolkitFolder, mo
               o.xtype = aliases[alias].substring(7)
               ///testing
               if (environment == 'dev') {
-                //if (o.xtype == 'container'  || o.xtype == 'button') {
+                //if (o.xtype == 'grid') {
                   oneItem(o, libFolder, framework, extension, num, o.xtype, alias, moduleVars)
                 //}
               }
