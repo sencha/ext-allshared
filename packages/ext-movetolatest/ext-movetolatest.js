@@ -7,10 +7,12 @@ var rootDir
 var backupDir
 var upgradeDir
 
-upgrade()
+var indexJS = 'index.js';
+
+movetolatest()
 
 /********** */
-function upgrade() {
+function movetolatest() {
   
   rootDir = path.resolve(process.cwd())
   backupDir = path.resolve(rootDir, 'extBackup')
@@ -54,6 +56,10 @@ function upgrade() {
   findIt('angular', packageJson, o)
   findIt('components', packageJson, o)
   findIt('reactor', packageJson, o)
+
+  if (!doesFileExist(indexJS) && o.foundFramework == 'extjs') {
+    createIndexJS();
+  }
 
   if (o.foundFramework == '') {
     console.log(boldRed('Error: ') + 'no framework found')
@@ -161,6 +167,17 @@ function upgrade() {
   return
 }
 /***** */
+
+function doesFileExist(fileName) {
+	return fs.existsSync(fileName);
+}
+
+function createIndexJS() {
+	var data = "//this file exists so the webpack build process will succeed\nExt._find = require('lodash.find');";
+	fs.writeFile("index.js", data, (err) => {
+		if (err) console.log("ext-movetolatest failed to create index.js " + err);
+	});
+}
 
 function set(o, name, root, template) {
   o.name = name
