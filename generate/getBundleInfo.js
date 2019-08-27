@@ -45,7 +45,7 @@ exports.getBundleInfo = (framework, type, Items) => {
             console.log('not a valid bundle: ' + type)
             return -1;
     }
-    console.log(Items)
+    //console.log(Items)
     rows = _.map(Items, theFunction);
     rows = _.without(rows, undefined)
     var uniquerows = _.uniqBy(rows, 'xtype');
