@@ -12,7 +12,7 @@ This npm package contains the minimum files that are needed to provide for the @
 npm install -g @angular/cli
 ```
 
-should be @angular/cli@8.2.x
+should be @angular/cli@8.3.x
 
 
 #### Create a new Angular CLI application
@@ -26,8 +26,7 @@ ng new ng-xng{bundle} --minimal=true --interactive=false -g=true --skipInstall=t
 To open Visual Studio Code, type the following:
 
 ```sh
-cd ng-xng{bundle}
-code .
+cd ng-xng{bundle}; code .
 ```
 
 #### Add to package.json
@@ -147,7 +146,7 @@ export class AppComponent {
 Type the following in a command/terminal window:
 
 ```sh
-ng serve --open
+ng serve --open --port 4200
 ```
 
 open http://localhost:4200 in a browser - the ExtAngular application will load

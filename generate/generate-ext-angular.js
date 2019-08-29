@@ -1,5 +1,6 @@
 //node ./generate-ext-angular.js grid
 var install = true;
+let run = require("./util").run;
 
 var fs = require("fs-extra");
 var framework = "angular";
@@ -77,15 +78,6 @@ switch(type) {
         return -1;
 }
 
-
-
-
-
-
-
-
-
-
 //var moduleVars = { Bundle: info.Bundle, imports: "", declarations: "", exports: "" };
 var moduleVars = { imports: "", declarations: "", exports: "" };
 
@@ -103,17 +95,12 @@ mkdirp.sync(toolkitFolder);
 mkdirp.sync(srcFolder);
 mkdirp.sync(extFolder);
 
-
-
 log(`item count`, `${data.global.items.length}`);
 
 var Items = []
 for (i = 0; i < data.global.items.length; i++) {
     launch(data.global.items[i], framework, moduleVars);
 }
-
-
-
 
 let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 var info = getBundleInfo(framework, type, Items)
@@ -131,7 +118,7 @@ if (info.wantedxtypes.includes("all")) {
 }
 
 
-copyFile("lib/Common.js");
+copyFile("src/Common.js");
 
 copyFile("ext/css.prod.js");
 copyFile("tsconfig.json");
@@ -148,7 +135,6 @@ writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
 writeFile(framework,`/base.tpl`,`${srcFolder}base.ts`,info);
 writeFile(framework,`/module.tpl`,`${srcFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
-
 
 writeFile(framework,`/public_api.tpl`,`${toolkitFolder}/public_api.ts`,info);
 
@@ -189,9 +175,13 @@ async function doInstall() {
 
     mkdirp.sync(`ext`);
     await run(`cp -R ./ext dist/ext`);
+
+    mkdirp.sync(`lib`);
+    await run(`cp -R ./src dist/lib`);
+
     process.chdir('dist');
     await run(`npm publish --force`);
-    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/@sencha/ext-${framework}${info.bundle}/7.0.0`)
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.0.0`)
 }
 
 function launch(o, framework, moduleVars) {

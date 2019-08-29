@@ -84,29 +84,16 @@ export default class Common {
         }
     }
 
-    static assessChildren(me) {
+    static assessChildren(meNode, parentNode, me) {
         //console.log('assessChildren')
-        //var s = me.s;
-        //var children = me.children;
-        //var parentNode = me.parentNode;
+        var s = meNode.s;
+        //var children = meNode.children;
+        //var parentNode = parentNode;
 
         var parentEWS = false
-        //var parentCONNECTED = false
-        me.s.CONNECTED = true
-        me.s.EWSCHILDRENCOUNT = 0
-
-        for (var i = 0; i < me.children.length; i++) {
-            if (me.children[i].nodeName.substring(0, 4) == 'EXT-') {
-                me.s.EWSCHILDRENCOUNT++
-            }
-        }
-        me.s.EWSCHILDRENLEFT = me.s.EWSCHILDRENCOUNT
-        if (me.s.EWSCHILDREN != undefined) {
-            me.s.EWSCHILDRENLEFT = me.s.EWSCHILDRENCOUNT - me.s.EWSCHILDREN.length
-        }
-        if (me.parentNode.nodeName.substring(0, 4) == 'EXT-') {
+        if (parentNode.nodeName.substring(0, 4) == 'EXT-') {
             parentEWS = true
-            if (me.parentNode.s.CONNECTED == true) {
+            if (parentNode.s.CONNECTED == true) {
                 //parentCONNECTED = true
             }
         }
@@ -114,22 +101,40 @@ export default class Common {
             parentEWS = false
             //parentCONNECTED = true
         }
+
+
+        //var parentCONNECTED = false
+        //meNode.s.CONNECTED = true
+        meNode.s.EWSCHILDRENCOUNT = 0
+
+        for (var i = 0; i < meNode.children.length; i++) {
+            if (meNode.children[i].nodeNameNode.substring(0, 4) == 'EXT-') {
+                meNode.s.EWSCHILDRENCOUNT++
+            }
+        }
+        meNode.s.EWSCHILDRENLEFT = meNode.s.EWSCHILDRENCOUNT
+        if (meNode.s.EWSCHILDREN != undefined) {
+            meNode.s.EWSCHILDRENLEFT = meNode.s.EWSCHILDRENCOUNT - meNode.s.EWSCHILDREN.length
+        }
+
         console.log('***')
         console.log('parentEWS: ' + parentEWS)
-        console.log('children: ' + me.children.length)
+        console.log('children: ' + meNode.children.length)
         //console.log('parentCONNECTED: ' + parentCONNECTED)
-        console.log('EWSCHILDRENCOUNT: ' + me.s.EWSCHILDRENCOUNT)
+        console.log('EWSCHILDRENCOUNT: ' + meNode.s.EWSCHILDRENCOUNT)
+
+
         if (parentEWS == true) {
-            console.log('parent EWSCHILDRENCOUNT: ' + me.parentNode.s.EWSCHILDRENCOUNT)
-            console.log('parent EWSCHILDRENLEFT: ' + me.parentNode.s.EWSCHILDRENLEFT)
+            console.log('parent EWSCHILDRENCOUNT: ' + parentNode.s.EWSCHILDRENCOUNT)
+            console.log('parent EWSCHILDRENLEFT: ' + parentNode.s.EWSCHILDRENLEFT)
         }
-        console.log('EWSCHILDRENLEFT: ' + me.s.EWSCHILDRENLEFT)
+        console.log('EWSCHILDRENLEFT: ' + meNode.s.EWSCHILDRENLEFT)
         console.log('***')
 
-        if (me.s.EWSCHILDRENCOUNT == 0) {
+        if (meNode.s.EWSCHILDRENCOUNT == 0) {
             //var me = this;
             //setTimeout(function(){
-            me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
+            meNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: meNode.ext}}))
             //}, 0);
             //this.dispatchEvent(new CustomEvent('ready',{detail:{cmp: this.ext}}))
         }
@@ -144,12 +149,16 @@ export default class Common {
         //}
 
         if (parentEWS == true) {
-            if (me.parentNode.s.EWSCHILDREN == undefined) {
-                me.parentNode.s.EWSCHILDREN = []
+            if (parentNode.s.EWSCHILDREN == undefined) {
+                parentNode.s.DIRECTION = "BottomUp"
+                parentNode.s.EWSCHILDREN = []
             }
-            me.parentNode.s.EWSCHILDREN.push(this)
-            me.parentNode.s.EWSCHILDRENLEFT--
-            if (me.parentNode.s.EWSCHILDRENLEFT == 0) {
+            else {
+                parentNode.s.DIRECTION = "TopDown"
+            }
+            parentNode.s.EWSCHILDREN.push(this)
+            parentNode.s.EWSCHILDRENLEFT--
+            if (parentNode.s.EWSCHILDRENLEFT == 0) {
                 console.log('TOP to BOTTOM')
                 // console.log('this is the last child')
                 // console.log('ready to go')
@@ -159,13 +168,13 @@ export default class Common {
 
                 //var children = parentNode.children
                 //var child = parentNode
-                Common.addChildren(me.parentNode, me.parentNode.children, me)
-                me.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.parentNode.ext}}))
+                Common.addChildren(parentNode, parentNode.children, me)
+                parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: parentNode.ext}}))
 
-                // if (me.s.EWSCHILDRENCOUNT == 0) {
+                // if (meNode.s.EWSCHILDRENCOUNT == 0) {
                 //     console.log('remove')
                 //     console.log(me)
-                //     me.parentNode.remove(me)
+                //     parentNode.remove(me)
                 // }
 
             }
@@ -174,11 +183,11 @@ export default class Common {
             }
         }
 
-        if(me.s.EWSCHILDREN == undefined) {me.s.EWSCHILDREN = []}
+        if(meNode.s.EWSCHILDREN == undefined) {meNode.s.EWSCHILDREN = []}
 
-        if ((me.s.EWSCHILDRENCOUNT > 0 && me.s.EWSCHILDRENCOUNT == me.s.EWSCHILDREN.length) ||
-            (me.children.length > 0 && me.s.EWSCHILDRENCOUNT == 0)) {
-            //var children = me.children
+        if ((meNode.s.EWSCHILDRENCOUNT > 0 && meNode.s.EWSCHILDRENCOUNT == meNode.s.EWSCHILDREN.length) ||
+            (meNode.children.length > 0 && meNode.s.EWSCHILDRENCOUNT == 0)) {
+            //var children = meNode.children
             //var child = me
              console.log('BOTTOM to TOP')
             // console.log('children were done first')
@@ -188,8 +197,8 @@ export default class Common {
 
             // console.dir(this.children)
             // console.dir(child)
-            this.addChildren(me, me.children, me)
-            me.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.ext}}))
+            meNode.addChildren(me, meNode.children, me)
+            meNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: meNode.ext}}))
             //console.log(this.parentNode.EWSCHILDRENLEFT)
         }
         else {

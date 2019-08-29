@@ -19,6 +19,13 @@ export class base {
   private _extChildren: any = false
   private q: QueryList<any>
 
+  @ContentChild('extroute',{ static : false }) _extroute: any;
+  @ContentChildren('extroute') _extroutes: QueryList<any>;
+  @ContentChild('extitem',{ static : false }) _extitem: any;
+  @ContentChildren('extitem') _extitems: QueryList<any>;
+  @ContentChildren(base) _base: QueryList<any>;
+
+
   constructor(
     nativeElement: any,
     private metaData: any,
@@ -112,10 +119,6 @@ export class base {
     });
   }
 
-  @ContentChild('extroute',{ static : false }) _extroute: any;
-  @ContentChildren('extroute') _extroutes: QueryList<any>;
-  @ContentChild('extitem',{ static : false }) _extitem: any;
-  @ContentChildren('extitem') _extitems: QueryList<any>;
   baseAfterContentInit() {
     if (this._extitems.length == 1) {
         if (this._hostComponent != null) {
