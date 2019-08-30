@@ -1,4 +1,4 @@
-//node ./generate-ext-web-components.js grid
+//node ./generate-ext-web-components.js all
 var install = true;
 let run = require("./util").run;
 const fs = require('fs-extra')

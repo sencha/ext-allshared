@@ -1,4 +1,4 @@
-//node ./generate-ext-angular.js grid
+//node ./generate-ext-angular.js all
 var install = true;
 let run = require("./util").run;
 
@@ -17,6 +17,243 @@ var type = process.argv[2];
 var xtypelist = [];
 switch(type) {
     case 'all':
+        xtypelist = [
+            'actionsheet',
+            'audio',
+            'breadcrumbbar',
+            'button',
+            'calendar-event',
+            'calendar-form-add',
+            'calendar-calendar-picker',
+            'calendar-form-edit',
+            'calendar-timefield',
+            'calendar-daysheader',
+            'calendar-weeksheader',
+            'calendar-list',
+            'calendar-day',
+            'calendar-days',
+            'calendar-month',
+            'calendar',
+            'calendar-week',
+            'calendar-weeks',
+            'calendar-dayview',
+            'calendar-daysview',
+            'calendar-monthview',
+            'calendar-multiview',
+            'calendar-weekview',
+            'calendar-weeksview',
+            'carousel',
+            'cartesian',
+            'chart',
+            'legend',
+            'chartnavigator',
+            'polar',
+            'spacefilling',
+            'chip',
+            'component',
+            'container',
+            'd3-canvas',
+            'd3-heatmap',
+            'd3-pack',
+            'd3-partition',
+            'd3-sunburst',
+            'd3-tree',
+            'd3-horizontal-tree',
+            'd3-treemap',
+            'd3-svg',
+            'd3',
+            'boundlist',
+            'chipview',
+            'componentdataview',
+            'dataitem',
+            'dataview',
+            'emptytext',
+            'indexbar',
+            'itemheader',
+            'list',
+            'listitem',
+            'listitemplaceholder',
+            'listswiperitem',
+            'listswiperstepper',
+            'nestedlist',
+            'pullrefreshbar',
+            'pullrefreshspinner',
+            'simplelistitem',
+            'dialog',
+            'window',
+            'draw',
+            'surface',
+            'editor',
+            'checkbox',
+            'checkboxfield',
+            'checkboxgroup',
+            'combobox',
+            'comboboxfield',
+            'containerfield',
+            'fieldcontainer',
+            'datefield',
+            'datepickerfield',
+            'datepickernativefield',
+            'displayfield',
+            'emailfield',
+            'field',
+            'groupcontainer',
+            'filefield',
+            'filebutton',
+            'hiddenfield',
+            'inputfield',
+            'numberfield',
+            'fieldpanel',
+            'passwordfield',
+            'pickerfield',
+            'radio',
+            'radiofield',
+            'radiogroup',
+            'searchfield',
+            'selectfield',
+            'singlesliderfield',
+            'sliderfield',
+            'spinnerfield',
+            'textfield',
+            'textareafield',
+            'timefield',
+            'togglefield',
+            'cleartrigger',
+            'datetrigger',
+            'expandtrigger',
+            'menutrigger',
+            'revealtrigger',
+            'spindowntrigger',
+            'spinuptrigger',
+            'timetrigger',
+            'trigger',
+            'urlfield',
+            'fieldset',
+            'formpanel',
+            'froalaeditor',
+            'froalaeditorfield',
+            'gridcellbase',
+            'booleancell',
+            'gridcell',
+            'checkcell',
+            'datecell',
+            'numbercell',
+            'rownumberercell',
+            'textcell',
+            'treecell',
+            'widgetcell',
+            'celleditor',
+            'booleancolumn',
+            'checkcolumn',
+            'gridcolumn',
+            'column',
+            'templatecolumn',
+            'datecolumn',
+            'dragcolumn',
+            'numbercolumn',
+            'rownumberer',
+            'selectioncolumn',
+            'textcolumn',
+            'treecolumn',
+            'grid',
+            'headercontainer',
+            'lockedgrid',
+            'lockedgridregion',
+            'gridcolumnsmenu',
+            'gridgroupbythismenuitem',
+            'gridshowingroupsmenuitem',
+            'gridsortascmenuitem',
+            'gridsortdescmenuitem',
+            'pagingtoolbar',
+            'gridrow',
+            'rowbody',
+            'roweditorbar',
+            'roweditorcell',
+            'roweditor',
+            'roweditorgap',
+            'rowheader',
+            'gridsummaryrow',
+            'tree',
+            'image',
+            'img',
+            'indicator',
+            'label',
+            'treelist',
+            'treelistitem',
+            'loadmask',
+            'mask',
+            'media',
+            'menucheckitem',
+            'menuitem',
+            'menu',
+            'menuradioitem',
+            'menuseparator',
+            'messagebox',
+            'navigationview',
+            'panel',
+            'accordion',
+            'datepanel',
+            'datetitle',
+            'panelheader',
+            'timepanel',
+            'paneltitle',
+            'yearpicker',
+            'datepicker',
+            'picker',
+            'selectpicker',
+            'pickerslot',
+            'tabletpicker',
+            'pivotgridcell',
+            'pivotgridgroupcell',
+            'pivotd3container',
+            'pivotheatmap',
+            'pivottreemap',
+            'pivotgrid',
+            'pivotconfigfield',
+            'pivotconfigcontainer',
+            'pivotconfigform',
+            'pivotconfigpanel',
+            'pivotsettings',
+            'pivotrangeeditor',
+            'pivotgridrow',
+            'progress',
+            'progressbarwidget',
+            'segmentedbutton',
+            'sheet',
+            'slider',
+            'thumb',
+            'toggleslider',
+            'spacer',
+            'sparklinebar',
+            'sparkline',
+            'sparklinebox',
+            'sparklinebullet',
+            'sparklinediscrete',
+            'sparklineline',
+            'sparklinepie',
+            'sparklinetristate',
+            'splitbutton',
+            'tabbar',
+            'tabpanel',
+            'tab',
+            'tooltip',
+            'title',
+            'titlebar',
+            'tool',
+            'paneltool',
+            'toolbar',
+            'colorbutton',
+            'colorpickercolorpreview',
+            'colorfield',
+            'colorselector',
+            'gauge',
+            'map',
+            'google-map',
+            'rating',
+            'video',
+            'viewport',
+            'widget',
+        ]
         break;
     case 'button':
         xtypelist = [
@@ -107,7 +344,8 @@ var info = getBundleInfo(framework, type, Items)
 
 //console.log(info.wantedxtypes)
 
-if (info.wantedxtypes.includes("all")) {
+if (info.type == 'all') {
+//if (info.wantedxtypes.includes("all")) {
     moduleVars.imports = moduleVars.imports + `import { ExtAngularBootstrapComponent } from './ext-angular-bootstrap.component';${newLine}`;
     moduleVars.exports = moduleVars.exports + `    ExtAngularBootstrapComponent,${newLine}`;
     moduleVars.declarations = moduleVars.declarations + `    ExtAngularBootstrapComponent,${newLine}`;
@@ -117,7 +355,6 @@ if (info.wantedxtypes.includes("all")) {
     copyFile("src/ext-angular-bootstrap.service.ts");
 }
 
-
 copyFile("src/Common.js");
 
 copyFile("ext/css.prod.js");
@@ -125,8 +362,8 @@ copyFile("tsconfig.json");
 copyFile("tsconfig.lib.json");
 copyFile("ng-package.json");
 
-console.log(info)
-console.log(info.manifest)
+//console.log(info)
+//console.log(info.manifest)
 
 writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
 writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
@@ -146,7 +383,7 @@ moduleVars.declarations = moduleVars.declarations.substring(0,moduleVars.declara
 moduleVars.declarations = moduleVars.declarations + "" + newLine;
 
 var exportall = "";
-exportall = exportall + `export * from './lib/ext-${framework}.module';${newLine}`;
+exportall = exportall + `export * from './lib/ext-${framework}${info.bundle}.module';${newLine}`;
 
 //        {bundle: info.bundle, name: info.bundle.substring(1)}
 
@@ -176,7 +413,7 @@ async function doInstall() {
     mkdirp.sync(`ext`);
     await run(`cp -R ./ext dist/ext`);
 
-    mkdirp.sync(`lib`);
+    //mkdirp.sync(`lib`);
     await run(`cp -R ./src dist/lib`);
 
     process.chdir('dist');
@@ -197,8 +434,8 @@ function launch(o, framework, moduleVars) {
                         o.Xtype = o.xtype.charAt(0).toUpperCase() + o.xtype.slice(1).replace(/-/g,'_');
                         //console.log(o.xtype)
                         if (
-                            xtypelist.includes(o.xtype) ||
-                            xtypelist.includes("all")
+                            xtypelist.includes(o.xtype)
+                            // || xtypelist.includes("all")
                             // info.wantedxtypes.includes(o.xtype) ||
                             // info.wantedxtypes.includes("all")
                         ) {

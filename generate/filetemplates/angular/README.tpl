@@ -75,7 +75,8 @@ Open the src/app/app.module.js file in the editor and replace the contents with 
 
 ```sh
 declare var Ext: any
-import { ExtAngular{Bundle}Module } from '@sencha/ext-angular{bundle}'
+//import { ExtAngular{Bundle}Module } from '@sencha/ext-angular{bundle}'
+import { ExtAngularModule } from '@sencha/ext-angular{bundle}'
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -88,7 +89,8 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    ExtAngular{Bundle}Module
+    ExtAngularModule
+    //ExtAngular{Bundle}Module
   ],
   providers: [],
   entryComponents: [AppComponent]
@@ -112,18 +114,14 @@ import { Component } from '@angular/core';
 @Component({
     selector: 'app-root',
     template: `
-<ext-panel viewport="true" title="panel" layout="fit">
-    <ext-toolbar docked="top">
-        <ext-button text="toolbar button"></ext-button>
-    </ext-toolbar>
-    <ext-grid
-        [title]="title"
-        (ready)="readyGrid($event)"
-    >
-        <ext-column text="name" dataIndex="name"></ext-column>
-        <ext-column text="email" dataIndex="email" flex="1"></ext-column>
-    </ext-grid>
-</ext-panel>
+<ext-grid
+    [viewport]="true"
+    [title]="title"
+    (ready)="readyGrid($event)"
+>
+    <ext-column text="name" dataIndex="name"></ext-column>
+    <ext-column text="email" dataIndex="email" flex="1"></ext-column>
+</ext-grid>
     `,
     styles: []
 })
@@ -135,7 +133,7 @@ export class AppComponent {
         {name: 'Andy', email: 'andy@gmail.com'},
     ]
     readyGrid(event) {
-        var grid = event.ext;
+        var grid = event.detail.cmp;
         grid.setData(this.data)
     }
 }
@@ -154,3 +152,8 @@ open http://localhost:4200 in a browser - the ExtAngular application will load
 #### components in this package:
 
 {wantedxtypes}
+
+#### imports in the npm package module:
+##### @sencha/ext-angular{bundle}/ext-angular{bundle}.module
+
+{imports}
