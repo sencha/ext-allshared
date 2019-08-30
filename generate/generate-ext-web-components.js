@@ -1,4 +1,4 @@
-//node ./generate-ext-web-components.js button
+//node ./generate-ext-web-components.js all
 var install = true;
 let run = require("./util").run;
 const fs = require('fs-extra')
@@ -445,7 +445,7 @@ async function doInstall() {
     process.chdir(toolkitFolder);
     await run(`npm install`);
     await run(`npm publish --force`);
-    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/@sencha/ext-${framework}${info.bundle}/7.0.0`)
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.0.0`)
 }
 
 

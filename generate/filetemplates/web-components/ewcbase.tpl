@@ -24,7 +24,7 @@ export default class EwcBaseComponent extends HTMLElement {
         var me = this;
         Common.createProps(me, me.XTYPE, me.PROPERTIESOBJECT, me.EVENTS)
         Common.createExtComponent(me)
-        Common.assessChildren(me)
+        Common.assessChildren(me, me.parentNode, me)
     }
 
     zzzcreateProps() {

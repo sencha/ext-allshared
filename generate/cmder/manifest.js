@@ -234,5 +234,7 @@ Ext.require([
 {"xtype":"video"},
 {"xtype":"viewport"},
 {"xtype":"widget"},
-'Ext.layout.*'
+'Ext.layout.*',
+'Ext.*',
+'Ext.ux.ajax.JsonSimlet'
 ]);

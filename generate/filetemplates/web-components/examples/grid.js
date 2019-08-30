@@ -6,7 +6,8 @@ case 'module':
 r =
 `
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
+//import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
+import '@sencha/ext-web-components/ext-web-components${info.bundle}.module';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -37,8 +38,8 @@ import { Component } from '@angular/core';
     template: \`
 <ext-grid
     viewport="true"
-    [title]="title"
-    (ready)="readyGrid($event)"
+    title="title"
+    onready="readyGrid($event)"
 >
     <ext-column text="name" dataIndex="name"></ext-column>
     <ext-column text="email" dataIndex="email" flex="1"></ext-column>

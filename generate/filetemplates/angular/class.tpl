@@ -40,24 +40,28 @@ export class {classname}MetaData {
   providers: [{provide: base, useExisting: forwardRef(() => Ext{capclassname}Component)}],
   template: '<ng-template></ng-template>'
 })
-export class Ext{capclassname}Component extends base implements OnInit, AfterViewInit  {
-  constructor(
-    eRef:ElementRef, @Host() @Optional() @SkipSelf() public hostComponent : base) {
-      super(eRef.nativeElement,{classname}MetaData,hostComponent)
+export class Ext{capclassname}Component extends base implements OnInit, AfterViewInit, OnChanges  {
+    constructor(eRef:ElementRef, @Host() @Optional() @SkipSelf() public hostComponent : base) {
+        super(eRef.nativeElement,{classname}MetaData,hostComponent)
     }
 
-  public ngOnInit() {this.baseOnInit({classname}MetaData)}
+    public ngOnInit() {
+        this.baseOnInit({classname}MetaData)
+    }
+
+    public ngAfterViewInit() {
+        this.baseAfterViewInit({classname}MetaData)
+    }
+
+
 
   //public ngAfterContentInit() {
   //  this.baseAfterContentInit()
   //}
 
-  //public ngOnChanges(changes: SimpleChanges) {this.baseOnChanges(changes)}
+  public ngOnChanges(changes: SimpleChanges) {this.baseOnChanges(changes)}
 
-  public ngAfterViewInit() {
-      console.log('ngAfterViewInit')
-      this.baseAfterViewInit({classname}MetaData)
-  }
+
 
    // public ngAfterViewChecked() {
    //   console.log('ngAfterViewChecked')

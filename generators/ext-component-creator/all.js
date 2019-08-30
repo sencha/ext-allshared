@@ -50,6 +50,7 @@ mkdirp.sync(toolkitFolder);log(`created`,`${toolkitFolder}`)
 mkdirp.sync(srcFolder);    log(`created`,`${srcFolder}`)
 mkdirp.sync(libFolder);    log(`created`,`${libFolder}`)
 
+return
 var dataFile = `${allClassesFilesFolder}${toolkit}-all-classes-flatten.json`
 log(`dataFile`,`${dataFile}`)
 var data = require(dataFile)

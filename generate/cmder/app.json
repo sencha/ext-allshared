@@ -3,5 +3,18 @@
     "toolkit": "modern",
     "theme": "theme-material",
     "type": "all",
-    "folder": "../../GeneratedFolders/ext-web-components-all/ext"
+    "folder": "../../GeneratedFolders/ext-angular-all/ext",
+    "requires": [
+        "font-ext",
+        "ux",
+        "d3",
+        "pivot-d3",
+        "font-awesome",
+        "exporter",
+        "pivot",
+        "calendar",
+        "charts",
+        "treegrid",
+        "froala-editor"
+    ]
 }
