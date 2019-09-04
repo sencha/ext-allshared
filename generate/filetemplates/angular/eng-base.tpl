@@ -1,6 +1,8 @@
 declare var Ext: any
-import 'script-loader!@sencha/ext-angular{bundle}/ext/ext.{name}.prod';
-import 'script-loader!@sencha/ext-angular{bundle}/ext/css.prod';
+import 'script-loader!../ext/ext.{name}.prod';
+import 'script-loader!../ext/css.prod';
+//import 'script-loader!@sencha/ext-angular{bundle}/ext/ext.{name}.prod';
+//import 'script-loader!@sencha/ext-angular{bundle}/ext/css.prod';
 //import Common from './Common'
 
 import {
@@ -29,10 +31,13 @@ export class EngBase {
     private node: any
     parentNode: any
     base: any
+    nodeName: any
 
     ewcChildren: any
     rawChildren: any
+    hasParent: any
     children: any
+    last: any
 
     @ContentChild('extroute',{ static : false }) _extroute: any;
     @ContentChildren('extroute') _extroutes: QueryList<any>;
@@ -63,10 +68,10 @@ export class EngBase {
 
         this.eventnames.forEach( (event: any, n: any) => {
             if (event != 'fullscreen') {
-                (<any>this.getNode())[event] = new EventEmitter()
+                (<any>this.currentEl)[event] = new EventEmitter()
             }
             else {
-                (<any>this.getNode())[event + 'event'] = new EventEmitter()
+                (<any>this.currentEl)[event + 'event'] = new EventEmitter()
             }
         })
     }
@@ -95,16 +100,16 @@ export class EngBase {
             }
             let val = changes[propName].currentValue;
 
-            if (this.getNode().A != undefined) {
-                //console.dir(this.getNode().A.ext)
+            if (this.currentEl.A != undefined) {
+                //console.dir(this.currentEl.A.ext)
                 var capPropName = propName.charAt(0).toUpperCase() + propName.slice(1);
                 var setFunction = 'set' + capPropName;
                 //console.log(setFunction)
-                if (this.getNode().A.ext[setFunction] != undefined) {
-                    this.getNode().A.ext[setFunction](val);
+                if (this.currentEl.A.ext[setFunction] != undefined) {
+                    this.currentEl.A.ext[setFunction](val);
                 }
                 else {
-                    console.error(setFunction + ' not found for ' + this.getNode().A.ext.xtype);
+                    console.error(setFunction + ' not found for ' + this.currentEl.A.ext.xtype);
                 }
             }
             else {
@@ -120,12 +125,13 @@ export class EngBase {
     ngOnDestroy() {
         var childCmp;
         var parentCmp;
+        console.dir(this)
         try {
-            childCmp = this.getNode().A.ext;
-            if (this.getParentNode() != null) {
-                parentCmp = this.getParentNode().A.ext;
-                //mjg console.log(childCmp)
-                //mjg console.log(parentCmp)
+            childCmp = this.currentEl.A.ext;
+            if (this.parentEl != null) {
+                parentCmp = this.parentEl.A.ext;
+                console.log(childCmp)
+                console.log(parentCmp)
                 if (childCmp == undefined || parentCmp == undefined)
                     if (parentCmp.xtype == 'button' && childCmp.xtype == 'menu') {
                         //console.log('button/menu not deleted')
@@ -159,7 +165,7 @@ export class EngBase {
                     childCmp.destroy();
                 }
                 else {
-                    //mjg console.log('no destroy')
+                    console.log('no destroy')
                 }
             }
         }
