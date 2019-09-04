@@ -370,9 +370,11 @@ writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
 writeFile(framework,`/package.tpl`,`${toolkitFolder}/package.json`,info);
 writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
-writeFile(framework,`/base.tpl`,`${srcFolder}base.ts`,info);
-writeFile(framework,`/module.tpl`,`${srcFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
+info.basecode = readFile("/../common/base.js")
+info.propscode = readFile("/../common/eng-props.js")
+writeFile(framework,`/eng-base.tpl`,`${srcFolder}eng-base.ts`,info);
 
+writeFile(framework,`/module.tpl`,`${srcFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
 writeFile(framework,`/public_api.tpl`,`${toolkitFolder}/public_api.ts`,info);
 
 moduleVars.imports = moduleVars.imports.substring(0,moduleVars.imports.length - 2);
@@ -723,6 +725,11 @@ function copyFile(filename) {
         //console.log('source.txt was copied to destination.txt');
     });
 }
+
+function readFile(file) {
+    return fs.readFileSync(path.resolve(templateToolkitFolder + file)).toString()
+}
+
 
 function writeFile(framework, tplFile, outFile, vars) {
     var templateToolkitFolder = path.resolve("./filetemplates/" + framework);

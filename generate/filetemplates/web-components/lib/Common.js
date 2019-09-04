@@ -1,25 +1,25 @@
 export default class Common {
 
     static createProps(me, xtype, properties, events) {
-        me.props = {};
-        me.props.xtype = xtype; //me.XTYPE;
-        //if (me.props.xtype.substr(me.props.xtype.length - 6) == 'column') {
-        if (me.props.xtype == 'column' ||
-            me.props.xtype == 'gridcolumn') {
+        var o = {};
+        o.xtype = xtype; //me.XTYPE;
+        //if (o.xtype.substr(o.xtype.length - 6) == 'column') {
+        if (o.xtype == 'column' ||
+            o.xtype == 'gridcolumn') {
             var renderer = me.getAttribute('renderer')
             if (renderer != undefined) {
-                me.props.cell = me.cell || {}
-                me.props.cell.xtype = 'renderercell'
+                o.cell = me.cell || {}
+                o.cell.xtype = 'renderercell'
                 //console.log(renderer)
-                me.props.cell.renderer = renderer
+                o.cell.renderer = renderer
             }
         }
         //mjg fitToParent not working??
         if (true === me.fitToParent) {
-            me.props.top=0,
-            me.props.left=0,
-            me.props.width='100%',
-            me.props.height='100%'
+            o.top=0,
+            o.left=0,
+            o.width='100%',
+            o.height='100%'
         }
         for (var property in properties) { //me.PROPERTIESOBJECT
             if (me.getAttribute(property) !== null) {
@@ -29,14 +29,14 @@ export default class Common {
                     var r = functionString.split('.');
                     var obj = r[0];
                     var func = r[1];
-                    me.props[property] = window[obj][func];
+                    o[property] = window[obj][func];
                 }
                 else {
-                    me.props[property] = me.filterProperty(me.getAttribute(property));
+                    o[property] = me.filterProperty(me.getAttribute(property));
                 }
             }
         }
-        me.props.listeners = {}
+        o.listeners = {}
 
         // this would only add events to the ones that are
         // being used for this instance
@@ -47,44 +47,411 @@ export default class Common {
         //     //if (/^on/.test(attr) && attr!='onitemdisclosure') {
         //         var name = attr.slice(2);
         //         var result = me.EVENTS.filter(obj => {return obj.name === name});
-        //         me.setEvent(result[0],me.props,this)
+        //         me.setEvent(result[0],o,this)
         //     }
         // }
 
         //me.EVENTS
         events.forEach(function (eventparameter, index, array) {
-            me.setEvent(eventparameter,me.props,me)
+            me.setEvent(eventparameter,o,me)
         })
+
+        return o;
     }
 
     static createExtComponent(me) {
         //console.log('createExtComponent')
-        if (me.props['viewport'] == true) {
+        if (me.currentComponent.node.s.props['viewport'] == true) {
             me.newDiv.remove()
-            me.ext = Ext.create(me.props)
-            console.log('Ext.application for ' + me.props.xtype + '(' + me.props.ewc + ')')
+            me.currentComponent.node.ext = Ext.create(me.currentComponent.node.s.props)
+            console.log('Ext.application for ' + me.currentComponent.node.s.props.xtype + '(' + me.currentComponent.node.s.props.ewc + ')')
             Ext.application({
                 name: 'MyEWCApp',
                 launch: function () {
-                    Ext.Viewport.add([me.ext])
+                    Ext.Viewport.add([me.currentComponent.node.ext])
                     if (window.router) {window.router.init();}
                 }
             });
         }
-        else if (me.parentNode.nodeName.substring(0, 4) != 'EXT-') {
-            console.log('parent of: ' + me.nodeName + ' is ' + me.parentNode.nodeName)
-            me.props.renderTo = me.newDiv; //me.shadowRoot;
-            me.ext = Ext.create(me.props)
-            me.parentNode.replaceChild(me.ext.el.dom, me.newDiv)
+        else if (me.parentComponent == null) {
+            //mjg console.log('1-parent of: ' + me.currentComponent.node.nodeName + ' is ' + me.node.parentNode.nodeName)
+            me.currentComponent.node.s.props.renderTo = me.currentComponent.node; //me.currentComponent.node.s.newDiv; //me.shadowRoot;
+            me.currentComponent.node.ext = Ext.create(me.currentComponent.node.s.props)
+            //me.currentComponent.node.parentNode.replaceChild(me.currentComponent.node.ext.el.dom, me.currentComponent.node.s.newDiv)
+            //console.log('replace newDiv')
         }
-        else {
-            console.log('parent of: ' + me.nodeName + ' is ' +'EXT')
-            me.newDiv.remove()
-            me.ext = Ext.create(me.props)
+        else if (me.parentComponent.node.nodeName.substring(0, 4) != 'EXT-') {
+            //mjg console.log('2-parent of: ' + me.currentComponent.node.nodeName + ' is ' + me.parentComponent.node.nodeName)
+            me.currentComponent.node.s.props.renderTo = me.currentComponent.node; //me.currentComponent.node.s.newDiv; //me.shadowRoot;
+            me.currentComponent.node.ext = Ext.create(me.currentComponent.node.s.props)
+            //me.currentComponent.node.parentNode.replaceChild(me.currentComponent.node.ext.el.dom, me.currentComponent.node.s.newDiv)
         }
+         else {
+            //mjg console.log('3-parent of: ' + me.currentComponent.node.nodeName + ' is ' + me.parentComponent.node.nodeName)
+            me.currentComponent.node.ext = Ext.create(me.currentComponent.node.s.props)
+        }
+
+
+        // else if (me.parentNode.nodeName.substring(0, 4) != 'EXT-') {
+        //     console.log('parent of: ' + me.nodeName + ' is ' + me.parentNode.nodeName)
+        //     o.renderTo = me.newDiv; //me.shadowRoot;
+        //     me.ext = Ext.create(o)
+        //     me.parentNode.replaceChild(me.ext.el.dom, me.newDiv)
+        // }
+        // else {
+        //     console.log('parent of: ' + me.nodeName + ' is ' +'EXT')
+        //     me.newDiv.remove()
+        //     me.ext = Ext.create(o)
+        // }
     }
 
-    static assessChildren(meNode, parentNode, me) {
+    static assessChildren(base, currentNode, parentNode, me) {
+        //mjg console.log('assessChildren')
+         if (currentNode.s.CHILDRENNODES == undefined) {
+             //console.log('first time')
+             //console.log(base.count)
+             if (base.count == 0) {
+                 if (parentNode == null) {
+                     //currentNode.s.DIRECTION = 'TopToBottom'
+                     base.DIRECTION = 'TopToBottom'
+                 }
+                 else {
+                     //currentNode.s.DIRECTION = 'BottomToTop'
+                     base.DIRECTION = 'BottomToTop'
+                 }
+                //mjg console.log('base.DIRECTION: ' + base.DIRECTION)
+             }
+             base.count++
+             currentNode.s.CHILDRENNODES = []
+             currentNode.s.CHILDRENCOMPONENTSCOUNT = 0
+            //mjg console.log(me._childComponents)
+             currentNode.s.CHILDRENCOMPONENTS = me.childComponents
+             for (var i = 0; i < currentNode.s.CHILDRENCOMPONENTS.length; i++) {
+                 if (currentNode.s.CHILDRENCOMPONENTS[i].node.nodeName.substring(0, 4) == 'EXT-') {
+                     currentNode.s.CHILDRENCOMPONENTSCOUNT++
+                 }
+             }
+             currentNode.s.CHILDRENCOMPONENTSLEFT = currentNode.s.CHILDRENCOMPONENTSCOUNT
+             currentNode.s.CHILDRENCOMPONENTSADDED = 0
+         }
+        //mjg console.log('***')
+        //mjg console.log('parentNode: ')
+        //mjg console.dir(parentNode)
+        //mjg console.log('CHILDRENCOMPONENTSCOUNT: ' + currentNode.s.CHILDRENCOMPONENTSCOUNT)
+        //mjg console.log('CHILDRENCOMPONENTS: ')
+        //mjg console.dir(currentNode.s.CHILDRENCOMPONENTS)
+        //mjg console.log('CHILDRENCOMPONENTSLEFT: ' + currentNode.s.CHILDRENCOMPONENTSLEFT)
+        //mjg console.log('***')
+
+            if (me.currentComponent._extitems != undefined) {
+                if (me.currentComponent._extitems.length == 1) {
+                    //if (this._hostComponent != null) {
+                    //mjg console.log('item')
+                        me.currentComponent.node.ext.setHtml(me.currentComponent._extitem.nativeElement)
+                    //}
+                }
+            }
+
+            if (me.currentComponent._extitems != undefined) {
+                if (me.currentComponent._extroutes.length == 1) {
+                //mjg console.log('router')
+                    me.currentComponent.node.ext.setHtml(me.currentComponent._extroute.nativeElement)
+                    //childItem.childCmp = Ext.create({xtype:'widget', ewc:item.getAttribute('ewc'), element:Ext.get(item.parentNode.removeChild(item))})
+                }
+            }
+
+
+
+
+
+         if (   currentNode.s.CHILDRENCOMPONENTSCOUNT == 0
+             && currentNode.s.CHILDRENCOMPONENTSLEFT == 0
+             && currentNode.s.CHILDRENCOMPONENTSADDED == 0
+             && parentNode == null
+         ) {
+             //currentNode.s.DIRECTION = "Solo"
+             //console.log(currentNode.s.DIRECTION)
+            //mjg console.log('Solo')
+             //var r = {detail: {cmp: currentNode.ext}}
+
+             if (me.currentComponent._extitems != undefined) {
+                me.currentComponent['ready'].emit({detail: {cmp: currentNode.ext}});
+             }
+             else {
+                me.currentComponent.dispatchEvent(new CustomEvent('ready',{detail:{cmp: currentNode.ext}}));
+             }
+
+
+
+             //me.currentComponent.node.remove()
+             return
+         }
+         else if (currentNode.s.CHILDRENCOMPONENTSADDED > 0) {
+             me.addChildren(currentNode, currentNode.s.CHILDRENNODES, me)
+             //var r = {detail: {cmp: currentNode.ext}}
+             //console.log(r)
+             //me.currentComponent['ready'].emit({detail: {cmp: currentNode.ext}});
+
+             if (me.currentComponent._extitems != undefined) {
+                me.currentComponent['ready'].emit({detail: {cmp: currentNode.ext}});
+             }
+             else {
+                me.currentComponent.dispatchEvent(new CustomEvent('ready',{detail:{cmp: currentNode.ext}}));
+             }
+
+
+
+             //me.currentComponent.node.remove()
+         }
+         else {
+            //mjg console.log('NOT Solo')
+             if ( me.parentComponent != null &&
+                  currentNode.s.CHILDRENCOMPONENTSCOUNT == 0) {
+                 //var r = {detail: {cmp: currentNode.ext}}
+                 //console.log(r)
+                 //me.currentComponent['ready'].emit({detail: {cmp: currentNode.ext}});
+
+                 if (me.currentComponent._extitems != undefined) {
+                    me.currentComponent['ready'].emit({detail: {cmp: currentNode.ext}});
+                 }
+                 else {
+                    me.currentComponent.dispatchEvent(new CustomEvent('ready',{detail:{cmp: currentNode.ext}}));
+                 }
+
+
+
+             }
+         }
+
+         if (parentNode != null) {
+
+             if (parentNode.s.CHILDRENNODES == undefined) {
+                //mjg console.log('creating parentNode variables at a later time')
+                 parentNode.s.CHILDRENNODES = []
+                 parentNode.s.CHILDRENCOMPONENTSCOUNT = 0
+                 parentNode.s.CHILDRENCOMPONENTS = me.childComponents
+                 for (var i = 0; i < parentNode.s.CHILDRENCOMPONENTS.length; i++) {
+                     if (parentNode.s.CHILDRENCOMPONENTS[i].node.nodeName.substring(0, 4) == 'EXT-') {
+                         parentNode.s.CHILDRENCOMPONENTSCOUNT++
+                     }
+                 }
+                 parentNode.s.CHILDRENCOMPONENTSLEFT = parentNode.s.CHILDRENCOMPONENTSCOUNT
+                 parentNode.s.CHILDRENCOMPONENTSADDED = 0
+             }
+             else {
+                //mjg console.log('parentNode variables are already created')
+             }
+             if (base.DIRECTION == 'TopToBottom') {
+                //mjg console.log('TopToBottom')
+                 parentNode.s.CHILDRENNODES.push(me.currentComponent.node)
+                 parentNode.s.CHILDRENCOMPONENTSLEFT--
+             }
+             else {
+                //mjg console.log('BottomToTop')
+                 parentNode.s.CHILDRENNODES.push(me.currentComponent.node)
+                 parentNode.s.CHILDRENCOMPONENTSADDED++
+             }
+            //mjg console.log('parent CHILDRENCOMPONENTSLEFT: ' + parentNode.s.CHILDRENCOMPONENTSLEFT)
+             if (  base.DIRECTION == "TopToBottom"
+                 && parentNode.s.CHILDRENCOMPONENTSLEFT == 0) {
+                //mjg console.log('TopToBottom')
+                //mjg console.log('no more children left')
+                //mjg console.dir(parentNode)
+                //mjg console.dir(parentNode.s.CHILDRENNODES)
+                 me.addChildren(parentNode, parentNode.s.CHILDRENNODES, me)
+                 //var r = {detail: {cmp: me.parentComponent.node.ext}}
+                 me.parentComponent['ready'].emit({detail: {cmp: parentNode.ext}});
+
+                 if (me.parentComponent._extitems != undefined) {
+                    me.parentComponent['ready'].emit({detail: {cmp: parentNode.ext}});
+                 }
+                 else {
+                    me.parentComponent.dispatchEvent(new CustomEvent('ready',{detail:{cmp: parentNode.ext}}));
+                 }
+
+
+
+
+
+                 //me.parentComponent.node.remove()
+             }
+             else {
+                //mjg console.log('Still children left')
+             }
+
+         }
+    }
+
+    static addChildren(child, children, me) {
+        //mjg console.log('addChildren')
+        //mjg console.log(child)
+        //mjg console.log(children)
+         var childComponents = []
+         var childItem = {parentCmp: {}, childCmp: {}}
+         for (var i = children.length-1; i > -1; i--) {
+             var item = children[i]
+             childItem = {parentCmp: {}, childCmp: {}}
+             childItem.parentCmp = child.ext
+             childItem.childCmp = item.ext
+             childComponents.push(childItem)
+         }
+         for (var i = childComponents.length-1; i > -1; i--) {
+             var childItem = {parentCmp: {}, childCmp: {}}
+             childItem = childComponents[i]
+             me.addTheChild(childItem.parentCmp, childItem.childCmp, me)
+         }
+    }
+
+    static addTheChild(parentCmp, childCmp, me, location) {
+         var parentxtype = parentCmp.xtype
+         var childxtype = childCmp.xtype
+         //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.ext + ')' + ' - ' + childxtype + '(' + childCmp.ext + ')')
+         //if (childxtype == 'widget')
+         if (me.node.ext.initialConfig.align != undefined) {
+             if (parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
+             console.error('Can only use align property if parent is a Titlebar or Grid or Button')
+             return
+             }
+         }
+         var defaultparent = false
+         var defaultchild = false
+
+         switch(parentxtype) {
+             case 'button':
+                 switch(childxtype) {
+                     case 'menu':
+                         parentCmp.setMenu(childCmp)
+                         break;
+                     default:
+                         defaultparent = true
+                         break;
+                 }
+                 break;
+             case 'booleancolumn':
+             case 'checkcolumn':
+             case 'gridcolumn':
+             case 'column':
+             case 'templatecolumn':
+             case 'gridcolumn':
+             case 'column':
+             case 'templatecolumn':
+             case 'datecolumn':
+             case 'dragcolumn':
+             case 'numbercolumn':
+             case 'selectioncolumn':
+             case 'textcolumn':
+             case 'treecolumn':
+             case 'rownumberer':
+                 switch(childxtype) {
+                     case 'renderercell':
+                         parentCmp.setCell(childCmp)
+                         break;
+                     case 'column':
+                     case 'gridcolumn':
+                         parentCmp.add(childCmp)
+                         break;
+                     default:
+                         defaultparent = true
+                         break;
+                 }
+                 break;
+             case 'grid':
+             case 'lockedgrid':
+                 switch(childxtype) {
+                     case 'gridcolumn':
+                     case 'column':
+                     case 'treecolumn':
+                     case 'textcolumn':
+                     case 'checkcolumn':
+                     case 'datecolumn':
+                     case 'rownumberer':
+                     case 'numbercolumn':
+                     case 'booleancolumn':
+                         if (location == null) {
+                             if (parentxtype == 'grid') {
+                                 parentCmp.addColumn(childCmp)
+                             }
+                             else {
+                                 parentCmp.add(childCmp)
+                             }
+                         }
+                         else {
+                             var regCols = 0;
+                             if(parentCmp.registeredColumns != undefined) {
+                                 regCols = parentCmp.registeredColumns.length;
+                             }
+                             if (parentxtype == 'grid') {
+                                //mjg console.log(parentCmp)
+                                 parentCmp.insertColumn(location + regCols, childCmp)
+                             }
+                             else {
+                                 parentCmp.insert(location + regCols, childCmp)
+                             }
+                         }
+                         break;
+                     default:
+                         defaultparent = true
+                         break;
+                 }
+                 break;
+             default:
+                 defaultparent = true
+                 break;
+         };
+
+         switch(childxtype) {
+             case 'toolbar':
+             case 'titlebar':
+                 if (parentCmp.getHideHeaders != undefined) {
+                     if (parentCmp.getHideHeaders() === false) {
+                         parentCmp.insert(1, childCmp);
+                     }
+                     else {
+                         parentCmp.add(childCmp);
+                     }
+                 }
+                 else {
+                     if (parentCmp.add != undefined) {
+                         if(location == null) {
+                             parentCmp.add(childCmp)
+                         }
+                         else {
+                             parentCmp.insert(location, childCmp)
+                         }
+                     }
+                     else {
+                         parentCmp.add(childCmp);
+                     }
+                 }
+                 break;
+             case 'tooltip':
+                 parentCmp.setTooltip(childCmp)
+                 break;
+             case 'plugin':
+                 parentCmp.setPlugin(childCmp)
+                 break;
+             default:
+                 defaultchild = true
+                 break;
+         }
+
+         if (defaultparent == true && defaultchild == true) {
+             //console.log(parentxtype + '.add(' + childxtype + ')')
+             parentCmp.add(childCmp)
+         }
+
+         // if (me.parentNode.childrenYetToBeDefined > 0) {
+         //     me.parentNode.childrenYetToBeDefined--
+         // }
+         // //console.log('childrenYetToBeDefined(after) '  + me.parentNode.childrenYetToBeDefined)
+         // if (me.parentNode.childrenYetToBeDefined == 0) {
+         //     me.parentNode.dispatchEvent(new CustomEvent('ready',{detail:{cmp: me.parentNode.ext}}))
+         // }
+    }
+
+
+
+    static assessChildren2(meNode, parentNode, me) {
         //console.log('assessChildren')
         var s = meNode.s;
         //var children = meNode.children;
@@ -206,7 +573,7 @@ export default class Common {
         }
     }
 
-    static addChildren(child, children, me) {
+    static addChildren2(child, children, me) {
         console.log('addChildren')
         var childItems = []
         var childItem = {}
@@ -231,7 +598,7 @@ export default class Common {
         }
     }
 
-    static addTheChild(parentCmp, childCmp, me, location) {
+    static addTheChild2(parentCmp, childCmp, me, location) {
         var parentxtype = parentCmp.xtype
         var childxtype = childCmp.xtype
         //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.ext + ')' + ' - ' + childxtype + '(' + childCmp.ext + ')')

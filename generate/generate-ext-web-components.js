@@ -425,7 +425,10 @@ writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
 writeFile(framework,`/package.tpl`,`${toolkitFolder}package.json`,info);
 writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
-writeFile(framework, '/ewcbase.tpl', `${libFolder}ewc-base.component.js`, info);
+info.basecode = readFile("/../common/base.js")
+info.propscode = readFile("/../common/ewc-props.js")
+writeFile(framework, '/ewc-base.tpl', `${libFolder}ewc-base.component.js`, info);
+
 writeFile(framework, '/module.tpl', `${toolkitFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
 
 writeFile(framework, '/router.tpl', `${libFolder}ext-router.component.js`, {});
@@ -848,6 +851,11 @@ function copyFile(filename) {
         if (err) throw err;
         //console.log('source.txt was copied to destination.txt');
       });
+}
+
+function readFile(file) {
+    var templateToolkitFolder = path.resolve('./filetemplates/' + framework);
+    return fs.readFileSync(path.resolve(templateToolkitFolder + file)).toString()
 }
 
 function writeFile(framework, tplFile, outFile, vars) {
