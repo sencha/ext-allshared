@@ -17,11 +17,11 @@ import {
   forwardRef,
   SimpleChanges
 } from '@angular/core';
-import { base } from './base';
+import { EngBase } from './eng-base';
 export class {classname}MetaData {
   public static XTYPE: string = '{xtype}';
   public static PROPERTIES: string[] = [
-    'xng',
+    'eng',
     'viewport',
     'align',
     'plugins',
@@ -37,11 +37,11 @@ export class {classname}MetaData {
   selector: 'ext-{xtype}',
   inputs: {classname}MetaData.PROPERTIES,
   outputs: {classname}MetaData.EVENTNAMES,
-  providers: [{provide: base, useExisting: forwardRef(() => Ext{capclassname}Component)}],
+  providers: [{provide: EngBase, useExisting: forwardRef(() => Ext{capclassname}Component)}],
   template: '<ng-template></ng-template>'
 })
-export class Ext{capclassname}Component extends base implements OnInit, AfterViewInit, OnChanges  {
-    constructor(eRef:ElementRef, @Host() @Optional() @SkipSelf() public hostComponent : base) {
+export class Ext{capclassname}Component extends EngBase implements OnInit, AfterViewInit, OnChanges  {
+    constructor(eRef:ElementRef, @Host() @Optional() @SkipSelf() public hostComponent : EngBase) {
         super(eRef.nativeElement,{classname}MetaData,hostComponent)
     }
 

@@ -18,7 +18,7 @@ should be @angular/cli@8.3.x
 #### Create a new Angular CLI application
 
 ```sh
-ng new ng-xng{bundle} --minimal=true --interactive=false -g=true --skipInstall=true
+ng new ng-eng{bundle} --minimal=true --interactive=false -g=true --skipInstall=true
 ```
 
 #### Open your editor
@@ -26,7 +26,7 @@ ng new ng-xng{bundle} --minimal=true --interactive=false -g=true --skipInstall=t
 To open Visual Studio Code, type the following:
 
 ```sh
-cd ng-xng{bundle}; code .
+cd ng-eng{bundle}; code .
 ```
 
 #### Add to package.json
@@ -45,19 +45,32 @@ in a terminal window at the root of your application, run the following:
 npm install
 ```
 
-#### Add to src/index.html
+#### Replace src/index.html (optional)
 
-Add this BEFORE the ENDING </html> tag:
+If you want to get a look at different styling...
+Open the src/index.html file in the editor and replace the contents with the following:
 
 ```sh
-...
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ext-angular{bundle} example</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+</body>
 <style>
     :root {
         --base-color:black;
         --base-foreground-color:yellow;
-        --color:white;
-        --background-color:gray;
-        --hovered-background-color:lightgray;
+        --color:darkblue;
+        --background-color:lightgray;
+        --hovered-background-color:darkgray;
     }
     body {
         padding: '10px'
