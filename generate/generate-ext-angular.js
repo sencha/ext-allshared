@@ -15,7 +15,9 @@ const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
 
 var type = process.argv[2];
 var xtypelist = [];
+console.log(type)
 switch(type) {
+    case 'blank':
     case 'all':
         xtypelist = [
             'actionsheet',
@@ -322,7 +324,15 @@ var generatedFolders = "./GeneratedFolders/";
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
 
 var templateToolkitFolder = path.resolve("./filetemplates/" + framework);
-const toolkitFolder = generatedFolders + "ext-" + framework + '-' + type + '/';
+var theType;
+if (type == 'blank') {
+    theType = ''
+}
+else {
+    theType = '-' + type
+
+}
+const toolkitFolder = generatedFolders + "ext-" + framework + theType + '/';
 //var toolkitFolder = generatedFolders + "ext-" + framework + info.bundle + '/';
 var srcFolder = toolkitFolder + "src/";
 var extFolder = toolkitFolder + "ext/";
@@ -341,6 +351,7 @@ for (i = 0; i < data.global.items.length; i++) {
 
 let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 var info = getBundleInfo(framework, type, Items)
+
 
 //console.log(info.wantedxtypes)
 
@@ -361,9 +372,6 @@ copyFile("ext/css.prod.js");
 copyFile("tsconfig.json");
 copyFile("tsconfig.lib.json");
 copyFile("ng-package.json");
-
-//console.log(info)
-//console.log(info.manifest)
 
 writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
 writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
@@ -418,7 +426,15 @@ async function doInstall() {
     //mkdirp.sync(`lib`);
     await run(`cp -R ./src dist/lib`);
 
+    await run(`rm -r ../../../../ext-angular/packages/ext-angular${info.bundle}`);
+
+    await run(`cp -R ./dist ../../../../ext-angular/packages/ext-angular${info.bundle}`);
+    return
+
     process.chdir('dist');
+
+
+
     await run(`npm publish --force`);
     console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.0.0`)
 }

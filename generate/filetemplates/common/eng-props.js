@@ -1,5 +1,5 @@
 createProps(properties, propertiesobject, events, eventnames) {
-    var props = this.getNode().A.props;
+    var props = this.currentEl.A.props;
     props.xtype = this.xtype;
     let listenersProvided = false;
     for (var i = 0; i < properties.length; i++) {
@@ -41,7 +41,7 @@ createProps(properties, propertiesobject, events, eventnames) {
         events.forEach(function (event) {
             let eventname = event.name;
             let eventparameters = event.parameters;
-            me.getNode().A.props.listeners[eventname] = function () {
+            me.currentEl.A.props.listeners[eventname] = function () {
                 //console.log('in the event ' + eventname)
                 let parameters = eventparameters;
                 let parms = parameters.split(',');

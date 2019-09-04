@@ -7,9 +7,9 @@ exports.getBundleInfo = (framework, type, Items) => {
     info.wantedxtypes = []
     info.wantedextended = []
 
-
     var theFunction = null
     switch(type) {
+        case 'blank':
         case 'all':
             theFunction = function(o) {
                 return o
@@ -65,9 +65,14 @@ exports.getBundleInfo = (framework, type, Items) => {
     info.type = type;
     info.now = new Date().toString();
     info.Bundle = type.charAt(0).toUpperCase() + type.slice(1);
-//same thing
     info.bundle = '-' + type
     info.name = info.bundle.substring(1)
+//same thing
+    if (type == 'blank') {
+        info.bundle = ''
+        info.Bundle = ''
+        info.name = ''
+    }
 
     info.folder = '../../GeneratedFolders/ext-' + framework + info.bundle + '/ext';
 
