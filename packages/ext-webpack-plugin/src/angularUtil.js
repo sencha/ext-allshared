@@ -181,7 +181,7 @@ export function _writeFilesToProdFolder(vars, options) {
   const path = require('path')
   const fsx = require('fs-extra')
 
-  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src/lib')
+  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/lib')
   const pathToExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-prod`)
   const string = 'Ext.create({\"xtype\":\"'
 
