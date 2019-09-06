@@ -425,7 +425,7 @@ writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
 writeFile(framework,`/package.tpl`,`${toolkitFolder}package.json`,info);
 writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
-info.basecode = readFile("/../common/base.js")
+info.basecode = readFile("/../common/common-base.js")
 info.propscode = readFile("/../common/ewc-props.js")
 writeFile(framework, '/ewc-base.tpl', `${libFolder}ewc-base.component.js`, info);
 

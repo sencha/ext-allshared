@@ -218,6 +218,6 @@ export function _writeFilesToProdFolder(vars, options) {
     fsx.writeFileSync(`${pathToExtAngularProd}/ext-angular.module.ts`, t, 'utf-8', ()=>{return})
   }
 
-  const baseContent = fsx.readFileSync(`${packageLibPath}/base.ts`).toString()
-  fsx.writeFileSync(`${pathToExtAngularProd}/base.ts`, baseContent, 'utf-8', ()=>{return})
+  const baseContent = fsx.readFileSync(`${packageLibPath}/eng-base.ts`).toString()
+  fsx.writeFileSync(`${pathToExtAngularProd}/eng-base.ts`, baseContent, 'utf-8', ()=>{return})
 }

@@ -41,14 +41,14 @@ import { Component } from '@angular/core';
     selector: 'app-root',
     template: \`
 <ext-grid
-    [viewport]="true"
     [title]="title"
+    [columns]="columns"
+    [data]="data"
+    height="250px"
     (ready)="readyGrid($event)"
 >
-    <ext-column text="name" dataIndex="name"></ext-column>
-    <ext-column text="email" dataIndex="email" flex="1"></ext-column>
 </ext-grid>
-    \`,
+\`,
     styles: []
 })
 export class AppComponent {
@@ -57,13 +57,15 @@ export class AppComponent {
         {name: 'Marc', email: 'marc@gmail.com'},
         {name: 'Nick', email: 'nick@gmail.com'},
         {name: 'Andy', email: 'andy@gmail.com'},
-    ]
+    ];
+    columns = [
+        {text:"name", dataIndex:"name", width:200},
+        {text:"email", dataIndex:"email", flex: 1}
+    ];
+
     readyGrid = (event) => {
-        var grid = event.detail.cmp;
-        grid.setData(this.data)
-    }
-    tapButton = (event) => {
-        alert('button text: ' + event.button.getText())
+        console.log('in readyGrid - event.detail.cmp:');
+        console.log(event.detail.cmp);
     }
 }
 `

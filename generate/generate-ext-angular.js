@@ -1,4 +1,4 @@
-//node ./generate-ext-angular.js all
+//node ./generate-ext-angular.js grid
 var install = true;
 let run = require("./util").run;
 
@@ -378,7 +378,7 @@ writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
 writeFile(framework,`/package.tpl`,`${toolkitFolder}/package.json`,info);
 writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
-info.basecode = readFile("/../common/base.js")
+info.basecode = readFile("/../common/common-base.js")
 info.propscode = readFile("/../common/eng-props.js")
 writeFile(framework,`/eng-base.tpl`,`${srcFolder}eng-base.ts`,info);
 
@@ -429,7 +429,7 @@ async function doInstall() {
     await run(`rm -r ../../../../ext-angular/packages/ext-angular${info.bundle}`);
 
     await run(`cp -R ./dist ../../../../ext-angular/packages/ext-angular${info.bundle}`);
-    return
+    //return
 
     process.chdir('dist');
 

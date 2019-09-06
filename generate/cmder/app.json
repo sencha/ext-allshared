@@ -2,8 +2,8 @@
     "framework": "ext",
     "toolkit": "modern",
     "theme": "theme-material",
-    "type": "button",
-    "folder": "../../GeneratedFolders/ext-angular-button/ext",
+    "type": "blank",
+    "folder": "../../GeneratedFolders/ext-angular/ext",
     "requires": [
         "font-ext",
         "ux",

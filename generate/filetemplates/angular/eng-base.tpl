@@ -1,7 +1,7 @@
 declare var Ext: any
-import 'script-loader!../ext/ext.{name}.prod';
-import 'script-loader!../ext/css.prod';
-//import 'script-loader!@sencha/ext-angular{bundle}/ext/ext.{name}.prod';
+//import 'script-loader!../ext/ext.{name}.prod';
+//import 'script-loader!../ext/css.prod';
+//import 'script-loader!@sencha/ext-angular{bundle}/ext/ext.{type}.prod';
 //import 'script-loader!@sencha/ext-angular{bundle}/ext/css.prod';
 //import Common from './Common'
 
@@ -57,6 +57,9 @@ export class EngBase {
         this.parentNode = hostComponent;
 
         this.newDiv = document.createElement('div');
+        //var t = document.createTextNode("newDiv");
+        //this.newDiv.appendChild(t);
+
         this.node.insertAdjacentElement('beforebegin', this.newDiv);
         this.xtype = metaData.XTYPE;
         this.properties = metaData.PROPERTIES;
