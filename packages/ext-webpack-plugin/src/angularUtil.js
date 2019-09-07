@@ -65,7 +65,8 @@ export function _extractFromSource(module, options, compilation, extComponents) 
               var tagEnd = start.indexOf('>')
               var end = Math.min(spaceEnd, newlineEnd, tagEnd)
               if (end >= 0) {
-                var xtype = require('./pluginUtil')._toXtype(start.substring(1, end))
+                  //changed this from 1 to five when adding ext- to elements
+                var xtype = require('./pluginUtil')._toXtype(start.substring(5, end))
                 if(extComponents.includes(xtype)) {
                   var theValue = node.value.toLowerCase()
                   if (theValue.indexOf('doctype html') == -1) {
