@@ -119,11 +119,11 @@ export function _toProd(vars, options) {
   o.to = `import { ExtAngularModule } from './ext-angular-prod/ext-angular.module'`
   changeIt(o)
 
-  o = {}
-  o.where = 'src/main.ts'
-  o.from = `bootstrapModule( AppModule );`
-  o.to = `enableProdMode();bootstrapModule(AppModule);`
-  changeIt(o)
+//   o = {}
+//   o.where = 'src/main.ts'
+//   o.from = `bootstrapModule( AppModule );`
+//   o.to = `enableProdMode();bootstrapModule(AppModule);`
+//   changeIt(o)
 }
 
 export function _toDev(vars, options) {
@@ -140,11 +140,11 @@ export function _toDev(vars, options) {
   o.to = `import { ExtAngularModule } from '@sencha/ext-angular'`
   changeIt(o)
 
-  o = {}
-  o.where = 'src/main.ts'
-  o.from = `enableProdMode();bootstrapModule(AppModule);`
-  o.to = `bootstrapModule( AppModule );`
-  changeIt(o)
+//   o = {}
+//   o.where = 'src/main.ts'
+//   o.from = `enableProdMode();bootstrapModule(AppModule);`
+//   o.to = `bootstrapModule( AppModule );`
+//   changeIt(o)
 }
 
 
