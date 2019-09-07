@@ -7,15 +7,15 @@ A [Webpack](https://webpack.js.org/) plugin for [Sencha EXTJS](https://www.sench
 Install [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
-npm install --save-dev @extjs/ext-webpack-plugin
+npm install --save-dev @sencha/ext-webpack-plugin
 ```
 
 ## Usage
 
-In your webpack configuration, 
+In your webpack configuration,
 
 ```js
-const ExtWebpackPlugin = require('@extjs/ext-webpack-plugin');
+const ExtWebpackPlugin = require('@sencha/ext-webpack-plugin');
 
 ...
 
@@ -32,4 +32,4 @@ module.exports = function (env) {
 
 ```
 
-This will be included in your webpack configuration if you generate the application using [@extjs/ext-gen](https://github.com/sencha/extjs-reactor/tree/2.0.x-dev/packages/ext-gen)
+This will be included in your webpack configuration if you generate the application using [@sencha/ext-angular-gen](https://github.com/sencha/ext-angular/tree/ext-angular-7.0.x/packages/ext-angular-gen)
