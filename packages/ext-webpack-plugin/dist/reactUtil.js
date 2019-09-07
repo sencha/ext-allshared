@@ -8,6 +8,7 @@ exports._extractFromSource = _extractFromSource;
 
 function _getDefaultVars() {
   return {
+    touchFile: '/src/themer.js',
     watchStarted: false,
     buildstep: '1 of 1',
     firstTime: true,
