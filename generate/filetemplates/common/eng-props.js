@@ -1,3 +1,4 @@
+//******* props start */
 createProps(properties, propertiesobject, events, eventnames) {
     var props = this.currentEl.A.props;
     props.xtype = this.xtype;
@@ -70,3 +71,4 @@ createProps(properties, propertiesobject, events, eventnames) {
         });
     }
 }
+//******* props end */

@@ -1,6 +1,5 @@
-import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/ext.{type}.prod';
-import 'script-loader!node_modules/@sencha/ext-web-components{bundle}/ext/css.prod';
-
+//{now}
+{import}
 import HTMLParsedElement from './HTMLParsedElement'
 //import Common from './Common'
 
@@ -8,34 +7,28 @@ export default class EwcBaseComponent extends HTMLElement {
 
     constructor() {
         super ();
-
-        this.newDiv = document.createElement('div');
-        this.insertAdjacentElement('beforebegin', this.newDiv);
-
-        this.xtype = this.XTYPE;
-        this.properties = 'properties';
-        this.propertiesobject = propertiesobject
-        this.events = events;
-        this.eventnames = 'eventnames';
-
-        this.base = EwcBaseComponent;
     }
     connectedCallback() {
-        //this.newDiv = document.createElement('div');
-        //this.node.insertAdjacentElement('beforebegin', this.newDiv);
-        //this.xtype = this.XTYPE;
-        //this.base = EwcBaseComponent;
+        this.xtype = this.XTYPE;
+        this.base = EwcBaseComponent;
+
+        this.properties = []
+        for (var property in this.PROPERTIESOBJECT) {
+            this.properties.push(property)
+        }
+        this.events = this.EVENTS
+
+        this.newDiv = document.createElement('div');
+        //var textnode = document.createTextNode(this.xtype);
+        //this.newDiv.appendChild(textnode)
+        this.insertAdjacentElement('beforebegin', this.newDiv);
     }
     parsedCallback() {
         this.initMe()
     }
 
-
 {basecode}
 {propscode}
-
-
-
 
     setEvent(eventparameters,o, me3) {
         o.listeners[eventparameters.name] = function() {

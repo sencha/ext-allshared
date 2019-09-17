@@ -5,31 +5,24 @@ exports.angular = (what, info) => {
 case 'module':
 r =
 `
-import { ExtAngularAllModule } from '@sencha/ext-angular-all'
-//import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
-// import '@sencha/ext-web-components-all/lib/ext-panel.component';
-// import '@sencha/ext-web-components-all/lib/ext-toolbar.component';
-// import '@sencha/ext-web-components-all/lib/ext-button.component';
-// import '@sencha/ext-web-components-all/lib/ext-grid.component';
-// import '@sencha/ext-web-components-all/lib/ext-column.component';
-{imports}
-
+import { ExtAngularModule } from '@sencha/ext-angular-button';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [{declarationsx}
+  declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    ExtAngularModule
   ],
-  providers: [ ],
-  bootstrap: [ AppComponent ]
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
 `
 break;
 
@@ -40,14 +33,12 @@ import { Component } from '@angular/core';
 @Component({
     selector: 'app-root',
     template: \`
-<ext-grid
-    [viewport]="true"
-    [title]="title"
-    (ready)="readyGrid($event)"
+<ext-button
+    [text]="title"
+    (ready)="readyButton($event)"
+    (tap)="tapButton($event)"
 >
-    <ext-column text="name" dataIndex="name"></ext-column>
-    <ext-column text="email" dataIndex="email" flex="1"></ext-column>
-</ext-grid>
+</ext-button>
     \`,
     styles: []
 })
@@ -58,9 +49,8 @@ export class AppComponent {
         {name: 'Nick', email: 'nick@gmail.com'},
         {name: 'Andy', email: 'andy@gmail.com'},
     ]
-    readyGrid = (event) => {
-        var grid = event.detail.cmp;
-        grid.setData(this.data)
+    readyButton = (event) => {
+        var button = event.detail.cmp;
     }
     tapButton = (event) => {
         alert('button text: ' + event.button.getText())

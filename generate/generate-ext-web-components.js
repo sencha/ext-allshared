@@ -14,6 +14,7 @@ const newLine = '\n'
 var type = process.argv[2];
 var xtypelist = [];
 switch(type) {
+    case 'blank':
     case 'all':
         xtypelist= [
             'actionsheet',
@@ -262,6 +263,11 @@ switch(type) {
         break;
     case 'grid':
         xtypelist = [
+            'grid'
+        ]
+        break;
+    case 'grid2':
+        xtypelist = [
             'gridcellbase',
             'booleancell',
             'gridcell',
@@ -320,7 +326,16 @@ var moduleVars = {imports: ''}
 const generatedFolders = './GeneratedFolders/';
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
 
-const toolkitFolder = generatedFolders + "ext-" + framework + '-' + type + '/';
+var theType;
+if (type == 'blank') {
+    theType = ''
+}
+else {
+    theType = '-' + type
+
+}
+
+const toolkitFolder = generatedFolders + "ext-" + framework + theType + '/';
 const binFolder = toolkitFolder + 'bin/';
 const docFolder = toolkitFolder + 'doc/';
 const libFolder = toolkitFolder + 'lib/';
@@ -382,7 +397,9 @@ if (info.type == 'all') {
     rimraf.sync(tempFolder);
 }
 else {
-    writeOnlyWantedExtended(info.wantedextended)
+    fs.copySync(`${tempFolder}/Ext/`,`${libFolder}` + "/Ext/")
+    rimraf.sync(tempFolder);
+    //writeOnlyWantedExtended(info.wantedextended)
 }
 
 info.imports = ''
@@ -427,6 +444,13 @@ writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
 info.basecode = readFile("/../common/common-base.js")
 info.propscode = readFile("/../common/ewc-props.js")
+
+
+info.import = ``
+if (info.type != 'blank') {
+    info.import = `import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}.prod';
+import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.prod';`
+}
 writeFile(framework, '/ewc-base.tpl', `${libFolder}ewc-base.component.js`, info);
 
 writeFile(framework, '/module.tpl', `${toolkitFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
@@ -439,14 +463,33 @@ writeFile(framework, '/style.tpl', `${docFolder}style.css`, {});
 
 if (install == true) {doInstall()}
 async function doInstall() {
-    process.chdir(`./cmder`);
-    await run(`sencha app build`);
-    //copyFile("ext/css.prod.js");
-    console.log('done with cmd')
-    process.chdir(`../`);
+
+console.log(info.bundle)
+    if (info.bundle != '') {
+        process.chdir(`./cmder`);
+        await run(`sencha app build`);
+        //copyFile("ext/css.prod.js");
+        console.log('done with cmd')
+        process.chdir(`../`);
+
+       // process.chdir(toolkitFolder);
+       // await run(`npm install`);
+    }
+    else {
+        //process.chdir(toolkitFolder);
+    }
 
     process.chdir(toolkitFolder);
     await run(`npm install`);
+
+
+    mkdirp.sync(`ext`);
+    await run(`cp -R ./ext dist/ext`);
+
+    await run(`rm -r ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
+    await run(`cp -R ./ ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
+
+
     await run(`npm publish --force`);
     console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.0.0`)
 }
@@ -488,9 +531,15 @@ function doNewApproach(item, framework, libFolder) {
         template = '/class.tpl'
     }
 
+
+
+
     var processIt = shouldProcessIt(item)
 
     if (processIt == true) {
+
+        //console.log(item.name)
+
         c.processed++
         var tab = "";
         var webcomponent = true
@@ -507,7 +556,7 @@ function doNewApproach(item, framework, libFolder) {
         names.push(item.name)
         //mjg alternate
         if (item.alternateClassNames != undefined) {
-            //console.log(item.alternateClassNames)
+//            console.log(item.alternateClassNames)
             var alt = item.alternateClassNames.split(",");
             names = names.concat(alt)
         }
@@ -663,6 +712,24 @@ function doNewApproach(item, framework, libFolder) {
             //var classextendsfilename = extendparts[extendparts.length-1]
             //var extendsclassname = item.extends.replace(/\./g, "_") + "_Component"
 
+
+
+            // if (
+            //     //xtype == 'lockedgrid' ||
+            //     //xtype == 'lockedgridregion' ||
+            //     xtype == 'column' ||
+            //     xtype == 'gridcolumn' ||
+            //     xtype == 'templatecolumn'
+            //     //xtype == 'tree'
+            // ) {
+            //     console.log(xtype)
+            //     console.log(xtypes)
+            //     console.dir(extendpath)
+            //     console.log(item.extends.replace(/\./g, "_") + "_Component")
+            // }
+            // //{pathprefix}{extendpath}{classextendsfilename}
+
+
             var values = {
                 sPROPERTIESGETSET: sPROPERTIESGETSET,
                 sMETHODS: sMETHODS,
@@ -682,7 +749,13 @@ function doNewApproach(item, framework, libFolder) {
                 extendsclassname: item.extends.replace(/\./g, "_") + "_Component",
                 classextendsfilename: extendparts[extendparts.length-1]
             }
+
+            //classextendsfilename: extendparts[extendparts.length-1]
+
+
             //console.log(`${folder}${filename}.js`)
+
+
             writeFile(framework, template, `${folder}${filename}.js`, values)
 
 

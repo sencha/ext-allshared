@@ -10,6 +10,7 @@ exports.getBundleInfo = (framework, type, Items) => {
     var theFunction = null
     switch(type) {
         case 'blank':
+        case 'pivot':
         case 'all':
             theFunction = function(o) {
                 return o

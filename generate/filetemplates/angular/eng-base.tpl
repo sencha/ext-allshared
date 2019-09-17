@@ -1,10 +1,6 @@
+//{now}
 declare var Ext: any
-//import 'script-loader!../ext/ext.{name}.prod';
-//import 'script-loader!../ext/css.prod';
-//import 'script-loader!@sencha/ext-angular{bundle}/ext/ext.{type}.prod';
-//import 'script-loader!@sencha/ext-angular{bundle}/ext/css.prod';
-//import Common from './Common'
-
+{import}
 import {
     EventEmitter,
     ContentChild,
@@ -26,7 +22,6 @@ export class EngBase {
     events: any
     eventnames: any
 
-
     A: any;
     private node: any
     parentNode: any
@@ -36,6 +31,7 @@ export class EngBase {
     ewcChildren: any
     rawChildren: any
     hasParent: any
+    parentType: any
     children: any
     last: any
 
@@ -51,7 +47,7 @@ export class EngBase {
     constructor (
         nativeElement: any,
         private metaData: any,
-        public hostComponent : EngBase,
+        public hostComponent : EngBase
     ) {
         this.node = nativeElement;
         this.parentNode = hostComponent;
@@ -85,9 +81,6 @@ export class EngBase {
 
 {basecode}
 {propscode}
-
-
-
 
     baseOnChanges(changes) {
         //console.log(`ngOnChanges`)
@@ -128,13 +121,15 @@ export class EngBase {
     ngOnDestroy() {
         var childCmp;
         var parentCmp;
-        console.dir(this)
+        if (childCmp == undefined || parentCmp == undefined) {
+            return
+        }
         try {
             childCmp = this.currentEl.A.ext;
             if (this.parentEl != null) {
                 parentCmp = this.parentEl.A.ext;
-                console.log(childCmp)
-                console.log(parentCmp)
+                //console.log(childCmp)
+                //console.log(parentCmp)
                 if (childCmp == undefined || parentCmp == undefined)
                     if (parentCmp.xtype == 'button' && childCmp.xtype == 'menu') {
                         //console.log('button/menu not deleted')

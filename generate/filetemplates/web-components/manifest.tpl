@@ -1,3 +1,5 @@
 Ext.require([
-{manifest}'Ext.layout.*'
+{manifest}'Ext.layout.*',
+'Ext.*',
+'Ext.ux.ajax.JsonSimlet'
 ]);

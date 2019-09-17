@@ -1,7 +1,8 @@
 {
     "name": "@sencha/ext-web-components{bundle}",
     "version": "7.0.0",
-    "main": "dist/index.js",
+    "main": "ext-web-components.module.js",
+    "private": false,
     "bin": {
       "ext-web-components{bundle}": "./bin/ext-web-components{bundle}.js"
     },
@@ -13,16 +14,16 @@
     },
     "homepage": "https://github.com/sencha/ext-web-components#readme",
     "dependencies": {
-      "@babel/runtime": "^7.5.5",
+      "@babel/runtime": "^7.6.0",
       "script-loader": "^0.7.2",
       "comment-json": "^2.1.0"
     },
     "devDependencies": {
       "html-parsed-element": "^0.4.0",
-      "@babel/cli": "^7.5.5",
-      "@babel/core": "^7.5.5",
+      "@babel/cli": "^7.6.0",
+      "@babel/core": "^7.6.0",
       "@babel/plugin-proposal-class-properties": "^7.5.5",
-      "@babel/plugin-proposal-decorators": "^7.4.4",
+      "@babel/plugin-proposal-decorators": "^7.6.0",
       "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
       "@babel/plugin-proposal-function-sent": "^7.5.0",
       "@babel/plugin-proposal-json-strings": "^7.2.0",
@@ -30,8 +31,8 @@
       "@babel/plugin-proposal-throw-expressions": "^7.2.0",
       "@babel/plugin-syntax-dynamic-import": "^7.2.0",
       "@babel/plugin-syntax-import-meta": "^7.2.0",
-      "@babel/plugin-transform-runtime": "^7.5.5",
-      "@babel/preset-env": "^7.5.5"
+      "@babel/plugin-transform-runtime": "^7.6.0",
+      "@babel/preset-env": "^7.6.0"
     },
     "repository": {
       "type": "git",
