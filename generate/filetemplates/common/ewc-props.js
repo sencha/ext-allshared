@@ -53,7 +53,7 @@ createProps(properties, propertiesobject, events, eventnames) {
 
     //this.EVENTS
     var me2 = this
-    events.forEach(function (eventparameter, index, array) {
+    this.events.forEach(function (eventparameter, index, array) {
         me2.setEvent(eventparameter,o,me2)
     })
 

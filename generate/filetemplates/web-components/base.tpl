@@ -32,16 +32,15 @@ static METHODS() { return [
         return attrs
     }
 
-    constructor() {
+    constructor(propertiesobject, methods, events) {
         super (
-            {classname}.METHODS(),
-            {classname}.XTYPE(),
-            {classname}.PROPERTIESOBJECT(),
-            {classname}.EVENTS()
+            Object.assign(propertiesobject, {classname}.PROPERTIESOBJECT()),
+            methods.concat({classname}.METHODS()),
+            events.concat({classname}.EVENTS())
         )
-        this.XTYPE = {classname}.XTYPE()
-        this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
-        this.METHODS = this.extendArray(this.METHODS, {classname}.METHODS());
-        this.EVENTS = this.extendArray(this.EVENTS, {classname}.EVENTS());
+        //this.XTYPE = {classname}.XTYPE()
+        //this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
+        //this.METHODS = this.extendArray(this.METHODS, {classname}.METHODS());
+        //this.EVENTS = this.extendArray(this.EVENTS, {classname}.EVENTS());
     }
 }

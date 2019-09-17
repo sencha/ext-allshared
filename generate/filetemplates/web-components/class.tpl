@@ -23,14 +23,27 @@ static METHODS() { return [
         return attrs
     }
 
-    constructor() {
+    constructor(propertiesobject, methods, events) {
         super (
-            
+            Object.assign(propertiesobject, {classname}.PROPERTIESOBJECT()),
+            //{propertiesobject, {classname}.PROPERTIESOBJECT()},
+            methods.concat({classname}.METHODS()),
+            events.concat({classname}.EVENTS())
+
+
+
+            //events.concat({classname}.EVENTS()),
+            //propertiesobject.concat({classname}.PROPERTIESOBJECT()),
+            //methods.concat({classname}.METHODS())
+
+            //EwcBaseComponent.extendArray(events, {classname}.EVENTS()),
+            //EwcBaseComponent.extendArray(propertiesobject, {classname}.PROPERTIESOBJECT()),
+            //EwcBaseComponent.extendArray(methods, {classname}.METHODS())
         )
-        this.XTYPE = {classname}.XTYPE()
-        this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
-        this.methods = this.extendArray(this.methods, {classname}.METHODS());
-        this.events = this.extendArray(this.events, {classname}.EVENTS());
+        //this.XTYPE = {classname}.XTYPE()
+        //this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
+        //this.methods = this.extendArray(this.methods, {classname}.METHODS());
+        //this.events = this.extendArray(this.events, {classname}.EVENTS());
 
     }
 

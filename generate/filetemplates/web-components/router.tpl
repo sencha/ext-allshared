@@ -15,8 +15,37 @@ export class ExtRouterComponent extends EwcBaseComponent {
     }
 
     constructor() {
-        super();
+        super (
+            {},
+            [],
+            []
+        )
         this.router = new Router(window.routes);
+
+
+        var div = document.createElement("DIV");
+        div.setAttribute("id", "route");
+        //div.style.width = "100%";
+        //div.style.height = "100%";
+        div.style.width = "400px";
+        div.style.height = "400px";
+        div.style.padding = this.padding;
+        //div.style.display = "none";
+        //mjg should not be hard coded
+        div.style.backgroundSize = "20px 20px";
+        //div.style.overflow='scroll';
+        div.style.borderWidth = "0px";
+        div.style.backgroundColor = "#e8e8e8";
+        div.style.backgroundImage =
+            "linear-gradient( 0deg, #f5f5f5 1.1px, transparent 0)," +
+            "linear-gradient(90deg, #f5f5f5 1.1px, transparent 0)";
+        //this.insertAdjacentElement('beforebegin', div);
+        this.appendChild(div)
+        console.log('router constructor')
+
+
+
+
     }
 
     createProps() {
