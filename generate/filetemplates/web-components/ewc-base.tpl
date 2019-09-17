@@ -5,18 +5,19 @@ import HTMLParsedElement from './HTMLParsedElement'
 
 export default class EwcBaseComponent extends HTMLElement {
 
-    constructor() {
+    constructor(propertiesobject, methods, events) {
         super ();
+        this.propertiesobject = propertiesobject;
+        this.methods = methods;
+        this.events = events;
     }
     connectedCallback() {
-        this.xtype = this.XTYPE;
         this.base = EwcBaseComponent;
 
         this.properties = []
-        for (var property in this.PROPERTIESOBJECT) {
+        for (var property in this.propertiesobject) {
             this.properties.push(property)
         }
-        this.events = this.EVENTS
 
         this.newDiv = document.createElement('div');
         //var textnode = document.createTextNode(this.xtype);
@@ -132,3 +133,9 @@ export default class EwcBaseComponent extends HTMLElement {
 
 EwcBaseComponent.count = 0;
 EwcBaseComponent.DIRECTION = '';
+
+//EwcBaseComponent.extendArray = function(obj, src) {
+//    if (obj == undefined) {obj = []}
+//    Array.prototype.push.apply(obj,src);
+//    return obj;
+//}
