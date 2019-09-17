@@ -5,31 +5,24 @@ exports.angular = (what, info) => {
 case 'module':
 r =
 `
-import { ExtAngularAllModule } from '@sencha/ext-angular-all'
-//import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
-// import '@sencha/ext-web-components-all/lib/ext-panel.component';
-// import '@sencha/ext-web-components-all/lib/ext-toolbar.component';
-// import '@sencha/ext-web-components-all/lib/ext-button.component';
-// import '@sencha/ext-web-components-all/lib/ext-grid.component';
-// import '@sencha/ext-web-components-all/lib/ext-column.component';
-{imports}
-
+import { ExtAngularModule } from '@sencha/ext-angular-grid';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [{declarationsx}
+  declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    ExtAngularModule
   ],
-  providers: [ ],
-  bootstrap: [ AppComponent ]
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
 `
 break;
 
@@ -48,6 +41,18 @@ import { Component } from '@angular/core';
     (ready)="readyGrid($event)"
 >
 </ext-grid>
+
+<ext-lockedgrid
+    [title]="title"
+    [columns]="lockedcolumns"
+    [data]="data"
+    height="250px"
+    (ready)="readyGrid($event)"
+>
+</ext-lockedgrid>
+
+
+
 \`,
     styles: []
 })
@@ -60,6 +65,10 @@ export class AppComponent {
     ];
     columns = [
         {text:"name", dataIndex:"name", width:200},
+        {text:"email", dataIndex:"email", flex: 1}
+    ];
+    lockedcolumns = [
+        {text:"name", locked: true, dataIndex:"name", width:200},
         {text:"email", dataIndex:"email", flex: 1}
     ];
 

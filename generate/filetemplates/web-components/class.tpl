@@ -25,15 +25,13 @@ static METHODS() { return [
 
     constructor() {
         super (
-            {classname}.METHODS(),
-            {classname}.XTYPE(),
-            {classname}.PROPERTIESOBJECT(),
-            {classname}.EVENTS()
+            
         )
         this.XTYPE = {classname}.XTYPE()
         this.PROPERTIESOBJECT = this.extendObject(this.PROPERTIESOBJECT, {classname}.PROPERTIESOBJECT());
-        this.METHODS = this.extendArray(this.METHODS, {classname}.METHODS());
-        this.EVENTS = this.extendArray(this.EVENTS, {classname}.EVENTS());
+        this.methods = this.extendArray(this.methods, {classname}.METHODS());
+        this.events = this.extendArray(this.events, {classname}.EVENTS());
+
     }
 
     connectedCallback() {

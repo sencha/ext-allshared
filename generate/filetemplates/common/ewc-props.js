@@ -1,6 +1,7 @@
+//******* props start */
 createProps(properties, propertiesobject, events, eventnames) {
     var o = {};
-    o.xtype = this.xtype;
+    o.xtype = this.currentEl.A.xtype;
     if (o.xtype == 'column' ||
         o.xtype == 'gridcolumn') {
         var renderer = this.getAttribute('renderer')
@@ -18,7 +19,9 @@ createProps(properties, propertiesobject, events, eventnames) {
         o.width='100%',
         o.height='100%'
     }
-    for (var property in properties) { //this.PROPERTIESOBJECT
+    for (var i = 0; i < properties.length; i++) {
+        var property = properties[i]
+        //console.log(property)
         if (this.getAttribute(property) !== null) {
             if (property == 'handler') {
                 var functionString = this.getAttribute(property);
@@ -54,7 +57,7 @@ createProps(properties, propertiesobject, events, eventnames) {
         me2.setEvent(eventparameter,o,me2)
     })
 
-    props = o
+    this.currentEl.A.props = o
     //return o;
 }
-
+//******* props end */

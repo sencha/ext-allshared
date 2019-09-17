@@ -2,7 +2,10 @@ import {classname} from '{folder}'
 import HTMLParsedElement from './HTMLParsedElement'
 
 export class Ext{Xtype}Component extends {classname} {
-    constructor() {super ('','',{},'')}
+    constructor() {
+        super ()
+        this.xtype = '{xtype}'
+    }
 }
 
 //(function () {

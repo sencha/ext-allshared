@@ -1,4 +1,4 @@
-//node ./generate-ext-angular.js grid
+//node ./generate-ext-angular.js blank
 var install = true;
 let run = require("./util").run;
 
@@ -310,6 +310,24 @@ switch(type) {
             'tree'
           ]
           break;
+    case 'pivot':
+        console.log('here')
+        xtypelist = [
+            'pivotgridcell',
+            'pivotgridgroupcell',
+            'pivotd3container',
+            'pivotheatmap',
+            'pivottreemap',
+            'pivotgrid',
+            'pivotconfigfield',
+            'pivotconfigcontainer',
+            'pivotconfigform',
+            'pivotconfigpanel',
+            'pivotsettings',
+            'pivotrangeeditor',
+            'pivotgridrow'
+        ]
+        break;
     case 'gridall':
         break;
     default:
@@ -380,7 +398,14 @@ writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
 info.basecode = readFile("/../common/common-base.js")
 info.propscode = readFile("/../common/eng-props.js")
+
+info.import = ``
+if (info.type != 'blank') {
+    info.import = `import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}.prod';
+import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.prod';`
+}
 writeFile(framework,`/eng-base.tpl`,`${srcFolder}eng-base.ts`,info);
+
 
 writeFile(framework,`/module.tpl`,`${srcFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
 writeFile(framework,`/public_api.tpl`,`${toolkitFolder}/public_api.ts`,info);
@@ -418,6 +443,7 @@ async function doInstall() {
 
     process.chdir(toolkitFolder);
     await run(`npm install`);
+
     await run(`npm run packagr`);
 
     mkdirp.sync(`ext`);
@@ -426,14 +452,14 @@ async function doInstall() {
     //mkdirp.sync(`lib`);
     await run(`cp -R ./src dist/lib`);
 
-    await run(`rm -r ../../../../ext-angular/packages/ext-angular${info.bundle}`);
+    await run(`rm -r ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
+    await run(`cp -R ./dist ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
 
-    await run(`cp -R ./dist ../../../../ext-angular/packages/ext-angular${info.bundle}`);
+    //console.log('done')
+
     //return
 
     process.chdir('dist');
-
-
 
     await run(`npm publish --force`);
     console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.0.0`)
