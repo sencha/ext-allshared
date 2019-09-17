@@ -3,7 +3,7 @@
     "toolkit": "modern",
     "theme": "theme-material",
     "type": "blank",
-    "folder": "../../GeneratedFolders/ext-web-components/ext",
+    "folder": "../../GeneratedFolders/ext-angular/ext",
     "requires": [
         "font-ext",
         "ux",
