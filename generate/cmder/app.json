@@ -2,8 +2,8 @@
     "framework": "ext",
     "toolkit": "modern",
     "theme": "theme-material",
-    "type": "blank",
-    "folder": "../../GeneratedFolders/ext-angular/ext",
+    "type": "all",
+    "folder": "../../GeneratedFolders/ext-web-components-all/ext",
     "requires": [
         "font-ext",
         "ux",

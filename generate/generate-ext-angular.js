@@ -462,7 +462,7 @@ async function doInstall() {
     process.chdir('dist');
 
     await run(`npm publish --force`);
-    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.0.0`)
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.1.0`)
 }
 
 function launch(o, framework, moduleVars) {
