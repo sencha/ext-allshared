@@ -5,7 +5,7 @@ exports.angular = (what, info) => {
 case 'module':
 r =
 `
-import { ExtAngularAllModule } from '@sencha/ext-angular-all'
+import { ExtAngularModule } from '@sencha/ext-angular'
 //import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
 // import '@sencha/ext-web-components-all/lib/ext-panel.component';
 // import '@sencha/ext-web-components-all/lib/ext-toolbar.component';
@@ -20,11 +20,12 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [{declarationsx}
+  declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    ExtAngularModule
   ],
   providers: [ ],
   bootstrap: [ AppComponent ]

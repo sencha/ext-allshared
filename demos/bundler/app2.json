@@ -1,0 +1,38 @@
+{
+  "name": "grid",
+  "build": "build",
+  "manifest": "manifest",
+  "framework": "ext",
+  "toolkit": "modern",
+  "theme": "theme-material",
+  "requires": [
+    "core",
+    "renderercell",
+    "font-ext",
+    "ux",
+    "d3",
+    "pivot-d3",
+    "font-awesome",
+    "exporter",
+    "pivot",
+    "calendar",
+    "charts",
+    "treegrid",
+    "froala-editor"
+  ],
+  "sass": {
+    "namespace": "modernbase",
+
+    "etc": [
+      "sass/etc/all.scss"
+    ],
+    "var": [
+      "app/shared/sass/var.scss",
+      "app/${build.id}/sass/var.scss"
+    ],
+    "src": [
+      "app/shared/src/sass/src.scss",
+      "app/${build.id}/sass/src.scss"
+    ]
+  }
+}

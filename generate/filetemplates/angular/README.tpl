@@ -34,7 +34,7 @@ cd ng-eng{bundle}; code .
 In the dependencies section of package.json, add the following:
 
 ```sh
-"@sencha/ext-angular{bundle}": "7.0.0",
+"@sencha/ext-angular{bundle}": "7.1.0",
 ```
 
 #### Run npm install
@@ -51,6 +51,7 @@ If you want to get a look at different styling...
 Open the src/styles.css file in the editor and replace the contents with the following:
 
 ```sh
+/* Find color names here: https://www.rapidtables.com/web/color */
 :root {
     --dark-mode: false;
     --base-color: yellow !important;
