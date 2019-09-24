@@ -1,5 +1,5 @@
-//node ./generate-ext-web-components.js all
-var install = true;
+//node ./generate-ext-web-components.js blank
+var install = false;
 let run = require("./util").run;
 const fs = require('fs-extra')
 var framework = 'web-components'
@@ -538,6 +538,7 @@ function doNewApproach(item, framework, libFolder) {
 
     if (processIt == true) {
 
+
         //console.log(item.name)
 
         c.processed++
@@ -583,7 +584,18 @@ function doNewApproach(item, framework, libFolder) {
 
         if (webcomponent == true) {
             c.webcomponents++
+
+            console.log(`Ext.create({"xtype":"${xtypes[0]}"});`)
+
+
         }
+
+
+        //console.dir(item.name)
+        //console.dir(item)
+        //return process.exit(22);
+
+
 
         var sPROPERTIES = ''
         var sPROPERTIESOBJECT = ''
