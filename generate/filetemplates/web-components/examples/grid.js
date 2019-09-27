@@ -4,13 +4,11 @@ exports.angular = (what, info) => {
 
 case 'module':
 r =
-`
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-//import '@sencha/ext-web-components${info.bundle}/ext-web-components${info.bundle}.module';
-import '@sencha/ext-web-components/ext-web-components${info.bundle}.module';
+`declare var Ext: any
+import '@sencha/ext-web-components-grid/ext-web-components-grid.module'
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
@@ -21,23 +19,23 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule
   ],
-  providers: [ ],
+  providers: [],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
 `
 break;
 
 case 'component':
-r = `
-import { Component } from '@angular/core';
+r = `import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-root',
     template: \`
 <ext-grid
     [title]="title"
+    height="300px"
     (ready)="this.readyGrid($event)"
     columns='[
         {"text":"name","dataIndex": "name", "width": 100},

@@ -8,8 +8,8 @@
     },
     "peerDependencies": {},
     "scripts": {
-      "watch": "npx babel ./lib --out-dir ./dist --watch",
-      "build": "npx babel ./lib --out-dir ./dist",
+      "watch": "npx babel ./src --out-dir ./dist --watch",
+      "build": "npx babel ./src --out-dir ./dist",
       "prepare": "npm run build"
     },
     "homepage": "https://github.com/sencha/ext-web-components#readme",
