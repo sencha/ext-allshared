@@ -1,327 +1,25 @@
-//node ./generate-ext-web-components.js blank
-var install = false;
+//node ./generate-ext-web-components.js grid
+var framework = 'web-components';
+var install = true;
 let run = require("./util").run;
-const fs = require('fs-extra')
-var framework = 'web-components'
+let writeTemplateFile = require("./util").writeTemplateFile;
+let templateFolder = "./filetemplates/";
 
-require('./XTemplate')
-const path = require('path')
-const rimraf = require('rimraf')
-const mkdirp = require('mkdirp')
+require("./XTemplate");
+const fs = require("fs-extra");
+const path = require("path");
+const rimraf = require("rimraf");
+const mkdirp = require("mkdirp");
 
-const newLine = '\n'
-
-var type = process.argv[2];
-var xtypelist = [];
-switch(type) {
-    case 'blank':
-    case 'all':
-        xtypelist= [
-            'actionsheet',
-            'audio',
-            'breadcrumbbar',
-            'button',
-            'calendar-event',
-            'calendar-form-add',
-            'calendar-calendar-picker',
-            'calendar-form-edit',
-            'calendar-timefield',
-            'calendar-daysheader',
-            'calendar-weeksheader',
-            'calendar-list',
-            'calendar-day',
-            'calendar-days',
-            'calendar-month',
-            'calendar',
-            'calendar-week',
-            'calendar-weeks',
-            'calendar-dayview',
-            'calendar-daysview',
-            'calendar-monthview',
-            'calendar-multiview',
-            'calendar-weekview',
-            'calendar-weeksview',
-            'carousel',
-            'cartesian',
-            'chart',
-            'legend',
-            'chartnavigator',
-            'polar',
-            'spacefilling',
-            'chip',
-            'component',
-            'container',
-            'd3-canvas',
-            'd3-heatmap',
-            'd3-pack',
-            'd3-partition',
-            'd3-sunburst',
-            'd3-tree',
-            'd3-horizontal-tree',
-            'd3-treemap',
-            'd3-svg',
-            'd3',
-            'boundlist',
-            'chipview',
-            'componentdataview',
-            'dataitem',
-            'dataview',
-            'emptytext',
-            'indexbar',
-            'itemheader',
-            'list',
-            'listitem',
-            'listitemplaceholder',
-            'listswiperitem',
-            'listswiperstepper',
-            'nestedlist',
-            'pullrefreshbar',
-            'pullrefreshspinner',
-            'simplelistitem',
-            'dialog',
-            'window',
-            'draw',
-            'surface',
-            'editor',
-            'checkbox',
-            'checkboxfield',
-            'checkboxgroup',
-            'combobox',
-            'comboboxfield',
-            'containerfield',
-            'fieldcontainer',
-            'datefield',
-            'datepickerfield',
-            'datepickernativefield',
-            'displayfield',
-            'emailfield',
-            'field',
-            'groupcontainer',
-            'filefield',
-            'filebutton',
-            'hiddenfield',
-            'inputfield',
-            'numberfield',
-            'fieldpanel',
-            'passwordfield',
-            'pickerfield',
-            'radio',
-            'radiofield',
-            'radiogroup',
-            'searchfield',
-            'selectfield',
-            'singlesliderfield',
-            'sliderfield',
-            'spinnerfield',
-            'textfield',
-            'textareafield',
-            'timefield',
-            'togglefield',
-            'cleartrigger',
-            'datetrigger',
-            'expandtrigger',
-            'menutrigger',
-            'revealtrigger',
-            'spindowntrigger',
-            'spinuptrigger',
-            'timetrigger',
-            'trigger',
-            'urlfield',
-            'fieldset',
-            'formpanel',
-            'froalaeditor',
-            'froalaeditorfield',
-            'gridcellbase',
-            'booleancell',
-            'gridcell',
-            'checkcell',
-            'datecell',
-            'numbercell',
-            'rownumberercell',
-            'textcell',
-            'treecell',
-            'widgetcell',
-            'celleditor',
-            'booleancolumn',
-            'checkcolumn',
-            'gridcolumn',
-            'column',
-            'templatecolumn',
-            'datecolumn',
-            'dragcolumn',
-            'numbercolumn',
-            'rownumberer',
-            'selectioncolumn',
-            'textcolumn',
-            'treecolumn',
-            'grid',
-            'headercontainer',
-            'lockedgrid',
-            'lockedgridregion',
-            'gridcolumnsmenu',
-            'gridgroupbythismenuitem',
-            'gridshowingroupsmenuitem',
-            'gridsortascmenuitem',
-            'gridsortdescmenuitem',
-            'pagingtoolbar',
-            'gridrow',
-            'rowbody',
-            'roweditorbar',
-            'roweditorcell',
-            'roweditor',
-            'roweditorgap',
-            'rowheader',
-            'gridsummaryrow',
-            'tree',
-            'image',
-            'img',
-            'indicator',
-            'label',
-            'treelist',
-            'treelistitem',
-            'loadmask',
-            'mask',
-            'media',
-            'menucheckitem',
-            'menuitem',
-            'menu',
-            'menuradioitem',
-            'menuseparator',
-            'messagebox',
-            'navigationview',
-            'panel',
-            'accordion',
-            'datepanel',
-            'datetitle',
-            'panelheader',
-            'timepanel',
-            'paneltitle',
-            'yearpicker',
-            'datepicker',
-            'picker',
-            'selectpicker',
-            'pickerslot',
-            'tabletpicker',
-            'pivotgridcell',
-            'pivotgridgroupcell',
-            'pivotd3container',
-            'pivotheatmap',
-            'pivottreemap',
-            'pivotgrid',
-            'pivotconfigfield',
-            'pivotconfigcontainer',
-            'pivotconfigform',
-            'pivotconfigpanel',
-            'pivotsettings',
-            'pivotrangeeditor',
-            'pivotgridrow',
-            'progress',
-            'progressbarwidget',
-            'segmentedbutton',
-            'sheet',
-            'slider',
-            'thumb',
-            'toggleslider',
-            'spacer',
-            'sparklinebar',
-            'sparkline',
-            'sparklinebox',
-            'sparklinebullet',
-            'sparklinediscrete',
-            'sparklineline',
-            'sparklinepie',
-            'sparklinetristate',
-            'splitbutton',
-            'tabbar',
-            'tabpanel',
-            'tab',
-            'tooltip',
-            'title',
-            'titlebar',
-            'tool',
-            'paneltool',
-            'toolbar',
-            'colorbutton',
-            'colorpickercolorpreview',
-            'colorfield',
-            'colorselector',
-            'gauge',
-            'map',
-            'google-map',
-            'rating',
-            'video',
-            'viewport',
-            'widget',
-        ]
-        break;
-    case 'button':
-        xtypelist = [
-            'button'
-        ]
-        break;
-    case 'panel':
-        break;
-    case 'grid':
-        xtypelist = [
-            'grid'
-        ]
-        break;
-    case 'grid2':
-        xtypelist = [
-            'gridcellbase',
-            'booleancell',
-            'gridcell',
-            'checkcell',
-            'datecell',
-            'numbercell',
-            'rownumberercell',
-            'textcell',
-            'treecell',
-            'widgetcell',
-            'celleditor',
-            'booleancolumn',
-            'checkcolumn',
-            'gridcolumn',
-            'column',
-            'templatecolumn',
-            'datecolumn',
-            'dragcolumn',
-            'numbercolumn',
-            'rownumberer',
-            'selectioncolumn',
-            'textcolumn',
-            'treecolumn',
-            'grid',
-            'headercontainer',
-            'lockedgrid',
-            'lockedgridregion',
-            'gridcolumnsmenu',
-            'gridgroupbythismenuitem',
-            'gridshowingroupsmenuitem',
-            'gridsortascmenuitem',
-            'gridsortdescmenuitem',
-            'pagingtoolbar',
-            'gridrow',
-            'rowbody',
-            'roweditorbar',
-            'roweditorcell',
-            'roweditor',
-            'roweditorgap',
-            'rowheader',
-            'gridsummaryrow',
-            'tree'
-          ]
-          break;
-    case 'gridall':
-        break;
-    default:
-        console.log('not a valid bundle: ' + type)
-        return -1;
-}
-
+const newLine = '\n';
 const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
 
-var moduleVars = {imports: ''}
+var type = process.argv[2];
+var packagename = process.argv[2];
+
+var xtypelist = require("./npmpackage/" + packagename).getXtypes();
+
+var moduleVars = { imports: "", declarations: "", exports: "" };
 
 const generatedFolders = './GeneratedFolders/';
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
@@ -332,89 +30,63 @@ if (type == 'blank') {
 }
 else {
     theType = '-' + type
-
 }
 
 const toolkitFolder = generatedFolders + "ext-" + framework + theType + '/';
-const binFolder = toolkitFolder + 'bin/';
+const srcFolder = toolkitFolder + 'src/';
+var extBinFolder = toolkitFolder + "ext/";
 const docFolder = toolkitFolder + 'doc/';
-const libFolder = toolkitFolder + 'lib/';
 const tempFolder = toolkitFolder + 'temp/';
+
 const extFolder = tempFolder + 'Ext/';
-const extFinalFolder = libFolder + 'Ext/';
-var extbinFolder = toolkitFolder + "ext/";
+const binFolder = toolkitFolder + 'bin/';
+
 
 rimraf.sync(toolkitFolder);
 mkdirp.sync(toolkitFolder);
-mkdirp.sync(binFolder);
+mkdirp.sync(srcFolder);
+mkdirp.sync(extBinFolder);
 mkdirp.sync(docFolder);
-mkdirp.sync(libFolder);
 mkdirp.sync(tempFolder);
+
 mkdirp.sync(extFolder);
-mkdirp.sync(extFinalFolder);
-mkdirp.sync(extbinFolder);
+mkdirp.sync(binFolder);
+
+var templateToolkitFolder = path.resolve('./filetemplates/' + framework);
 
 var didXtype = false
 
-var c = {
-    all: 0,
-    xtypenamecombo: 0,
-    processed: 0,
-    webcomponents: 0,
-    unique: 0,
-    calendar: 0,
-    field: 0,
-    trigger: 0,
-    sparkline: 0,
-    d3: 0,
-    picker: 0,
-    pivot: 0,
-    menu: 0,
-    grid: 0,
-    cell: 0,
-    list: 0,
-    field: 0,
-    panel: 0,
-    chart: 0,
-    dataview: 0,
-    button: 0,
-    slider: 0,
-    tab: 0,
-    draw: 0,
-    other: 0
-}
-
 var Items = []
 for (i = 0; i < data.global.items.length; i++) {
-    doNewApproach(data.global.items[i], framework, libFolder);
+    doNewApproach(data.global.items[i], framework, srcFolder);
 }
 
 let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 var info = getBundleInfo(framework, type, Items)
 
 if (info.type == 'all') {
-    fs.copySync(`${tempFolder}/Ext/`,`${libFolder}` + "/Ext/")
+    fs.copySync(`${tempFolder}/Ext/`,`${srcFolder}` + "/Ext/")
     rimraf.sync(tempFolder);
 }
 else {
-    fs.copySync(`${tempFolder}/Ext/`,`${libFolder}` + "/Ext/")
+    fs.copySync(`${tempFolder}/Ext/`,`${srcFolder}` + "/Ext/")
     rimraf.sync(tempFolder);
     //writeOnlyWantedExtended(info.wantedextended)
 }
 
 info.imports = ''
-fs.readdirSync(`${libFolder}`).forEach(function(file) {
-    var stat = fs.statSync(`${libFolder}` + "/" + file);
+fs.readdirSync(`${srcFolder}`).forEach(function(file) {
+    var stat = fs.statSync(`${srcFolder}` + "/" + file);
     if (stat.isDirectory()) {return;}
 
     var f = file.split('.')
     var xtype = f[0].substring(4)
     if (info.wantedxtypes.indexOf(xtype) == -1) {
-        fs.unlinkSync(`${libFolder}` + "/" + file);
+        fs.unlinkSync(`${srcFolder}` + "/" + file);
     }
     else {
-        moduleVars.imports = moduleVars.imports + `import './lib/ext-${xtype}.component';${newLine}`;
-        info.imports = info.imports + `import './lib/ext-${xtype}.component';<br/>`;
+        moduleVars.imports = moduleVars.imports + `import './src/ext-${xtype}.component';${newLine}`;
+        info.imports = info.imports + `import './src/ext-${xtype}.component';<br/>`;
     }
 });
 
@@ -431,14 +103,15 @@ fs.readdirSync(`${docFolder}`).forEach(function(file) {
 });
 info.includedxtypes = info.includedxtypes + `</div>${newLine}`
 
-copyFile("ext/css.prod.js");
-copyFile("lib/HTMLParsedElement.js");
-copyFile("lib/Common.js");
+//copyFile("ext/css.prod.js");
+//mjg ???
+copyFile("src/HTMLParsedElement.js");
+//copyFile("src/Common.js");
 copyFile('.babelrc');
 
 writeFile(framework,`/ext-web-components.tpl`,`${toolkitFolder}bin/ext-web-components${info.bundle}.js`,info);
-writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
-writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
+//writeFile(framework,`/manifest.tpl`,`./cmder/manifest.js`,info);
+//writeFile(framework,`/app.tpl`,`./cmder/app.json`,info);
 writeFile(framework,`/package.tpl`,`${toolkitFolder}package.json`,info);
 writeFile(framework,`/README.tpl`,`${toolkitFolder}/README.md`,info);
 
@@ -448,14 +121,15 @@ info.propscode = readFile("/../common/ewc-props.js")
 
 info.import = ``
 if (info.type != 'blank') {
-    info.import = `import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}.prod';
-import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.prod';`
+    info.import = `import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}';
+import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
 }
-writeFile(framework, '/ewc-base.tpl', `${libFolder}ewc-base.component.js`, info);
+writeTemplateFile(templateFolder+framework+`/ewc-base.tpl`,`${srcFolder}ewc-base.component.js`,info);
+//writeFile(framework, '/ewc-base.tpl', `${lxibFolder}ewc-base.component.js`, info);
 
 writeFile(framework, '/module.tpl', `${toolkitFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
 
-writeFile(framework, '/router.tpl', `${libFolder}ext-router.component.js`, {});
+writeFile(framework, '/router.tpl', `${srcFolder}ext-router.component.js`, {});
 writeFile(framework, '/index.tpl', `${docFolder}docs.html`, info);
 writeFile(framework, '/style.tpl', `${docFolder}style.css`, {});
 
@@ -464,31 +138,55 @@ writeFile(framework, '/style.tpl', `${docFolder}style.css`, {});
 if (install == true) {doInstall()}
 async function doInstall() {
 
-console.log(info.bundle)
-    if (info.bundle != '') {
-        process.chdir(`./cmder`);
-        await run(`sencha app build`);
-        //copyFile("ext/css.prod.js");
-        console.log('done with cmd')
-        process.chdir(`../`);
+    var origCwd = process.cwd();
+    console.log(origCwd)
+    process.chdir('./bundler');
+    console.log(process.cwd());
+    var currDir = process.cwd()
 
-       // process.chdir(toolkitFolder);
-       // await run(`npm install`);
-    }
-    else {
-        //process.chdir(toolkitFolder);
-    }
+    var bundle = {};
+    bundle.packagename = packagename;
+    bundle.creates = require("./npmpackage/" + packagename).getCreates();
+    console.log(currDir + "./npmpackage/" + packagename)
+
+    writeTemplateFile(`./template/app.json.tpl`,`./app.json`,bundle); console.log(`app.json` + ' created');
+    writeTemplateFile(`./template/package.json.tpl`,`./package.json`,bundle); console.log(`package.json` + ' created');
+    writeTemplateFile(`./template/css.manifest.js.tpl`,`./manifest/${packagename}.css.manifest.js`,bundle); console.log(`manifest/${packagename}.css.manifest.js` + ' created');
+    writeTemplateFile(`./template/ext.manifest.js.tpl`,`./manifest/${packagename}.ext.manifest.js`,bundle); console.log(`manifest/${packagename}.ext.manifest.js` + ' created');
+
+    await run(`npm start`);
+    console.log('./dist/css.' + packagename + '.js created')
+    console.log('./dist/ext.' + packagename + '.js created')
+
+    process.chdir(origCwd);
+    const copyFileSync = require('fs-copy-file-sync');
+    copyFileSync('./bundler/dist/css.' + packagename + '.js', toolkitFolder + "/ext/css." + packagename + '.js');
+    copyFileSync('./bundler/dist/ext.' + packagename + '.js', toolkitFolder + "/ext/ext." + packagename + '.js');
+
+
+    // console.log(info.bundle)
+    // if (info.bundle != '') {
+    //     process.chdir(`./cmder`);
+    //     await run(`sencha app build`);
+    //     //copyFile("ext/css.prod.js");
+    //     console.log('done with cmd')
+    //     process.chdir(`../`);
+
+    //    // process.chdir(toolkitFolder);
+    //    // await run(`npm install`);
+    // }
+    // else {
+    //     //process.chdir(toolkitFolder);
+    // }
 
     process.chdir(toolkitFolder);
     await run(`npm install`);
-
 
     mkdirp.sync(`ext`);
     await run(`cp -R ./ext dist/ext`);
 
     await run(`rm -r ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
     await run(`cp -R ./ ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
-
 
     await run(`npm publish --force`);
     console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.1.0`)
@@ -511,7 +209,7 @@ function writeOnlyWantedExtended(wantedextended) {
         var folder = u[item].replace(/\./g, "/");
         //console.log(folder)
         try {
-        fs.copySync(`${tempFolder}` + "" + folder + '.js',`${libFolder}` + "" + folder + '.js')
+        fs.copySync(`${tempFolder}` + "" + folder + '.js',`${srcFolder}` + "" + folder + '.js')
         }
         catch (e) {
             console.log(e.toString())
@@ -521,88 +219,19 @@ function writeOnlyWantedExtended(wantedextended) {
 }
 
 
-function doNewApproach(item, framework, libFolder) {
-    c.all++
-    var template = ''
-    if (item.name == 'Ext.Base') {
-        template = '/base.tpl'
-    }
-    else {
-        template = '/class.tpl'
-    }
+function oneItem(item, framework, names, xtypes, template) {
 
+    var tab = '\t'
 
-
-
-    var processIt = shouldProcessIt(item)
-
-    if (processIt == true) {
-
-
-        //console.log(item.name)
-
-        c.processed++
-        var tab = "";
-        var webcomponent = true
-
-        if (item.extends != undefined) {
-            var n = item.extends.indexOf(",");
-            if (n != -1) {
-                //console.log('mult extends: ' + item.name + ' - ' + item.extends)
-                item.extends = item.extends.substr(0,n)
-            }
-        }
-
-        var names = []
-        names.push(item.name)
-        //mjg alternate
-        if (item.alternateClassNames != undefined) {
-//            console.log(item.alternateClassNames)
-            var alt = item.alternateClassNames.split(",");
-            names = names.concat(alt)
-        }
-
-        var aliases = []
-        var xtypes = []
-        if (item.alias != undefined) {
-            if (item.alias.substring(0, 6) == 'widget') {
-              aliases = item.alias.split(",")
-              for (alias = 0; alias < aliases.length; alias++) {
-                if (aliases[alias].substring(0, 6) == 'widget') {
-                    var xtypelocal = aliases[alias].substring(7)
-                    xtypes.push(xtypelocal)
-                }
-              }
-            }
-            else {
-                webcomponent = false
-            }
-        }
-        else {
-            webcomponent = false
-        }
-
-        if (webcomponent == true) {
-            c.webcomponents++
-
-            console.log(`Ext.create({"xtype":"${xtypes[0]}"});`)
-
-
-        }
-
-
-        //console.dir(item.name)
-        //console.dir(item)
-        //return process.exit(22);
 
 
 
         var sPROPERTIES = ''
         var sPROPERTIESOBJECT = ''
         var sPROPERTIESGETSET = ''
-        var properties = `<div class="select-div"><select id="properties" onchange="changeProperty()" name="properties">${newLine}`
+        var propertiesDocs = `<div class="select-div"><select id="propertiesDocs" onchange="changeProperty()" name="propertiesDocs">${newLine}`
         getItems(item,'configs').forEach(function (config, index, array) {
-            properties = properties + `    <option value="${config.text}">${config.name}</option>${newLine}`
+            propertiesDocs = propertiesDocs + `    <option value="${config.text}">${config.name}</option>${newLine}`
 
             if (config.from == undefined) {
             //console.log(config.name + ' - ' + config.type)
@@ -640,12 +269,15 @@ function doNewApproach(item, framework, libFolder) {
                 }
             }
         })
-        properties = properties + `</select></div>${newLine}`
+        propertiesDocs = propertiesDocs + `</select></div>${newLine}`
 
-        var methods = `<div class="select-div"><select id="methods" onchange="changeMethod()" name="methods">${newLine}`
+
+
+
+        var methodsDocs = `<div class="select-div"><select id="methodsDocs" onchange="changeMethod()" name="methodsDocs">${newLine}`
         var sMETHODS = "";
         getItems(item,'methods').forEach(function (method, index, array) {
-            methods = methods + `    <option value="${method.text}">${method.name}</option>${newLine}`
+            methodsDocs = methodsDocs + `    <option value="${method.text}">${method.name}</option>${newLine}`
 
             if (method.from == undefined) {
                 //console.log(method.name + ' - ' + method.from)
@@ -664,14 +296,17 @@ function doNewApproach(item, framework, libFolder) {
                 sMETHODS = sMETHODS + "(" + sItems + ") { return this.ext." + method.name + "(" + sItems + ") } },\n";
             }
         });
-        methods = methods + `</select></div>${newLine}`
+        methodsDocs = methodsDocs + `</select></div>${newLine}`
 
-        var events = `<div class="select-div"><select id="events" onchange="changeEvent()" name="events">${newLine}`
+
+
+
+        var eventsDocs = `<div class="select-div"><select id="eventsDocs" onchange="changeEvent()" name="eventsDocs">${newLine}`
         var sEVENTS = "";
         var sEVENTNAMES = "";
         var sEVENTGETSET = ''
         getItems(item,'events').forEach(function (event, index, array) {
-            events = events + `    <option value="${event.text}">${event.name}</option>${newLine}`
+            eventsDocs = eventsDocs + `    <option value="${event.text}">${event.name}</option>${newLine}`
 
             if (event.from == undefined) {
                 var eventName = 'on' + event.name
@@ -689,7 +324,10 @@ function doNewApproach(item, framework, libFolder) {
                 sEVENTS = sEVENTS + "'}" + "," + newLine;
             }
         })
-        events = events + `</select></div>${newLine}`
+        eventsDocs = eventsDocs + `</select></div>${newLine}`
+
+
+
 
         didXtype = false
         for (var i = 0; i < names.length; i++) {
@@ -698,7 +336,7 @@ function doNewApproach(item, framework, libFolder) {
             //console.log(names[i] + '_' + xtype + ' xtype: ' + xtype + ' - ' + xtypes)
             //var classfilename = `${name}.Component`
             var classname = name.replace(/\./g, "_") + "_Component"
-            //var classfile = `${libFolder}${classfilename}.${extension}`
+            //var classfile = `${lxibFolder}${classfilename}.${extension}`
 
             var folder = ''
             var filename = ''
@@ -750,7 +388,7 @@ function doNewApproach(item, framework, libFolder) {
                 sEVENTS: sEVENTS,
                 sEVENTNAMES: sEVENTNAMES,
                 sEVENTGETSET: sEVENTGETSET,
-                webcomponent: webcomponent,
+                //webcomponent: webcomponent,
                 xtype: xtype,
                 classfilename : `${name}.Component`,
                 name: name,
@@ -775,7 +413,7 @@ function doNewApproach(item, framework, libFolder) {
                 //for each name and each xtype
                 //Items.push(new Item(xtypes[j], names[i]))
                 Items.push({xtype: xtypes[j], name: names[i], extended: item.extended})
-                c.xtypenamecombo++
+                //c.xtypenamecombo++
 
                 var folder = '.'
                 var folders = classname.split('_')
@@ -788,9 +426,9 @@ function doNewApproach(item, framework, libFolder) {
                     Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
                     xtype: xtypes[j]
                 }
-                writeFile(framework, '/xtype.tpl', `${libFolder}ext-${xtypes[j]}.component.js`, values)
+                writeFile(framework, '/xtype.tpl', `${srcFolder}ext-${xtypes[j]}.component.js`, values)
 
-//console.log(`            '${xtypes[j]}',`)
+
 
 
                 if (didXtype == false) {
@@ -798,7 +436,7 @@ function doNewApproach(item, framework, libFolder) {
                     //                    `import { Ext${values.Xtype}Component } from './lib/ext-${values.xtype}.component';${newLine}`;
 
                    // moduleVars.imports = moduleVars.imports + `import './lib/ext-${values.xtype}.component';${newLine}`;
-                    c.unique = c.unique + 1
+                    //c.unique = c.unique + 1
                     didXtype = true
 
 
@@ -806,33 +444,30 @@ function doNewApproach(item, framework, libFolder) {
                     xt = values.xtype
                     //console.log(name + "; \t\t"  + xt)
 
-                    if (name.toLowerCase().includes('calendar')) {c.calendar++}
-                    else if (xt.includes('field')) {c.field++}
-                    else if (xt.includes('trigger')) {c.trigger++}
-                    //else if (xt.includes('column')) {c.column++;}//console.log(name + "; \t\t"  + xt)}
-                    else if (xt.includes('sparkline')) {c.sparkline++}
-                    else if (xt.includes('d3')) {c.d3++}
-                    else if (xt.includes('picker')) {c.picker++}
-                    else if (xt.includes('pivot')) {c.pivot++}
-                    else if (xt.includes('menu')) {c.menu++}
-                    //else if (xt.includes('grid')) {c.grid++;console.log(name + "; \t\t"  + xt)}
-                    //else if (name.toLowerCase().includes('ext.grid')) {c.grid++;console.log("'" + name + "; \t\t"  + xt)}
-                    else if (name.toLowerCase().includes('ext.grid')) {c.grid++}//;console.log("'" + xt + "',")}
-                    //else if (xt.includes('cell')) {c.cell++;console.log(name + "; \t\t"  + xt)}
-                    else if (xt.includes('list')) {c.list++}
-                    else if (xt.includes('row')) {c.row++}
-                    else if (name.includes('field')) {c.field++}
-                    else if (name.toLowerCase().includes('panel')) {c.panel++}
-                    else if (name.includes('chart')) {c.chart++}
-                    else if (name.includes('dataview')) {c.dataview++}
-                    else if (name.toLowerCase().includes('button')) {c.button++}
-                    else if (name.includes('slider')) {c.slider++}
-                    else if (name.includes('tab')) {c.tab++}
-                    else if (name.includes('draw')) {c.draw++}
-                    else {
-                        c.other++;
-                        //console.log(name + "; \t\t"  + xt)
-                    }
+                    // if (name.toLowerCase().includes('calendar')) {c.calendar++}
+                    // else if (xt.includes('field')) {c.field++}
+                    // else if (xt.includes('trigger')) {c.trigger++}
+                    // //else if (xt.includes('column')) {c.column++;}//console.log(name + "; \t\t"  + xt)}
+                    // else if (xt.includes('sparkline')) {c.sparkline++}
+                    // else if (xt.includes('d3')) {c.d3++}
+                    // else if (xt.includes('picker')) {c.picker++}
+                    // else if (xt.includes('pivot')) {c.pivot++}
+                    // else if (xt.includes('menu')) {c.menu++}
+                    // else if (name.toLowerCase().includes('ext.grid')) {c.grid++}//;console.log("'" + xt + "',")}
+                    // else if (xt.includes('list')) {c.list++}
+                    // else if (xt.includes('row')) {c.row++}
+                    // else if (name.includes('field')) {c.field++}
+                    // else if (name.toLowerCase().includes('panel')) {c.panel++}
+                    // else if (name.includes('chart')) {c.chart++}
+                    // else if (name.includes('dataview')) {c.dataview++}
+                    // else if (name.toLowerCase().includes('button')) {c.button++}
+                    // else if (name.includes('slider')) {c.slider++}
+                    // else if (name.includes('tab')) {c.tab++}
+                    // else if (name.includes('draw')) {c.draw++}
+                    // else {
+                    //     c.other++;
+                    //     //console.log(name + "; \t\t"  + xt)
+                    // }
 
 
 
@@ -842,9 +477,9 @@ function doNewApproach(item, framework, libFolder) {
                 var text200 = ''; try {text200 = item.text.substring(1, 200)}catch(e) {}
 
                 var values3 = {
-                    properties: properties,
-                    methods: methods,
-                    events: events,
+                    propertiesDocs: propertiesDocs,
+                    methodsDocs: methodsDocs,
+                    eventsDocs: eventsDocs,
                     sPROPERTIESGETSET: sPROPERTIESGETSET,
                     sMETHODS: sMETHODS,
                     sPROPERTIES: sPROPERTIES,
@@ -874,6 +509,77 @@ function doNewApproach(item, framework, libFolder) {
             }
             webcomponent = false
         }
+}
+
+
+function doNewApproach(item, framework, srcFolder) {
+    //c.all++
+    var template = ''
+    if (item.name == 'Ext.Base') {
+        template = '/base.tpl'
+    }
+    else {
+        template = '/class.tpl'
+    }
+
+
+
+
+    var processIt = shouldProcessIt(item)
+
+    if (processIt == true) {
+
+        var tab = "";
+        var webcomponent = true
+
+        if (item.extends != undefined) {
+            var n = item.extends.indexOf(",");
+            if (n != -1) {
+                //console.log('mult extends: ' + item.name + ' - ' + item.extends)
+                item.extends = item.extends.substr(0,n)
+            }
+        }
+
+        var names = []
+        names.push(item.name)
+        //mjg alternate
+        if (item.alternateClassNames != undefined) {
+//            console.log(item.alternateClassNames)
+            var alt = item.alternateClassNames.split(",");
+            names = names.concat(alt)
+        }
+
+
+        var aliases = []
+        var xtypes = []
+        if (item.alias != undefined) {
+            if (item.alias.substring(0, 6) == 'widget') {
+              aliases = item.alias.split(",")
+              for (alias = 0; alias < aliases.length; alias++) {
+                if (aliases[alias].substring(0, 6) == 'widget') {
+                    var xtypelocal = aliases[alias].substring(7)
+                    xtypes.push(xtypelocal)
+                }
+              }
+            }
+            else {
+                //webcomponent = false
+            }
+        }
+        else {
+            //webcomponent = false
+        }
+
+        var template = ''
+        if (item.name == 'Ext.Base') {
+            template = '/base.tpl'
+        }
+        else {
+            template = '/class.tpl'
+        }
+
+
+        oneItem(item, framework, names, xtypes, template)
     }
 }
 
@@ -930,7 +636,7 @@ function getItems(o, type) {
 }
 
 function copyFile(filename) {
-    var from = path.resolve(__dirname, 'filetemplates' + '/' + framework + '/' + filename)
+    var from = path.resolve(__dirname, templateToolkitFolder + '/' + filename)
     var to = path.resolve(__dirname, toolkitFolder + '/' + filename)
     fs.copyFile(from,to, (err) => {
         if (err) throw err;
@@ -939,12 +645,12 @@ function copyFile(filename) {
 }
 
 function readFile(file) {
-    var templateToolkitFolder = path.resolve('./filetemplates/' + framework);
+    //var templateToolkitFolder = path.resolve(templateToolkitFolder);
     return fs.readFileSync(path.resolve(templateToolkitFolder + file)).toString()
 }
 
 function writeFile(framework, tplFile, outFile, vars) {
-    var templateToolkitFolder = path.resolve('./filetemplates/' + framework);
+    //var templateToolkitFolder = path.resolve(templateToolkitFolder);
     var tpl = new Ext.XTemplate(fs.readFileSync(path.resolve(templateToolkitFolder + tplFile)).toString())
     var t = tpl.apply(vars)
     fs.writeFileSync(outFile, t);
@@ -965,3 +671,32 @@ else {
 }
 console.log(`${v}${blanks}${s}`)
 }
+
+
+// var c = {
+//     all: 0,
+//     xtypenamecombo: 0,
+//     processed: 0,
+//     webcomponents: 0,
+//     unique: 0,
+//     calendar: 0,
+//     field: 0,
+//     trigger: 0,
+//     sparkline: 0,
+//     d3: 0,
+//     picker: 0,
+//     pivot: 0,
+//     menu: 0,
+//     grid: 0,
+//     cell: 0,
+//     list: 0,
+//     field: 0,
+//     panel: 0,
+//     chart: 0,
+//     dataview: 0,
+//     button: 0,
+//     slider: 0,
+//     tab: 0,
+//     draw: 0,
+//     other: 0
+// }

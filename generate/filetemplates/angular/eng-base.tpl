@@ -1,5 +1,5 @@
 //{now}
-declare var Ext: any
+declare var Ext: any;
 {import}
 import {
     EventEmitter,
@@ -21,6 +21,7 @@ export class EngBase {
     propertiesobject: any
     events: any
     eventnames: any
+    methods: any
 
     A: any;
     private node: any
@@ -45,26 +46,24 @@ export class EngBase {
     }
 
     constructor (
-        nativeElement: any,
-        private metaData: any,
-        public hostComponent : EngBase
+        eRef: any,
+        hostComponent: any,
+        propertiesobject: any,
+        methods: any,
+        events: any,
+        eventnames: any
     ) {
-        this.node = nativeElement;
+        this.node = eRef.nativeElement;
         this.parentNode = hostComponent;
 
-        this.newDiv = document.createElement('div');
-        //var t = document.createTextNode("newDiv");
-        //this.newDiv.appendChild(t);
-
-        this.node.insertAdjacentElement('beforebegin', this.newDiv);
-        this.xtype = metaData.XTYPE;
-        this.properties = metaData.PROPERTIES;
-        this.propertiesobject = 'propertiesobject';
-        this.events = metaData.EVENTS;
-        this.eventnames = metaData.EVENTNAMES;
-
-        this.base = EngBase;
-
+        this.propertiesobject = propertiesobject;
+        this.properties = []
+        for (var property in this.propertiesobject) {
+            this.properties.push(property)
+        }
+        this.methods = methods;
+        this.events = events;
+        this.eventnames = eventnames;
         this.eventnames.forEach( (event: any, n: any) => {
             if (event != 'fullscreen') {
                 (<any>this.currentEl)[event] = new EventEmitter()
@@ -73,9 +72,16 @@ export class EngBase {
                 (<any>this.currentEl)[event + 'event'] = new EventEmitter()
             }
         })
+
+        this.newDiv = document.createElement('div');
+        //var t = document.createTextNode("newDiv");
+        //this.newDiv.appendChild(t);
+        this.node.insertAdjacentElement('beforebegin', this.newDiv);
+
+        this.base = EngBase;
     }
-    baseOnInit(metaData) { }
-    baseAfterViewInit(metaData) {
+    baseOnInit() { }
+    baseAfterViewInit() {
         this.initMe()
     }
 
@@ -118,7 +124,7 @@ export class EngBase {
         //console.log(`OnChanges: ${changesMsgs.join('; ')}`)
     }
 
-    ngOnDestroy() {
+    baseOnDestroy() {
         var childCmp;
         var parentCmp;
         if (childCmp == undefined || parentCmp == undefined) {

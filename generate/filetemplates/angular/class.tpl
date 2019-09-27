@@ -1,8 +1,5 @@
-//Ext.onReady(function() {
-//import { NgZone } from '@angular/core';
-//import { Router } from '@angular/router';
-
-declare var Ext: any
+import {extendsclassname} from '{pathprefix}{extendpath}{classextendsfilename}';
+declare var Ext: any;
 import {
   Injectable,
   Host,
@@ -17,54 +14,52 @@ import {
   forwardRef,
   SimpleChanges
 } from '@angular/core';
-import { EngBase } from './eng-base';
+import { EngBase } from '{pathprefix}eng-base';
 export class {classname}MetaData {
-  public static XTYPE: string = '{xtype}';
+  //public static XTYPE: string = '{xtype}';
   public static PROPERTIES: string[] = [
-    'eng',
-    'viewport',
-    'align',
-    'plugins',
-    'responsiveConfig',
-    'responsiveFormulas',
 {sPROPERTIES}];
+  public static PROPERTIESOBJECT: any = {
+{sPROPERTIESOBJECT}};
+static METHODS: any[] = [];
   public static EVENTS: any[] = [
 {sEVENTS}];
   public static EVENTNAMES: string[] = [
 {sEVENTNAMES}];
 }
-@Component({
-  selector: 'ext-{xtype}',
-  inputs: {classname}MetaData.PROPERTIES,
-  outputs: {classname}MetaData.EVENTNAMES,
-  providers: [{provide: EngBase, useExisting: forwardRef(() => Ext{capclassname}Component)}],
-  template: '<ng-template></ng-template>'
-})
-export class Ext{capclassname}Component extends EngBase implements OnInit, AfterViewInit, OnChanges  {
-    constructor(eRef:ElementRef, @Host() @Optional() @SkipSelf() public hostComponent : EngBase) {
-        super(eRef.nativeElement,{classname}MetaData,hostComponent)
+//@Component({
+//  selector: 'ext-{xtype}',
+//  inputs: {classname}MetaData.PROPERTIES,
+//  outputs: {classname}MetaData.EVENTNAMES,
+//  providers: [{provide: EngBase, useExisting: forwardRef(() => {classname})}],
+//  template: '<ng-template></ng-template>'
+//})
+export default class {classname} extends {extendsclassname} {
+    constructor(
+        eRef: any,
+        hostComponent: any,
+        propertiesobject: any,
+        methods: any,
+        events: any,
+        eventnames: any
+    ){
+        super(
+            eRef,
+            hostComponent,
+            Object.assign(propertiesobject, {classname}MetaData.PROPERTIESOBJECT),
+            methods.concat({classname}MetaData.METHODS),
+            events.concat({classname}MetaData.EVENTS),
+            eventnames.concat({classname}MetaData.EVENTNAMES)
+        )
+        //super(
+        //    eRef,
+        //    hostComponent,
+        //    Object.assign(propertiesobject, {classname}MetaData.PROPERTIESOBJECT),
+        //    methods.concat({classname}MetaData.METHODS),
+        //    events.concat({classname}MetaData.EVENTS),
+        //    eventnames.concat({classname}MetaData.EVENTNAMES)
+        //)
     }
 
-    public ngOnInit() {
-        this.baseOnInit({classname}MetaData)
-    }
-
-    public ngAfterViewInit() {
-        this.baseAfterViewInit({classname}MetaData)
-    }
-
-
-
-  //public ngAfterContentInit() {
-  //  this.baseAfterContentInit()
-  //}
-
-  public ngOnChanges(changes: SimpleChanges) {this.baseOnChanges(changes)}
-
-
-
-   // public ngAfterViewChecked() {
-   //   console.log('ngAfterViewChecked')
-  //}
 }
 
