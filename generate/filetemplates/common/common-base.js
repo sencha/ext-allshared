@@ -123,7 +123,7 @@ createExtComponent() {
                 meA.props.renderTo = this.newDiv;
             }
             Ext.onReady(function () {
-                //console.log(this.parentType + ' - Ext.create: ' + methis.currentElName + ' HTML parent: ' + methis.currentElName);
+                //console.log(methis.parentType + ' - Ext.create: ' + methis.currentElName + ' HTML parent: ' + methis.currentElName);
                 methis.currentEl.A.ext = Ext.create(meA.props);
                 methis.assessChildren(methis.base, methis.xtype);
             });
@@ -242,7 +242,8 @@ assessChildren(base, xtype) {
 }
 
 checkParent(component, base, me) {
-    if (component.A == null) {
+    //if (component.A == null) {
+    if (component == null) {
         me.sendReadyEvent(me)
     }
     else {

@@ -21,7 +21,7 @@ export class EngBase {
     propertiesobject: any
     events: any
     eventnames: any
-    methods: any
+    //methods: any
 
     A: any;
     private node: any
@@ -48,28 +48,21 @@ export class EngBase {
     constructor (
         eRef: any,
         hostComponent: any,
-        propertiesobject: any,
-        methods: any,
-        events: any,
-        eventnames: any
+        metaData: any
     ) {
         this.node = eRef.nativeElement;
         this.parentNode = hostComponent;
 
-        this.propertiesobject = propertiesobject;
-        this.properties = []
-        for (var property in this.propertiesobject) {
-            this.properties.push(property)
-        }
-        this.methods = methods;
-        this.events = events;
-        this.eventnames = eventnames;
+        this.properties = metaData.PROPERTIES;
+        this.eventnames = metaData.EVENTNAMES;
+        this.events = metaData.EVENTS;
+
         this.eventnames.forEach( (event: any, n: any) => {
             if (event != 'fullscreen') {
-                (<any>this.currentEl)[event] = new EventEmitter()
+                (<any>this)[event] = new EventEmitter()
             }
             else {
-                (<any>this.currentEl)[event + 'event'] = new EventEmitter()
+                (<any>this)[event + 'event'] = new EventEmitter()
             }
         })
 
