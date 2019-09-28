@@ -1,21 +1,24 @@
-import {extendsclassname} from '{pathprefix}{extendpath}{classextendsfilename}';
+import { {extendsclassname} } from '{pathprefix}{extendpath}{classextendsfilename}';
 declare var Ext: any;
-import {
-  Injectable,
-  Host,
-  Optional,
-  SkipSelf,
-  Output,
-  OnInit,
-  AfterViewInit,
-  OnChanges,
-  Component,
-  ElementRef,
-  forwardRef,
-  SimpleChanges
-} from '@angular/core';
+
 import { EngBase } from '{pathprefix}eng-base';
-export class {classname}MetaData {
+export class {classname} extends {extendsclassname} {
+
+    static getProperties(properties) {
+        properties = properties.concat({classname}.PROPERTIES)
+        return {extendsclassname}.getProperties(properties)
+     }
+
+    static getEventNames(eventnames) {
+        eventnames = eventnames.concat({classname}.EVENTNAMES)
+        return {extendsclassname}.getEventNames(eventnames)
+     }
+
+    static getEvents(events) {
+        events = events.concat({classname}.EVENTS)
+        return {extendsclassname}.getEvents(events)
+     }
+
   //public static XTYPE: string = '{xtype}';
   public static PROPERTIES: string[] = [
 {sPROPERTIES}];
@@ -27,39 +30,3 @@ static METHODS: any[] = [];
   public static EVENTNAMES: string[] = [
 {sEVENTNAMES}];
 }
-//@Component({
-//  selector: 'ext-{xtype}',
-//  inputs: {classname}MetaData.PROPERTIES,
-//  outputs: {classname}MetaData.EVENTNAMES,
-//  providers: [{provide: EngBase, useExisting: forwardRef(() => {classname})}],
-//  template: '<ng-template></ng-template>'
-//})
-export default class {classname} extends {extendsclassname} {
-    constructor(
-        eRef: any,
-        hostComponent: any,
-        propertiesobject: any,
-        methods: any,
-        events: any,
-        eventnames: any
-    ){
-        super(
-            eRef,
-            hostComponent,
-            Object.assign(propertiesobject, {classname}MetaData.PROPERTIESOBJECT),
-            methods.concat({classname}MetaData.METHODS),
-            events.concat({classname}MetaData.EVENTS),
-            eventnames.concat({classname}MetaData.EVENTNAMES)
-        )
-        //super(
-        //    eRef,
-        //    hostComponent,
-        //    Object.assign(propertiesobject, {classname}MetaData.PROPERTIESOBJECT),
-        //    methods.concat({classname}MetaData.METHODS),
-        //    events.concat({classname}MetaData.EVENTS),
-        //    eventnames.concat({classname}MetaData.EVENTNAMES)
-        //)
-    }
-
-}
-

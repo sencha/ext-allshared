@@ -1,6 +1,6 @@
-import {classname} from '{folder}';
+import { {classname} } from '{folder}';
 import { EngBase } from './eng-base';
-//declare var Ext: any;
+
 import {
   Injectable,
   Host,
@@ -16,8 +16,14 @@ import {
   SimpleChanges
 } from '@angular/core';
 
-export class {classname}MetaData {
-  public static XTYPE: string = '{xtype}';
+export class {classname}MetaData extends {classname} {
+
+    static getAll() {
+        {classname}MetaData.PROPERTIES = {classname}.getProperties({classname}MetaData.PROPERTIES)
+        {classname}MetaData.EVENTNAMES = {classname}.getEventNames({classname}MetaData.EVENTNAMES)
+        {classname}MetaData.EVENTS = {classname}.getEvents({classname}MetaData.EVENTS)
+     }
+
   public static PROPERTIES: string[] = [
     'eng',
     'viewport',
@@ -31,6 +37,12 @@ export class {classname}MetaData {
   public static EVENTNAMES: string[] = [
 {sEVENTNAMES}];
 }
+
+(function () {
+    {classname}MetaData.getAll()
+})();
+
+
 @Component({
   selector: 'ext-{xtype}',
   inputs: {classname}MetaData.PROPERTIES,
@@ -38,11 +50,13 @@ export class {classname}MetaData {
   providers: [{provide: EngBase, useExisting: forwardRef(() => Ext{Xtype}Component)}],
   template: '<ng-template></ng-template>'
 })
-export class Ext{Xtype}Component extends {classname} {
+export class Ext{Xtype}Component extends EngBase {
+    //@Input() myname: String;
     xtype: string;
     constructor(
         eRef: ElementRef,
         @Host() @Optional() @SkipSelf() hostComponent: EngBase
+
     ){
         //super(
         //    eRef,
@@ -55,12 +69,8 @@ export class Ext{Xtype}Component extends {classname} {
         super(
             eRef,
             hostComponent,
-            {},
-            [],
-            [],
-            []
+            {classname}MetaData
         )
-
 
         this.xtype = '{xtype}'
     }
