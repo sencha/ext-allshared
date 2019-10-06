@@ -1,77 +1,58 @@
+<tpl if="doAllinXtype != true">
 import { {classname} } from '{folder}';
+export class Ext{Xtype}MetaData extends {classname} {
+<tpl else>
 import { EngBase } from './eng-base';
-
+export class Ext{Xtype}MetaData {
+</tpl>
+    public static PROPERTIES: string[] = [<tpl if="doAllinXtype == true">{sPROPERTIES}</tpl>];
+    public static EVENTS: any[] = [<tpl if="doAllinXtype == true">{sEVENTS}</tpl>];
+    public static EVENTNAMES: string[] = [<tpl if="doAllinXtype == true">{sEVENTNAMES}</tpl>];
+<tpl if="doAllinXtype != true">
+    static getAll() {
+        Ext{Xtype}MetaData.PROPERTIES = {classname}.getProperties(Ext{Xtype}MetaData.PROPERTIES);
+        Ext{Xtype}MetaData.EVENTS = {classname}.getEvents(Ext{Xtype}MetaData.EVENTS);
+        Ext{Xtype}MetaData.EVENTS.forEach( (event: any) => {
+            Ext{Xtype}MetaData.EVENTNAMES.push(event.name);
+        })
+    }
+</tpl>}
+<tpl if="doAllinXtype != true">
+(function () {Ext{Xtype}MetaData.getAll();})();
+</tpl>
 import {
-  Injectable,
   Host,
   Optional,
   SkipSelf,
-  Output,
-  OnInit,
-  AfterViewInit,
-  OnChanges,
+  //Output,
+  //OnInit,
+  //AfterViewInit,
+  //OnChanges,
   Component,
   ElementRef,
-  forwardRef,
-  SimpleChanges
+  forwardRef
+  //SimpleChanges
 } from '@angular/core';
-
-export class {classname}MetaData extends {classname} {
-
-    static getAll() {
-        {classname}MetaData.PROPERTIES = {classname}.getProperties({classname}MetaData.PROPERTIES)
-        {classname}MetaData.EVENTNAMES = {classname}.getEventNames({classname}MetaData.EVENTNAMES)
-        {classname}MetaData.EVENTS = {classname}.getEvents({classname}MetaData.EVENTS)
-     }
-
-  public static PROPERTIES: string[] = [
-    'eng',
-    'viewport',
-    'align',
-    'plugins',
-    'responsiveConfig',
-    'responsiveFormulas',
-{sPROPERTIES}];
-  public static EVENTS: any[] = [
-{sEVENTS}];
-  public static EVENTNAMES: string[] = [
-{sEVENTNAMES}];
-}
-
-(function () {
-    {classname}MetaData.getAll()
-})();
-
 
 @Component({
   selector: 'ext-{xtype}',
-  inputs: {classname}MetaData.PROPERTIES,
-  outputs: {classname}MetaData.EVENTNAMES,
+  inputs: Ext{Xtype}MetaData.PROPERTIES,
+  outputs: Ext{Xtype}MetaData.EVENTNAMES,
   providers: [{provide: EngBase, useExisting: forwardRef(() => Ext{Xtype}Component)}],
   template: '<ng-template></ng-template>'
 })
 export class Ext{Xtype}Component extends EngBase {
-    //@Input() myname: String;
     xtype: string;
     constructor(
         eRef: ElementRef,
         @Host() @Optional() @SkipSelf() hostComponent: EngBase
-
     ){
-        //super(
-        //    eRef,
-        //    hostComponent,
-        //    '',
-        //    '',
-        //    '',
-        //    ''
-        //)
         super(
             eRef,
             hostComponent,
-            {classname}MetaData
+            Ext{Xtype}MetaData.PROPERTIES,
+            Ext{Xtype}MetaData.EVENTS
         )
-
         this.xtype = '{xtype}'
     }
 
@@ -83,7 +64,7 @@ export class Ext{Xtype}Component extends EngBase {
         this.baseAfterViewInit()
     }
 
-    public ngOnChanges(changes: SimpleChanges) {
+    public ngOnChanges(changes) {
         this.baseOnChanges(changes)
     }
 
@@ -91,4 +72,3 @@ export class Ext{Xtype}Component extends EngBase {
         this.baseOnDestroy()
     }
 }
-

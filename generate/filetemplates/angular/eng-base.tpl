@@ -18,13 +18,10 @@ export class EngBase {
 
     xtype: any
     properties: any
-    propertiesobject: any
     events: any
-    eventnames: any
-    //methods: any
 
     A: any;
-    private node: any
+    node: any
     parentNode: any
     base: any
     nodeName: any
@@ -48,21 +45,20 @@ export class EngBase {
     constructor (
         eRef: any,
         hostComponent: any,
-        metaData: any
+        properties,
+        events
     ) {
         this.node = eRef.nativeElement;
         this.parentNode = hostComponent;
+        this.properties = properties;
+        this.events = events;
 
-        this.properties = metaData.PROPERTIES;
-        this.eventnames = metaData.EVENTNAMES;
-        this.events = metaData.EVENTS;
-
-        this.eventnames.forEach( (event: any, n: any) => {
-            if (event != 'fullscreen') {
-                (<any>this)[event] = new EventEmitter()
+        this.events.forEach( (event: any, n: any) => {
+            if (event.name != 'fullscreen') {
+                (<any>this)[event.name] = new EventEmitter()
             }
             else {
-                (<any>this)[event + 'event'] = new EventEmitter()
+                (<any>this)[event.name + 'event'] = new EventEmitter()
             }
         })
 
@@ -81,7 +77,7 @@ export class EngBase {
 {basecode}
 {propscode}
 
-    baseOnChanges(changes) {
+    baseOnChanges(changes: SimpleChanges) {
         //console.log(`ngOnChanges`)
         //console.log(changes)
         let changesMsgs = [];
