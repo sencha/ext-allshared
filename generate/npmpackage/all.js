@@ -223,6 +223,7 @@ var xtypes = [
 var classes = [
     'Ext.data.virtual.Store',
     'Ext.grid.rowedit.Plugin',
+    'Ext.field.InputMask',
 ]
 
 exports.getXtypes = () => {return xtypes};

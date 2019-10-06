@@ -61,7 +61,7 @@
       scss
           -appName=App
           -imageSearchPath=resources
-          -themeName=material
+          -themeName=triton
           -resourceMapBase=.
           -output=${app.buildfolder}/${app.packagename}/ext.${app.packagename}.scss
       and

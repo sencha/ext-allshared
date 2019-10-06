@@ -1,5 +1,6 @@
 //******* props start */
-createProps(properties, propertiesobject, events, eventnames) {
+//createProps(properties, propertiesobject, events, eventnames) {
+createProps(properties, events) {
     var props = this.currentEl.A.props;
     props.xtype = this.xtype;
     let listenersProvided = false;
