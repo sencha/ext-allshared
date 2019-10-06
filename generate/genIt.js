@@ -4,6 +4,10 @@ const install = false;
 const installExt = true;
 const doAllinXtype = true;
 
+//var count = 0;
+//var allXtypes = '';
+
+
 const shortname = process.argv[2];
 var framework = '';
 var extension = '';
@@ -62,6 +66,13 @@ var Items = []
 for (i = 0; i < data.global.items.length; i++) {
     doLaunch(data.global.items[i], framework);
 }
+
+// var allXtypesArray = allXtypes.split(",");
+// let uniqueAllXtypesArray = [...new Set(allXtypesArray)];
+// uniqueAllXtypesArray.splice(-1,1)
+// uniqueAllXtypesArray.forEach(item => { console.log(item)})
+// console.log(uniqueAllXtypesArray.length)
+
 doPostLaunch();
 
 function doLaunch(item, framework) {
@@ -103,6 +114,9 @@ function doLaunch(item, framework) {
                 if (aliases[alias].substring(0, 6) == 'widget') {
                     var xtypelocal = aliases[alias].substring(7)
                     xtypes.push(xtypelocal)
+                    // if(alias == 0) {
+                    //     allXtypes = allXtypes + xtypelocal + ',';
+                    // }
                 }
               }
             }
@@ -551,11 +565,6 @@ function writeFile(framework, tplFile, outFile, vars) {
     delete tpl;
 }
 
-
-
-
-
-
 if (install == true) {doInstall()}
 async function doInstall() {
 
@@ -614,74 +623,11 @@ function log(v, s) {
     console.log(`${v}${blanks}${s}`);
 }
 
-// function zzwriteFile2(framework, tplFile, outFile, vars) {
-//     //var templateFolder = path.resolve(templateFolder);
-//     //console.log(templateFolder)
-//     //console.log(tplFile)
-//     //console.log(path.resolve(templateFolder, tplFile))
-//     //console.log('***')
-//     //console.log(path.resolve(templateFolder + tplFile)).toString()
-//     var tpl = new Ext.XTemplate(fs.readFileSync(path.resolve(templateFolder + tplFile)))
-//     //console.log(tpl)
-//     var t = tpl.apply(vars)
-//     //console.log(t)
-//     //console.log(outFile)
-//     //console.log(path.resolve(outFile))
-
-// //    var f = '/Users/marcgusmano/_git/sencha/ext-allshared/generate/GeneratedFolders/ext-angular-all/doc/doc.html'
-
-
-//     try {
-//     fs.writeFileSync(path.resolve(outFile), t);
-//     //fs.writeFileSync(f, t);
-//     } catch(e) {
-//         console.log(e)
-//     }
-//     delete tpl;
-// }
-
-// function zzzcopyFile(filename) {
-//     var from = path.resolve(
-//         __dirname,
-//         "filetemplates" + "/" + framework + "/" + filename
-//     );
-//     var to = path.resolve(__dirname, toolkitFolder + "/" + filename);
-
-//     //var from = path.resolve(templateFolder + filename)
-//     //var to = `${toolkitFolder}\${filename}`
-//     // console.log('from:')
-//     // console.log(from)
-//     // console.log('to:')
-//     // console.log(to)
-
-//     fs.copyFile(from, to, err => {
-//         if (err) throw err;
-//         //console.log('source.txt was copied to destination.txt');
-//     });
-// }
-
-// function zzwriteTemplateFile(framework, tplFile, outFile, vars) {
-//     var templateFolder = path.resolve("./filetemplates/" + framework);
-//     var tpl = new Ext.XTemplate(
-//         fs
-//             .readFileSync(path.resolve(templateFolder + tplFile))
-//             .toString()
-//     );
-//     var t = tpl.apply(vars);
-//     fs.writeTemplateFileSync(outFile, t);
-//     delete tpl;
-// }
-
-
-
-
-
-
 function doPostLaunch() {
     let getBundleInfo = require("./getBundleInfo").getBundleInfo;
-    var info = getBundleInfo(framework, packagename, Items)
+    var info = getBundleInfo(framework, packagename, xtypelist)
 
-    info.imports = ''
+
     //copy xtypes from staging to src
     fs.readdirSync(`${srcStagingFolder}`).forEach(function(file) {
         var stat = fs.statSync(`${srcStagingFolder}` + "/" + file);

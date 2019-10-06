@@ -1,11 +1,10 @@
 var xtypes = [
-    'button'
-
+    'button',
+    'segmentedbutton',
+    'splitbutton'
 ]
 
-
 var classes = [
-
 ]
 
 exports.getXtypes = () => {return xtypes};
