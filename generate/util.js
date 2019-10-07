@@ -46,3 +46,30 @@ exports.run = (parm, cwd) => {
     child.on('error', (error) => {reject(error)})
   })
 }
+
+exports.writeTemplateFile =(tplFile, outFile, vars) => {
+    require("./XTemplate");
+    var path = require("path");
+    var fs = require("fs-extra");
+    //var tpl = new Ext.XTemplate(fs.readFileSync(path.resolve(tplFile)).toString());
+    var tpl = new Ext.XTemplate(fs.readFileSync(tplFile));
+
+    //console.log(tplFile)
+    //console.log(path.resolve(tplFile)).toString()
+    var t = tpl.apply(vars);
+    fs.writeFileSync(outFile, t);
+    //console.log(outFile)
+    delete tpl;
+}
+
+exports.getCreatesForPackage = (xtypes, classes) => {
+    var creates = ''
+    var i;
+    for (i = 0; i < xtypes.length; i++) {
+        creates += 'Ext.create({"xtype":"' + xtypes[i] + '"});' + '\n';
+    }
+    for (i = 0; i < classes.length; i++) {
+        creates += 'Ext.create("' + classes[i] + '",{});' + '\n';
+    }
+    return creates;
+}

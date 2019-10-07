@@ -5,7 +5,7 @@ initMe() {
     this.setParentType();
     this.setDirection();
     this.figureOutA();
-    this.createProps(this.properties, this.propertiesobject, this.events, this.eventnames);
+    this.createProps(this.properties, this.events);
     this.createExtComponent();
 }
 createRawChildren() {
@@ -123,14 +123,14 @@ createExtComponent() {
                 meA.props.renderTo = this.newDiv;
             }
             Ext.onReady(function () {
-                //console.log(this.parentType + ' - Ext.create: ' + methis.currentElName + ' HTML parent: ' + methis.currentElName);
+                //console.log(methis.parentType + ' - Ext.create: ' + methis.currentElName + ' HTML parent: ' + methis.currentElName);
                 methis.currentEl.A.ext = Ext.create(meA.props);
                 methis.assessChildren(methis.base, methis.xtype);
             });
         }
     }
     else {
-        console.log('TopToBottom')
+        //console.log('TopToBottom')
         if (A.props['viewport'] == true) {
             //this.newDiv.parentNode.removeChild(this.newDiv);
             if (this.parentType == 'html') {
@@ -157,7 +157,7 @@ createExtComponent() {
                 meA.props.renderTo = this.newDiv;
             }
             Ext.onReady(function () {
-                //console.log(this.parentType + ' - Ext.create: ' + methis.currentElName + ' HTML parent: ' + methis.currentElName);
+                //console.log(methis.parentType + ' - Ext.create: ' + methis.currentElName + ' HTML parent: ' + methis.currentElName);
                 methis.currentEl.A.ext = Ext.create(meA.props);
                 methis.assessChildren(methis.base, methis.xtype);
             });
@@ -173,11 +173,11 @@ assessAngularChildren(base, xtype, A) {
             this.addTheChild(A.ext, w, null);
         }
     }
-    if (this._extitems != undefined) {
-        if (this._extroutes.length == 1) {
-            A.ext.setHtml(this._extroute.nativeElement);
-        }
-    }
+    // if (this._extitems != undefined) {
+    //     if (this._extroutes.length == 1) {
+    //         A.ext.setHtml(this._extroute.nativeElement);
+    //     }
+    // }
 }
 
 
@@ -242,7 +242,7 @@ assessChildren(base, xtype) {
 }
 
 checkParent(component, base, me) {
-    if (component.A == null) {
+    if (component == null || component.localName.substring(0, 4) != 'EXT-') {
         me.sendReadyEvent(me)
     }
     else {

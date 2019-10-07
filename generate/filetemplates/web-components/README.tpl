@@ -32,8 +32,8 @@ cd ng-ewc-{type}; code .
 In the dependencies section of package.json, add the following:
 
 ```sh
-"@sencha/ext-web-components{bundle}": "~7.0.0",
-"@webcomponents/webcomponentsjs": "^2.2.10",
+"@sencha/ext-web-components{bundle}": "~7.1.0",
+"@webcomponents/webcomponentsjs": "^2.3.0",
 ```
 
 #### Run npm install

@@ -1,28 +1,29 @@
 //{now}
 {import}
 import HTMLParsedElement from './HTMLParsedElement'
-//import Common from './Common'
 
 export default class EwcBaseComponent extends HTMLElement {
 
-    constructor(propertiesobject, methods, events) {
+    constructor(properties, events) {
         super ();
-        this.propertiesobject = propertiesobject;
-        this.methods = methods;
+        this.properties = properties;
+        //this.methods = methods;
         this.events = events;
     }
     connectedCallback() {
-        this.base = EwcBaseComponent;
 
-        this.properties = []
-        for (var property in this.propertiesobject) {
-            this.properties.push(property)
-        }
+        //this.properties = []
+        //for (var property in this.propertiesobject) {
+        //    this.properties.push(property)
+        //}
 
         this.newDiv = document.createElement('div');
         //var textnode = document.createTextNode(this.xtype);
         //this.newDiv.appendChild(textnode)
         this.insertAdjacentElement('beforebegin', this.newDiv);
+
+        this.base = EwcBaseComponent;
+
     }
     parsedCallback() {
         this.initMe()

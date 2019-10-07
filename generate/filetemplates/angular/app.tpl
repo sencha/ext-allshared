@@ -1,7 +1,7 @@
 {
     "framework": "ext",
     "toolkit": "modern",
-    "theme": "theme-material",
+    "theme": "theme-triton",
     "type": "{type}",
     "folder": "{folder}",
     "requires": [

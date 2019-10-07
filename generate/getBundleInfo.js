@@ -1,64 +1,66 @@
 var _ = require('lodash');
-exports.getBundleInfo = (framework, type, Items) => {
+exports.getBundleInfo = (framework, type, xtypelist) => {
 
     var examplesSource = './filetemplates/' + framework + '/examples/' + type + '.js';
     var info = {};
-    var rows = [];
-    info.wantedxtypes = []
-    info.wantedextended = []
+    info.wantedxtypes = xtypelist;
+    //var rows = [];
 
-    var theFunction = null
-    switch(type) {
-        case 'blank':
-        case 'pivot':
-        case 'all':
-            theFunction = function(o) {
-                return o
-            }
-            break;
-        case 'button':
-            theFunction = function(o) {
-                if (   o.xtype == 'button'
-                ) {return o}
-            }
-            break;
-        case 'panel':
-            theFunction = function(o) {
-                if (   o.xtype == 'panel'
-                ) {return o}
-            }
-            break;
-        case 'grid':
-            theFunction = function(o) {
-                if (   o.name.toLowerCase().includes('ext.grid')
-                ) {return o}
-            }
-            break;
-        case 'gridall':
-            theFunction = function(o) {
-                if (   o.xtype == 'd3'
-                    || o.xtype == 'pivot'
-                    || o.xtype == 'calendar'
-                ) {return o}
-            }
-            break;
-        default:
-            console.log('not a valid bundle: ' + type)
-            return -1;
-    }
-    //console.log(Items)
-    rows = _.map(Items, theFunction);
-    rows = _.without(rows, undefined)
-    var uniquerows = _.uniqBy(rows, 'xtype');
-    var count = 0
-    _.forEach(uniquerows, function(row){
-        //console.log(row)
-        info.wantedextended.push(row.extended)
-        info.wantedextended.push(row.name)
-        info.wantedxtypes.push(row.xtype)
-        //console.log(row.xtype)
-        count++
-    })
+    //info.wantedxtypes = []
+    //info.wantedextended = []
+
+    // var theFunction = null
+    // switch(type) {
+    //     case 'blank':
+    //     case 'pivot':
+    //     case 'all':
+    //         theFunction = function(o) {
+    //             return o
+    //         }
+    //         break;
+    //     case 'button':
+    //         theFunction = function(o) {
+    //             if (   o.xtype == 'button'
+    //             ) {return o}
+    //         }
+    //         break;
+    //     case 'panel':
+    //         theFunction = function(o) {
+    //             if (   o.xtype == 'panel'
+    //             ) {return o}
+    //         }
+    //         break;
+    //     case 'grid':
+    //         theFunction = function(o) {
+    //             if (   o.name.toLowerCase().includes('ext.grid')
+    //             ) {return o}
+    //         }
+    //         break;
+    //     case 'gridall':
+    //         theFunction = function(o) {
+    //             if (   o.xtype == 'd3'
+    //                 || o.xtype == 'pivot'
+    //                 || o.xtype == 'calendar'
+    //             ) {return o}
+    //         }
+    //         break;
+    //     default:
+    //         console.log('not a valid bundle: ' + type)
+    //         return -1;
+    // }
+    // //console.log(Items)
+    // rows = _.map(Items, theFunction);
+    // rows = _.without(rows, undefined)
+    // var uniquerows = _.uniqBy(rows, 'xtype');
+    // var count = 0
+    // _.forEach(uniquerows, function(row){
+    //     //console.log(row)
+    //     info.wantedextended.push(row.extended)
+    //     info.wantedextended.push(row.name)
+    //     info.wantedxtypes.push(row.xtype)
+    //     //console.log(row.xtype)
+    //     count++
+    // })
     //console.log('type: ' + type)
     //console.log(info.wantedxtypes)
     //console.log(count + ' xtypes')
@@ -97,6 +99,9 @@ exports.getBundleInfo = (framework, type, Items) => {
     info.angular = {}
     info.angular.module = angular('module', info)
     info.angular.component = angular('component', info)
+
+
+    //info.imports = ''
 
     return info;
   }
