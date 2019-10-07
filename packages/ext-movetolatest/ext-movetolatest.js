@@ -113,10 +113,8 @@ function movetolatest() {
 
   var content = fs.readFileSync(webpackConfigJs.upgrade).toString()
   var tpl = new Ext.XTemplate(content)
-  console.log(values);
   var t = tpl.apply(values)
   tpl = null
-  console.log(t);
   fs.writeFileSync(webpackConfigJs.root, t);
   console.log(boldGreen('Updated ') + webpackConfigJs.root.replace(process.cwd(), ''))
 
