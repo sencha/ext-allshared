@@ -6,7 +6,7 @@
     "name": "bundler",
     "framework": "ext",
     "toolkit": "modern",
-    "theme": "theme-triton",
+    "theme": "theme-neptune",
     "requires": [
         "renderercell",
         "font-ext",

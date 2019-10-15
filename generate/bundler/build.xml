@@ -33,12 +33,6 @@
       include
       -f=Boot.js
       and
-      concatenate
-          ${app.buildfolder}/${app.packagename}/ext.${app.packagename}.dev.js
-      and
-      exclude
-      -all
-      and
       # include theme overrides
       include
         -r
@@ -55,8 +49,12 @@
       -f=${app.manifestfolder}/${app.packagename}.ext.manifest.js
       and
       concatenate
-      +append
-          ${app.buildfolder}/${app.packagename}/ext.${app.packagename}.dev.js
+        -closure
+        -compress
+        -st
+        -i=ANY
+        -j=ANY
+        -out=${app.buildfolder}/${app.packagename}/ext.${app.packagename}.dev.js
       and
       scss
           -appName=App
@@ -75,7 +73,19 @@
       ]]>
     </x-compile>
   </target>
-  <target name="build" depends="init-cmd,rebuild">
+  <target name="condense">
+    <x-sencha-command dir="${basedir}">
+      <![CDATA[
+      fs
+      minify
+        -closure
+        -l=NEXT
+        -f=${app.buildfolder}/${app.packagename}/ext.${app.packagename}.dev.js
+        -t=${app.buildfolder}/${app.packagename}/ext.${app.packagename}.prod.js
+      ]]>
+    </x-sencha-command>
+  </target>
+  <target name="build" depends="init-cmd,rebuild,condense">
     <x-sencha-command dir="${basedir}">
       <![CDATA[
       fashion
@@ -84,15 +94,6 @@
           -compress
               ${app.buildfolder}/${app.packagename}/ext.${app.packagename}.scss
               ${app.buildfolder}/${app.packagename}/ext.${app.packagename}.css
-
-      then
-
-      fs
-      minify
-        -yui
-        -from=${app.buildfolder}/${app.packagename}/ext.${app.packagename}.dev.js
-        -to=${app.buildfolder}/${app.packagename}/ext.${app.packagename}.prod.js
-
       ]]>
     </x-sencha-command>
   </target>

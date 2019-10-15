@@ -12,8 +12,6 @@
     "clean": "rimraf build",
     "webpackprod": "webpack --display-modules --env.packagename=$npm_package_config_packagename --env.environment=production",
     "copyextprod": "cp ./$npm_package_config_buildfolder/$npm_package_config_packagename/ext.$npm_package_config_packagename.prod.js ./dist/ext.$npm_package_config_packagename.js",
-
-
     "startorig": "npm run clean && npm run sencha && npm run both && npm run gzipall && npm run copytomin && npm run copytotester",
     "start2": "rimraf dist && rimraf build && npx sencha app build && npm run copyux && npm run copyfont && npm run copyimages && webpack --env.packagename=$npm_package_config_packagename --env.environment=development",
     "start3": "npm run clean && npx sencha app build && webpack --env.packagename=$npm_package_config_packagename --env.environment=development  && webpack --env.packagename=$npm_package_config_packagename --env.environment=production",
