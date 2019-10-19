@@ -1,30 +1,56 @@
 //{now}
 {import}
-import HTMLParsedElement from './HTMLParsedElement'
+import {
+    doProp,
+    filterProp,
+    isMenu,
+    isRenderercell,
+    isParentGridAndChildColumn,
+    isTooltip,
+    isPlugin
+} from './util.js';
 
 export default class EwcBaseComponent extends HTMLElement {
 
     constructor(properties, events) {
         super ();
+        //properties.forEach( prop => doProp(this,prop))
         this.properties = properties;
         //this.methods = methods;
         this.events = events;
     }
     connectedCallback() {
+        EwcBaseComponent.elementcount++;
+        console.log('added: ' + this.tagName + ': elementcount is now ' + EwcBaseComponent.elementcount);
+        EwcBaseComponent.elements.push(this);
+
+        this.A = {};
+        this.A.CHILDREN = [];
+        this.A.o = {}
+
+        //console.log(this.children)
+        for (let child of this.children) {
+            //console.dir(child)
+            if (child.nodeName.substring(0, 4) !== 'EXT-') {
+                //console.log(child);
+                var el = Ext.get(child);
+                var w = Ext.create({xtype:'widget', element: el});
+                this.A.CHILDREN.push(w);
+            }
+        }
+                this.base = EwcBaseComponent;
 
         //this.properties = []
         //for (var property in this.propertiesobject) {
         //    this.properties.push(property)
         //}
 
-        this.newDiv = document.createElement('div');
-        //var textnode = document.createTextNode(this.xtype);
-        //this.newDiv.appendChild(textnode)
-        this.insertAdjacentElement('beforebegin', this.newDiv);
-
-        this.base = EwcBaseComponent;
-
+        // this.newDiv = document.createElement('div');
+        // //var textnode = document.createTextNode(this.xtype);
+        // //this.newDiv.appendChild(textnode)
+        // this.insertAdjacentElement('beforebegin', this.newDiv);
     }
+
     parsedCallback() {
         this.initMe()
     }
@@ -132,8 +158,26 @@ export default class EwcBaseComponent extends HTMLElement {
 
 }
 
+EwcBaseComponent.elementcount = 0;
+EwcBaseComponent.elements = [];
+EwcBaseComponent.elementsprior = [];
+
+EwcBaseComponent.isLoading = false;
+EwcBaseComponent.isDone = false;
+
 EwcBaseComponent.count = 0;
 EwcBaseComponent.DIRECTION = '';
+
+//EwcBaseComponent.getCmp = function getCmp(event, value) {
+//    var array = event.detail.allCmp;
+//    for (var i = 0; i < array.length; i++) {
+//        if (array[i]['extname'] === value) {
+//        return array[i].ext;
+//        }
+//    }
+//    return null;
+//};
+
 
 //EwcBaseComponent.extendArray = function(obj, src) {
 //    if (obj == undefined) {obj = []}

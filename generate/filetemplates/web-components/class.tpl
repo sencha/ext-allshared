@@ -1,4 +1,4 @@
-import {extendsclassname} from '{pathprefix}{extendpath}{classextendsfilename}';
+import {extendsclassname} from '{pathprefix}{extendpath}{classextendsfilename}.js';
 
 export default class {classname} extends {extendsclassname} {
 

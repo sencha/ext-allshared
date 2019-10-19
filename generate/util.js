@@ -73,3 +73,24 @@ exports.getCreatesForPackage = (xtypes, classes) => {
     }
     return creates;
 }
+
+// function writeFile(framework, tplFile, outFile, vars) {
+//     //var templateFolder = path.resolve(templateFolder);
+//     var tFile = path.resolve(templateFolder + tplFile).toString()
+//     var tpl = new Ext.XTemplate(fs.readFileSync(tFile))
+//     var t = tpl.apply(vars)
+//     fs.writeFileSync(outFile, t);
+//     delete tpl;
+// }
+
+
+// function log(v, s) {
+//     var blanks;
+//     if (v == "") {
+//         blanks = "";
+//     } else {
+//         blanks = new Array(25 - v.length + 1).join(" ");
+//         blanks = blanks + ": ";
+//     }
+//     console.log(`${v}${blanks}${s}`);
+// }

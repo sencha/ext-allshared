@@ -1,4 +1,4 @@
-import EwcBaseComponent from '../ewc-base.component'
+import EwcBaseComponent from '../ewc-base.js'
 
 export default class {classname} extends EwcBaseComponent {
 
@@ -8,7 +8,7 @@ export default class {classname} extends EwcBaseComponent {
 //get onready(){return this.getAttribute('onready')};set onready(onready){this.setAttribute('onready',onready)}
 
     static PROPERTIES() { return [
-        'eng',
+        'extname',
         'viewport',
         'align',
         'plugins',

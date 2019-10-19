@@ -33,5 +33,19 @@
             "bundle": true,
             "exclude": ["fashion"]
         }
-    ]
+    ],
+    "production": {
+        "output": {
+            "appCache": {
+                "enable": true,
+                "path": "cache.appcache"
+            }
+        },
+        "loader": {
+            "cache": "$\u007Bbuild.timestamp}"
+        },
+        "cache": {
+            "enable": true
+        }
+    }
 }

@@ -1,5 +1,5 @@
-import {classname} from '{folder}'
-import HTMLParsedElement from './HTMLParsedElement'
+import {classname} from '{folder}.js'
+import HTMLParsedElement from './HTMLParsedElement.js'
 
 export class Ext{Xtype}Component extends {classname} {
     constructor() {

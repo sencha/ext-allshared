@@ -1,0 +1,13 @@
+Ext.create({"xtype":"pivotgridcell"});
+Ext.create({"xtype":"pivotgridgroupcell"});
+Ext.create({"xtype":"pivotd3container"});
+Ext.create({"xtype":"pivotheatmap"});
+Ext.create({"xtype":"pivottreemap"});
+Ext.create({"xtype":"pivotgrid"});
+Ext.create({"xtype":"pivotconfigfield"});
+Ext.create({"xtype":"pivotconfigcontainer"});
+Ext.create({"xtype":"pivotconfigform"});
+Ext.create({"xtype":"pivotconfigpanel"});
+Ext.create({"xtype":"pivotsettings"});
+Ext.create({"xtype":"pivotrangeeditor"});
+Ext.create({"xtype":"pivotgridrow"});

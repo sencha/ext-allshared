@@ -1,12 +1,11 @@
-// node ./genIt.js ewc grid
+// node ./genIt.js ewc all
 // node ./genIt.js eng grid
-const install = false;
+const install = true;
 const installExt = true;
 const doAllinXtype = true;
 
 //var count = 0;
 //var allXtypes = '';
-
 
 const shortname = process.argv[2];
 var framework = '';
@@ -21,17 +20,12 @@ switch (shortname) {
         extension = 'js';
         break;
     default:
-        console.log('error');
+        console.log('error - eng or ewc');
         return
 }
 const packagename = process.argv[3];
 
-const newLine = "\n";
-var didXtype = false
-var allExtended = '';
-
-const moduleVars = { imports: "", declarations: "", exports: "" };
-
+var version = '7.1.0';
 const run = require("./util").run;
 const writeTemplateFile = require("./util").writeTemplateFile;
 const copyFileSync = require('fs-copy-file-sync');
@@ -41,28 +35,35 @@ const rimraf = require("rimraf");
 const mkdirp = require("mkdirp");
 require("./XTemplate");
 
-const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`)
+const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`);
 const xtypelist = require("./npmpackage/" + packagename).getXtypes();
 
 const generatedFolders = "./GeneratedFolders/";
 const templateFolder = "./filetemplates/" + framework + "/";
-const toolkitFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
-const srcFolder = toolkitFolder + "src/";
-const srcStagingFolder = toolkitFolder + "srcStaging/";
-const docFolder = toolkitFolder + 'doc/';
-const docStagingFolder = toolkitFolder + 'docStaging/';
-const binFolder = toolkitFolder + 'bin/';
+const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+const srcFolder = outputFolder + "src/";
+const srcStagingFolder = outputFolder + "srcStaging/";
+const docFolder = outputFolder + 'doc/';
+const docStagingFolder = outputFolder + 'docStaging/';
+const binFolder = outputFolder + 'bin/';
+const extFolder = outputFolder + 'ext/';
 
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
-rimraf.sync(toolkitFolder);
-mkdirp.sync(toolkitFolder);
+rimraf.sync(outputFolder);
+mkdirp.sync(outputFolder);
 mkdirp.sync(srcFolder);
 mkdirp.sync(srcStagingFolder);
 mkdirp.sync(docFolder);
 mkdirp.sync(docStagingFolder);
 mkdirp.sync(binFolder);
+if (installExt == true) {mkdirp.sync(extFolder)}
 
-var Items = []
+const newLine = "\n";
+var didXtype = false;
+var allExtended = '';
+const moduleVars = { imports: "", declarations: "", exports: "", ewcimports: "" };
+
+var Items = [];
 for (i = 0; i < data.global.items.length; i++) {
     doLaunch(data.global.items[i], framework);
 }
@@ -74,6 +75,7 @@ for (i = 0; i < data.global.items.length; i++) {
 // console.log(uniqueAllXtypesArray.length)
 
 doPostLaunch();
+if (install == true) {doInstall()}
 
 function doLaunch(item, framework) {
     var template = ''
@@ -114,9 +116,6 @@ function doLaunch(item, framework) {
                 if (aliases[alias].substring(0, 6) == 'widget') {
                     var xtypelocal = aliases[alias].substring(7)
                     xtypes.push(xtypelocal)
-                    // if(alias == 0) {
-                    //     allXtypes = allXtypes + xtypelocal + ',';
-                    // }
                 }
               }
             }
@@ -129,7 +128,6 @@ function doLaunch(item, framework) {
         }
         //there may be more than one
         item.xtype = xtypes[0]
-        //if (xtypes.length > 1) { console.log(xtypes)}
 
         oneItem(item, framework, names, xtypes, template)
     }
@@ -166,7 +164,7 @@ function oneItem(item, framework, names, xtypes, template) {
         var pathprefix = ''
 
         var name = names[i];
-        var classname = name.replace(/\./g, "_") // + "_Component"
+        var classname = name.replace(/\./g, "_")
         var parts = name.split(".")
         for (var j = 0; j < parts.length-1; j++) {
             thePath = thePath + parts[j] + '/'
@@ -198,10 +196,10 @@ function oneItem(item, framework, names, xtypes, template) {
             pathprefix: pathprefix,
             extendpath: extendpath,
             extends: item.extends,
-            extendsclassname: item.extends.replace(/\./g, "_"), // + "_Component",
+            extendsclassname: item.extends.replace(/\./g, "_"),
             classextendsfilename: extendparts[extendparts.length-1]
         }
-        writeFile(framework, template, `${folder}${filename}.${extension}`, values)
+        writeTemplateFile(templateFolder+template, `${folder}${filename}.${extension}`, values)
 
         for (var j = 0; j < xtypes.length; j++) {
             //for each name and each xtype
@@ -222,7 +220,7 @@ function oneItem(item, framework, names, xtypes, template) {
                 Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
                 xtype: xtypes[j]
             }
-            writeFile(framework, '/xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.${extension}`, values)
+            writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.${extension}`, values)
 
             if (didXtype == false) {
                 didXtype = true
@@ -233,7 +231,7 @@ function oneItem(item, framework, names, xtypes, template) {
                     allExtended = allExtended + theNames + ',' + item.extended + ',';
                     var classname = xt.replace(/-/g, "_");
                     var capclassname = classname.charAt(0).toUpperCase() + classname.slice(1);
-                    moduleVars.imports = moduleVars.imports +`import { Ext${capclassname}Component } from './src/ext-${xt}.component';${newLine}`;
+                    moduleVars.imports = moduleVars.imports +`import { Ext${capclassname}Component } from './src/ext-${xt}.component.${extension}';${newLine}`;
                     moduleVars.exports = moduleVars.exports + `    Ext${capclassname}Component,${newLine}`;
                     moduleVars.declarations = moduleVars.declarations + `    Ext${capclassname}Component,${newLine}`;
                 }
@@ -267,7 +265,7 @@ function oneItem(item, framework, names, xtypes, template) {
                 items:item.items,
                 src:item.src
             }
-            writeFile(framework, '/docdetail.tpl', `${docStagingFolder}ext-${xtypes[j]}.doc.html`, values3)
+            writeTemplateFile(templateFolder+'docdetail.tpl', `${docStagingFolder}ext-${xtypes[j]}.doc.html`, values3)
         }
     }
 }
@@ -556,77 +554,9 @@ function readFile(file) {
     return fs.readFileSync(path.resolve(templateFolder + file)).toString()
 }
 
-function writeFile(framework, tplFile, outFile, vars) {
-    //var templateFolder = path.resolve(templateFolder);
-    var tFile = path.resolve(templateFolder + tplFile).toString()
-    var tpl = new Ext.XTemplate(fs.readFileSync(tFile))
-    var t = tpl.apply(vars)
-    fs.writeFileSync(outFile, t);
-    delete tpl;
-}
-
-if (install == true) {doInstall()}
-async function doInstall() {
-
-    var origCwd = process.cwd();
-    process.chdir('./bundler');
-    var currDir = process.cwd()
-
-    var bundle = {};
-    bundle.packagename = packagename;
-    bundle.creates = require("./npmpackage/" + packagename).getCreates();
-
-    writeTemplateFile(`./template/app.json.tpl`,`./app.json`,bundle); console.log(`app.json` + ' created');
-    writeTemplateFile(`./template/package.json.tpl`,`./package.json`,bundle); console.log(`package.json` + ' created');
-    writeTemplateFile(`./template/css.manifest.js.tpl`,`./manifest/${packagename}.css.manifest.js`,bundle); console.log(`manifest/${packagename}.css.manifest.js` + ' created');
-    writeTemplateFile(`./template/ext.manifest.js.tpl`,`./manifest/${packagename}.ext.manifest.js`,bundle); console.log(`manifest/${packagename}.ext.manifest.js` + ' created');
-
-    await run(`npm start`);
-    console.log('./dist/css.' + packagename + '.js created')
-    console.log('./dist/ext.' + packagename + '.js created')
-
-    process.chdir(origCwd);
-    if (packagename != 'blank') {
-        if (installExt == true) {
-            copyFileSync('./bundler/dist/css.' + packagename + '.js', toolkitFolder + "/ext/css." + packagename + '.js');
-            copyFileSync('./bundler/dist/ext.' + packagename + '.js', toolkitFolder + "/ext/ext." + packagename + '.js');
-        }
-    }
-
-    process.chdir(toolkitFolder);
-    await run(`npm install`);
-
-    mkdirp.sync(`ext`);
-    await run(`cp -R ./ext dist/ext`);
-
-    if (framework == 'angular') {
-        await run(`npm run packagr`);
-        await run(`cp -R ./src dist/lib`);
-        process.chdir('dist');
-    }
-
-    //await run(`rm -r ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
-    //await run(`cp -R ./dist ../../../../ext-${framework}/packages/ext-${framework}${info.bundle}`);
-
-    await run(`npm publish --force`);
-    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${info.bundle}/7.1.0`)
-}
-
-function log(v, s) {
-    var blanks;
-    if (v == "") {
-        blanks = "";
-    } else {
-        blanks = new Array(25 - v.length + 1).join(" ");
-        blanks = blanks + ": ";
-    }
-    console.log(`${v}${blanks}${s}`);
-}
-
 function doPostLaunch() {
     let getBundleInfo = require("./getBundleInfo").getBundleInfo;
     var info = getBundleInfo(framework, packagename, xtypelist)
-
 
     //copy xtypes from staging to src
     fs.readdirSync(`${srcStagingFolder}`).forEach(function(file) {
@@ -637,8 +567,7 @@ function doPostLaunch() {
         var xtype = f[0].substring(4)
         if (info.wantedxtypes.indexOf(xtype) != -1) {
             fs.copySync(`${srcStagingFolder}/${file}`,`${srcFolder}/${file}`)
-            moduleVars.imports = moduleVars.imports + `import './src/ext-${xtype}.component';${newLine}`;
-            info.imports = info.imports + `import './src/ext-${xtype}.component';<br/>`;
+            moduleVars.ewcimports = moduleVars.ewcimports + `import './src/ext-${xtype}.component.${extension}';${newLine}`;
         }
     });
 
@@ -653,34 +582,30 @@ function doPostLaunch() {
         }
     });
     info.includedxtypes = info.includedxtypes + `</div>${newLine}`
-    writeFile(framework, '/doc.tpl', `${docFolder}doc.html`, info)
-    writeFile(framework, '/docstyle.tpl', `${docFolder}docstyle.css`, info)
+    writeTemplateFile(templateFolder+'doc.tpl', `${docFolder}doc.html`, info)
+    writeTemplateFile(templateFolder+'docstyle.tpl', `${docFolder}docstyle.css`, info)
 
-    writeTemplateFile(templateFolder+`/package.tpl`,`${toolkitFolder}package.json`,info);
-    writeTemplateFile(templateFolder+`/README.tpl`,`${toolkitFolder}README.md`,info);
+    writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
+    writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(templateFolder+`index.tpl`,`${outputFolder}index.html`,info);
     info.basecode = readFile("/../common/common-base.js")
     info.propscode = readFile(`/../common/${shortname}-props.js`)
-    writeFile(framework,`/ext-${framework}.tpl`,`${toolkitFolder}bin/ext-${framework}${info.bundle}.js`,info);
+    writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
 
     if (framework == 'web-components') {
-        copyFileSync(templateFolder+`/src/HTMLParsedElement.js`, toolkitFolder+`/src/HTMLParsedElement.js`);
-        copyFileSync(templateFolder+`/.babelrc`, toolkitFolder+`.babelrc`);
-
-        //copyFile("src/HTMLParsedElement.js");
-        //copyFile('.babelrc');
-        writeFile(framework, '/module.tpl', `${toolkitFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
-        writeFile(framework, '/router.tpl', `${srcFolder}ext-router.component.js`, {});
+        copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
+        copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
+        copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
+        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
+        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, {});
     }
     else {
         moduleVars.Bundle = info.Bundle
-        writeTemplateFile(templateFolder+`module.tpl`,`${toolkitFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
-        writeTemplateFile(templateFolder+`public_api.tpl`,`${toolkitFolder}/public_api.ts`,info);
-        copyFileSync(templateFolder+`tsconfig.json`, toolkitFolder+`tsconfig.json`);
-        copyFileSync(templateFolder+`tsconfig.lib.json`, toolkitFolder+`tsconfig.lib.json`);
-        copyFileSync(templateFolder+`ng-package.json`, toolkitFolder+`ng-package.json`);
-        //copyFile("tsconfig.json");
-        //copyFile("tsconfig.lib.json");
-        //copyFile("ng-package.json");
+        writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
+        writeTemplateFile(templateFolder+`public_api.tpl`,`${outputFolder}/public_api.ts`,info);
+        copyFileSync(templateFolder+`tsconfig.json`, outputFolder+`tsconfig.json`);
+        copyFileSync(templateFolder+`tsconfig.lib.json`, outputFolder+`tsconfig.lib.json`);
+        copyFileSync(templateFolder+`ng-package.json`, outputFolder+`ng-package.json`);
         moduleVars.imports = moduleVars.imports.substring(0,moduleVars.imports.length - 2);
         moduleVars.imports = moduleVars.imports + ";" + newLine;
         moduleVars.exports = moduleVars.exports.substring(0,moduleVars.exports.length - 2);
@@ -691,13 +616,17 @@ function doPostLaunch() {
         exportall = exportall + `export * from './lib/ext-${framework}${info.bundle}.module';${newLine}`;
     }
 
-    info.import = ``
-    if (info.type != 'blank') {
-        if (installExt == true) {
-            info.import = `import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}';
-    import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
-        }
-    }
+//     info.import = ``
+//     if (info.type != 'blank') {
+//         if (installExt == true) {
+//             info.import =
+// `import 'script-loader!../ext/ext.${info.type}';
+// import 'script-loader!../ext/css.${info.type}';`
+// //            info.import =
+// //`import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}';
+// //import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
+//         }
+//    }
     writeTemplateFile(templateFolder+`${shortname}-base.tpl`,`${srcFolder}${shortname}-base.${extension}`,info);
 
     //copy staging Ext folder to src Ext
@@ -722,6 +651,68 @@ function doPostLaunch() {
         toFolder = `${srcFolder}${thePath}${filename}.${extension}`
         copyFileSync(fromFolder, toFolder);
     })
-    //rimraf.sync(srcStagingFolder);
-    //rimraf.sync(docStagingFolder);
+    rimraf.sync(srcStagingFolder);
+    rimraf.sync(docStagingFolder);
 }
+
+async function doInstall() {
+
+    var origCwd = process.cwd();
+
+    if (packagename != 'blank') {
+        if (installExt == true) {
+            process.chdir('./bundler');
+            var currDir = process.cwd()
+
+            var bundle = {};
+            bundle.packagename = packagename;
+            bundle.creates = require("./npmpackage/" + packagename).getCreates();
+
+            writeTemplateFile(`./template/app.json.tpl`,`./app.json`, bundle);
+            //console.log(`app.json` + ' created');
+            writeTemplateFile(`./template/package.json.tpl`,`./package.json`, bundle);
+            //console.log(`package.json` + ' created');
+            writeTemplateFile(`./template/css.manifest.js.tpl`,`./manifest/${packagename}.css.manifest.js`, bundle);
+            //console.log(`manifest/${packagename}.css.manifest.js` + ' created');
+            writeTemplateFile(`./template/ext.manifest.js.tpl`,`./manifest/${packagename}.ext.manifest.js`, bundle);
+            //console.log(`manifest/${packagename}.ext.manifest.js` + ' created');
+
+            await run(`npm start`);
+            console.log('./dist/css.' + packagename + '.js created')
+            console.log('./dist/ext.' + packagename + '.js created')
+
+            process.chdir(origCwd);
+            //console.log(process.cwd())
+
+            copyFileSync('./bundler/dist/css.' + packagename + '.js', extFolder + "css." + packagename + '.js');
+            copyFileSync('./bundler/dist/ext.' + packagename + '.js', extFolder + "ext." + packagename + '.js');
+        }
+    }
+
+    process.chdir(outputFolder);
+    await run(`npm install`);
+
+    var packagefolder = ''
+    if (framework == 'angular') {
+        await run(`npm run packagr`);
+        await run(`cp -R ./src dist/lib`);
+        if (packagename != 'blank') {
+            if (installExt == true) {
+                await run(`cp -R ./ext dist/ext`);
+            }
+        }
+        process.chdir('dist');
+        packagefolder = 'dist';
+    }
+    await run(`npm publish --force`);
+
+    if (framework == 'angular') {
+        process.chdir('../');
+    }
+    var suffix = packagename == 'blank' ? '' : '-' + packagename
+    await run(`rm -r ../../../../ext-${framework}/packages/ext-${framework}${suffix}`);
+    await run(`cp -R ./${packagefolder} ../../../../ext-${framework}/packages/ext-${framework}${suffix}`);
+
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-${framework}${suffix}/${version}`)
+}
+

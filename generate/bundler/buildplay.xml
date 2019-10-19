@@ -1,0 +1,48 @@
+<project name="simple-build" basedir=".">
+  <!--  internally, watch calls the init target, so need to have one here -->
+  <target name="init"/>
+  <target name="init-cmd">
+    <taskdef  resource="com/sencha/ant/antlib.xml"
+              classpath="${cmd.dir}/sencha.jar"
+              loaderref="senchaloader"/>
+    <x-extend-classpath>
+        <jar path="${cmd.dir}/sencha.jar"/>
+    </x-extend-classpath>
+    <x-sencha-init prefix=""/>
+    <x-compile refid="theCompiler"
+                      dir="${basedir}"
+                      initOnly="true"
+                      inheritAll="true">
+              <![CDATA[
+              -classpath=${basedir}/${app.manifestfolder}/${app.packagename}.ext.manifest.js
+              load-app
+                  -temp=${basedir}/${app.buildfolder}/${app.packagename}/temp
+                  -tag=App
+
+        ]]>
+      </x-compile>
+  </target>
+  <target name="build">
+    <x-compile refid="theCompiler"
+              dir="${basedir}"
+              inheritAll="true">
+      <![CDATA[
+
+        -debug=true
+
+
+
+        concatenate
+            -i=ANY
+            -j=ANY
+           ${app.buildfolder}/${app.packagename}/ext.mjg5.dev.js
+
+
+
+
+      ]]>
+    </x-compile>
+  </target>
+
+
+</project>
