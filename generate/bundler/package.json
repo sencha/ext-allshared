@@ -4,7 +4,7 @@
   "description": "bundler",
   "main": "index.js",
   "config": {
-    "packagename": "grid",
+    "packagename": "all",
     "buildfolder": "build"
   },
   "scripts": {

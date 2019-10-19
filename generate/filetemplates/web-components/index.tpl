@@ -1,29 +1,52 @@
-<!DOCTYPE HTML>
 <html>
+
 <head>
-<link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes">
+    <script type="module" src="./src/ext-grid.component.js"></script>
+    <script type="module" src="./src/ext-gridcolumn.component.js"></script>
+</head>
 
 <script>
-function selectDoc(xtype) {
-    console.log(xtype)
-    //var xtype = 'accordion'
-    //var theFrame = '<iframe width="560" height="315" src="http://127.0.0.1:5501/generators/ext-component-creator/GeneratedFolders/ext-ewc/src/lib/ext-' + xtype + '.doc.html" frameborder="0" allowfullscreen></iframe>'
-    var theFrame = '<iframe width="100%" height="900px" src="ext-' + xtype + '.doc.html" frameborder="0" allowfullscreen></iframe>'
-    console.log(theFrame)
-    var frame = document.getElementById( "contentFrame" )
-    frame.innerHTML = theFrame
-}
+    window.main = {}
+    window.main.onReady = function(event) {
+        console.log('ready')
+        console.log(event)
+
+        event.detail.ext.setData([
+            {"name": "Lisa3", "email": "lisa@simpsons.com", "phone": "555-111-1224"},
+            {"name": "Bart", "email": "bart@simpsons.com", "phone": "555-222-1234"},
+            {"name": "Homer", "email": "homer@simpsons.com", "phone": "555-222-1244"},
+            {"name": "Marge", "email": "marge@simpsons.com", "phone": "555-222-1254"}
+        ])
+    }
+    window.main.onTap = function() {
+        console.log('tap')
+    }
 </script>
 
-</head>
 <body>
+    <ext-grid
+        onready="main.onReady"
+        title="the grid"
+        height="250px"
+        xcolumns='[
+            {"text": "Name", "width": "250", "dataIndex": "name"},
+            {"text": "Email Address", "flex": "1", "dataIndex": "email"},
+            {"text": "Phone Number", "width": "250", "dataIndex": "phone"}
+        ]'
+        xdata='[
+            {"name": "Lisa", "email": "lisa@simpsons.com", "phone": "555-111-1224"},
+            {"name": "Bart", "email": "bart@simpsons.com", "phone": "555-222-1234"},
+            {"name": "Homer", "email": "homer@simpsons.com", "phone": "555-222-1244"},
+            {"name": "Marge", "email": "marge@simpsons.com", "phone": "555-222-1254"}
+        ]'
+    >
+        <ext-gridcolumn width="250px" text="Name" dataIndex="name"></ext-gridcolumn>
+        <ext-gridcolumn flex="1" text="Email Address" dataIndex="email"></ext-gridcolumn>
+        <ext-gridcolumn  width="250px" text="Phone Number" dataIndex="phone"></ext-gridcolumn>
+    </ext-grid>
 
-<div style="padding-left:10px;font-size:24px;">ExtWebComponents 7.0 Documentation</div>
-
-<div class="flex-container">
-  <div style="height:900px;padding:10px;" class="frame thelist">{includedxtypes}</div>
-  <div style="height:900px;width:100%;" class="theframe" id="contentFrame"></div>
-</div>
 
 </body>
+
 </html>

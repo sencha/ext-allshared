@@ -7,22 +7,23 @@
     },
     "private": false,
     "peerDependencies": {
-        "@angular/compiler": "~8.2.5",
-        "@angular/core": "~8.2.5",
+        "@angular/compiler": "~8.2.9",
+        "@angular/core": "~8.2.9",
         "tslib": "^1.10.0"
     },
     "dependencies": {
-        "script-loader": "^0.7.2"
+        "script-loader": "^0.7.2",
+        "tslib": "^1.10.0"
     },
     "devDependencies": {
-        "@angular/core": "~8.2.5",
-        "@angular/common": "~8.2.5",
-        "@angular/platform-browser": "~8.2.5",
-        "@angular/platform-browser-dynamic": "~8.2.5",
-        "zone.js": "~0.9.1",
-        "ng-packagr": "^5.5.0",
-        "@angular/compiler": "~8.2.5",
-        "@angular/compiler-cli": "~8.2.5",
+        "@angular/core": "~8.2.9",
+        "@angular/common": "~8.2.9",
+        "@angular/platform-browser": "~8.2.9",
+        "@angular/platform-browser-dynamic": "~8.2.9",
+        "zone.js": "~0.10.2",
+        "ng-packagr": "^5.5.1",
+        "@angular/compiler": "~8.2.9",
+        "@angular/compiler-cli": "~8.2.9",
         "typescript": "~3.5.3"
     },
     "repository": {
