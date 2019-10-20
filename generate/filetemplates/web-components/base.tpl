@@ -38,7 +38,7 @@ export default class {classname} extends EwcBaseComponent {
         {classname}.EVENTS().forEach(function (eventparameter, index, array) {
             attrs.push('on' + eventparameter.name)
         })
-        attrs.push('onready')
+        //attrs.push('onready')
         return attrs
     }
 

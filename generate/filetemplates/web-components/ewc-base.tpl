@@ -15,32 +15,35 @@ export default class EwcBaseComponent extends HTMLElement {
     constructor(properties, events) {
         super ();
 
-        var props = ['text','align','title','extname','height','width','columns','data','layout','flex']
-        props.forEach( prop =>
+        //var props = ['text','align','title','extname','height','width','columns','data','layout','flex']
+        // props.forEach( prop =>
+        //     {
+        //         doProp(this,prop)
+        //     }
+        // )
+        const distinct = (value, index, self) => {
+            return self.indexOf(value) === index;
+        }
+        var properties2 = [];
+        //console.log(typeof properties2)
+        //var myStringArray = ["Hello","World"];
+        var arrayLength = properties.length;
+        for (var i = 0; i < arrayLength; i++) {
+            properties2.push(properties[i]);
+        }
+        //console.log(properties2)
+        //console.log(typeof properties2)
+        var p2 = properties2.filter(distinct);
+        this.properties = p2;
+        p2.forEach( prop =>
             {
                 doProp(this,prop)
             }
         )
-        this.properties = props;
-
-        // const distinct = (value, index, self) => {
-        //     return self.indexOf(value) === index;
-        // }
-        // var p2 = properties.filter(distinct);
-        // p2.forEach( prop =>
-        //     {
-        //         //console.log(prop)
-        //         //doProp(this,prop)
-        //     }
-        // )
-        // this.properties = p2;
-
-        //properties.forEach( prop => doProp(this,prop))
-        //this.properties = properties;
-
         //this.methods = methods;
         this.events = events;
     }
+
     connectedCallback() {
         EwcBaseComponent.elementcount++;
         console.log('added: ' + this.tagName + ': elementcount is now ' + EwcBaseComponent.elementcount);
