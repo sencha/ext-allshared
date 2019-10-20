@@ -1,7 +1,8 @@
-import {classname} from '{folder}.js'
-import HTMLParsedElement from './HTMLParsedElement.js'
+import {classname} from '{folder}.js';
+import HTMLParsedElement from './HTMLParsedElement.js';
+//import reactify from './reactify.js';
 
-export class Ext{Xtype}Component extends {classname} {
+export default class Ext{Xtype} extends {classname} {
     constructor() {
         super (
             [],
@@ -13,9 +14,10 @@ export class Ext{Xtype}Component extends {classname} {
 
 //(function () {
 //    Ext.onReady(function() {
-//        window.customElements.define('ext-{xtype}', Ext{Xtype}Component);
+//        window.customElements.define('ext-{xtype}', Ext{Xtype});
 //    });
 //})();
 
 //const {withParsedCallback} = HTMLParsedElement;
-window.customElements.define('ext-{xtype}', HTMLParsedElement.withParsedCallback(Ext{Xtype}Component))
+window.customElements.define('ext-{xtype}', HTMLParsedElement.withParsedCallback(Ext{Xtype}))
+//export default reactify(Ext{Xtype});

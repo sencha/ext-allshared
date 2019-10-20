@@ -14,8 +14,30 @@ export default class EwcBaseComponent extends HTMLElement {
 
     constructor(properties, events) {
         super ();
+
+        var props = ['text','align','title','extname','height','width','columns','data','layout','flex']
+        props.forEach( prop =>
+            {
+                doProp(this,prop)
+            }
+        )
+        this.properties = props;
+
+        // const distinct = (value, index, self) => {
+        //     return self.indexOf(value) === index;
+        // }
+        // var p2 = properties.filter(distinct);
+        // p2.forEach( prop =>
+        //     {
+        //         //console.log(prop)
+        //         //doProp(this,prop)
+        //     }
+        // )
+        // this.properties = p2;
+
         //properties.forEach( prop => doProp(this,prop))
-        this.properties = properties;
+        //this.properties = properties;
+
         //this.methods = methods;
         this.events = events;
     }
@@ -97,7 +119,10 @@ export default class EwcBaseComponent extends HTMLElement {
                 if (this.A.ext != undefined) {
                     ischanged = true
                     var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
-                    this.A.ext[method](newVal)
+                    if (method != 'setExtname') {
+                        console.log(method)
+                        this.A.ext[method](newVal)
+                    }
                 }
                 else {
                     ischanged = false

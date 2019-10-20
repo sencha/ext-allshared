@@ -32,7 +32,8 @@ newParsedCallback() {
 }
 
 newDoExtCreate(me, isApplication) {
-    if (Ext != undefined) {
+    //if (Ext != undefined) {
+    if (window['Ext'] != undefined) {
         EwcBaseComponent.isLoading = true;
         EwcBaseComponent.isDone = true;
     }
