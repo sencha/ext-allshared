@@ -46,6 +46,10 @@ const srcStagingFolder = outputFolder + "srcStaging/";
 const docFolder = outputFolder + 'doc/';
 const docStagingFolder = outputFolder + 'docStaging/';
 const binFolder = outputFolder + 'bin/';
+const reactFolder = outputFolder + 'react/';
+const reactStagingFolder = outputFolder + 'reactStaging/';
+const angularFolder = outputFolder + 'angular/';
+const angularStagingFolder = outputFolder + 'angularStaging/';
 const extFolder = outputFolder + 'ext/';
 
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
@@ -56,6 +60,10 @@ mkdirp.sync(srcStagingFolder);
 mkdirp.sync(docFolder);
 mkdirp.sync(docStagingFolder);
 mkdirp.sync(binFolder);
+mkdirp.sync(reactFolder);
+mkdirp.sync(reactStagingFolder);
+mkdirp.sync(angularFolder);
+mkdirp.sync(angularStagingFolder);
 if (installExt == true) {mkdirp.sync(extFolder)}
 
 const newLine = "\n";
@@ -221,6 +229,8 @@ function oneItem(item, framework, names, xtypes, template) {
                 xtype: xtypes[j]
             }
             writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.${extension}`, values)
+            writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}Ext${values.Xtype}.${extension}`, values)
+            writeTemplateFile(templateFolder+'angular.tpl', `${angularStagingFolder}Ext${values.Xtype}.ts`, values)
 
             if (didXtype == false) {
                 didXtype = true
@@ -566,6 +576,10 @@ function doPostLaunch() {
         var f = file.split('.')
         var xtype = f[0].substring(4)
         if (info.wantedxtypes.indexOf(xtype) != -1) {
+            var Xtype = xtype.charAt(0).toUpperCase() + xtype.slice(1).replace(/-/g,'_');
+            var frameworkFile = `Ext${Xtype}`
+            fs.copySync(`${reactStagingFolder}/${frameworkFile}.${extension}`,`${reactFolder}/${frameworkFile}.${extension}`)
+            fs.copySync(`${angularStagingFolder}/${frameworkFile}.ts`,`${angularFolder}/${frameworkFile}.ts`)
             fs.copySync(`${srcStagingFolder}/${file}`,`${srcFolder}/${file}`)
             moduleVars.ewcimports = moduleVars.ewcimports + `import './src/ext-${xtype}.component.${extension}';${newLine}`;
         }
@@ -594,6 +608,8 @@ function doPostLaunch() {
 
     if (framework == 'web-components') {
         copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
+        copyFileSync(templateFolder+`reactify.js`, outputFolder+`react/reactify.js`);
+        copyFileSync(templateFolder+`angularify.ts`, outputFolder+`angular/angularify.ts`);
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
@@ -632,6 +648,7 @@ function doPostLaunch() {
     //copy staging Ext folder to src Ext
     var allExtendedArray = allExtended.split(",");
     let uniqueAllExtendedArray = [...new Set(allExtendedArray)];
+    console.log(uniqueAllExtendedArray)
     uniqueAllExtendedArray.forEach((extended) => {
         if (extended == '') { return }
         var folder = ''
@@ -651,6 +668,8 @@ function doPostLaunch() {
         toFolder = `${srcFolder}${thePath}${filename}.${extension}`
         copyFileSync(fromFolder, toFolder);
     })
+    rimraf.sync(reactStagingFolder);
+    rimraf.sync(angularStagingFolder);
     rimraf.sync(srcStagingFolder);
     rimraf.sync(docStagingFolder);
 }
