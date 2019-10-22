@@ -13,12 +13,22 @@
                       dir="${basedir}"
                       initOnly="true"
                       inheritAll="true">
-              <![CDATA[
-              -classpath=${basedir}/${app.manifestfolder}/${app.packagename}.ext.manifest.js
-              load-app
-                  -temp=${basedir}/${app.buildfolder}/${app.packagename}/temp
-                  -tag=App
-        ]]>
+                      <![CDATA[
+                        --debug
+                        -classpath=${basedir}/${app.manifestfolder}/${app.packagename}.ext.manifest.js
+                        exclude
+                          -all
+                        and
+                        exclude
+                          -tag=core
+                        and
+                        include
+                          -namespace=Ext.grid
+                        and
+                        include
+                          -r
+                          -tag=overrides
+                      ]]>
       </x-compile>
   </target>
   <target name="rebuild">
@@ -26,28 +36,6 @@
               dir="${basedir}"
               inheritAll="true">
       <![CDATA[
-      --debug
-      exclude
-      -all
-      and
-      include
-      -f=Boot.js
-      and
-      # include theme overrides
-      include
-        -r
-        -tag=overrides
-      and
-      # include all js files needed for manifest.js
-      include
-          -r
-          -f=${app.manifestfolder}/${app.packagename}.ext.manifest.js
-      and
-      # exclude the generated manifest file itself,
-      # since we don't want the generated bundle file to create any components
-      exclude
-      -f=${app.manifestfolder}/${app.packagename}.ext.manifest.js
-      and
       concatenate
         -closure
         -compress
