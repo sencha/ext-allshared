@@ -1,6 +1,6 @@
 {
   "name": "ext-allshared",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "description": "All Shared packages for ext-* tools",
   "main": "index.js",
   "scripts": {
