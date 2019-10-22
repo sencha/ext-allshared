@@ -1,6 +1,6 @@
 {
   "name": "@sencha/ext-webpack-plugin",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "description": "A webpack plugin for ext-* applications",
   "main": "dist/index.js",
   "scripts": {
