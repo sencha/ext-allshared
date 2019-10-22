@@ -471,7 +471,7 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
           try {
             var d = new Date().toLocaleString()
             var data = fs.readFileSync(filename);
-            fs.writeFileSync(filename, '//' + d, 'utf8');
+            // fs.writeFileSync(filename, '//' + d, 'utf8');
             logv(app, `touching ${filename}`);
           }
           catch(e) {
