@@ -466,17 +466,17 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
         logv(verbose, `${str}`)
         if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
 
-          const fs = require('fs');
-          var filename = process.cwd() + vars.touchFile;
-          try {
-            var d = new Date().toLocaleString()
-            var data = fs.readFileSync(filename);
-            // fs.writeFileSync(filename, '//' + d, 'utf8');
-            logv(app, `touching ${filename}`);
-          }
-          catch(e) {
-            logv(app, `NOT touching ${filename}`);
-          }
+          // const fs = require('fs');
+          // var filename = process.cwd() + vars.touchFile;
+          // try {
+          //   var d = new Date().toLocaleString()
+          //   var data = fs.readFileSync(filename);
+          //   fs.writeFileSync(filename, '//' + d, 'utf8');
+          //   logv(app, `touching ${filename}`);
+          // }
+          // catch(e) {
+          //   logv(app, `NOT touching ${filename}`);
+          // }
 
           resolve(0)
         }
