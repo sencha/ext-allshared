@@ -57,19 +57,35 @@ export default class EwcBaseComponent extends HTMLElement {
 
         this.A = {};
         this.A.CHILDREN = [];
+        this.A.ITEMS = [];
         this.A.o = {}
 
         //console.log(this.children)
+
         for (let child of this.children) {
-            //console.dir(child)
             if (child.nodeName.substring(0, 4) !== 'EXT-') {
-                //console.log(child);
                 var el = Ext.get(child);
                 var w = Ext.create({xtype:'widget', element: el});
-                this.A.CHILDREN.push(w);
+                this.A.ITEMS.push(w);
+            }
+            else {
+                var g = {}
+                g.type = 'ext'
+                this.A.ITEMS.push(g);
             }
         }
-                this.base = EwcBaseComponent;
+
+        //for (let child of this.children) {
+        //    //console.dir(child)
+        //    if (child.nodeName.substring(0, 4) !== 'EXT-') {
+        //        //console.log(child);
+        //        var el = Ext.get(child);
+        //        var w = Ext.create({xtype:'widget', element: el});
+        //        //this.A.CHILDREN.push(w);
+        //    }
+        //}
+
+        this.base = EwcBaseComponent;
 
         //this.properties = []
         //for (var property in this.propertiesobject) {

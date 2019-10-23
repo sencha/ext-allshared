@@ -565,6 +565,8 @@ function readFile(file) {
 }
 
 function doPostLaunch() {
+
+
     let getBundleInfo = require("./getBundleInfo").getBundleInfo;
     var info = getBundleInfo(framework, packagename, xtypelist)
 
@@ -648,7 +650,6 @@ function doPostLaunch() {
     //copy staging Ext folder to src Ext
     var allExtendedArray = allExtended.split(",");
     let uniqueAllExtendedArray = [...new Set(allExtendedArray)];
-    console.log(uniqueAllExtendedArray)
     uniqueAllExtendedArray.forEach((extended) => {
         if (extended == '') { return }
         var folder = ''
@@ -668,6 +669,13 @@ function doPostLaunch() {
         toFolder = `${srcFolder}${thePath}${filename}.${extension}`
         copyFileSync(fromFolder, toFolder);
     })
+
+    writeTemplateFile(templateFolder+'ExtReact.tpl', `${srcFolder}ext-react.component.${extension}`, {})
+    writeTemplateFile(templateFolder+'ExtReactRenderer.tpl', `${srcFolder}ext-react-renderer.component.${extension}`, {})
+
+    writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactFolder}ExtReact.${extension}`, {})
+    writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactFolder}ExtReactRenderer.${extension}`, {})
+
     rimraf.sync(reactStagingFolder);
     rimraf.sync(angularStagingFolder);
     rimraf.sync(srcStagingFolder);
