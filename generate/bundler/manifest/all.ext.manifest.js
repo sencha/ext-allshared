@@ -218,6 +218,7 @@ Ext.create({"xtype":"rating"});
 Ext.create({"xtype":"video"});
 Ext.create({"xtype":"viewport"});
 Ext.create({"xtype":"widget"});
+Ext.create("Ext.chart.series.Pie",{});
 Ext.create("Ext.data.virtual.Store",{});
 Ext.create("Ext.grid.rowedit.Plugin",{});
 Ext.create("Ext.field.InputMask",{});

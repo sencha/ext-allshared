@@ -1,4 +1,4 @@
-// node ./genIt.js ewc all
+// node ./genIt.js ele all
 // node ./genIt.js eng grid
 const install = true;
 const installExt = true;
@@ -15,6 +15,10 @@ switch (shortname) {
         framework = 'angular';
         extension = 'ts';
         break;
+    case "ele":
+        framework = 'elements';
+        extension = 'js';
+        break;
     case "ewc":
         framework = 'web-components';
         extension = 'js';
@@ -24,6 +28,7 @@ switch (shortname) {
         return
 }
 const packagename = process.argv[3];
+const reactPrefix = 'Ext';
 
 var version = '7.1.0';
 const run = require("./util").run;
@@ -38,6 +43,9 @@ require("./XTemplate");
 const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`);
 const xtypelist = require("./npmpackage/" + packagename).getXtypes();
 
+let getBundleInfo = require("./getBundleInfo").getBundleInfo;
+var info = getBundleInfo(framework, shortname, packagename, xtypelist)
+
 const generatedFolders = "./GeneratedFolders/";
 const templateFolder = "./filetemplates/" + framework + "/";
 const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
@@ -48,6 +56,8 @@ const docStagingFolder = outputFolder + 'docStaging/';
 const binFolder = outputFolder + 'bin/';
 const reactFolder = outputFolder + 'react/';
 const reactStagingFolder = outputFolder + 'reactStaging/';
+const reactOrigFolder = outputFolder + 'reactOrig/';
+const reactOrigStagingFolder = outputFolder + 'reactOrigStaging/';
 const angularFolder = outputFolder + 'angular/';
 const angularStagingFolder = outputFolder + 'angularStaging/';
 const extFolder = outputFolder + 'ext/';
@@ -62,6 +72,8 @@ mkdirp.sync(docStagingFolder);
 mkdirp.sync(binFolder);
 mkdirp.sync(reactFolder);
 mkdirp.sync(reactStagingFolder);
+mkdirp.sync(reactOrigFolder);
+mkdirp.sync(reactOrigStagingFolder);
 mkdirp.sync(angularFolder);
 mkdirp.sync(angularStagingFolder);
 if (installExt == true) {mkdirp.sync(extFolder)}
@@ -189,6 +201,8 @@ function oneItem(item, framework, names, xtypes, template) {
 
         var xtype = xtypes[0];
         var values = {
+            shortname: info.shortname,
+            Shortname: info.Shortname,
             sPROPERTIESGETSET: sGETSET,
             //sMETHODS: sMETHODS,
             sPROPERTIES: sPROPERTIES,
@@ -229,7 +243,8 @@ function oneItem(item, framework, names, xtypes, template) {
                 xtype: xtypes[j]
             }
             writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.${extension}`, values)
-            writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}Ext${values.Xtype}.${extension}`, values)
+            writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}${reactPrefix}${values.Xtype}.${extension}`, values)
+            writeTemplateFile(templateFolder+'react.tpl', `${reactOrigStagingFolder}${values.Xtype}.${extension}`, values)
             writeTemplateFile(templateFolder+'angular.tpl', `${angularStagingFolder}Ext${values.Xtype}.ts`, values)
 
             if (didXtype == false) {
@@ -567,8 +582,8 @@ function readFile(file) {
 function doPostLaunch() {
 
 
-    let getBundleInfo = require("./getBundleInfo").getBundleInfo;
-    var info = getBundleInfo(framework, packagename, xtypelist)
+    // let getBundleInfo = require("./getBundleInfo").getBundleInfo;
+    // var info = getBundleInfo(framework, shortname, packagename, xtypelist)
 
     //copy xtypes from staging to src
     fs.readdirSync(`${srcStagingFolder}`).forEach(function(file) {
@@ -579,9 +594,14 @@ function doPostLaunch() {
         var xtype = f[0].substring(4)
         if (info.wantedxtypes.indexOf(xtype) != -1) {
             var Xtype = xtype.charAt(0).toUpperCase() + xtype.slice(1).replace(/-/g,'_');
-            var frameworkFile = `Ext${Xtype}`
-            fs.copySync(`${reactStagingFolder}/${frameworkFile}.${extension}`,`${reactFolder}/${frameworkFile}.${extension}`)
-            fs.copySync(`${angularStagingFolder}/${frameworkFile}.ts`,`${angularFolder}/${frameworkFile}.ts`)
+            var reactFrameworkFile = `${reactPrefix}${Xtype}`
+            var reactOrigFrameworkFile = `${Xtype}`
+            var angularFrameworkFile = `Ext${Xtype}`
+            fs.copySync(`${reactStagingFolder}/${reactFrameworkFile}.${extension}`,`${reactFolder}/${reactFrameworkFile}.${extension}`)
+
+            fs.copySync(`${reactOrigStagingFolder}/${reactOrigFrameworkFile}.${extension}`,`${reactOrigFolder}/${reactOrigFrameworkFile}.${extension}`)
+
+            fs.copySync(`${angularStagingFolder}/${angularFrameworkFile}.ts`,`${angularFolder}/${angularFrameworkFile}.ts`)
             fs.copySync(`${srcStagingFolder}/${file}`,`${srcFolder}/${file}`)
             moduleVars.ewcimports = moduleVars.ewcimports + `import './src/ext-${xtype}.component.${extension}';${newLine}`;
         }
@@ -604,20 +624,46 @@ function doPostLaunch() {
     writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
     writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(templateFolder+`index.tpl`,`${outputFolder}index.html`,info);
-    info.basecode = readFile("/../common/common-base.js")
-    info.propscode = readFile(`/../common/${shortname}-props.js`)
-    writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
+    //info.basecode = readFile("/../common/common-base.js")
+    //info.propscode = readFile(`/../common/${shortname}-props.js`)
+    //writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
 
     if (framework == 'web-components') {
+        info.basecode = readFile("/../common/common-base.js")
+        info.propscode = readFile(`/../common/${shortname}-props.js`)
+        writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
         copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
+
+        copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
         copyFileSync(templateFolder+`reactify.js`, outputFolder+`react/reactify.js`);
+        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
+        copyFileSync(templateFolder+`reactify.js`, outputFolder+`reactOrig/reactify.js`);
+        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
         copyFileSync(templateFolder+`angularify.ts`, outputFolder+`angular/angularify.ts`);
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
         writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, {});
     }
-    else {
+    else if (framework == 'elements') {
+        writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
+        copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
+        copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
+        copyFileSync(templateFolder+`reactify.js`, outputFolder+`react/reactify.js`);
+        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
+        copyFileSync(templateFolder+`reactify.js`, outputFolder+`reactOrig/reactify.js`);
+        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
+        copyFileSync(templateFolder+`angularify.ts`, outputFolder+`angular/angularify.ts`);
+        copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
+        copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
+        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
+        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, {});
+    }
+    else if (framework == 'angular') {
+        info.basecode = readFile("/../common/common-base.js")
+        info.propscode = readFile(`/../common/${shortname}-props.js`)
+        writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
+
         moduleVars.Bundle = info.Bundle
         writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
         writeTemplateFile(templateFolder+`public_api.tpl`,`${outputFolder}/public_api.ts`,info);
@@ -645,7 +691,7 @@ function doPostLaunch() {
 // //import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
 //         }
 //    }
-    writeTemplateFile(templateFolder+`${shortname}-base.tpl`,`${srcFolder}${shortname}-base.${extension}`,info);
+    writeTemplateFile(templateFolder+`${info.shortname}-base.tpl`,`${srcFolder}${info.shortname}-base.${extension}`,info);
 
     //copy staging Ext folder to src Ext
     var allExtendedArray = allExtended.split(",");
@@ -676,7 +722,13 @@ function doPostLaunch() {
     writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactFolder}ExtReact.${extension}`, {})
     writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactFolder}ExtReactRenderer.${extension}`, {})
 
+    writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactOrigFolder}ExtReact.${extension}`, {})
+    writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactOrigFolder}ExtReactRenderer.${extension}`, {})
+
+
+
     rimraf.sync(reactStagingFolder);
+    rimraf.sync(reactOrigStagingFolder);
     rimraf.sync(angularStagingFolder);
     rimraf.sync(srcStagingFolder);
     rimraf.sync(docStagingFolder);
@@ -737,6 +789,7 @@ async function doInstall() {
         process.chdir('../');
     }
     var suffix = packagename == 'blank' ? '' : '-' + packagename
+    //console.log(process.cwd())
     await run(`rm -r ../../../../ext-${framework}/packages/ext-${framework}${suffix}`);
     await run(`cp -R ./${packagefolder} ../../../../ext-${framework}/packages/ext-${framework}${suffix}`);
 

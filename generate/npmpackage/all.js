@@ -221,6 +221,7 @@ var xtypes = [
     'widget',
 ]
 var classes = [
+    'Ext.chart.series.Pie',
     'Ext.data.virtual.Store',
     'Ext.grid.rowedit.Plugin',
     'Ext.field.InputMask',
