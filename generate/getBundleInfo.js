@@ -1,8 +1,11 @@
 var _ = require('lodash');
-exports.getBundleInfo = (framework, type, xtypelist) => {
+exports.getBundleInfo = (framework, shortname, type, xtypelist) => {
 
     var examplesSource = './filetemplates/' + framework + '/examples/' + type + '.js';
     var info = {};
+    info.framework = framework;
+    info.shortname = shortname;
+    info.Shortname = shortname.charAt(0).toUpperCase() + shortname.slice(1);
     info.wantedxtypes = xtypelist;
     //var rows = [];
 
