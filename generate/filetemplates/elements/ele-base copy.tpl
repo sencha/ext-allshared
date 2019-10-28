@@ -22,6 +22,44 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         super ();
         this.properties = properties;
         this.events = events;
+    }
+
+    connectedCallback() {
+        //console.log('connectedCallback')
+        //console.log(this.xtype)
+        var x = this.xtype
+        //var props = ['text','align','title','extname','height','width','columns','data','layout','flex']
+        // props.forEach( prop =>
+        //     {
+        //         doProp(this,prop)
+        //     }
+        // )
+        const distinct = (value, index, self) => {
+            return self.indexOf(value) === index;
+        }
+        var properties2 = [];
+        //console.log(typeof properties2)
+        //var myStringArray = ["Hello","World"];
+        var arrayLength = this.properties.length;
+        for (var i = 0; i < arrayLength; i++) {
+            properties2.push(this.properties[i]);
+        }
+        //console.log(properties2)
+        //console.log(typeof properties2)
+        var p2 = properties2.filter(distinct);
+        //this.properties = p2;
+        p2.forEach( prop =>
+            {
+                doProp(this,prop)
+            }
+        )
+        //this.methods = methods;
+        //this.events = events;
+
+
+        {Shortname}BaseComponent.elementcount++;
+        //console.log('added: ' + this.tagName + ': elementcount is now ' + {Shortname}BaseComponent.elementcount);
+        {Shortname}BaseComponent.elements.push(this);
 
         this.A = {};
         this.A.CHILDREN = [];
@@ -29,44 +67,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         this.A.o = {};
         this.attributeObjects = {};
 
-        this.base = {Shortname}BaseComponent;
-
-        // this.newDiv = document.createElement('div');
-        // //var textnode = document.createTextNode(this.xtype);
-        // //this.newDiv.appendChild(textnode)
-        // this.insertAdjacentElement('beforebegin', this.newDiv);
-
-    }
-
-    connectedCallback() {
-        //console.log('connectedCallback')
-        //console.log(this.xtype)
-        var x = this.xtype
-
-        const distinct = (value, index, self) => {
-            return self.indexOf(value) === index;
-        }
-        var properties2 = [];
-        var arrayLength = this.properties.length;
-        for (var i = 0; i < arrayLength; i++) {
-            properties2.push(this.properties[i]);
-        }
-        var p2 = properties2.filter(distinct);
-        p2.forEach( prop =>
-            {
-                doProp(this,prop)
-            }
-        )
-
-        {Shortname}BaseComponent.elementcount++;
-        {Shortname}BaseComponent.elements.push(this);
-        //console.log('added: ' + this.tagName + ': elementcount is now ' + {Shortname}BaseComponent.elementcount);
-
-        //this.A = {};
-        //this.A.CHILDREN = [];
-        //this.A.ITEMS = [];
-        //this.A.o = {};
-        //this.attributeObjects = {};
+        //console.log(this.children)
 
         for (let child of this.children) {
             if (child.nodeName.substring(0, 4) !== 'EXT-') {
@@ -81,8 +82,27 @@ export default class {Shortname}BaseComponent extends HTMLElement {
             }
         }
 
-        //this.base = {Shortname}BaseComponent;
+        //for (let child of this.children) {
+        //    //console.dir(child)
+        //    if (child.nodeName.substring(0, 4) !== 'EXT-') {
+        //        //console.log(child);
+        //        var el = Ext.get(child);
+        //        var w = Ext.create({xtype:'widget', element: el});
+        //        //this.A.CHILDREN.push(w);
+        //    }
+        //}
 
+        this.base = {Shortname}BaseComponent;
+
+        //this.properties = []
+        //for (var property in this.propertiesobject) {
+        //    this.properties.push(property)
+        //}
+
+        // this.newDiv = document.createElement('div');
+        // //var textnode = document.createTextNode(this.xtype);
+        // //this.newDiv.appendChild(textnode)
+        // this.insertAdjacentElement('beforebegin', this.newDiv);
         this.xtype = x
     }
 
@@ -95,12 +115,12 @@ initMe() {
     this.newParsedCallback();
     return
     //console.log('');console.log('*** initMe for ' + this.currentElName);
-    //this.createRawChildren();
-    //this.setParentType();
-    //this.setDirection();
-    //this.figureOutA();
-    //this.createProps(this.properties, this.events);
-    //this.createExtComponent();
+    this.createRawChildren();
+    this.setParentType();
+    this.setDirection();
+    this.figureOutA();
+    this.createProps(this.properties, this.events);
+    this.createExtComponent();
 }
 
 newParsedCallback() {
@@ -113,6 +133,11 @@ newParsedCallback() {
         //this.A.o.renderTo = this.newDiv.parentNode;
         //this.newDiv.parentNode.removeChild(this.newDiv);
     }
+    // this.A.o.listeners = {}
+    // this.events.forEach(function (event, index, array) {
+    //     me.setEvent(event,me.A.o,me)
+    // })
+
     this.newDoExtCreate(me, this.A.o['viewport']);
 }
 
@@ -123,16 +148,30 @@ newCreateProps(properties) {
     var o = {};
     o.xtype = this.xtype;
 
-    if (this['config'] !== null) {
+    if (this['config'] !== {}) {
         Ext.apply(o, this['config']);
     }
 
     if (true == this.fitToParent) {
         o.height='100%'
     }
+    //if (o.xtype == 'column' ||
+    //    o.xtype == 'gridcolumn') {
+    //    //replace above with call from util
+    //    var renderer = this.getAttribute('renderer')
+    //    if (renderer != undefined) {
+    //        o.cell = this.cell || {}
+    //        o.cell.xtype = 'renderercell'
+    //        //console.log(renderer)
+    //        o.cell.renderer = renderer
+    //    }
+    //}
     for (var i = 0; i < properties.length; i++) {
         var property = properties[i]
         if (this.getAttribute(property) !== null) {
+
+//this needs to be made more generic mjg
+
 
             if (property == 'renderer') {
                 var cellxtype = ''
@@ -157,10 +196,14 @@ newCreateProps(properties) {
                 o[property] = this.attributeObjects[property];
             }
 
+
             else if (property == 'handler') {
+                // if (this[property] != undefined) {
+                //     o[property] = this[property];
+                // }
 
                 var functionString = this.getAttribute(property);
-                o[property] = eval(functionString + '(event)');
+                eval(functionString + '(event)');
 
                 ////error check for only 1 dot
                 //var r = functionString.split('.');
@@ -169,14 +212,14 @@ newCreateProps(properties) {
                 //o[property] = window[obj][func];
             }
 
+
+
             // else if ((o.xtype === 'cartesian' || o.xtype === 'polar') && property === 'layout') {
             // }
-
             else if (property == 'listeners' && this[property] != undefined) {
                 o[property] = this[property];
                 listenersProvided = true;
             }
-
             else if (property == 'config') {
                 var configs = JSON.parse(this.getAttribute(property))
                 for (var configProp in configs) {
@@ -186,7 +229,6 @@ newCreateProps(properties) {
                     }
                 }
             }
-
             else if (this[property] != undefined &&
                 property != 'listeners' &&
                 property != 'config' &&
@@ -214,86 +256,8 @@ newCreateProps(properties) {
     this.A.o = o;
 }
 
-    newDoExtCreate(me, isApplication) {
-        Ext.onReady(function () {
-            //console.log(me.A.o)
-            me.A.ext = Ext.create(me.A.o)
-            me.A.CHILDREN.forEach(function(child) {
-                me.addTheChild(me.A.ext,child);
-            })
-            if (me.parentNode != null && me.parentNode.nodeName.substring(0, 4) === 'EXT-') {
-                if (me.parentNode.A.ext !== undefined) {
-                    me.addTheChild(me.parentNode.A.ext,me.A.ext);
-                }
-                else {
-                    me.parentNode.A.CHILDREN.push(me.A.ext);
-                }
-            }
-            if (isApplication) {
-                Ext.application({
-                    name: 'MyEWCApp',
-                    launch: function () {
-                        Ext.Viewport.add([me.A.ext]);
-                    }
-                });
-            }
 
-            {Shortname}BaseComponent.elementcount--;
-            //console.log('reduced: ' + me.tagName + ': elementcount reduced to ' + {Shortname}BaseComponent.elementcount)
-            if ({Shortname}BaseComponent.elementcount == 0) {
-                //console.log('done');
-                //console.log({Shortname}BaseComponent.elements);
-                {Shortname}BaseComponent.elementsprior = [...{Shortname}BaseComponent.elements];
-                {Shortname}BaseComponent.elements = [];
-                //console.log({Shortname}BaseComponent.elementsprior);
-                var allExt = [];
-                var cmpObj = {};
-                {Shortname}BaseComponent.elementsprior.forEach(element => {
-                    //console.dir(element)
-                    if (element.A != undefined) {
-                        for (var i = 0; i < element.A.ITEMS.length; i++) {
-                            //console.log(element.A.ITEMS[i])
-                            if(element.A.ITEMS[i].xtype == 'widget') {
-                                //console.log('do it for ' + i)
-                                //console.log(me)
-                                //console.dir(element)
-                                //console.log(me.A.ext)
-                                //console.log(element.A.ITEMS[i])
-                                //element.A.ext.insert(i,element.A.ITEMS[i])
-                                element.addTheChild(element.A.ext,element.A.ITEMS[i],i);
-                            }
-                        }
-                    }
-                    //console.log('after loop')
-
-                    if (element.getAttribute('extname') != undefined) {
-                        var o = {}
-                        o.extname = element.getAttribute('extname');
-                        o.ext = element.A.ext;
-                        o.cmp = element.A.ext;
-                        allExt.push(o);
-                        cmpObj[element.getAttribute('extname')] = element.A.ext;
-                    }
-                })
-
-                //console.log({Shortname}BaseComponent.elementsprior)
-                {Shortname}BaseComponent.elementsprior.forEach(element => {
-                    //console.dir(element)
-                    element.dispatchEvent(new CustomEvent('ready', {
-                        detail: {
-                            cmp: element.A.ext,
-                            allCmp: allExt,
-                            ext: element.A.ext,
-                            allExt: allExt,
-                            cmpObj: cmpObj
-                        }
-                    }))
-                })
-            }
-        })
-    }
-
-newDoExtCreateNoFiles(me, isApplication) {
+newDoExtCreate(me, isApplication) {
     //if (Ext != undefined) {
     if (window['Ext'] != undefined) {
         {Shortname}BaseComponent.isLoading = true;

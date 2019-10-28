@@ -1,3 +1,9 @@
+export function extnameToProperty(event, me) {
+    for (var prop in event.detail.cmpObj) {
+        me[prop+'Cmp'] = event.detail.cmpObj[prop];
+    }
+}
+
 export function doProp(me, prop) {
     Object.defineProperty(me, prop, {
         get: function(){return doGet(me,prop)},
@@ -33,9 +39,9 @@ function doSet(me,prop,val) {
         else {
             val2 = val
         }
-        if (prop == 'id') {
-            console.log('set: ' + val2)
-        }
+        // if (prop == 'id') {
+        //     console.log('set: ' + val2)
+        // }
         me.setAttribute(prop, val2)
     }
     else {
@@ -43,22 +49,24 @@ function doSet(me,prop,val) {
     }
 }
 function doGet(me,prop) {
-    console.log('doGet: ' + prop)
-    if (prop == 'id') {
-        console.log(me.getAttribute(prop))
-        console.log(me.attributeObjects[prop])
-    }
+    //console.log('doGet: ' + prop)
+    // if (prop == 'id') {
+    //     console.log(me.getAttribute(prop))
+    //     console.log(me.attributeObjects[prop])
+    // }
     if (me.getAttribute(prop) == 'object' || me.getAttribute(prop) == 'function') {
-        console.log('a')
+        //console.log('a')
         return me.attributeObjects[prop]
     }
     else if (me.getAttribute(prop) != null) {
-        console.log('b')
+        //console.log('b')
         return me.getAttribute(prop)
     }
     else {
-        console.log('c')
-        return 0
+        // if (prop != 'id') {
+        //     console.log('no return from doGet for ' + prop + ' in ' + me.tagName)
+        // }
+        return null
     }
 }
 

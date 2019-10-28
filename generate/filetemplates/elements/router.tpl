@@ -1,4 +1,4 @@
-import EwcBaseComponent from './ewc-base';
+import {Shortname}BaseComponent from './{shortname}-base';
 import HTMLParsedElement from './HTMLParsedElement.js';
 import {
     doProp,
@@ -10,7 +10,7 @@ import {
     isPlugin
 } from './util.js';
 
-export class ExtRouterComponent extends EwcBaseComponent {
+export class ExtRouter extends {Shortname}BaseComponent {
     //prettier-ignore
     get hidden() {return this.getAttribute("hidden");}
     set hidden(hidden) {
@@ -34,12 +34,12 @@ export class ExtRouterComponent extends EwcBaseComponent {
     }
 
     connectedCallback() {
-        EwcBaseComponent.elementcount++;
-        console.log('added: ' + this.tagName + ': elementcount is now ' + EwcBaseComponent.elementcount);
-        EwcBaseComponent.elements.push(this);
-        console.log(EwcBaseComponent.elements)
+        {Shortname}BaseComponent.elementcount++;
+        console.log('added: ' + this.tagName + ': elementcount is now ' + {Shortname}BaseComponent.elementcount);
+        {Shortname}BaseComponent.elements.push(this);
+        console.log({Shortname}BaseComponent.elements)
 
-        this.base = EwcBaseComponent;
+        this.base = {Shortname}BaseComponent;
     }
 
     parsedCallback() {
@@ -87,8 +87,8 @@ export class ExtRouterComponent extends EwcBaseComponent {
                     me.parentNode.A.CHILDREN.push(me.A.ext);
                 }
             }
-            EwcBaseComponent.elementcount--;
-            console.log('reduced: ' + me.tagName + ' elementcount reduced to ' + EwcBaseComponent.elementcount)
+            {Shortname}BaseComponent.elementcount--;
+            console.log('reduced: ' + me.tagName + ' elementcount reduced to ' + {Shortname}BaseComponent.elementcount)
         })
     }
 
@@ -172,7 +172,7 @@ export class ExtRouterComponent extends EwcBaseComponent {
         }
     }
 }
-window.customElements.define('ext-router', HTMLParsedElement.withParsedCallback(ExtRouterComponent))
+window.customElements.define('ext-router', HTMLParsedElement.withParsedCallback(ExtRouter))
 
 export function getRoutes(items) {
     //mjg clean this up

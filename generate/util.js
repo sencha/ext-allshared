@@ -40,7 +40,7 @@ exports.run = (parm, cwd) => {
   if (cwd == undefined) {cwd = process.cwd()}
   return promise = new Promise((resolve, reject) => {
     let options = {cwd: cwd, stdio: 'inherit', encoding: 'utf-8'}
-    console.log(color(command + ' ' + args.toString().replace(',', ' ')) + ' in ' + cwd)
+    //console.log(color(command + ' ' + args.toString().replace(',', ' ')) + ' in ' + cwd)
     let child = require('child_process').spawn(command, args, options)
     child.on('close', (code, signal) => {resolve({code, signal})})
     child.on('error', (error) => {reject(error)})
