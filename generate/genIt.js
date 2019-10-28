@@ -1,6 +1,6 @@
 // node ./genIt.js ele all
 // node ./genIt.js eng grid
-const install = true;
+const install = false;
 const installExt = true;
 const doAllinXtype = true;
 
@@ -174,6 +174,7 @@ function oneItem(item, framework, names, xtypes, template) {
     var sEVENTS = eventObj.sEVENTS;
     var sEVENTNAMES = eventObj.sEVENTNAMES;
     var sEVENTSGETSET = eventObj.sEVENTSGETSET;
+    //eventObj.eventsArray
     sGETSET = sGETSET + sEVENTSGETSET;
 
     didXtype = false;
@@ -262,8 +263,43 @@ function oneItem(item, framework, names, xtypes, template) {
                 }
             }
 
-            var text200 = ''; try {text200 = item.text.substring(1, 200)}catch(e) {}
+            var ewcProperties = ''
+            propertyObj.propertiesArray.forEach(property => {
+                //console.log(event);
+                var Text = ''
+                if (property.text != undefined) {
+                    Text = property.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                }
+                property.ewc = `${property.name}<br/>${Text}<br/><br/>`;
+                ewcProperties = ewcProperties + property.ewc + '\n';
+            });
+
+            var ewcEvents = ''
+            eventObj.eventsArray.forEach(event => {
+                //console.log(event);
+                var parameters = ''
+                event.parameters.forEach(parameter => {
+                    if (parameter != undefined) {
+                        parameters = parameters + parameter + ', '
+                    }
+                })
+                const EventName = event.name.charAt(0).toUpperCase() + event.name.slice(1);
+                const Parameters = parameters.replace(/,\s*$/, "");
+                event.ewc = `on${EventName} = ( {detail: { ${Parameters} }} ) => {}<br/>`;
+                ewcEvents = ewcEvents + event.ewc + '\n'
+            });
+
+            //console.log('****')
+            //console.log(ewcEvents)
+
+            var n = 0
+            if (item.text != undefined) {
+                n = item.text.indexOf(". ");
+            }
+            var text200 = ''; try {text200 = item.text.substring(0, n+1)}catch(e) {}
             var values3 = {
+                ewcEvents : ewcEvents,
+                ewcProperties : ewcProperties,
                 propertiesDocs: propertiesDocs,
                 methodsDocs: methodsDocs,
                 eventsDocs: eventsDocs,
@@ -334,6 +370,7 @@ function doProperties(o) {
     var sPROPERTIES = `${newLine}`;
     var sPROPERTIESOBJECT = `${newLine}`;
     var sGETSET = "";
+    var propertiesArray = []
 
     //   var configsArray = o.items.filter(function(obj) {return obj.$type == 'configs';});
     //   if (configsArray.length == 1) {
@@ -341,6 +378,9 @@ function doProperties(o) {
     var haveResponsiveConfig = false;
     var propertiesDocs = `<div class="select-div"><select id="propertiesDocs" onchange="changeProperty()" name="propertiesDocs">${newLine}`
     getItems(o, "configs").forEach(function(config, index, array) {
+        var propertyObj = {}
+
+
         propertiesDocs = propertiesDocs + `    <option value="${config.text}">${config.name}</option>${newLine}`
 
         if (config.from == undefined || doAllinXtype == true) {
@@ -377,6 +417,9 @@ function doProperties(o) {
                 });
                 s = s + `]`;
 
+                propertyObj.text = config.text
+                propertyObj.name = config.name
+
                 sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"${config.name}":${s},${newLine}`;
                 sGETSET =
                     sGETSET +
@@ -385,6 +428,7 @@ function doProperties(o) {
                     set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`;
             }
         }
+        propertiesArray.push(propertyObj)
     });
 
     sPROPERTIES = `${sPROPERTIES}'platformConfig',${newLine}`;
@@ -442,6 +486,7 @@ function doProperties(o) {
     o.sPROPERTIES = sPROPERTIES;
     o.sPROPERTIESOBJECT = sPROPERTIESOBJECT;
     o.sGETSETPROPERTIES = sGETSET;
+    o.propertiesArray = propertiesArray;
     return o;
 
 
@@ -511,7 +556,12 @@ function doEvents(o) {
     var sEVENTS = `${newLine}`;
     var sEVENTNAMES = `${newLine}`;
     var sEVENTSGETSET = "";
+    var eventsArray = []
     getItems(o, "events").forEach(function(event, index, array) {
+        var eventObj = {}
+        eventObj.name = event.name
+        eventObj.parameters = []
+
         eventsDocs = eventsDocs + `    <option value="${event.text}">${event.name}</option>${newLine}`
 
 
@@ -538,6 +588,9 @@ function doEvents(o) {
 
         if (event.items != undefined) {
             event.items.forEach(function(parameter, index, array) {
+                if (parameter == undefined) {
+                    return
+                }
                 if (index == array.length - 1) {
                     commaOrBlank = "";
                 } else {
@@ -545,22 +598,31 @@ function doEvents(o) {
                 }
                 if (parameter.name == "this") {
                     //if (event.name == 'tap') { console.log(o) };
-                    parameter.name = o.xtype;
+                    parameter.name = 'sender'; //o.xtype;
                 }
                 sEVENTS = sEVENTS + "" + parameter.name + commaOrBlank;
+
+                eventObj.parameters.push(parameter.name)
+
             });
         }
         sEVENTS = sEVENTS + "'}" + "," + newLine;
+        eventsArray.push(eventObj)
     });
     eventsDocs = eventsDocs + `</select></div>${newLine}`
+
+
+
     sEVENTS = sEVENTS + "{name:'" +"ready" +"',parameters:''}" +"" +newLine;
     sEVENTNAMES = sEVENTNAMES + "'" + "ready" + "'" + "" + newLine;
+
 
     var o = {};
     o.eventsDocs = eventsDocs;
     o.sEVENTS = sEVENTS;
     o.sEVENTNAMES = sEVENTNAMES;
     o.sEVENTSGETSET = sEVENTSGETSET;
+    o.eventsArray = eventsArray;
     return o;
 }
 
@@ -619,6 +681,8 @@ function doPostLaunch() {
     });
     info.includedxtypes = info.includedxtypes + `</div>${newLine}`
     writeTemplateFile(templateFolder+'doc.tpl', `${docFolder}doc.html`, info)
+    writeTemplateFile(templateFolder+'z-tabs.tpl', `${docFolder}z-tabs.js`, info)
+    writeTemplateFile(templateFolder+'style.tpl', `${docFolder}style.css`, info)
     writeTemplateFile(templateFolder+'docstyle.tpl', `${docFolder}docstyle.css`, info)
 
     writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
@@ -643,7 +707,7 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
-        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, {});
+        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
     }
     else if (framework == 'elements') {
         writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
@@ -657,7 +721,7 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
-        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, {});
+        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
     }
     else if (framework == 'angular') {
         info.basecode = readFile("/../common/common-base.js")
