@@ -1,6 +1,6 @@
 // node ./genIt.js ele all
 // node ./genIt.js eng grid
-const install = false;
+const install = true;
 const installExt = true;
 const doAllinXtype = true;
 
@@ -242,6 +242,12 @@ function oneItem(item, framework, names, xtypes, template) {
                 folder: folder,
                 Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
                 xtype: xtypes[j]
+            }
+            if (xtypes[j] == "grid") {
+                values.ReactCell = "import '@sencha/ext-elements-all/react/ReactCell';"
+            }
+            else {
+                values.ReactCell = ""
             }
             writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.${extension}`, values)
             writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}${reactPrefix}${values.Xtype}.${extension}`, values)
@@ -699,11 +705,12 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
 
         copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
-        copyFileSync(templateFolder+`reactify.js`, outputFolder+`react/reactify.js`);
+        copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
-        copyFileSync(templateFolder+`reactify.js`, outputFolder+`reactOrig/reactify.js`);
+        copyFileSync(templateFolder+`reactize.js`, outputFolder+`reactOrig/reactize.js`);
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
-        copyFileSync(templateFolder+`angularify.ts`, outputFolder+`angular/angularify.ts`);
+        copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
+        copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
@@ -713,11 +720,12 @@ function doPostLaunch() {
         writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
         copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
         copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
-        copyFileSync(templateFolder+`reactify.js`, outputFolder+`react/reactify.js`);
+        copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
-        copyFileSync(templateFolder+`reactify.js`, outputFolder+`reactOrig/reactify.js`);
+        copyFileSync(templateFolder+`reactize.js`, outputFolder+`reactOrig/reactize.js`);
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
-        copyFileSync(templateFolder+`angularify.ts`, outputFolder+`angular/angularify.ts`);
+        copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
+        copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
@@ -744,17 +752,17 @@ function doPostLaunch() {
         exportall = exportall + `export * from './lib/ext-${framework}${info.bundle}.module';${newLine}`;
     }
 
-//     info.import = ``
-//     if (info.type != 'blank') {
-//         if (installExt == true) {
+    info.import = ``
+    if (info.type != 'blank') {
+        if (installExt == true) {
 //             info.import =
 // `import 'script-loader!../ext/ext.${info.type}';
 // import 'script-loader!../ext/css.${info.type}';`
-// //            info.import =
-// //`import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}';
-// //import 'script-loader!node_modules/@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
-//         }
-//    }
+           info.import =
+`import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}';
+import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
+        }
+   }
     writeTemplateFile(templateFolder+`${info.shortname}-base.tpl`,`${srcFolder}${info.shortname}-base.${extension}`,info);
 
     //copy staging Ext folder to src Ext

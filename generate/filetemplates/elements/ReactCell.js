@@ -1,4 +1,6 @@
-const ReactCell = Ext.define('Ext.ReactCell', {
+import ReactDOM from 'react-dom';
+//const ReactCell =
+Ext.define('Ext.ReactCell', {
     extend: 'Ext.grid.cell.Base',
     xtype: 'reactcell',
 
@@ -23,58 +25,40 @@ const ReactCell = Ext.define('Ext.ReactCell', {
         renderer = renderer || me.getRenderer() || column.getRenderer();
         if (renderer) {
             markup = renderer.call(scope, value, context.record, context.dataIndex, me, column);
-            // console.dir('this')
-            // console.dir(this)
-
-            // console.dir('markup')
-            // console.dir(markup)
-            // console.dir(markup.type.prototype.target)
             if (typeof markup === 'object') {
-                result = Ext.react.ReactDOM.render(markup, me.bodyElement.dom);
-
-
+                result = ReactDOM.render(markup, me.bodyElement.dom);
                 if (result == null) {
                   markup.type.prototype.rootDOM =  me.bodyElement.dom
                 }
                 else {
-                //   console.log('ext-react-renderercell')
-                //   console.log('value: ' + value)
-                //   console.dir(result.cmp)
-                //   console.dir(result)
-
-                  //added
                   if (result.cmp != undefined) {
                     result.cmp.setRenderTo(me.bodyElement.dom);
                   }
-
                   if (result.isWidget) {
-                      //console.log('is widget')
                       needsSizing = result !== me.widget;
                       me.widget = result;
                   }
                 }
-
-
-
             } else {
                 if (markup == null) {
                     markup = '';
                 }
-
                 Ext.dom.Helper.overwrite(me.bodyElement, Ext.htmlEncode(markup.toString()));
                 me.widget = null;
             }
-
             if (needsSizing && me.getForceWidth()) {
                 me.setWidgetWidth(me.getWidth());
             }
         }
-
         return me;
     },
 
     updateWidth: function (width, oldWidth) {
-        this.callParent(arguments);
+        //this.callParent(arguments);
+        var el = this.el;
+
+        el.setWidth(width);
+        el.toggleCls(this.widthedCls, width != null && width !== 'auto');
 
         if (this.getForceWidth()) {
             this.setWidgetWidth(width);
@@ -83,7 +67,7 @@ const ReactCell = Ext.define('Ext.ReactCell', {
 
     doDestroy: function () {
         this.widget = null;
-        Ext.react.ReactDOM.unmountComponentAtNode(this.bodyElement.dom);
+        ReactDOM.unmountComponentAtNode(this.bodyElement.dom);
         this.callParent();
     },
 

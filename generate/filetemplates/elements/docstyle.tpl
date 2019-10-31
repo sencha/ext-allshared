@@ -3,6 +3,24 @@
         background: white;
     }
 
+html > body {
+    position: fixed;
+}
+
+
+html > body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background: green;
+    padding: 0;
+    flex-direction: row; //| row-reverse | column | column-reverse;
+    flex-wrap: nowrap;
+}
+
+
+
 .heading {
     xbackground: blue;
     xpadding: 10px;

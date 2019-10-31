@@ -1,3 +1,4 @@
-import reactify from './reactify.js';
+import reactize from './reactize.js';
 import {Xtype} from '../src/ext-{xtype}.component.js';
-export default reactify({Xtype});
+export default reactize({Xtype});
+{ReactCell}

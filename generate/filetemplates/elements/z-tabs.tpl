@@ -105,9 +105,12 @@ class ZTabs extends HTMLBaseElement {
     }
 
       get html() { return `
+<div class="tab">
+<div class="tabtop">top</div>
 <div class="tabbuttonheader"></div>
 <div class="tabpanelheader">
     <slot class="slot"></slot>
+</div>
 </div>
       `}
 
@@ -115,6 +118,26 @@ class ZTabs extends HTMLBaseElement {
       <style height=100px></style>
 
 <style>
+
+.tab {
+    display: flex;
+    height: 100%;
+    width: 100%
+    border-bottom: 1px solid var(--vscode-tab-activeBackground);
+    padding: 5px 5px 0 5px;
+    xbackground: var(--z-tab-activeBackground);
+    background: red;
+}
+
+.tabtop {
+    display: flex;
+    height: 100%;
+    width: 100%
+    border-bottom: 1px solid var(--vscode-tab-activeBackground);
+    padding: 5px 5px 0 5px;
+    xbackground: var(--z-tab-activeBackground);
+    background: red;
+}
 
 .tabbuttonheader {
     display: flex;
