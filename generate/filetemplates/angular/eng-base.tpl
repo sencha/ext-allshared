@@ -19,6 +19,7 @@ export class EngBase {
     xtype: any
     properties: any
     events: any
+    eventnames: any;
 
     A: any;
     node: any
@@ -54,6 +55,7 @@ export class EngBase {
         this.events = events;
 
         this.events.forEach( (event: any, n: any) => {
+            this.eventnames.push(event.name)
             if (event.name != 'fullscreen') {
                 (<any>this)[event.name] = new EventEmitter()
             }

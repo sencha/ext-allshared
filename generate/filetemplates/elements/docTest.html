@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+body{
+  margin: 0;
+  color: #fff;
+}
+.wrapper{
+  min-height: 100vh;
+  background: #ccc;
+  display: flex;
+  flex-direction: column;
+}
+.header, .footer{
+  height: 50px;
+  background: #666;
+}
+.content {
+  flex: 1;
+  background: #999;
+  display: flex;
+  color: #000;
+}
+.columns{
+  display: flex;
+  flex: 1;
+}
+.main{
+  flex: 1;
+  background: #eee;
+}
+.sidebar{
+  width: 20%;
+  background: #ccc
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+    <header class="header">Header: Fixed height</header>
+    <section class="content">
+        <div class="columns">
+            <aside class="sidebar">Sidebar: Fixed width</aside>
+            <main class="main">Content: Flexible width</main>
+        </div>
+    </section>
+    <footer class="footer">Footer: Fixed height</footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+sencha compile -cl=./manifest/grid.ext.manifest.js load-app -te=./build/grid/temp -ta=App and \
+    include -f=Boot.js and \
+    include -namespace=Ext.grid and \
+    include -namespace=Ext.Widget and \
+    concat --input-js-version ES6 --js-version ES6 -out=build/all/ext.all.mjg.dev.js
+
+sencha compile -cl=./manifest/grid.ext.manifest.js load-app -te=./build/grid/temp -ta=App and \
+    include -namespace=Ext.Widget and \
+    concat --input-js-version ES6 --js-version ES6 -out=build/all/ext.all.widget.dev.js
+
+sencha compile -cl=./manifest/grid.ext.manifest.js load-app -te=./build/grid/temp -ta=App and \
+    include -tag=core and \
+    concat --input-js-version ES6 --js-version ES6 -out=build/all/ext.all.core.dev.js
+
+sencha compile -cl=./manifest/grid.ext.manifest.js load-app -te=./build/grid/temp -ta=App and \
+    include -tag=class and \
+    concat --input-js-version ES6 --js-version ES6 -out=build/all/ext.all.class.dev.js
+
+
+
+
+
+
+
+compile -d exclude -all and \
+include -f=Boot.js and \
+include -r -tag=overrides and \
+include -r -f=./manifest/grid.ext.manifest.js and \
+exclude -f=./manifest/grid.ext.manifest.js  \
+and concat --closure --input-js-version ES6 --js-version ES6 --compress -out=./build/grid/ext.grid.dev.js then \
+fs minify -closure -l=NEXT -f=./build/grid/ext.grid.dev.js -t=./build/grid/ext.grid.prod.js
+
+
+      --debug
+      exclude
+      -all
+      and
+      include
+      -f=Boot.js
+      and
+      concatenate
+          ${app.buildfolder}/${app.packagename}/ext.${app.packagename}.dev.js
+      and
+      exclude
+      -all
+      and
+      # include theme overrides
+      include
+        -r
+        -tag=overrides
+      and
+      # include all js files needed for manifest.js
+      include
+          -r
+          -f=${app.manifestfolder}/${app.packagename}.ext.manifest.js
+      and
+      # exclude the generated manifest file itself,
+      # since we don't want the generated bundle file to create any components
+      exclude
+      -f=${app.manifestfolder}/${app.packagename}.ext.manifest.js
+      and
+      concatenate
+      +append
+          ${app.buildfolder}/${app.packagename}/ext.${app.packagename}.dev.js
+      and
+      scss
+          -appName=App
+          -imageSearchPath=resources
+          -themeName=triton
+          -resourceMapBase=.
+          -output=${app.buildfolder}/${app.packagename}/ext.${app.packagename}.scss
+      and
+      resources
+          -excludes=-all*.css
+          -out=${app.buildfolder}/${app.packagename}
+      and
+      resources
+          -model=true
+          -out=${app.buildfolder}/${app.packagename}
