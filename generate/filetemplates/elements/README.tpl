@@ -78,11 +78,11 @@ cp node_modules/@sencha/ext-elements-all/react/ReactCell.js ./public/ReactCell.j
 
 ```sh
 import React from 'react';
-import Panel from "@sencha/ext-elements-all/react/Panel";
+import ExtPanel from "@sencha/ext-elements-all/react/ExtPanel";
 
 function App() {
   return (
-    <Panel title="hi"></Panel>
+    <ExtPanel title="hi"></ExtPanel>
   );
 }
 

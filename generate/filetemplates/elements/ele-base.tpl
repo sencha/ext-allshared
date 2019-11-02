@@ -17,9 +17,15 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         this.properties = properties;
         this.events = events;
         this.eventnames = [];
+        var eventnamesall = [];
         this.events.forEach( (event) => {
-            this.eventnames.push(event.name)
+            eventnamesall.push(event.name)
         })
+        const distinct = (value, index, self) => {
+            //return true
+            return self.indexOf(value) === index;
+        }
+        this.eventnames = eventnamesall.filter(distinct);
 
         this.A = {};
         this.A.CHILDREN = [];
@@ -97,7 +103,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         if (this.parentNode != null &&
             this.parentNode.nodeName.substring(0, 4) !== 'EXT-')
         {
-            this.A.o.renderTo = this; //.parentNode;
+            this.A.o.renderTo = this.parentNode; //this;
             //this.A.o.renderTo = this.newDiv.parentNode;
             //this.newDiv.parentNode.removeChild(this.newDiv);
         }
@@ -122,15 +128,24 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
                 if (property == 'renderer') {
                     var cellxtype = ''
-                    try {
-                        Ext.create({xtype: 'reactcell'})
-                        cellxtype = 'reactcell'
-                    }
-                    catch(e) {
+                    if (Ext.ClassManager.getByAlias('widget.reactcell') == undefined) {
                         cellxtype = 'elementcell'
                     }
+                    else {
+                        cellxtype = 'reactcell'
+                    }
+
+                    //try {
+                    //    Ext.create({xtype: 'reactcell'})
+                    //    cellxtype = 'reactcell'
+                    //}
+                    //catch(e) {
+                    //    cellxtype = 'elementcell'
+                    //}
+
                     o.cell = {};
                     o.cell.xtype = cellxtype;
+                    o.cell.encodeHtml = false;
                     if (this.attributeObjects['renderer'] != undefined) {
                         o.renderer = this.attributeObjects['renderer'];
                     }
@@ -145,7 +160,9 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
                 else if (property == 'handler') {
                     var functionString = this.getAttribute(property);
-                    o[property] = eval(functionString + '(event)');
+                    if (functionString !== 'undefined') {
+                        o[property] = eval(functionString + '(event)');
+                    }
 
                     ////error check for only 1 dot
                     //var r = functionString.split('.');

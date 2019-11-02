@@ -619,7 +619,7 @@ function doEvents(o) {
 
 
 
-    sEVENTS = sEVENTS + "{name:'" +"ready" +"',parameters:''}" +"" +newLine;
+    sEVENTS = sEVENTS + "{name:'" +"ready" +"',parameters:'cmd,cmdAll'}" +"" +newLine;
     sEVENTNAMES = sEVENTNAMES + "'" + "ready" + "'" + "" + newLine;
 
 
@@ -709,7 +709,7 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
         copyFileSync(templateFolder+`reactize.js`, outputFolder+`reactOrig/reactize.js`);
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
-        copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
+        //copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
         copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
@@ -724,7 +724,7 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
         copyFileSync(templateFolder+`reactize.js`, outputFolder+`reactOrig/reactize.js`);
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
-        copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
+        //copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
         copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);

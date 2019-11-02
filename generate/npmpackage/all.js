@@ -221,6 +221,7 @@ var xtypes = [
     'widget',
 ]
 var classes = [
+    'Ext.ux.ajax.JsonSimlet',
     'Ext.chart.series.Pie',
     'Ext.data.virtual.Store',
     'Ext.grid.rowedit.Plugin',
