@@ -1,7 +1,8 @@
 {
     "name": "@sencha/ext-{framework}{bundle}",
     "version": "7.1.0",
-    "main": "ext-{framework}{bundle}.module.js",
+    "main2": "ext-{framework}{bundle}.module.js",
+    "main": "index.js",
     "private": false,
     "bin": {
       "ext-{framework}{bundle}": "./bin/ext-{framework}{bundle}.js"

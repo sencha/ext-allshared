@@ -1,4 +1,5 @@
-import Ext{Xtype} from '../src/ext-{xtype}.component.js';
+//import EWC{Xtype} from '../dist/ext-{xtype}.component.js';
+import EWC{Xtype} from '@sencha/ext-web-components/dist/ext-{xtype}.component.js';
 import {
     Host,
     Optional,
@@ -8,27 +9,16 @@ import {
     forwardRef,
     ViewContainerRef
   } from '@angular/core';
-import EngBase from './angularbase';
-
-//var events = (new Ext{Xtype}()).eventnames;
-//var eventnamesall = [];
-//events.forEach( (event: any, n: any) => {
-//    eventnamesall.push(event.name)
-//})
-//const distinct = (value, index, self) => {
-//    //return true
-//    return self.indexOf(value) === index;
-//}
-//var eventnames = eventnamesall.filter(distinct);
+import { EngBase } from './angularbase';
 
 @Component({
     selector: 'Ext{Xtype}',
-    inputs: (new Ext{Xtype}()).properties,
-    outputs: (new Ext{Xtype}()).eventnames,
+    inputs: (new EWC{Xtype}()).properties,
+    outputs: (new EWC{Xtype}()).eventnames,
     providers: [{provide: EngBase, useExisting: forwardRef(() => Ext{Xtype}Component)}],
     template: '<ng-content></ng-content>'
 })
-export default class Ext{Xtype}Component extends EngBase {
+export class Ext{Xtype}Component extends EngBase {
     constructor(
         eRef: ElementRef,
         @Host() @Optional() @SkipSelf() hostComponent: EngBase,
@@ -37,9 +27,9 @@ export default class Ext{Xtype}Component extends EngBase {
         super(
             eRef,
             hostComponent,
-            (new Ext{Xtype}()).properties,
-            (new Ext{Xtype}()).events,
-            (new Ext{Xtype}()).eventnames,
+            (new EWC{Xtype}()).properties,
+            (new EWC{Xtype}()).events,
+            (new EWC{Xtype}()).eventnames,
             vc
         )
         this.xtype = '{xtype}'
@@ -71,3 +61,14 @@ export default class Ext{Xtype}Component extends EngBase {
 //         .join('')
 // }
 // var pascalName = toPascalCase(tagName)
+
+//var events = (new EWC{Xtype}()).eventnames;
+//var eventnamesall = [];
+//events.forEach( (event: any, n: any) => {
+//    eventnamesall.push(event.name)
+//})
+//const distinct = (value, index, self) => {
+//    //return true
+//    return self.indexOf(value) === index;
+//}
+//var eventnames = eventnamesall.filter(distinct);

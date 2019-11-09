@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+//https://coryrylan.com/blog/using-web-components-in-react
 //import ReactCell from './ReactCell.js';
 //<script src="%PUBLIC_URL%/css.all.js"></script>
 //<script src="%PUBLIC_URL%/ext.all.js"></script>
@@ -35,8 +36,9 @@ export default function (CustomElement) {
     const displayName = toPascalCase(tagName)
 
     class ReactComponent extends React.Component {
-        constructor() {
-            super()
+        constructor(props) {
+            super(props)
+            this.componentRef = React.createRef();
         }
 
         static get displayName() {
@@ -44,6 +46,8 @@ export default function (CustomElement) {
         }
 
         componentDidMount() {
+            this.componentRef.current.text = this.props.text;
+
             const node = ReactDOM.findDOMNode(this);
 
             Object.keys(this.props).forEach(name => {
@@ -58,21 +62,45 @@ export default function (CustomElement) {
                     node[name] = this.props[name];
                 }
             });
+
+            // if (this.props.onTap) {
+            //     this.componentRef.current.addEventListener('tap', (e) => this.props.onTap(e));
+            // }
+
         }
 
-        // componentDidUpdate(prevProps, prevState) {
-        //     //console.log('componentDidUpdate')
-        // }
-
-        // componentWillUnmount() {
-        //     //console.log('componentWillUnmount')
-        //     //console.log(this.element)
-        //     //var r = React.isValidElement(this.element)
-        //     //console.log(r)
-        // }
+        componentDidUpdate(prevProps, prevState) {
+            console.log('componentDidUpdate: ' + tagName)
+            //console.log(prevProps)
+             //var r = React.isValidElement(this.element)
+            var me = this;
+            for (var prop in prevProps) {
+              if (!/^on/.test(prop)) {
+                //console.log(prop)
+                //console.log(prevProps[prop])
+                //console.log(me.buttonRef.current[prop])
+                if (me.props[prop] !== prevProps[prop] && prop != 'children') {
+                    console.log(prop)
+                    me.componentRef.current[prop] = me.props[prop];
+                }
+              }
+            }
+        }
 
         render() {
-            this.element = React.createElement(tagName, { style: this.props.style }, this.props.children);
+            //console.log('*****render: ' + tagName)
+            //console.log(this.props)
+
+            //this.element = React.createElement(tagName, { style: this.props.style }, this.props.children);
+            this.element = React.createElement(
+                tagName,
+                {
+                    ...this.props,
+                    style: this.props.style,
+                    ref: this.componentRef
+                },
+                this.props.children
+            )
             return this.element;
         }
     }

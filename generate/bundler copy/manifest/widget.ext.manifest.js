@@ -1,1 +1,0 @@
-Ext.create({"xtype":"widget"});

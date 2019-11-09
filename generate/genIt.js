@@ -1,3 +1,9 @@
+
+
+var reactIndex = ''
+var aItems = [];
+
+
 // node ./genIt.js ele all
 // node ./genIt.js eng grid
 const install = true;
@@ -40,6 +46,8 @@ const rimraf = require("rimraf");
 const mkdirp = require("mkdirp");
 require("./XTemplate");
 
+var docs = []
+
 const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`);
 const xtypelist = require("./npmpackage/" + packagename).getXtypes();
 
@@ -54,12 +62,14 @@ const srcStagingFolder = outputFolder + "srcStaging/";
 const docFolder = outputFolder + 'doc/';
 const docStagingFolder = outputFolder + 'docStaging/';
 const binFolder = outputFolder + 'bin/';
+
 const reactFolder = outputFolder + 'react/';
 const reactStagingFolder = outputFolder + 'reactStaging/';
 const reactOrigFolder = outputFolder + 'reactOrig/';
 const reactOrigStagingFolder = outputFolder + 'reactOrigStaging/';
 const angularFolder = outputFolder + 'angular/';
 const angularStagingFolder = outputFolder + 'angularStaging/';
+
 const extFolder = outputFolder + 'ext/';
 
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
@@ -70,29 +80,26 @@ mkdirp.sync(srcStagingFolder);
 mkdirp.sync(docFolder);
 mkdirp.sync(docStagingFolder);
 mkdirp.sync(binFolder);
+
 mkdirp.sync(reactFolder);
 mkdirp.sync(reactStagingFolder);
 mkdirp.sync(reactOrigFolder);
 mkdirp.sync(reactOrigStagingFolder);
 mkdirp.sync(angularFolder);
 mkdirp.sync(angularStagingFolder);
+
 if (installExt == true) {mkdirp.sync(extFolder)}
 
 const newLine = "\n";
+const tab = "    ";
 var didXtype = false;
 var allExtended = '';
-const moduleVars = { imports: "", declarations: "", exports: "", ewcimports: "" };
+const moduleVars = { imports: "", declarations: "", exports: "", ewcimports: "", engimports: "" };
 
 var Items = [];
 for (i = 0; i < data.global.items.length; i++) {
     doLaunch(data.global.items[i], framework);
 }
-
-// var allXtypesArray = allXtypes.split(",");
-// let uniqueAllXtypesArray = [...new Set(allXtypesArray)];
-// uniqueAllXtypesArray.splice(-1,1)
-// uniqueAllXtypesArray.forEach(item => { console.log(item)})
-// console.log(uniqueAllXtypesArray.length)
 
 doPostLaunch();
 if (install == true) {doInstall()}
@@ -108,6 +115,7 @@ function doLaunch(item, framework) {
 
     var processIt = shouldProcessIt(item)
     if (processIt == true) {
+
         //extends??
         if (item.extends != undefined) {
             var n = item.extends.indexOf(",");
@@ -155,6 +163,13 @@ function doLaunch(item, framework) {
 
 function oneItem(item, framework, names, xtypes, template) {
     var sGETSET = "";
+    //console.log(item.xtype)
+
+    //console.log(xtypes)
+
+    //docs.push({item:})
+
+
 
     var propertyObj = doProperties(item)
     var propertiesDocs = propertyObj.eventsDocs;
@@ -177,6 +192,9 @@ function oneItem(item, framework, names, xtypes, template) {
     //eventObj.eventsArray
     sGETSET = sGETSET + sEVENTSGETSET;
 
+    //console.dir(sPROPERTIES)
+
+
     didXtype = false;
     for (var i = 0; i < names.length; i++) {
         var folder = ''
@@ -196,8 +214,8 @@ function oneItem(item, framework, names, xtypes, template) {
         filename = parts[parts.length-1]
         var extendparts = item.extends.split(".")
         var extendpath = ''
-        for (var j = 0; j < extendparts.length-1; j++) {
-            extendpath = extendpath + extendparts[j] + '/'
+        for (var j2 = 0; j2 < extendparts.length-1; j2++) {
+            extendpath = extendpath + extendparts[j2] + '/'
         }
 
         var xtype = xtypes[0];
@@ -224,6 +242,18 @@ function oneItem(item, framework, names, xtypes, template) {
         }
         writeTemplateFile(templateFolder+template, `${folder}${filename}.${extension}`, values)
 
+        if(xtypes[0] != undefined) {
+
+
+
+            var Xtype = xtypes[0].charAt(0).toUpperCase() + xtypes[0].slice(1).replace(/-/g,'_');
+            //reactIndex = reactIndex + `import Ext${Xtype}_ from "@sencha/ext-react/dist/Ext${Xtype}";export const Ext${Xtype} = Ext${Xtype}_;\n`;
+            aItems.push(Xtype)
+        }
+
+
+
+
         for (var j = 0; j < xtypes.length; j++) {
             //for each name and each xtype
             Items.push({xtype: xtypes[j], name: names[i], extended: item.extended})
@@ -244,7 +274,8 @@ function oneItem(item, framework, names, xtypes, template) {
                 xtype: xtypes[j]
             }
             if (xtypes[j] == "grid") {
-                values.ReactCell = "import '@sencha/ext-elements-all/react/ReactCell';"
+                //values.ReactCell = "import '@sencha/ext-web-components/dist/ReactCell';"
+                values.ReactCell = "import './ReactCell';"
             }
             else {
                 values.ReactCell = ""
@@ -264,6 +295,11 @@ function oneItem(item, framework, names, xtypes, template) {
                     var classname = xt.replace(/-/g, "_");
                     var capclassname = classname.charAt(0).toUpperCase() + classname.slice(1);
                     moduleVars.imports = moduleVars.imports +`import { Ext${capclassname}Component } from './src/ext-${xt}.component.${extension}';${newLine}`;
+
+                    moduleVars.ewcimports = moduleVars.ewcimports + `import './dist/ext-${classname}.component.${extension}';${newLine}`;
+                    moduleVars.engimports = moduleVars.engimports + `import { Ext${capclassname}Component } from './src/Ext${capclassname}.${extension}';${newLine}`;
+
+
                     moduleVars.exports = moduleVars.exports + `    Ext${capclassname}Component,${newLine}`;
                     moduleVars.declarations = moduleVars.declarations + `    Ext${capclassname}Component,${newLine}`;
                 }
@@ -295,6 +331,7 @@ function oneItem(item, framework, names, xtypes, template) {
                 ewcEvents = ewcEvents + event.ewc + '\n'
             });
 
+
             //console.log('****')
             //console.log(ewcEvents)
 
@@ -303,6 +340,9 @@ function oneItem(item, framework, names, xtypes, template) {
                 n = item.text.indexOf(". ");
             }
             var text200 = ''; try {text200 = item.text.substring(0, n+1)}catch(e) {}
+            var Xtype = xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_');
+            var xtype = xtypes[j];
+
             var values3 = {
                 ewcEvents : ewcEvents,
                 ewcProperties : ewcProperties,
@@ -318,8 +358,8 @@ function oneItem(item, framework, names, xtypes, template) {
                 sEVENTSGETSET: sEVENTSGETSET,
                 classname: classname,
                 folder: folder,
-                Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
-                xtype: xtypes[j],
+                Xtype: Xtype,
+                xtype: xtype,
                 alias: item.alias,
                 extend:item.extend,
                 extenders:item.extenders,
@@ -332,7 +372,25 @@ function oneItem(item, framework, names, xtypes, template) {
                 items:item.items,
                 src:item.src
             }
+
+            docs.push({
+                xtype: xtypes[j],
+                hash: xtypes[j],
+                leaf: 'true',
+                iconCls: 'x-fa fa-map',
+                desc: item.text,
+                text: xtypes[j],
+                properties: propertyObj.propertiesArray,
+                methods: methodObj.methodsArray,
+                events: eventObj.eventsArray,
+            })
+
+
+
+
             writeTemplateFile(templateFolder+'docdetail.tpl', `${docStagingFolder}ext-${xtypes[j]}.doc.html`, values3)
+
+
         }
     }
 }
@@ -371,7 +429,6 @@ function shouldProcessIt(o) {
 }
 
 function doProperties(o) {
-    var tab = "";
 
     var sPROPERTIES = `${newLine}`;
     var sPROPERTIESOBJECT = `${newLine}`;
@@ -383,6 +440,9 @@ function doProperties(o) {
 
     var haveResponsiveConfig = false;
     var propertiesDocs = `<div class="select-div"><select id="propertiesDocs" onchange="changeProperty()" name="propertiesDocs">${newLine}`
+
+
+
     getItems(o, "configs").forEach(function(config, index, array) {
         var propertyObj = {}
 
@@ -392,7 +452,7 @@ function doProperties(o) {
         if (config.from == undefined || doAllinXtype == true) {
         //configsArray[0].items.forEach(function (config, index, array) {
             if (config.deprecatedMessage == undefined) {
-                sPROPERTIES = `${sPROPERTIES}'${config.name}',${newLine}`;
+                sPROPERTIES = `${sPROPERTIES}${tab}${tab}'${config.name}',${newLine}`;
                 var type = "";
                 if (config.type == undefined) {
                     //log('', `${xtype}${tb}${config.name}`)
@@ -437,19 +497,21 @@ function doProperties(o) {
         propertiesArray.push(propertyObj)
     });
 
-    sPROPERTIES = `${sPROPERTIES}'platformConfig',${newLine}`;
+    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'platformConfig',${newLine}`;
     if (haveResponsiveConfig == false) {
-        sPROPERTIES = `${sPROPERTIES}'responsiveConfig',${newLine}`;
+        sPROPERTIES = `${sPROPERTIES}${tab}${tab}'responsiveConfig',${newLine}`;
     }
     //sPROPERTIES = `${sPROPERTIES}'align',${newLine}`;
-    sPROPERTIES = `${sPROPERTIES}'fitToParent',${newLine}`;
-    sPROPERTIES = `${sPROPERTIES}'config'${newLine}`;
+    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'fitToParent',${newLine}`;
+    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'tab',${newLine}`;
+    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'config'${newLine}`;
 
     sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"platformConfig": "Object",${newLine}`;
     if (haveResponsiveConfig == false) {
         sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"responsiveConfig": "Object",${newLine}`;
     }
     //sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"align": "Object",${newLine}`;
+    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"tab": "Object",${newLine}`;
     sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"fitToParent": "Boolean",${newLine}`;
     sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"config": "Object",${newLine}`;
 
@@ -499,17 +561,18 @@ function doProperties(o) {
 }
 
 function doMethods(o) {
-    var tab = "";
-
     var methodsDocs = `<div class="select-div"><select id="methodsDocs" onchange="changeMethod()" name="methodsDocs">${newLine}`
     var sMETHODS = "";
+    var methodsArray = []
+
     getItems(o, "methods").forEach(function(method, index, array) {
+        var methodObj = {}
         methodsDocs = methodsDocs + `    <option value="${method.text}">${method.name}</option>${newLine}`
 
 
         if (method.from == undefined) {
 
-            sMETHODS = sMETHODS + tab + tab + "{ name:'" + method.name + "',function: function"
+            sMETHODS = sMETHODS + tab + tab + "{ name:'" + method.name + "', function: function"
             // sMETHODS =
             //     sMETHODS +
             //     tab +
@@ -535,6 +598,10 @@ function doMethods(o) {
             sItems = sItems.substring(0, sItems.length - 1);
             sMETHODS = sMETHODS + "(" + sItems + ") { return this.ext." + method.name + "(" + sItems + ") } },\n";
 
+            methodObj.text = method.text
+            methodObj.name = method.name
+            methodObj.items = sItems
+            methodsArray.push(methodObj)
         }
 
         // sMETHODS =
@@ -546,17 +613,18 @@ function doMethods(o) {
         //     "(" +
         //     sItems +
         //     ") } },\n";
+
     });
     methodsDocs = methodsDocs + `</select></div>${newLine}`
     var o = {};
     o.methodsDocs = methodsDocs;
     o.sMETHODS = sMETHODS;
+    o.methodsArray = methodsArray;
     return o;
 
 }
 
 function doEvents(o) {
-    var tab = "";
 
     var eventsDocs = `<div class="select-div"><select id="eventsDocs" onchange="changeEvent()" name="eventsDocs">${newLine}`
     var sEVENTS = `${newLine}`;
@@ -564,8 +632,10 @@ function doEvents(o) {
     var sEVENTSGETSET = "";
     var eventsArray = []
     getItems(o, "events").forEach(function(event, index, array) {
+        //console.log(event)
         var eventObj = {}
         eventObj.name = event.name
+        eventObj.text = event.text
         eventObj.parameters = []
 
         eventsDocs = eventsDocs + `    <option value="${event.text}">${event.name}</option>${newLine}`
@@ -584,7 +654,7 @@ function doEvents(o) {
             `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
 
         sEVENTS =
-            sEVENTS + tab + tab + "{name:'" + event.name + "',parameters:'";
+            sEVENTS + tab + tab + "{name:'" + event.name + "', parameters:'";
         sEVENTNAMES =
             sEVENTNAMES + tab + tab + "'" + event.name + "'" + "," + newLine;
 
@@ -606,7 +676,7 @@ function doEvents(o) {
                     //if (event.name == 'tap') { console.log(o) };
                     parameter.name = 'sender'; //o.xtype;
                 }
-                sEVENTS = sEVENTS + "" + parameter.name + commaOrBlank;
+                sEVENTS = sEVENTS + parameter.name + commaOrBlank;
 
                 eventObj.parameters.push(parameter.name)
 
@@ -619,7 +689,7 @@ function doEvents(o) {
 
 
 
-    sEVENTS = sEVENTS + "{name:'" +"ready" +"',parameters:'cmd,cmdAll'}" +"" +newLine;
+    sEVENTS = sEVENTS + tab + tab + "{name:'" +"ready" +"', parameters:'cmd,cmdAll'}" +"" +newLine;
     sEVENTNAMES = sEVENTNAMES + "'" + "ready" + "'" + "" + newLine;
 
 
@@ -649,6 +719,7 @@ function readFile(file) {
 
 function doPostLaunch() {
 
+    fs.writeFileSync(`${docFolder}data.js`,'window.xtypemenu = ' + JSON.stringify(docs, null, ' '));
 
     // let getBundleInfo = require("./getBundleInfo").getBundleInfo;
     // var info = getBundleInfo(framework, shortname, packagename, xtypelist)
@@ -671,7 +742,8 @@ function doPostLaunch() {
 
             fs.copySync(`${angularStagingFolder}/${angularFrameworkFile}.ts`,`${angularFolder}/${angularFrameworkFile}.ts`)
             fs.copySync(`${srcStagingFolder}/${file}`,`${srcFolder}/${file}`)
-            moduleVars.ewcimports = moduleVars.ewcimports + `import './src/ext-${xtype}.component.${extension}';${newLine}`;
+            //moduleVars.ewcimports = moduleVars.ewcimports + `import './src/ext-${xtype}.component.${extension}';${newLine}`;
+            //moduleVars.engimports = moduleVars.engimports + `import Ext${Xtype}Component from './src/Ext${Xtype}.${extension}';${newLine}`;
         }
     });
 
@@ -714,6 +786,7 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
+        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}index.js`, moduleVars);
         writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
     }
     else if (framework == 'elements') {
@@ -729,6 +802,7 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
+        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}index.js`, moduleVars);
         writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
     }
     else if (framework == 'angular') {
@@ -753,16 +827,20 @@ function doPostLaunch() {
     }
 
     info.import = ``
-    if (info.type != 'blank') {
-        if (installExt == true) {
-//             info.import =
-// `import 'script-loader!../ext/ext.${info.type}';
-// import 'script-loader!../ext/css.${info.type}';`
-           info.import =
-`import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}';
-import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
-        }
-   }
+
+
+//     if (info.type != 'blank') {
+//         if (installExt == true) {
+// //             info.import =
+// // `import 'script-loader!../ext/ext.${info.type}';
+// // import 'script-loader!../ext/css.${info.type}';`
+//            info.import =
+// `import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/ext.${info.type}';
+// import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/css.${info.type}';`
+//         }
+//    }
+
+
     writeTemplateFile(templateFolder+`${info.shortname}-base.tpl`,`${srcFolder}${info.shortname}-base.${extension}`,info);
 
     //copy staging Ext folder to src Ext
@@ -798,19 +876,119 @@ import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/css.${info.type
     writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactOrigFolder}ExtReactRenderer.${extension}`, {})
 
 
-
     rimraf.sync(reactStagingFolder);
     rimraf.sync(reactOrigStagingFolder);
     rimraf.sync(angularStagingFolder);
     rimraf.sync(srcStagingFolder);
     rimraf.sync(docStagingFolder);
+
+
+    createWebComponents()
+
+    createAngular()
+
+    createReact()
+
+
 }
+
+function createWebComponents() {
+    var framework='web-components';
+    info.framework='web-components';
+    const templateFolder = "./filetemplates/" + framework + "/";
+    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    rimraf.sync(outputFolder);
+    mkdirp.sync(outputFolder);
+
+    fs.copySync(srcFolder,`${outputFolder}/src`);
+
+
+    //fs.copySync(docFolder,`${outputFolder}/doc`);
+
+
+    //fs.copySync(binFolder,`${outputFolder}/bin`);
+    writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
+    writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
+
+    const elementsOutputFolder = generatedFolders + "ext-" + 'elements' + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    fs.copySync(`${elementsOutputFolder}index.js`,`${outputFolder}/index.js`);
+    fs.copySync(`${elementsOutputFolder}index.html`,`${outputFolder}/index.html`);
+}
+
+function createWebComponentsExt() {
+    var framework='web-components';
+    const templateFolder = "./filetemplates/" + framework + "/";
+    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+
+
+    fs.copySync(extFolder,`${outputFolder}/ext`);
+
+    fs.copySync(`./MaterialTheme`,`${outputFolder}/ext/MaterialTheme`);
+
+
+    console.log('copied')
+}
+
+
+
+
+function createAngular() {
+    var framework='angular';
+    const templateFolder = "./filetemplates/" + framework + "/";
+    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    rimraf.sync(outputFolder);
+    mkdirp.sync(outputFolder);
+
+    writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
+    writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
+    writeTemplateFile(templateFolder+`public_api.tpl`,`${outputFolder}/public_api.ts`,info);
+    copyFileSync(templateFolder+`tsconfig.json`, outputFolder+`tsconfig.json`);
+    copyFileSync(templateFolder+`tsconfig.lib.json`, outputFolder+`tsconfig.lib.json`);
+    copyFileSync(templateFolder+`ng-package.json`, outputFolder+`ng-package.json`);
+
+    fs.copySync(angularFolder,`${outputFolder}/src`)
+}
+
+function createReact() {
+    var framework='react';
+    const templateFolder = "./filetemplates/" + framework + "/";
+    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    rimraf.sync(outputFolder);
+    mkdirp.sync(outputFolder);
+
+    writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
+    writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
+
+    console.log(aItems.length);
+    const distinct = (value, index, self) => {
+        return self.indexOf(value) === index;
+    }
+    var aItemsDistinct = aItems.filter(distinct);
+    console.log(aItemsDistinct.length);
+    reactIndex = ''
+    aItemsDistinct.forEach(Xtype => {
+        reactIndex = reactIndex + `import Ext${Xtype}_ from "@sencha/ext-react/dist/Ext${Xtype}";export const Ext${Xtype} = Ext${Xtype}_;export const ${Xtype} = Ext${Xtype}_;\n`;
+    })
+
+
+
+
+
+    info.reactIndex = reactIndex;
+    writeTemplateFile(templateFolder+'index.tpl', `${outputFolder}index.js`, info)
+
+
+    fs.copySync(reactFolder,`${outputFolder}/src`)
+}
+
+
 
 async function doInstall() {
 
     var origCwd = process.cwd();
 
-    if (packagename != 'blank') {
+    //if (packagename != 'blank') {
         if (installExt == true) {
             process.chdir('./bundler');
             var currDir = process.cwd()
@@ -837,11 +1015,18 @@ async function doInstall() {
 
             copyFileSync('./bundler/dist/css.' + packagename + '.js', extFolder + "css." + packagename + '.js');
             copyFileSync('./bundler/dist/ext.' + packagename + '.js', extFolder + "ext." + packagename + '.js');
+
+            console.log('before')
+            createWebComponentsExt();
         }
-    }
+    //}
+
+    return
 
     process.chdir(outputFolder);
     await run(`npm install`);
+
+
 
     var packagefolder = ''
     if (framework == 'angular') {
