@@ -2,81 +2,52 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes">
-    <script type="text/javascript" src="./node_modules/@sencha/ext-elements-all/ext/css.all.js"></script>
-    <script type="text/javascript" src="./node_modules/@sencha/ext-elements-all/ext/ext.all.js"></script>
-    <script type="text/javascript" src="./node_modules/@sencha/ext-elements-all/src/ElementCell.js"></script>
-    <script type="module" src="./node_modules/@sencha/ext-elements-all/src/ext-grid.component.js"></script>
-    <script type="module" src="./node_modules/@sencha/ext-elements-all/src/ext-gridcolumn.component.js"></script>
-    <script type="module" src="./node_modules/@sencha/ext-elements-all/src/ext-button.component.js"></script>
-    <script type="module" src="./node_modules/@sencha/ext-elements-all/src/ext-panel.component.js"></script>
 </head>
 
-<script>
-    window.main = {}
-    window.main.onReady = function(event) {
+<script type="module">
+
+import './node_modules/@sencha/ext-web-components/src/ext-button.component.js';
+import './node_modules/@sencha/ext-web-components/src/ext-container.component.js';
+import './node_modules/@sencha/ext-web-components/src/ext-menu.component.js';
+import './node_modules/@sencha/ext-web-components/src/ext-menuitem.component.js';
+
+export default class ButtonComponent {
+    resultContainerReady(event) {
         console.log('ready')
-        console.log(event)
-
-        // event.detail.ext.setData([
-        //     {"name": "Lisa3", "email": "lisa@simpsons.com", "phone": "555-111-1224"},
-        //     {"name": "Bart", "email": "bart@simpsons.com", "phone": "555-222-1234"},
-        //     {"name": "Homer", "email": "homer@simpsons.com", "phone": "555-222-1244"},
-        //     {"name": "Marge", "email": "marge@simpsons.com", "phone": "555-222-1254"}
-        // ])
-
-
-        var element = document.getElementById('button');
-        element.innerHTML = '<ext-button text="hello"></ext-buton>';
-        theButton = element.querySelector('ext-button');
-
-        theButton.addEventListener("tap", function (event) {
-            console.log(event.detail)
-            console.log('hi')
-            theButton.text = "h2"
-        });
+        this.resultContainer = event.detail.cmp;
     }
-    window.main.onTap = function() {
-        console.log('tap')
+
+    addNode = () => {
+        this.resultContainer.setHtml('New Items Added');
+        var menu = document.querySelector('#menuId');
+        var newEl = document.createElement("ext-menuitem");
+
+        newEl.setAttribute("text", "newItems");
+        menu.appendChild(newEl);
     }
+}
+
+window.button = new ButtonComponent();
+
 </script>
 
 <body>
-
-    <div style="height:500px;width:300px;">
-        <ext-panel fitToParent="true" onready="main.onReady" title="the panel" layout="hbox" shadow="true">
-            <ext-button text="1"></ext-button>
-            <div>element 2</div>
-            <div>element 3</div>
-            <ext-button text="4"></ext-button>
-            <div>element 5</div>
-        </ext-panel>
-    </div>
-
-
-
-
-
-    <!-- <ext-grid
-        onready="main.onReady"
-        title="the grid"
-        height="250px"
-        xcolumns='[
-            {"text": "Name", "width": "250", "dataIndex": "name"},
-            {"text": "Email Address", "flex": "1", "dataIndex": "email"},
-            {"text": "Phone Number", "width": "250", "dataIndex": "phone"}
-        ]'
-        xdata='[
-            {"name": "Lisa", "email": "lisa@simpsons.com", "phone": "555-111-1224"},
-            {"name": "Bart", "email": "bart@simpsons.com", "phone": "555-222-1234"},
-            {"name": "Homer", "email": "homer@simpsons.com", "phone": "555-222-1244"},
-            {"name": "Marge", "email": "marge@simpsons.com", "phone": "555-222-1254"}
-        ]'
-    >
-        <ext-gridcolumn width="250px" text="Name" dataIndex="name"></ext-gridcolumn>
-        <ext-gridcolumn flex="1" text="Email Address" dataIndex="email"></ext-gridcolumn>
-        <ext-gridcolumn  width="250px" text="Phone Number" dataIndex="phone"></ext-gridcolumn>
-    </ext-grid> -->
-    <div id="button"></div>
+<div id="root">
+    <ext-container padding="10">
+        <ext-button text="Menu" id="menuButtonId">
+            <ext-menu rel="menu" id="menuId" >
+                <ext-menuitem text="Mobile" name="ui-type"></ext-menuitem>
+                <ext-menuitem text="Desktop" name="ui-type"></ext-menuitem>
+            </ext-menu>
+        </ext-button>
+        <ext-button
+            text="Add New Items In Menu"
+            handler="button.addNode"
+            ui="action raised">
+        </ext-button>
+        <ext-container onready="button.resultContainerReady"></ext-container>
+    </ext-container>
+</div>
 </body>
 
 </html>

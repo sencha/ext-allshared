@@ -1,9 +1,10 @@
 {
     "name": "@sencha/ext-web-components{bundle}",
     "version": "7.1.0",
-    "main": "ext-web-components{bundle}.module.js",
+    "main2": "ext-web-components{bundle}.module.js",
+    "main": "index.js",
     "private": false,
-    "bin": {
+    "binx": {
       "ext-web-components{bundle}": "./bin/ext-web-components{bundle}.js"
     },
     "peerDependencies": {},

@@ -1,13 +1,15 @@
 import {
     EventEmitter,
+    ContentChild,
     ContentChildren,
+    ViewChildren,
     QueryList,
     SimpleChanges
   } from '@angular/core';
 //import { ConditionalExpr } from '@angular/compiler';
 const Ext = window['Ext'];
 
-export default class EngBase {
+export class EngBase {
     //static rootNode: any = null;
     public ext: any
     newDiv: any
@@ -28,8 +30,12 @@ export default class EngBase {
     public vc: any;
     eventnames: any;
 
+    @ContentChild('extitem',{ static : false }) _extitem: any;
+    @ContentChildren('extitem') _extitems: QueryList<any>;
     @ContentChildren(EngBase) _childComponents: QueryList<EngBase>;
+    @ViewChildren(EngBase) _viewchildComponents: QueryList<EngBase>;
     get childComponents(): EngBase[] {
+        if (this._childComponents == undefined) { return []}
         return this._childComponents.filter(item => item !== this);
     }
 
@@ -61,36 +67,49 @@ export default class EngBase {
     }
 
     baseOnInit() {
-        console.log('baseOnInit')
+        //console.log('baseOnInit')
+
         this.newDiv = document.createElement('ext-' + this.xtype);
 
         for (var i = 0; i < this.properties.length; i++) {
             var property = this.properties[i]
             if (this[property] !== undefined) {
                 //o[property] = this[property];
-                this.newDiv.setAttribute(property, this[property]);
+                // why does this need to be done??
+                if (property != 'fullscreen' && property != 'xtype') {
+                    this.newDiv.setAttribute(property, this[property]);
+                }
             }
         }
 
         var me = this;
         this.eventnames.forEach(function (eventname) {
             me.newDiv.addEventListener(eventname, function(event) {
-                me[eventname].emit(event.detail);
+                //me[eventname].emit(event.detail);
+                if (me[eventname] != false) {
+                    me[eventname].emit(event.detail);
+                }
             });
         })
         if (this.node.parentNode.nodeName.substring(0, 3) !== 'EXT') {
-            console.log('parent not ext')
+            //console.log('parent not ext')
             //this.node.parentNode.appendChild(this.newDiv);
             this.node.after(this.newDiv)
             //EngBase.rootNode = this.newDiv
         }
         else {
-            console.log('parent is ext')
+            //console.log('parent is ext')
             //console.dir(this)
             //console.dir(EngBase.rootNode)
             this.parentNode.newDiv.appendChild(this.newDiv);
             //EngBase.rootNode.appendChild(this.newDiv);
         }
+
+
+
+
+
+
 
         // console.log(this.vc)
         // console.log(this.vc._data.renderElement)
@@ -107,6 +126,47 @@ export default class EngBase {
 
 
     baseAfterViewInit() {
+        var me = this;
+        this._extitems.toArray().forEach( item => {
+            //console.log(item.nativeElement)
+            //var el = Ext.get(item.nativeElement);
+            me.newDiv.appendChild(Ext.get(item.nativeElement).dom);
+        })
+
+
+
+
+        // //console.log(this.xtype)
+        // //console.log(this.childComponents)
+        // //console.log(this._viewchildComponents)
+        // //console.log(this._extitems)
+
+        // if (this._extitems != undefined) {
+        //     if (this._extitems.length == 1) {
+
+
+        //         // var router = document.createElement('router-outlet');
+        //         // router.setAttribute('id', 'route');
+        //         // this.newDiv.appendChild(router);
+
+        //         var el = Ext.get(this._extitem.nativeElement);
+        //         console.dir(this)
+        //         console.dir(el)
+        //         console.log(this.newDiv)
+        //         //var widget = document.createElement('ext-' + 'widget');
+        //         //widget['element'] = el;
+        //         //widget.setAttribute('element', el);
+        //         //var widget = document.createElement('ext-' + 'panel');
+        //         //widget.setAttribute('title', 'hi');
+        //         this.newDiv.appendChild(el.dom);
+        //         //this.node.after(el)
+
+        //         //console.dir(el)
+        //         //var w = Ext.create({xtype:'widget', element: el});
+        //         //this.addTheChild(A.ext, w, null);
+        //     }
+        // }
+
     }
 
     // newCreateProps(properties) {

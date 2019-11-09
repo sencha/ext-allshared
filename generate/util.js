@@ -69,7 +69,7 @@ exports.getCreatesForPackage = (xtypes, classes) => {
         creates += 'Ext.create({"xtype":"' + xtypes[i] + '"});' + '\n';
     }
     for (i = 0; i < classes.length; i++) {
-        creates += 'Ext.create("' + classes[i] + '",{});' + '\n';
+        creates += 'Ext.require("' + classes[i] + '",{});' + '\n';
     }
     return creates;
 }

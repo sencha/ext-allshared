@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-{imports}
+{engimports}
 @NgModule({
   imports:         [],
   declarations:    [

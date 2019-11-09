@@ -1,8 +1,8 @@
-import {Shortname}BaseComponent from './{shortname}-base';
+import EleBaseComponent from './ele-base';
 import HTMLParsedElement from './HTMLParsedElement.js';
 import {
-    doProp,
-    filterProp,
+    //doProp,
+    //filterProp,
     isMenu,
     isRenderercell,
     isParentGridAndChildColumn,
@@ -10,17 +10,17 @@ import {
     isPlugin
 } from './util.js';
 
-export class ExtRouter extends {Shortname}BaseComponent {
+export class ExtRouter extends EleBaseComponent {
     //prettier-ignore
-    get hidden() {return this.getAttribute("hidden");}
+    get hidden() {return this.getAttribute('hidden');}
     set hidden(hidden) {
-        this.setAttribute("hidden", hidden);
+        this.setAttribute('hidden', hidden);
     }
 
     static get observedAttributes() {
         var attrs = [];
-        attrs.push("hidden");
-        attrs.push("onready");
+        attrs.push('hidden');
+        attrs.push('onready');
         return attrs;
     }
 
@@ -34,12 +34,12 @@ export class ExtRouter extends {Shortname}BaseComponent {
     }
 
     connectedCallback() {
-        {Shortname}BaseComponent.elementcount++;
-        console.log('added: ' + this.tagName + ': elementcount is now ' + {Shortname}BaseComponent.elementcount);
-        {Shortname}BaseComponent.elements.push(this);
-        console.log({Shortname}BaseComponent.elements)
+        EleBaseComponent.elementcount++;
+        //console.log('added: ' + this.tagName + ': elementcount is now ' + EleBaseComponent.elementcount);
+        EleBaseComponent.elements.push(this);
+        //console.log(EleBaseComponent.elements)
 
-        this.base = {Shortname}BaseComponent;
+        this.base = EleBaseComponent;
     }
 
     parsedCallback() {
@@ -48,26 +48,26 @@ export class ExtRouter extends {Shortname}BaseComponent {
 
     createProps() {
         this.props = {};
-        var div = document.createElement("DIV");
-        div.setAttribute("id", "route");
-        div.style.width = "100%";
-        div.style.height = "100%";
+        var div = document.createElement('DIV');
+        div.setAttribute('id', 'route');
+        div.style.width = '100%';
+        div.style.height = '100%';
         div.style.padding = this.padding;
-        div.style.display = "none";
+        div.style.display = 'none';
         //mjg should not be hard coded
-        div.style.backgroundSize = "20px 20px";
+        div.style.backgroundSize = '20px 20px';
         //div.style.overflow='scroll';
-        div.style.borderWidth = "0px";
-        div.style.backgroundColor = "#e8e8e8";
+        div.style.borderWidth = '0px';
+        div.style.backgroundColor = '#e8e8e8';
         div.style.backgroundImage =
-            "linear-gradient( 0deg, #f5f5f5 1.1px, transparent 0)," +
-            "linear-gradient(90deg, #f5f5f5 1.1px, transparent 0)";
+            'linear-gradient( 0deg, #f5f5f5 1.1px, transparent 0),' +
+            'linear-gradient(90deg, #f5f5f5 1.1px, transparent 0)';
         var el = Ext.get(div);
-        this.props["hidden"] = this["hidden"];
+        this.props['hidden'] = this['hidden'];
         this.props.listeners = {};
-        this.setEvent("onready", this.props, this);
-        this.props.xtype = "widget";
-        this.props.ewc = "router";
+        this.setEvent('onready', this.props, this);
+        this.props.xtype = 'widget';
+        this.props.ewc = 'router';
         this.props.element = el;
 
         var me = this;
@@ -76,8 +76,8 @@ export class ExtRouter extends {Shortname}BaseComponent {
         me.A.ITEMS = [];
         me.A.o = {};
 
-        Ext.onReady(function () {
-            me.A.ext = Ext.create(me.props)
+        Ext.onReady(function() {
+            me.A.ext = Ext.create(me.props);
 
             if (me.parentNode.nodeName.substring(0, 4) === 'EXT-') {
                 if (me.parentNode.A.ext !== undefined) {
@@ -87,9 +87,9 @@ export class ExtRouter extends {Shortname}BaseComponent {
                     me.parentNode.A.CHILDREN.push(me.A.ext);
                 }
             }
-            {Shortname}BaseComponent.elementcount--;
-            console.log('reduced: ' + me.tagName + ' elementcount reduced to ' + {Shortname}BaseComponent.elementcount)
-        })
+            EleBaseComponent.elementcount--;
+            //console.log('reduced: ' + me.tagName + ' elementcount reduced to ' + EleBaseComponent.elementcount)
+        });
     }
 
     addTheChild(parentCmp, childCmp, location) {
@@ -105,65 +105,64 @@ export class ExtRouter extends {Shortname}BaseComponent {
         }
 
         switch (true) {
-            case isMenu(childxtype):
-                parentCmp.setMenu(childCmp);
-                break;
-            case isRenderercell(childxtype):
-                parentCmp.setCell(childCmp);
-                break;
-            case isParentGridAndChildColumn(parentxtype,childxtype):
-                if (location == null) {
-                    parentCmp.addColumn(childCmp);
+        case isMenu(childxtype):
+            parentCmp.setMenu(childCmp);
+            break;
+        case isRenderercell(childxtype):
+            parentCmp.setCell(childCmp);
+            break;
+        case isParentGridAndChildColumn(parentxtype,childxtype):
+            if (location == null) {
+                parentCmp.addColumn(childCmp);
+            }
+            else {
+                var regCols = 0;
+                if (parentCmp.registeredColumns != undefined) {
+                    regCols = parentCmp.registeredColumns.length;
+                }
+                if (parentxtype == 'grid') {
+                    parentCmp.insertColumn(location + regCols, childCmp);
                 }
                 else {
-                    var regCols = 0;
-                    if (parentCmp.registeredColumns != undefined) {
-                        regCols = parentCmp.registeredColumns.length;
-                    }
-                    if (parentxtype == 'grid') {
-                        parentCmp.insertColumn(location + regCols, childCmp);
-                    }
-                    else {
-                        parentCmp.insert(location + regCols, childCmp);
-                    }
+                    parentCmp.insert(location + regCols, childCmp);
                 }
-                break;
-            case isTooltip(childxtype):
-                parentCmp.setTooltip(childCmp);
-                break;
-            case isPlugin(childxtype):
-                parentCmp.setPlugin(childCmp);
-                break;
-            default:
-                if (location == null) {
-                    parentCmp.add(childCmp);
-                }
-                else {
-                    parentCmp.insert(location, childCmp);
-                }
+            }
+            break;
+        case isTooltip(childxtype):
+            parentCmp.setTooltip(childCmp);
+            break;
+        case isPlugin(childxtype):
+            parentCmp.setPlugin(childCmp);
+            break;
+        default:
+            if (location == null) {
+                parentCmp.add(childCmp);
+            }
+            else {
+                parentCmp.insert(location, childCmp);
+            }
         }
     }
 
-
     attributeChangedCallback(attr, oldVal, newVal) {
-        var route = document.getElementById("route");
+        var route = document.getElementById('route');
         if (route != null) {
-            if (attr == "hidden") {
-                if (newVal == "true") {
-                    route.style.display = "none";
+            if (attr == 'hidden') {
+                if (newVal == 'true') {
+                    route.style.display = 'none';
                 } else {
-                    route.style.display = "block";
+                    route.style.display = 'block';
                 }
             }
         } else {
             //console.log('route null: ' + attr + ' - ' + newVal)
         }
 
-        if (attr == "onready") {
+        if (attr == 'onready') {
             if (newVal) {
                 //mjg check if this event exists for this component
                 this.addEventListener(attr.slice(2), function(event) {
-                    eval(newVal + "(event)");
+                    eval(newVal + '(event)');
                 });
             } else {
                 //delete this[attr];
@@ -184,8 +183,8 @@ export function getRoutes(items) {
 
 function _getRoutes(items) {
     items.forEach(function(item) {
-        item.leaf = !item.hasOwnProperty("children");
-        item.hash = item.text.replace(/ /g, "");
+        item.leaf = !item.hasOwnProperty('children');
+        item.hash = item.text.replace(/ /g, '');
         item.hashlower = item.hash.toLowerCase();
         if (item.children == undefined) {
             window._routes.push(
@@ -207,7 +206,7 @@ export class Route {
     constructor(hash, hashlower, component, defaultRoute) {
         try {
             if (!hash) {
-                throw "error: hash param is required";
+                throw 'error: hash param is required';
             }
         } catch (e) {
             console.error(e);
@@ -221,7 +220,7 @@ export class Route {
     }
 
     isActiveRoute(hashedPath) {
-        return hashedPath.replace("#", "") === this.hash;
+        return hashedPath.replace('#', '') === this.hash;
     }
 }
 
@@ -230,7 +229,7 @@ export class Router {
         window.router = this;
         try {
             if (!routes) {
-                throw "error: routes param is mandatory";
+                throw 'error: routes param is mandatory';
             }
             this.routes = routes;
         } catch (e) {
@@ -239,7 +238,7 @@ export class Router {
     }
 
     routeMe() {
-        console.log('routeMe')
+        //console.log('routeMe')
         this.hasChanged(this, this.routes);
     }
 
@@ -247,58 +246,62 @@ export class Router {
     init() {
         //var routes = this.routes;
         //(function(scope, routes) {
-            // window.addEventListener("hashchange", function(e) {
-            //     //console.log('hashChange')
-            //     scope.hasChanged(scope, routes);
-            // });
+        // window.addEventListener('hashchange', function(e) {
+        //     //console.log('hashChange')
+        //     scope.hasChanged(scope, routes);
+        // });
         //})(this, routes);
         //this.hasChanged(this, routes);
     }
 
     hasChanged(scope, routes) {
-        console.log('hasChanged: ' + window.location.hash)
+        //console.log('hasChanged: ' + window.location.hash);
+        var currentHash = '';
+        var currentHashLower = '';
+        var currentComponent = null;
+        var i;
+        var route;
+
         if (window.location.hash.length > 0) {
-            var currentHash = "";
-            var currentHashLower = "";
-            var currentComponent = null;
-            for (var i = 0, length = routes.length; i < length; i++) {
-                var route = routes[i];
+
+            for (i = 0; i < routes.length; i++) {
+                route = routes[i];
                 if (route.isActiveRoute(window.location.hash.substr(1))) {
                     currentHash = route.hash;
                     currentHashLower = route.hashlower;
                     currentComponent = route.component;
                 }
             }
-            scope.rootElem = document.getElementById("route");
-            scope.rootElem.style.display = "block";
+            scope.rootElem = document.getElementById('route');
+            scope.rootElem.style.display = 'block';
             window[currentHashLower] = new currentComponent();
-            var componentHtml = currentHash + "Component.html";
+            var componentHtml = currentHash + 'Component.html';
             var code = window._code[currentHashLower][componentHtml];
             //console.log(code)
-            console.log('hash > 0, setting innerHTML')
+            //console.log('hash > 0, setting innerHTML');
             //console.log(scope.rootElem.innerHTML)
             scope.rootElem.innerHTML = code;
         } else {
-            var currentHash = "";
-            var currentHashLower = "";
-            var currentComponent = null;
-            for (var i = 0, length = routes.length; i < length; i++) {
-                var route = routes[i];
+            //var currentHash = '';
+            //var currentHashLower = '';
+            //var currentComponent = null;
+            for (i = 0; i < routes.length; i++) {
+                route = routes[i];
                 if (route.default == true) {
                     currentHash = route.hash;
                     currentHashLower = route.hashlower;
                     currentComponent = route.component;
                 }
             }
-            if (currentHash == "") {
+            if (currentHash == '') {
                 //console.log('no default route specified')
             } else {
                 //console.log(scope)
                 console.log('the else')
-                scope.rootElem = document.getElementById("route"); //mjg
-                scope.rootElem.style.display = "block";
+                scope.rootElem = document.getElementById('route'); //mjg
+                scope.rootElem.style.display = 'block';
                 window[currentHashLower] = new currentComponent();
-                var componentHtml = currentHash + "Component.html";
+                componentHtml = currentHash + 'Component.html';
                 //scope.rootElem.innerHTML = window._code[currentHashLower][componentHtml];
             }
         }

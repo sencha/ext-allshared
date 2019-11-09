@@ -1,9 +1,8 @@
 import {extendsclassname} from '{pathprefix}{extendpath}{classextendsfilename}.js';
 
 export default class {classname} extends {extendsclassname} {
-
-    static PROPERTIES() { return [{sPROPERTIES}]};
-    static EVENTS() { return [{sEVENTS}]};
+    static PROPERTIES() {return [{sPROPERTIES}    ]};
+    static EVENTS() {return [{sEVENTS}    ]};
     static getProperties(properties) {
         properties = properties.concat({classname}.PROPERTIES());
         return {extendsclassname}.getProperties(properties);
