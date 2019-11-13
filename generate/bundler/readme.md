@@ -17,3 +17,6 @@ RECURSIVE WIDGET: sencha compile -d exclude -all and include -r -na=Ext.Widget a
 
 
 sencha compile -d exclude -all and include -tag=core and include -na=Ext.Class and include -na=Ext.Base and include -na=Ext.Array and include -na=Ext.Boolean and include -na=Ext.Date and include -na=Ext.Function and include -na=Ext.Global_CSS and include -na=Ext.Number and include -na=Ext.Object and include -na=Ext.RegExp and include -na=Ext.String and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./build/core/ext.core.dev.js then fs minify -closure -l=NEXT -f=./build/core/ext.core.dev.js -t=./build/core/ext.core.prod.js
+
+
+sencha compile include -all concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./build/grid/ext.grid.dev.js
