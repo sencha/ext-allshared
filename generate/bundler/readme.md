@@ -20,3 +20,68 @@ sencha compile -d exclude -all and include -tag=core and include -na=Ext.Class a
 
 
 sencha compile include -all concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./build/grid/ext.grid.dev.js
+
+
+
+
+# EXT-ALL FROM MANIFEST: 
+```
+sencha compile -d -cl=Ext concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./build/all/ext.all.dev.js then fs minify -closure -l=NEXT -f=./build/all/ext.all.dev.js -t=./build/all/ext.all.prod.js
+```
+
+# EXT GRID DELTA FILE:
+sencha compile -d -cl=Ext exclude -all and include -r -namespace=Ext.grid and exclude -tag=core and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./build/grid/ext.grid.dev.js then fs minify -closure -l=NEXT -f=./build/grid/ext.grid.dev.js -t=./build/grid/ext.grid.prod.js
+
+# EXT RECURSIVE WIDGET CORE FILE:
+sencha compile -d -cl=Ext exclude -all and include -r -na=Ext.Widget and include -tag=core and include -na=Ext.Class and include -na=Ext.Base and include -na=Ext.Array and include -na=Ext.Boolean and include -na=Ext.Date and include -na=Ext.Function and include -na=Ext.Global_CSS and include -na=Ext.Number and include -na=Ext.Object and include -na=Ext.RegExp and include -na=Ext.String and include -r -na=Ext.app and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./test/ext.widget.dev.js then fs minify -closure -l=NEXT -f=./test/ext.widget.dev.js -t=./test/ext.widget.prod.js
+
+
+
+# HTML TESTING TEMPLATE:
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes">
+  <title>Title</title>
+
+  <!-- Ext JS -->
+  <!-- <script src="./ext-modern-all-debug.js"></script> -->
+  <script src="./ext.all.prod.js"></script>
+
+  <!-- Ext JS Theme -->
+  <link href="/resources/theme-material-all-debug.css" rel="stylesheet" />
+</head>
+<body>
+  <script>
+    Ext.application({
+      name: 'MyApp',
+      launch: function () {
+        var store = Ext.create('Ext.data.Store', {
+            fields: ['name', 'email', 'phone'],
+            data: [
+                { 'name': 'Lisa',  "email":"lisa@simpsons.com",  "phone":"555-111-1224"  },
+                { 'name': 'Bart',  "email":"bart@simpsons.com",  "phone":"555-222-1234" },
+                { 'name': 'Homer', "email":"home@simpsons.com",  "phone":"555-222-1244"  },
+                { 'name': 'Marge', "email":"marge@simpsons.com", "phone":"555-222-1254"  }
+            ]
+        });
+
+        Ext.Viewport.add({
+            xtype: 'grid',
+            title: 'Test Grid',
+            store: store,
+            columns: [
+                { text: 'Name',  dataIndex: 'name', width: 200 },
+                { text: 'Email', dataIndex: 'email', width: 250 },
+                { text: 'Phone', dataIndex: 'phone', width: 120 }
+            ],
+            height: 200,
+            layout: 'fit',
+            fullscreen: true
+        });
+      }
+    });
+  </script>
+</body>
+</html>

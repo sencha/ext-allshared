@@ -42,3 +42,4 @@ Ext.create({"xtype":"gridsummaryrow"});
 Ext.create({"xtype":"tree"});
 Ext.create("Ext.data.TreeStore",{});
 Ext.create("Ext.layout",{});
+Ext.require("Ext.grid.*",{});
