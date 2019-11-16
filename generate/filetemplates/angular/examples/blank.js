@@ -1,4 +1,4 @@
-exports.angular = (what, info) => {
+exports.examples = (what, info) => {
     var r = ''
     switch(what) {
 
@@ -37,36 +37,53 @@ break;
 case 'component':
 r = `
 import { Component } from '@angular/core';
+var Ext = window['Ext'];
 
 @Component({
-    selector: 'app-root',
-    template: \`
-<ext-panel viewport="true" title="panel" layout="fit">
-    <ext-toolbar docked="top">
-        <ext-button text="toolbar button"></ext-button>
-    </ext-toolbar>
-    <ext-grid
-        [title]="title"
-        (ready)="readyGrid($event)"
-    >
-        <ext-column text="name" dataIndex="name"></ext-column>
-        <ext-column text="email" dataIndex="email" flex="1"></ext-column>
-    </ext-grid>
-</ext-panel>
-    \`,
-    styles: []
+  selector: 'app-root',
+  template: \`
+<div style="height:200px">
+  <ExtGrid fitToParent="true"
+    [title]="title"
+    (ready)="readyGrid($event)"
+    [columns]="gridcolumns"
+  >
+    <!--
+    <ExtGridcolumn text="name" dataIndex="name"></ExtGridcolumn>
+    <ExtGridcolumn text="email" dataIndex="email" flex="1"></ExtGridcolumn>
+    -->
+  </ExtGrid>
+</div>
+  \`,
+  styles: []
 })
 export class AppComponent {
-    title = 'the grid';
-    data=[
-        {name: 'Marc', email: 'marc@gmail.com'},
-        {name: 'Nick', email: 'nick@gmail.com'},
-        {name: 'Andy', email: 'andy@gmail.com'},
-    ]
-    readyGrid(event) {
-        var grid = event.target.ext;
-        grid.setData(this.data)
-    }
+  title='the grid';
+  gridcolumns=[
+    {text:'name', dataIndex: 'name'},
+    {text:'email', dataIndex: 'email', flex: 1}
+  ]
+  data=[
+    {name: 'Marc', email: 'marc@gmail.com'},
+    {name: 'Marc', email: 'marc@gmail.com'},
+    {name: 'Nick', email: 'nick@gmail.com'},
+    {name: 'Andy', email: 'andy@gmail.com'},
+  ]
+  readyGrid(event) {
+    console.log('ready')
+    var grid = event.cmp;
+
+    var store = Ext.create('Ext.data.Store', {
+      data: this.data,
+      proxy: {
+        type: 'memory',
+        reader: {
+          type: 'json'
+        }
+      }
+    });
+    grid.setStore(store)
+  }
 }
 `
 break;
