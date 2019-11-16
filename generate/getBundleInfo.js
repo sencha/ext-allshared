@@ -98,10 +98,15 @@ exports.getBundleInfo = (framework, shortname, type, xtypelist) => {
         info.importsewc = info.imports + `import '@sencha/ext-web-components-${info.type}/lib/ext-${w}.component';\n`
     }
 
-    const angular = require(examplesSource).angular;
+
+
+    // const examples = require(examplesSource).examples;
     info.angular = {}
-    info.angular.module = angular('module', info)
-    info.angular.component = angular('component', info)
+    info.angular.module = ''
+    info.angular.component = ''
+
+    // info.angular.module = examples('module', info)
+    // info.angular.component = examples('component', info)
 
 
     //info.imports = ''

@@ -15,7 +15,7 @@ export class EngBase {
     newDiv: any
     xtype: any
     properties: any
-    events: any
+    //events: any
     A: any;
     node: any
     parentNode: any
@@ -50,7 +50,7 @@ export class EngBase {
         this.node = eRef.nativeElement;
         this.parentNode = hostComponent;
         this.properties = properties;
-        this.events = events;
+        //this.events = events;
         this.eventnames = eventnames;
         this.vc = vc;
 
@@ -77,7 +77,14 @@ export class EngBase {
                 //o[property] = this[property];
                 // why does this need to be done??
                 if (property != 'fullscreen' && property != 'xtype') {
-                    this.newDiv.setAttribute(property, this[property]);
+                  var propertyVal = '';
+                  if (typeof this[property] == 'string') {
+                    propertyVal = this[property];
+                  }
+                  else {
+                    propertyVal = JSON.stringify(this[property]);
+                  }
+                  this.newDiv.setAttribute(property, propertyVal);
                 }
             }
         }
@@ -101,7 +108,8 @@ export class EngBase {
             //console.log('parent is ext')
             //console.dir(this)
             //console.dir(EngBase.rootNode)
-            this.parentNode.newDiv.appendChild(this.newDiv);
+            //this.parentNode.newDiv.appendChild(this.newDiv);
+            this.node.parentNode.nextSibling.appendChild(this.newDiv);
             //EngBase.rootNode.appendChild(this.newDiv);
         }
 
@@ -231,7 +239,14 @@ export class EngBase {
         for (let propName in changes) {
             let val = changes[propName].currentValue;
             if (this.newDiv != undefined) {
-                this.newDiv.setAttribute(propName, val);
+              var propertyVal = '';
+              if (typeof val == 'string') {
+                propertyVal = val;
+              }
+              else {
+                propertyVal = JSON.stringify(val);
+              }
+              this.newDiv.setAttribute(propName, propertyVal);
             }
         }
     }

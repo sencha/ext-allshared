@@ -1,5 +1,6 @@
 //import EWC{Xtype} from '../dist/ext-{xtype}.component.js';
-import EWC{Xtype} from '@sencha/ext-web-components/dist/ext-{xtype}.component.js';
+//inputs: (new EWC{Xtype}()).properties,
+import EWC{Xtype} from '@sencha/ext-web-components{bundle}/dist/ext-{xtype}.component.js';
 import {
     Host,
     Optional,
@@ -13,8 +14,8 @@ import { EngBase } from './angularbase';
 
 @Component({
     selector: 'Ext{Xtype}',
-    inputs: (new EWC{Xtype}()).properties,
-    outputs: (new EWC{Xtype}()).eventnames,
+    inputs: {propNames},
+    outputs: {eventNames},
     providers: [{provide: EngBase, useExisting: forwardRef(() => Ext{Xtype}Component)}],
     template: '<ng-content></ng-content>'
 })
@@ -27,9 +28,9 @@ export class Ext{Xtype}Component extends EngBase {
         super(
             eRef,
             hostComponent,
-            (new EWC{Xtype}()).properties,
+            {propNames},
             (new EWC{Xtype}()).events,
-            (new EWC{Xtype}()).eventnames,
+            {eventNames},
             vc
         )
         this.xtype = '{xtype}'

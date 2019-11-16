@@ -7,22 +7,21 @@
     "bin": {
       "ext-{framework}{bundle}": "./bin/ext-{framework}{bundle}.js"
     },
-    "peerDependencies": {},
     "scripts": {
       "watch": "npx babel ./src --out-dir ./dist --watch",
       "build": "npx babel ./src --out-dir ./dist",
       "prepare": "npm run build"
     },
     "homepage": "https://github.com/sencha/ext-{framework}#readme",
-    "dependencies": {
-      "@babel/runtime": "^7.6.2",
-      "script-loader": "^0.7.2",
-      "comment-json": "^2.2.0"
-    },
+    "peerDependencies": {},
+    "dependencies": {},
     "devDependencies": {
+      "@sencha/ext-runtime-base": "~7.1.0",
       "object-assign": "~4.1.0",
       "pascal-case": "~2.0.1",
-
+      "script-loader": "^0.7.2",
+      "comment-json": "^2.2.0",
+      "@babel/runtime": "^7.6.2",
       "html-parsed-element": "^0.4.0",
       "@babel/cli": "^7.6.2",
       "@babel/core": "^7.6.2",

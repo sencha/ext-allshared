@@ -1,16 +1,11 @@
 {
-  "name": "@sencha/ext-react",
+  "name": "@sencha/ext-react{bundle}",
   "version": "7.1.0",
-  "description": "Use Ext JS components in React 16 and above",
+  "description": "Sencha ext-react{bundle}",
   "main": "index.js",
-  "typings": "index.d.ts",
   "scripts": {
-    "xinstall": "node ./readme.js",
-    "watch": "npx babel ./src --out-dir ./dist --source-maps --watch",
-    "build": "npx babel ./src --out-dir ./dist --source-maps",
-    "prepublish": "npm run build",
-    "create-typings": "node script/create-typings.js",
-    "test": "pushd ../ext-react-tests; npm test"
+    "build": "npx babel ./src --out-dir ./dist",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "Sencha",
@@ -20,32 +15,22 @@
   ],
   "author": "Sencha, Inc.",
   "license": "MIT",
-  "homepage": "https://github.com/sencha/ext-react#readme",
+  "homepage": "https://github.com/sencha/ext-react{bundle}#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sencha/ext-react.git"
+    "url": "git+https://github.com/sencha/ext-react{bundle}.git"
   },
-
   "peerDependencies": {
-    "@sencha/ext-web-components": "~7.1.0"
+    "@sencha/ext-web-components{bundle}": "~7.1.0",
+    "@sencha/ext-runtime-base": "~7.1.0"
   },
   "dependencies": {
-    "@sencha/ext-web-components": "~7.1.0",
+    "fs-extra": "~8.1.0",
+    "@sencha/ext-web-components{bundle}": "~7.1.0",
+    "@sencha/ext-runtime-base": "~7.1.0",
     "@babel/runtime": "^7.7.2",
-    "comment-json": "^2.2.0",
-    "fbjs": "1.0.0",
-    "lodash.capitalize": "^4.2.1",
-    "lodash.clonedeepwith": "^4.5.0",
-    "lodash.defaults": "^4.2.0",
-    "lodash.isequal": "^4.5.0",
-    "lodash.union": "^4.6.0",
-    "minimist": "^1.2.0",
-    "mkdirp": "^0.5.1",
     "react": "~16.11.0",
-    "react-dom": "~16.11.0",
-    "@hot-loader/react-dom":"~16.11.0",
-    "react-reconciler": "~0.23.0",
-    "react-test-renderer": "~16.11.0"
+    "react-dom": "~16.11.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",
@@ -63,7 +48,6 @@
     "@babel/plugin-syntax-import-meta": "^7.2.0",
     "@babel/preset-react": "^7.7.0",
     "@types/react": "^16.9.11",
-    "@types/react-dom": "~16.9.4",
-    "typescript": "^3.4.5"
+    "@types/react-dom": "~16.9.4"
   }
 }

@@ -1,18 +1,9 @@
-
-
-var reactIndex = ''
-var aItems = [];
-
-
-// node ./genIt.js ele all
-// node ./genIt.js eng grid
+// node ./genIt.js ele blank
+// node ./genIt.js ele button
+console.log('genIt started')
 const install = true;
 const installExt = true;
 const doAllinXtype = true;
-
-//var count = 0;
-//var allXtypes = '';
-
 const shortname = process.argv[2];
 var framework = '';
 var extension = '';
@@ -47,6 +38,9 @@ const mkdirp = require("mkdirp");
 require("./XTemplate");
 
 var docs = []
+var reactIndex = ''
+var aItems = [];
+var aItemsInBundle = [];
 
 const data = require(`./AllClassesFiles/modern-all-classes-flatten.json`);
 const xtypelist = require("./npmpackage/" + packagename).getXtypes();
@@ -55,8 +49,9 @@ let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 var info = getBundleInfo(framework, shortname, packagename, xtypelist)
 
 const generatedFolders = "./GeneratedFolders/";
+const typeFolder = generatedFolders + info.type + '/';
 const templateFolder = "./filetemplates/" + framework + "/";
-const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+const outputFolder = typeFolder + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
 const srcFolder = outputFolder + "src/";
 const srcStagingFolder = outputFolder + "srcStaging/";
 const docFolder = outputFolder + 'doc/';
@@ -67,12 +62,14 @@ const reactFolder = outputFolder + 'react/';
 const reactStagingFolder = outputFolder + 'reactStaging/';
 const reactOrigFolder = outputFolder + 'reactOrig/';
 const reactOrigStagingFolder = outputFolder + 'reactOrigStaging/';
+
 const angularFolder = outputFolder + 'angular/';
 const angularStagingFolder = outputFolder + 'angularStaging/';
 
 const extFolder = outputFolder + 'ext/';
 
 if (!fs.existsSync(generatedFolders)) {mkdirp.sync(generatedFolders)}
+if (!fs.existsSync(typeFolder)) {mkdirp.sync(typeFolder)}
 rimraf.sync(outputFolder);
 mkdirp.sync(outputFolder);
 mkdirp.sync(srcFolder);
@@ -97,44 +94,58 @@ var allExtended = '';
 const moduleVars = { imports: "", declarations: "", exports: "", ewcimports: "", engimports: "" };
 
 var Items = [];
+var mjgItems = [];
+console.log('doLaunch')
 for (i = 0; i < data.global.items.length; i++) {
     doLaunch(data.global.items[i], framework);
 }
+
+//console.dir('mjgItems')
+//console.dir(mjgItems.length)
+//console.dir(mjgItems.name)
+//mjgItems.forEach( item => console.log(item.name + ' ' + item.xtypes))
+// mjgItems.forEach( item => {
+//     if(item.xtypes.length > 1) {
+//         console.log(item.xtypes)
+//     }
+// })
 
 doPostLaunch();
 if (install == true) {doInstall()}
 
 function doLaunch(item, framework) {
-    var template = ''
-    if (item.name == 'Ext.Base') {
-        template = '/base.tpl'
-    }
-    else {
-        template = '/class.tpl'
-    }
+    var mjgItem = {};
+    mjgItem.name = item.name;
+
+    // var templateFile = ''
+    // if (item.name == 'Ext.Base') {
+    //     templateFile = '/base.tpl'
+    // }
+    // else {
+    //     templateFile = '/class.tpl'
+    // }
+    // mjgItem.templateFile = templateFile;
 
     var processIt = shouldProcessIt(item)
     if (processIt == true) {
 
-        //extends??
         if (item.extends != undefined) {
             var n = item.extends.indexOf(",");
             if (n != -1) {
                 //console.log('mult extends: ' + item.name + ' - ' + item.extends)
                 item.extends = item.extends.substr(0,n)
             }
+            mjgItem.extends = item.extends;
         }
 
-        //names array
         var names = []
         names.push(item.name)
-        //mjg alternate
         if (item.alternateClassNames != undefined) {
             var alt = item.alternateClassNames.split(",");
             names = names.concat(alt)
         }
+        mjgItem.names = names;
 
-        //xtypes array
         var aliases = []
         var xtypes = []
         if (item.alias != undefined) {
@@ -154,15 +165,23 @@ function doLaunch(item, framework) {
         else {
             //webcomponent = false
         }
-        //there may be more than one
-        item.xtype = xtypes[0]
 
-        oneItem(item, framework, names, xtypes, template)
+        mjgItem.aliases = aliases;
+        mjgItem.xtypes = xtypes;
+
+        //there may be more than one
+
+
+        item.xtype = xtypes[0]
+        mjgItem.xtype = item.xtype;
+        mjgItems.push(mjgItem)
+
+        oneItem(item, framework, names, xtypes)
     }
 }
 
-function oneItem(item, framework, names, xtypes, template) {
-    var sGETSET = "";
+function oneItem(item, framework, names, xtypes) {
+    //var sGETSET = "";
     //console.log(item.xtype)
 
     //console.log(xtypes)
@@ -176,8 +195,14 @@ function oneItem(item, framework, names, xtypes, template) {
     var sPROPERTIES = propertyObj.sPROPERTIES;
     //var sPROPERTIESOBJECT = propertyObj.sPROPERTIESOBJECT;
     var sPROPERTIESEVENTS = propertyObj.sPROPERTIESEVENTS;
-    sGETSET = sGETSET + sPROPERTIESEVENTS;
+    //sGETSET = sGETSET + sPROPERTIESEVENTS;
     var sPROPERTIESOBJECT = {};
+    info.propNames = `['fitToParent','tab','config','platformConfig','extname','viewport','align','plugins','responsiveConfig','responsiveFormulas',`
+    propertyObj.propertiesArray.forEach(property => {
+      //info.propNames.push(property.name)
+      info.propNames = info.propNames + `'${property.name}',`
+    })
+    info.propNames = info.propNames + `]`
 
     var methodObj = doMethods(item)
     var methodsDocs = methodObj.methodsDocs;
@@ -188,11 +213,21 @@ function oneItem(item, framework, names, xtypes, template) {
     var eventsDocs = eventObj.eventsDocs;
     var sEVENTS = eventObj.sEVENTS;
     var sEVENTNAMES = eventObj.sEVENTNAMES;
-    var sEVENTSGETSET = eventObj.sEVENTSGETSET;
+    //var sEVENTSGETSET = eventObj.sEVENTSGETSET;
     //eventObj.eventsArray
-    sGETSET = sGETSET + sEVENTSGETSET;
+    //sGETSET = sGETSET + sEVENTSGETSET;
 
     //console.dir(sPROPERTIES)
+
+
+    info.eventNames = `['ready',`
+    eventObj.eventsArray.forEach(event => {
+      //info.propNames.push(property.name)
+      info.eventNames = info.eventNames + `'${event.name}',`
+    })
+    info.eventNames = info.eventNames + `]`
+
+
 
 
     didXtype = false;
@@ -222,13 +257,13 @@ function oneItem(item, framework, names, xtypes, template) {
         var values = {
             shortname: info.shortname,
             Shortname: info.Shortname,
-            sPROPERTIESGETSET: sGETSET,
+            //sPROPERTIESGETSET: sGETSET,
             //sMETHODS: sMETHODS,
             sPROPERTIES: sPROPERTIES,
             sPROPERTIESOBJECT: sPROPERTIESOBJECT,
             sEVENTS: sEVENTS,
             sEVENTNAMES: sEVENTNAMES,
-            sEVENTSGETSET: sEVENTSGETSET,
+            //sEVENTSGETSET: sEVENTSGETSET,
             //webcomponent: webcomponent,
             xtype: xtype,
             classfilename : `${name}.Component`,
@@ -240,7 +275,16 @@ function oneItem(item, framework, names, xtypes, template) {
             extendsclassname: item.extends.replace(/\./g, "_"),
             classextendsfilename: extendparts[extendparts.length-1]
         }
-        writeTemplateFile(templateFolder+template, `${folder}${filename}.${extension}`, values)
+
+        var templateFile = ''
+        if (item.name == 'Ext.Base') {
+            templateFile = '/base.tpl'
+        }
+        else {
+            templateFile = '/class.tpl'
+        }
+
+        writeTemplateFile(templateFolder + templateFile, `${folder}${filename}.${extension}`, values)
 
         if(xtypes[0] != undefined) {
 
@@ -264,12 +308,15 @@ function oneItem(item, framework, names, xtypes, template) {
                 folder = folder + '/' + folders[k]
             }
             var values = {
+              propNames: info.propNames,
+              eventNames: info.eventNames,
                 classname: classname,
                 doAllinXtype: doAllinXtype,
                 sPROPERTIES: sPROPERTIES,
                 sEVENTS: sEVENTS,
                 sEVENTNAMES: sEVENTNAMES,
                 folder: folder,
+                bundle: info.bundle,
                 Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
                 xtype: xtypes[j]
             }
@@ -296,13 +343,16 @@ function oneItem(item, framework, names, xtypes, template) {
                     var capclassname = classname.charAt(0).toUpperCase() + classname.slice(1);
                     moduleVars.imports = moduleVars.imports +`import { Ext${capclassname}Component } from './src/ext-${xt}.component.${extension}';${newLine}`;
 
-                    moduleVars.ewcimports = moduleVars.ewcimports + `import './dist/ext-${classname}.component.${extension}';${newLine}`;
+                    //moduleVars.ewcimports = moduleVars.ewcimports + `import './dist/ext-${classname}.component.${extension}';${newLine}`;
+                    moduleVars.ewcimports = moduleVars.ewcimports + `import './dist/ext-${xt}.component.${extension}';${newLine}`;
                     moduleVars.engimports = moduleVars.engimports + `import { Ext${capclassname}Component } from './src/Ext${capclassname}.${extension}';${newLine}`;
 
 
                     moduleVars.exports = moduleVars.exports + `    Ext${capclassname}Component,${newLine}`;
                     moduleVars.declarations = moduleVars.declarations + `    Ext${capclassname}Component,${newLine}`;
-                }
+                    moduleVars.exports = moduleVars.exports + `    Ext${capclassname}Component,${newLine}`;
+                    moduleVars.Bundle = capclassname;
+                  }
             }
 
             var ewcProperties = ''
@@ -349,13 +399,13 @@ function oneItem(item, framework, names, xtypes, template) {
                 propertiesDocs: propertiesDocs,
                 methodsDocs: methodsDocs,
                 eventsDocs: eventsDocs,
-                sPROPERTIESGETSET: sGETSET,
+                //sPROPERTIESGETSET: sGETSET,
                 sMETHODS: sMETHODS,
                 sPROPERTIES: sPROPERTIES,
                 sPROPERTIESOBJECT: sPROPERTIESOBJECT,
                 sEVENTS: sEVENTS,
                 sEVENTNAMES: sEVENTNAMES,
-                sEVENTSGETSET: sEVENTSGETSET,
+                //sEVENTSGETSET: sEVENTSGETSET,
                 classname: classname,
                 folder: folder,
                 Xtype: Xtype,
@@ -390,6 +440,12 @@ function oneItem(item, framework, names, xtypes, template) {
 
             writeTemplateFile(templateFolder+'docdetail.tpl', `${docStagingFolder}ext-${xtypes[j]}.doc.html`, values3)
 
+            //if (xtypes[j] == 'panel') {
+
+              //console.log(info.propNames.length)
+              //console.log(propertyObj.propertiesArray)
+              writeTemplateFile(templateFolder+'docdata.tpl', `${docStagingFolder}ext-${xtypes[j]}.doc.js`, {props: info.propNames.toString()})
+            //}
 
         }
     }
@@ -397,7 +453,6 @@ function oneItem(item, framework, names, xtypes, template) {
 
 function shouldProcessIt(o) {
     var processIt = false
-
     if (o.extended == undefined) {
         //console.log(o.name + ' not a widget')
         processIt = false;
@@ -487,62 +542,62 @@ function doProperties(o) {
                 propertyObj.name = config.name
 
                 sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"${config.name}":${s},${newLine}`;
-                sGETSET =
-                    sGETSET +
-                    tab +
-                    `get ${config.name}(){return this.getAttribute('${config.name}')};
-                    set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`;
+                // sGETSET =
+                //     sGETSET +
+                //     tab +
+                //     `get ${config.name}(){return this.getAttribute('${config.name}')};
+                //     set ${config.name}(${config.name}){this.setAttribute('${config.name}',${config.name})}\n`;
             }
         }
         propertiesArray.push(propertyObj)
     });
 
-    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'platformConfig',${newLine}`;
-    if (haveResponsiveConfig == false) {
-        sPROPERTIES = `${sPROPERTIES}${tab}${tab}'responsiveConfig',${newLine}`;
-    }
+//    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'platformConfig',${newLine}`;
+//    if (haveResponsiveConfig == false) {
+//        sPROPERTIES = `${sPROPERTIES}${tab}${tab}'responsiveConfig',${newLine}`;
+//    }
     //sPROPERTIES = `${sPROPERTIES}'align',${newLine}`;
-    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'fitToParent',${newLine}`;
-    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'tab',${newLine}`;
-    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'config'${newLine}`;
+//    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'fitToParent',${newLine}`;
+//    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'tab',${newLine}`;
+//    sPROPERTIES = `${sPROPERTIES}${tab}${tab}'config'${newLine}`;
 
-    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"platformConfig": "Object",${newLine}`;
-    if (haveResponsiveConfig == false) {
-        sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"responsiveConfig": "Object",${newLine}`;
-    }
-    //sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"align": "Object",${newLine}`;
-    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"tab": "Object",${newLine}`;
-    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"fitToParent": "Boolean",${newLine}`;
-    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"config": "Object",${newLine}`;
+//    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"platformConfig": "Object",${newLine}`;
+//    if (haveResponsiveConfig == false) {
+//        sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"responsiveConfig": "Object",${newLine}`;
+//    }
+//    //sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"align": "Object",${newLine}`;
+//    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"tab": "Object",${newLine}`;
+//    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"fitToParent": "Boolean",${newLine}`;
+//    sPROPERTIESOBJECT = `${sPROPERTIESOBJECT}"config": "Object",${newLine}`;
 
     var eventName = "";
     eventName = "platformConfig";
-    sGETSET =
-        sGETSET +
-        tab +
-        `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
-    if (haveResponsiveConfig == false) {
-        eventName = "responsiveConfig";
-        sGETSET =
-            sGETSET +
-            tab +
-            `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
-    }
-    eventName = "align";
-    sGETSET =
-        sGETSET +
-        tab +
-        `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
-    eventName = "fitToParent";
-    sGETSET =
-        sGETSET +
-        tab +
-        `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
-    eventName = "config";
-    sGETSET =
-        sGETSET +
-        tab +
-        `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
+    // sGETSET =
+    //     sGETSET +
+    //     tab +
+    //     `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
+    // if (haveResponsiveConfig == false) {
+    //     eventName = "responsiveConfig";
+    //     sGETSET =
+    //         sGETSET +
+    //         tab +
+    //         `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
+    // }
+    // eventName = "align";
+    // sGETSET =
+    //     sGETSET +
+    //     tab +
+    //     `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
+    // eventName = "fitToParent";
+    // sGETSET =
+    //     sGETSET +
+    //     tab +
+    //     `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
+    // eventName = "config";
+    // sGETSET =
+    //     sGETSET +
+    //     tab +
+    //     `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
 
     //}
 
@@ -553,7 +608,7 @@ function doProperties(o) {
     o.propertiesDocs = propertiesDocs;
     o.sPROPERTIES = sPROPERTIES;
     o.sPROPERTIESOBJECT = sPROPERTIESOBJECT;
-    o.sGETSETPROPERTIES = sGETSET;
+    //o.sGETSETPROPERTIES = sGETSET;
     o.propertiesArray = propertiesArray;
     return o;
 
@@ -629,7 +684,7 @@ function doEvents(o) {
     var eventsDocs = `<div class="select-div"><select id="eventsDocs" onchange="changeEvent()" name="eventsDocs">${newLine}`
     var sEVENTS = `${newLine}`;
     var sEVENTNAMES = `${newLine}`;
-    var sEVENTSGETSET = "";
+    //var sEVENTSGETSET = "";
     var eventsArray = []
     getItems(o, "events").forEach(function(event, index, array) {
         //console.log(event)
@@ -648,10 +703,10 @@ function doEvents(o) {
         //if (event.name == 'tap') { event.name = 'tapit' };
 
         var eventName = "on" + event.name;
-        sEVENTSGETSET =
-        sEVENTSGETSET +
-            tab +
-            `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
+        // sEVENTSGETSET =
+        // sEVENTSGETSET +
+        //     tab +
+        //     `get ${eventName}(){return this.getAttribute('${eventName}')};set ${eventName}(${eventName}){this.setAttribute('${eventName}',${eventName})}\n`;
 
         sEVENTS =
             sEVENTS + tab + tab + "{name:'" + event.name + "', parameters:'";
@@ -697,7 +752,7 @@ function doEvents(o) {
     o.eventsDocs = eventsDocs;
     o.sEVENTS = sEVENTS;
     o.sEVENTNAMES = sEVENTNAMES;
-    o.sEVENTSGETSET = sEVENTSGETSET;
+    //o.sEVENTSGETSET = sEVENTSGETSET;
     o.eventsArray = eventsArray;
     return o;
 }
@@ -733,6 +788,7 @@ function doPostLaunch() {
         var xtype = f[0].substring(4)
         if (info.wantedxtypes.indexOf(xtype) != -1) {
             var Xtype = xtype.charAt(0).toUpperCase() + xtype.slice(1).replace(/-/g,'_');
+            aItemsInBundle.push(Xtype);
             var reactFrameworkFile = `${reactPrefix}${Xtype}`
             var reactOrigFrameworkFile = `${Xtype}`
             var angularFrameworkFile = `Ext${Xtype}`
@@ -770,12 +826,28 @@ function doPostLaunch() {
     //info.propscode = readFile(`/../common/${shortname}-props.js`)
     //writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
 
-    if (framework == 'web-components') {
-        info.basecode = readFile("/../common/common-base.js")
-        info.propscode = readFile(`/../common/${shortname}-props.js`)
+    // if (framework == 'web-components') {
+    //     info.basecode = readFile("/../common/common-base.js")
+    //     info.propscode = readFile(`/../common/${shortname}-props.js`)
+    //     writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
+    //     copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
+
+    //     copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
+    //     copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
+    //     copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
+    //     copyFileSync(templateFolder+`reactize.js`, outputFolder+`reactOrig/reactize.js`);
+    //     copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
+    //     //copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
+    //     copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
+    //     copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
+    //     copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
+    //     writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
+    //     writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}index.js`, moduleVars);
+    //     writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
+    // }
+    if (framework == 'elements') {
         writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
         copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
-
         copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
         copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
         copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
@@ -789,42 +861,26 @@ function doPostLaunch() {
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}index.js`, moduleVars);
         writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
     }
-    else if (framework == 'elements') {
-        writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
-        copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
-        copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
-        copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
-        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
-        copyFileSync(templateFolder+`reactize.js`, outputFolder+`reactOrig/reactize.js`);
-        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
-        //copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
-        copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
-        copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
-        copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
-        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${framework}${info.bundle}.module.js`, moduleVars);
-        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}index.js`, moduleVars);
-        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
-    }
-    else if (framework == 'angular') {
-        info.basecode = readFile("/../common/common-base.js")
-        info.propscode = readFile(`/../common/${shortname}-props.js`)
-        writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
+    // else if (framework == 'angular') {
+    //     info.basecode = readFile("/../common/common-base.js")
+    //     info.propscode = readFile(`/../common/${shortname}-props.js`)
+    //     writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
 
-        moduleVars.Bundle = info.Bundle
-        writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
-        writeTemplateFile(templateFolder+`public_api.tpl`,`${outputFolder}/public_api.ts`,info);
-        copyFileSync(templateFolder+`tsconfig.json`, outputFolder+`tsconfig.json`);
-        copyFileSync(templateFolder+`tsconfig.lib.json`, outputFolder+`tsconfig.lib.json`);
-        copyFileSync(templateFolder+`ng-package.json`, outputFolder+`ng-package.json`);
-        moduleVars.imports = moduleVars.imports.substring(0,moduleVars.imports.length - 2);
-        moduleVars.imports = moduleVars.imports + ";" + newLine;
-        moduleVars.exports = moduleVars.exports.substring(0,moduleVars.exports.length - 2);
-        moduleVars.exports = moduleVars.exports + "" + newLine;
-        moduleVars.declarations = moduleVars.declarations.substring(0,moduleVars.declarations.length - 2);
-        moduleVars.declarations = moduleVars.declarations + "" + newLine;
-        var exportall = "";
-        exportall = exportall + `export * from './lib/ext-${framework}${info.bundle}.module';${newLine}`;
-    }
+    //     moduleVars.Bundle = info.Bundle
+    //     writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
+    //     writeTemplateFile(templateFolder+`public_api.tpl`,`${outputFolder}/public_api.ts`,info);
+    //     copyFileSync(templateFolder+`tsconfig.json`, outputFolder+`tsconfig.json`);
+    //     copyFileSync(templateFolder+`tsconfig.lib.json`, outputFolder+`tsconfig.lib.json`);
+    //     copyFileSync(templateFolder+`ng-package.json`, outputFolder+`ng-package.json`);
+    //     moduleVars.imports = moduleVars.imports.substring(0,moduleVars.imports.length - 2);
+    //     moduleVars.imports = moduleVars.imports + ";" + newLine;
+    //     moduleVars.exports = moduleVars.exports.substring(0,moduleVars.exports.length - 2);
+    //     moduleVars.exports = moduleVars.exports + "" + newLine;
+    //     moduleVars.declarations = moduleVars.declarations.substring(0,moduleVars.declarations.length - 2);
+    //     moduleVars.declarations = moduleVars.declarations + "" + newLine;
+    //     var exportall = "";
+    //     exportall = exportall + `export * from './lib/ext-${framework}${info.bundle}.module';${newLine}`;
+    // }
 
     info.import = ``
 
@@ -875,13 +931,11 @@ function doPostLaunch() {
     writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactOrigFolder}ExtReact.${extension}`, {})
     writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactOrigFolder}ExtReactRenderer.${extension}`, {})
 
-
     rimraf.sync(reactStagingFolder);
     rimraf.sync(reactOrigStagingFolder);
     rimraf.sync(angularStagingFolder);
     rimraf.sync(srcStagingFolder);
-    rimraf.sync(docStagingFolder);
-
+    //rimraf.sync(docStagingFolder);
 
     createWebComponents()
 
@@ -894,48 +948,66 @@ function doPostLaunch() {
 
 function createWebComponents() {
     var framework='web-components';
-    info.framework='web-components';
+    info.framework=framework;
     const templateFolder = "./filetemplates/" + framework + "/";
-    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    const outputFolder = typeFolder + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
 
     fs.copySync(srcFolder,`${outputFolder}/src`);
 
-
     //fs.copySync(docFolder,`${outputFolder}/doc`);
-
 
     //fs.copySync(binFolder,`${outputFolder}/bin`);
     writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
     writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
+    copyFileSync(templateFolder+`.babelrc`, `${outputFolder}.babelrc`);
 
-    const elementsOutputFolder = generatedFolders + "ext-" + 'elements' + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    const elementsOutputFolder = typeFolder + "ext-" + 'elements' + (packagename == 'blank' ? '' : '-' + packagename) + '/';
     fs.copySync(`${elementsOutputFolder}index.js`,`${outputFolder}/index.js`);
     fs.copySync(`${elementsOutputFolder}index.html`,`${outputFolder}/index.html`);
 }
 
 function createWebComponentsExt() {
     var framework='web-components';
-    const templateFolder = "./filetemplates/" + framework + "/";
-    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    //const templateFolder = "./filetemplates/" + framework + "/";
+    const outputFolder = typeFolder + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    //fs.copySync(extFolder,`${outputFolder}/ext`);
+    //fs.copySync(`./MaterialTheme`,`${outputFolder}/ext/MaterialTheme`);
 
+    //fs.copySync(`./theme/material`,`${outputFolder}ext-runtime/theme/material`);
+    //fs.copySync(`./theme/neptune`,`${outputFolder}ext-runtime/theme/neptune`);
+    fs.copySync(`${extFolder}ext.${info.type}.js`,`${outputFolder}ext-runtime/ext.${info.type}.js`);
+    //fs.copySync(`${extFolder}ext.${info.type}.js`,`${outputFolder}ext-runtime/engine.js`);
+    // try {
+    //   if (fs.existsSync(extFolder + 'ext.blank.js')) {
+    //     fs.copySync(extFolder + 'ext.blank.js',`${outputFolder}ext-runtime/engine.js`);
+    //   }
+    // } catch(err) {
+    //     fs.copySync(extFolder,`${outputFolder}ext-runtime`);
+    // }
 
-    fs.copySync(extFolder,`${outputFolder}/ext`);
+    //const outputFolderReact = typeFolder + "ext-" + 'react' + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    ////console.log(`${extFolder}ext.${info.type}.js`)
+    ////console.log(`${outputFolderReact}ext-runtime/${info.type}.js`)
 
-    fs.copySync(`./MaterialTheme`,`${outputFolder}/ext/MaterialTheme`);
+    //fs.copySync(`${extFolder}ext.${info.type}.js`,`${outputFolderReact}ext-runtime/${info.type}.js`);
 
+    //const outputFolderAngular = typeFolder + "ext-" + 'angular' + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    ////console.log(`${extFolder}ext.${info.type}.js`)
+    ////console.log(`${outputFolderReact}ext-runtime/${info.type}.js`)
+    //fs.copySync(`${extFolder}ext.${info.type}.js`,`${outputFolderAngular}ext-runtime/${info.type}.js`);
 
-    console.log('copied')
+    //fs.copySync(extFolder,`${outputFolder}/ext-runtime`);
+    //fs.copySync(`./MaterialTheme`,`${outputFolder}/ext-runtime`);
+
 }
-
-
-
 
 function createAngular() {
     var framework='angular';
+    info.framework=framework;
     const templateFolder = "./filetemplates/" + framework + "/";
-    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    const outputFolder = typeFolder + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
 
@@ -943,41 +1015,61 @@ function createAngular() {
     writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
     writeTemplateFile(templateFolder+`public_api.tpl`,`${outputFolder}/public_api.ts`,info);
+    copyFileSync(templateFolder+`postinstall.js`, outputFolder+`postinstall.js`);
     copyFileSync(templateFolder+`tsconfig.json`, outputFolder+`tsconfig.json`);
     copyFileSync(templateFolder+`tsconfig.lib.json`, outputFolder+`tsconfig.lib.json`);
     copyFileSync(templateFolder+`ng-package.json`, outputFolder+`ng-package.json`);
+
+
+
+    // const distinct = (value, index, self) => {
+    //     return self.indexOf(value) === index;
+    // }
+    // var aItemsDistinct = aItems.filter(distinct);
+    // angularIndex = ''
+    // aItemsDistinct.forEach(Xtype => {
+    //     angularIndex = angularIndex + `import { Ext${Xtype}Component_ } from '@sencha/ext-angular/src/Ext${Xtype}.ts';export const Ext${Xtype}Component = Ext${Xtype}Component_;\n`;
+    // })
+
+    // info.angularIndex = angularIndex;
+    // writeTemplateFile(templateFolder+'index.tpl', `${outputFolder}index.ts`, info)
+
+
 
     fs.copySync(angularFolder,`${outputFolder}/src`)
 }
 
 function createReact() {
     var framework='react';
+    info.framework=framework;
     const templateFolder = "./filetemplates/" + framework + "/";
-    const outputFolder = generatedFolders + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
+    const outputFolder = typeFolder + "ext-" + framework + (packagename == 'blank' ? '' : '-' + packagename) + '/';
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
 
     writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
+    copyFileSync(templateFolder+`postinstall.js`, `${outputFolder}postinstall.js`);
+    copyFileSync(templateFolder+`.babelrc`, `${outputFolder}.babelrc`);
+
+    const examples = require(templateFolder + "examples/" + info.type).examples;
+    info.component = examples('component');
     writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
 
-    console.log(aItems.length);
-    const distinct = (value, index, self) => {
-        return self.indexOf(value) === index;
-    }
-    var aItemsDistinct = aItems.filter(distinct);
-    console.log(aItemsDistinct.length);
+    // //console.log(aItems.length);
+    // const distinct = (value, index, self) => {
+    //     return self.indexOf(value) === index;
+    // }
+    // var aItemsDistinct = aItems.filter(distinct);
+    // //console.log(aItemsDistinct.length);
+
     reactIndex = ''
-    aItemsDistinct.forEach(Xtype => {
-        reactIndex = reactIndex + `import Ext${Xtype}_ from "@sencha/ext-react/dist/Ext${Xtype}";export const Ext${Xtype} = Ext${Xtype}_;export const ${Xtype} = Ext${Xtype}_;\n`;
+    aItemsInBundle.forEach(Xtype => {
+        //reactIndex = reactIndex + `import Ext${Xtype}_ from "@sencha/ext-react${info.bundle}/dist/Ext${Xtype}";export const Ext${Xtype} = Ext${Xtype}_;export const ${Xtype} = Ext${Xtype}_;\n`;
+        reactIndex = reactIndex + `import Ext${Xtype}_ from "./dist/Ext${Xtype}";export const Ext${Xtype} = Ext${Xtype}_;export const ${Xtype} = Ext${Xtype}_;\n`;
     })
-
-
-
-
 
     info.reactIndex = reactIndex;
     writeTemplateFile(templateFolder+'index.tpl', `${outputFolder}index.js`, info)
-
 
     fs.copySync(reactFolder,`${outputFolder}/src`)
 }
@@ -985,8 +1077,10 @@ function createReact() {
 
 
 async function doInstall() {
-
+    console.log('doInstall')
     var origCwd = process.cwd();
+    console.log('cwd is: ' + origCwd);
+
 
     //if (packagename != 'blank') {
         if (installExt == true) {
@@ -1006,28 +1100,84 @@ async function doInstall() {
             writeTemplateFile(`./template/ext.manifest.js.tpl`,`./manifest/${packagename}.ext.manifest.js`, bundle);
             //console.log(`manifest/${packagename}.ext.manifest.js` + ' created');
 
-            await run(`npm start`);
-            console.log('./dist/css.' + packagename + '.js created')
+            //temporary next line await run(`npm start`);
+            writeTemplateFile(`./template/xtype.js.tpl`,`./dist/ext.${packagename}.js`, bundle);
+
+            //console.log('./dist/css.' + packagename + '.js created')
             console.log('./dist/ext.' + packagename + '.js created')
 
             process.chdir(origCwd);
             //console.log(process.cwd())
 
-            copyFileSync('./bundler/dist/css.' + packagename + '.js', extFolder + "css." + packagename + '.js');
+            //copyFileSync('./bundler/dist/css.' + packagename + '.js', extFolder + "css." + packagename + '.js');
             copyFileSync('./bundler/dist/ext.' + packagename + '.js', extFolder + "ext." + packagename + '.js');
 
-            console.log('before')
             createWebComponentsExt();
         }
     //}
+
+    // var packageName
+    // var package
+    // var packageJson
+    // var packageString
+
+
+    //console.log(info)
+
+    //ext-web-components
+    process.chdir(typeFolder + 'ext-web-components' + info.bundle);
+    await run(`npm install`);
+    await run(`npm publish --force`);
+    process.chdir(origCwd);
+    //ext-web-components
+
+    //ext-react
+    process.chdir(typeFolder + 'ext-react' + info.bundle);
+    await run(`npm install`);
+    var packageNameReact = './package.json';
+    var packageReact = fs.readFileSync(packageNameReact, 'utf8');
+    var packageJsonReact = JSON.parse(packageReact);
+    if (packageJsonReact.scripts == undefined) {
+        packageJsonReact.scripts = {};
+    }
+    packageJsonReact.scripts.postinstall = "node ./postinstall.js";
+    packageStringReact = JSON.stringify(packageJsonReact, null, 2);
+    fs.writeFileSync(packageNameReact, packageStringReact);
+    await run(`npm publish --force`);
+    process.chdir(origCwd);
+    //ext-react
+
+
+    //ext-angular
+    process.chdir(typeFolder + 'ext-angular' + info.bundle);
+    await run(`npm install`);
+    await run(`npm run packagr`);
+    await run(`cp -R ./src dist/lib`);
+    await run(`cp ./postinstall.js dist/postinstall.js`);
+    process.chdir('dist');
+    var packageNameAngular = './package.json';
+    var packageAngular = fs.readFileSync(packageNameAngular, 'utf8');
+    var packageJsonAngular = JSON.parse(packageAngular);
+    if (packageJsonAngular.scripts == undefined) {
+        packageJsonAngular.scripts = {};
+    }
+    packageJsonAngular.scripts.postinstall = "node ./postinstall.js";
+    // packageJson.scripts = {
+    //     "postinstall": "node ./postinstall.js"
+    // };
+    packageStringAngular = JSON.stringify(packageJsonAngular, null, 2);
+    fs.writeFileSync(packageNameAngular, packageStringAngular);
+    await run(`npm publish --force`);
+    process.chdir(origCwd);
+    //ext-angular
+
+
+
 
     return
 
     process.chdir(outputFolder);
     await run(`npm install`);
-
-
-
     var packagefolder = ''
     if (framework == 'angular') {
         await run(`npm run packagr`);

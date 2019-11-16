@@ -127,7 +127,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
             Ext.apply(o, this['config']);
         }
 
-        if (true == this.fitToParent) {
+        if ('true' == this.fitToParent || true == this.fitToParent || this.fitToParent == '') {
             o.height='100%';
         }
         for (var i = 0; i < properties.length; i++) {
@@ -407,7 +407,22 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                         console.log(this.A.ext.xtype)
                         console.log(method)
                         console.log(newVal)
-                        this.A.ext[method](newVal)
+
+                        //var propertyVal = '';
+                        //if (typeof newVal == 'string') {
+                        //  propertyVal = newVal;
+                        //}
+                        //else {
+                        //  propertyVal = JSON.stringify(newVal);
+                        //}
+                        var propertyVal = newVal
+                        try {
+                          propertyVal = JSON.parse(newVal);
+                        }
+                        catch(e) {}
+                        this.A.ext[method](propertyVal);
+
+                        //this.A.ext[method](newVal)
                         return
                         if (isTrueSet) {
                             this.A.ext.setDisplayed(true)

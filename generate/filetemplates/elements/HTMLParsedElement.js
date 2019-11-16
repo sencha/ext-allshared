@@ -49,22 +49,23 @@ const HTMLParsedElement = (() => {
                                 {
                                     //console.log(window.Ext);
                                     if (window.Ext == undefined) {
-                                        var csstag = document.createElement('script');
-                                        csstag.type = 'text/javascript';
-                                        csstag.src = './node_modules/@sencha/ext-web-components/ext/ext.blank.js';
-                                        csstag.onload = function() {
-                                            var exttag = document.createElement('script');
-                                            exttag.type = 'text/javascript';
-                                            exttag.src = './node_modules/@sencha/ext-web-components/ext/css.blank.js';
-                                            exttag.onload = function() {
+                                        var striptTag = document.createElement('script');
+                                        striptTag.type = 'text/javascript';
+                                        striptTag.src = './node_modules/@sencha/ext-runtime-base/engine.js';
+                                        striptTag.onload = function() {
+                                            var linkTag = document.createElement('link');
+                                            linkTag.rel = 'stylesheet';
+                                            linkTag.type = 'text/css';
+                                            linkTag.href = './node_modules/@sencha/ext-runtime-base/theme/material/material-all.css';
+                                            linkTag.onload = function() {
                                                 console.log('load done');
                                                 Ext.onReady(function() {
                                                     parsedCallback(self);
                                                 });
                                             };
-                                            document.getElementsByTagName('head')[0].appendChild(exttag);
+                                            document.getElementsByTagName('head')[0].appendChild(linkTag);
                                         };
-                                        document.getElementsByTagName('head')[0].appendChild(csstag);
+                                        document.getElementsByTagName('head')[0].appendChild(striptTag);
                                     }
                                     else {
                                         parsedCallback(self);

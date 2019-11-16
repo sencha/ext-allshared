@@ -1,4 +1,4 @@
-exports.angular = (what, info) => {
+exports.examples = (what, info) => {
     var r = ''
     switch(what) {
 
