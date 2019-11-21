@@ -1,30 +1,104 @@
 //{now}
 {import}
-import HTMLParsedElement from './HTMLParsedElement'
+import {
+    doProp,
+    filterProp,
+    isMenu,
+    isRenderercell,
+    isParentGridAndChildColumn,
+    isTooltip,
+    isPlugin
+} from './util.js';
 
 export default class EwcBaseComponent extends HTMLElement {
 
     constructor(properties, events) {
         super ();
         this.properties = properties;
-        //this.methods = methods;
         this.events = events;
     }
+
     connectedCallback() {
+        console.log('connectedCallback')
+        console.log(this.xtype)
+        var x = this.xtype
+        //var props = ['text','align','title','extname','height','width','columns','data','layout','flex']
+        // props.forEach( prop =>
+        //     {
+        //         doProp(this,prop)
+        //     }
+        // )
+        const distinct = (value, index, self) => {
+            return self.indexOf(value) === index;
+        }
+        var properties2 = [];
+        //console.log(typeof properties2)
+        //var myStringArray = ["Hello","World"];
+        var arrayLength = this.properties.length;
+        for (var i = 0; i < arrayLength; i++) {
+            properties2.push(this.properties[i]);
+        }
+        //console.log(properties2)
+        //console.log(typeof properties2)
+        var p2 = properties2.filter(distinct);
+        //this.properties = p2;
+        p2.forEach( prop =>
+            {
+                doProp(this,prop)
+            }
+        )
+        //this.methods = methods;
+        //this.events = events;
+
+
+        EwcBaseComponent.elementcount++;
+        console.log('added: ' + this.tagName + ': elementcount is now ' + EwcBaseComponent.elementcount);
+        EwcBaseComponent.elements.push(this);
+
+        this.A = {};
+        this.A.CHILDREN = [];
+        this.A.ITEMS = [];
+        this.A.o = {}
+
+        //console.log(this.children)
+
+        for (let child of this.children) {
+            if (child.nodeName.substring(0, 4) !== 'EXT-') {
+                var el = Ext.get(child);
+                var w = Ext.create({xtype:'widget', element: el});
+                this.A.ITEMS.push(w);
+            }
+            else {
+                var g = {}
+                g.type = 'ext'
+                this.A.ITEMS.push(g);
+            }
+        }
+
+        //for (let child of this.children) {
+        //    //console.dir(child)
+        //    if (child.nodeName.substring(0, 4) !== 'EXT-') {
+        //        //console.log(child);
+        //        var el = Ext.get(child);
+        //        var w = Ext.create({xtype:'widget', element: el});
+        //        //this.A.CHILDREN.push(w);
+        //    }
+        //}
+
+        this.base = EwcBaseComponent;
 
         //this.properties = []
         //for (var property in this.propertiesobject) {
         //    this.properties.push(property)
         //}
 
-        this.newDiv = document.createElement('div');
-        //var textnode = document.createTextNode(this.xtype);
-        //this.newDiv.appendChild(textnode)
-        this.insertAdjacentElement('beforebegin', this.newDiv);
-
-        this.base = EwcBaseComponent;
-
+        // this.newDiv = document.createElement('div');
+        // //var textnode = document.createTextNode(this.xtype);
+        // //this.newDiv.appendChild(textnode)
+        // this.insertAdjacentElement('beforebegin', this.newDiv);
+        this.xtype = x
     }
+
     parsedCallback() {
         this.initMe()
     }
@@ -71,7 +145,10 @@ export default class EwcBaseComponent extends HTMLElement {
                 if (this.A.ext != undefined) {
                     ischanged = true
                     var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
-                    this.A.ext[method](newVal)
+                    if (method != 'setExtname') {
+                        console.log(method)
+                        this.A.ext[method](newVal)
+                    }
                 }
                 else {
                     ischanged = false
@@ -132,8 +209,26 @@ export default class EwcBaseComponent extends HTMLElement {
 
 }
 
+EwcBaseComponent.elementcount = 0;
+EwcBaseComponent.elements = [];
+EwcBaseComponent.elementsprior = [];
+
+EwcBaseComponent.isLoading = false;
+EwcBaseComponent.isDone = false;
+
 EwcBaseComponent.count = 0;
 EwcBaseComponent.DIRECTION = '';
+
+//EwcBaseComponent.getCmp = function getCmp(event, value) {
+//    var array = event.detail.allCmp;
+//    for (var i = 0; i < array.length; i++) {
+//        if (array[i]['extname'] === value) {
+//        return array[i].ext;
+//        }
+//    }
+//    return null;
+//};
+
 
 //EwcBaseComponent.extendArray = function(obj, src) {
 //    if (obj == undefined) {obj = []}

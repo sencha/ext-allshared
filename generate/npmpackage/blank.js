@@ -223,6 +223,28 @@ var xtypes = [
 var classes = [
     'Ext.data.virtual.Store',
     'Ext.grid.rowedit.Plugin',
+
+    'Ext.grid.plugin.CellEditing',
+    'Ext.ux.ajax.JsonSimlet',
+    'Ext.chart.series.Pie',
+    'Ext.data.virtual.Store',
+    'Ext.grid.rowedit.Plugin',
+    'Ext.field.InputMask',
+    'Ext.data.validator.Format',
+    'Ext.grid.plugin.*',
+    'Ext.dataview.plugin.*',
+    'Ext.pivot.plugin.*',
+    'Ext.plugin.*',
+    'Ext.chart.plugin.*',
+    'Ext.draw.plugin.*',
+    'Ext.dataview.*',
+    'Ext.data.validator.*',
+    'Ext.layout.*',
+    'Ext.ux.gauge.*',
+    'Ext.grid.filters.Plugin',
+    'Ext.*'
+
+
 ]
 
 exports.getXtypes = () => {return xtypes};

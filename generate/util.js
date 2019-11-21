@@ -40,7 +40,7 @@ exports.run = (parm, cwd) => {
   if (cwd == undefined) {cwd = process.cwd()}
   return promise = new Promise((resolve, reject) => {
     let options = {cwd: cwd, stdio: 'inherit', encoding: 'utf-8'}
-    console.log(color(command + ' ' + args.toString().replace(',', ' ')) + ' in ' + cwd)
+    //console.log(color(command + ' ' + args.toString().replace(',', ' ')) + ' in ' + cwd)
     let child = require('child_process').spawn(command, args, options)
     child.on('close', (code, signal) => {resolve({code, signal})})
     child.on('error', (error) => {reject(error)})
@@ -69,7 +69,28 @@ exports.getCreatesForPackage = (xtypes, classes) => {
         creates += 'Ext.create({"xtype":"' + xtypes[i] + '"});' + '\n';
     }
     for (i = 0; i < classes.length; i++) {
-        creates += 'Ext.create("' + classes[i] + '",{});' + '\n';
+        creates += 'Ext.require("' + classes[i] + '",{});' + '\n';
     }
     return creates;
 }
+
+// function writeFile(framework, tplFile, outFile, vars) {
+//     //var templateFolder = path.resolve(templateFolder);
+//     var tFile = path.resolve(templateFolder + tplFile).toString()
+//     var tpl = new Ext.XTemplate(fs.readFileSync(tFile))
+//     var t = tpl.apply(vars)
+//     fs.writeFileSync(outFile, t);
+//     delete tpl;
+// }
+
+
+// function log(v, s) {
+//     var blanks;
+//     if (v == "") {
+//         blanks = "";
+//     } else {
+//         blanks = new Array(25 - v.length + 1).join(" ");
+//         blanks = blanks + ": ";
+//     }
+//     console.log(`${v}${blanks}${s}`);
+// }

@@ -1,8 +1,11 @@
 var _ = require('lodash');
-exports.getBundleInfo = (framework, type, xtypelist) => {
+exports.getBundleInfo = (framework, shortname, type, xtypelist) => {
 
     var examplesSource = './filetemplates/' + framework + '/examples/' + type + '.js';
     var info = {};
+    info.framework = framework;
+    info.shortname = shortname;
+    info.Shortname = shortname.charAt(0).toUpperCase() + shortname.slice(1);
     info.wantedxtypes = xtypelist;
     //var rows = [];
 
@@ -95,10 +98,15 @@ exports.getBundleInfo = (framework, type, xtypelist) => {
         info.importsewc = info.imports + `import '@sencha/ext-web-components-${info.type}/lib/ext-${w}.component';\n`
     }
 
-    const angular = require(examplesSource).angular;
+
+
+    // const examples = require(examplesSource).examples;
     info.angular = {}
-    info.angular.module = angular('module', info)
-    info.angular.component = angular('component', info)
+    info.angular.module = ''
+    info.angular.component = ''
+
+    // info.angular.module = examples('module', info)
+    // info.angular.component = examples('component', info)
 
 
     //info.imports = ''

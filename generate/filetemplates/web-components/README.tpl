@@ -1,8 +1,43 @@
-## @sencha/ext-web-components{bundle}
+## @sencha/ext-{framework}{bundle}
 
 last run: {now}
 
-## Test with an {Framework} CLI generated app
+## Test with Vanilla JavaScript
+
+#### Create a folder named 'vanilla-js'
+
+#### In vanilla-js, create a package.json file with the following:
+
+```sh
+{
+  "name": "vanilla-js",
+  "version": "1.0.0",
+  "description": "ext-{framework}{bundle} example",
+  "scripts": {
+    "start": "npx http-server -o"
+  },
+  "devDependencies": {
+    "@sencha/ext-{framework}{bundle}": "~7.1.0",
+    "http-server": "^0.11.1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {}
+}
+
+```
+
+#### Copy 'index.html' from @sencha/ext-{framework}{bundle} to vanilla-js
+
+#### Run 'npm install' in vanilla-js folder
+
+#### Run 'npx http-server' in vanilla-js folder
+
+#### Run http://127.0.0.1:8080 in a browser
+
+
+
+## Test with an Angular CLI generated app
 
 #### Install Angular CLI
 
@@ -32,7 +67,7 @@ cd ng-ewc-{type}; code .
 In the dependencies section of package.json, add the following:
 
 ```sh
-"@sencha/ext-web-components{bundle}": "~7.1.0",
+"@sencha/ext-{framework}{bundle}": "~7.1.0",
 "@webcomponents/webcomponentsjs": "^2.3.0",
 ```
 
@@ -103,7 +138,7 @@ Open the src/app/app.module.js file in the editor and replace the contents with 
 
 ```sh
 declare var Ext: any
-import '@sencha/ext-web-components{bundle}/ext-web-components{bundle}.module'
+import '@sencha/{framework}{bundle}/ext-{framework}{bundle}.module'
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -143,6 +178,6 @@ ng serve --open --port 4200
 a page at http://localhost:4200 opens in a browser window and the EWC application will load
 
 #### imports in the npm package module:
-##### @sencha/ext-web-components{bundle}/ext-web-components{bundle}.module
+##### @sencha/ext-{framework}{bundle}/ext-{framework}{bundle}.module
 
 {imports}

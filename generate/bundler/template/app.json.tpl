@@ -6,7 +6,7 @@
     "name": "bundler",
     "framework": "ext",
     "toolkit": "modern",
-    "theme": "theme-triton",
+    "theme": "theme-material",
     "requires": [
         "renderercell",
         "font-ext",
@@ -33,5 +33,19 @@
             "bundle": true,
             "exclude": ["fashion"]
         }
-    ]
+    ],
+    "production": {
+        "output": {
+            "appCache": {
+                "enable": true,
+                "path": "cache.appcache"
+            }
+        },
+        "loader": {
+            "cache": "$\u007Bbuild.timestamp}"
+        },
+        "cache": {
+            "enable": true
+        }
+    }
 }

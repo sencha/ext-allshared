@@ -1,4 +1,4 @@
-import EwcBaseComponent from '../ewc-base.component'
+import EwcBaseComponent from '../ewc-base.js'
 
 export default class {classname} extends EwcBaseComponent {
 
@@ -8,7 +8,7 @@ export default class {classname} extends EwcBaseComponent {
 //get onready(){return this.getAttribute('onready')};set onready(onready){this.setAttribute('onready',onready)}
 
     static PROPERTIES() { return [
-        'eng',
+        'extname',
         'viewport',
         'align',
         'plugins',
@@ -38,7 +38,7 @@ export default class {classname} extends EwcBaseComponent {
         {classname}.EVENTS().forEach(function (eventparameter, index, array) {
             attrs.push('on' + eventparameter.name)
         })
-        attrs.push('onready')
+        //attrs.push('onready')
         return attrs
     }
 
