@@ -1,7 +1,8 @@
 const fs = require(`fs-extra`);
 const path = require(`path`);
 // var str = fs.readFileSync(path.resolve(`./ext.core.prod.js`)).toString()
-var str = fs.readFileSync(path.resolve(`./ext.grid.prod.js`)).toString()
+// var str = fs.readFileSync(path.resolve(`./ext.grid.prod.js`)).toString()
+var str = fs.readFileSync(path.resolve(`./ext.button.prod.js`)).toString()
 var classes = []
 var regex = /Ext.define\('Ext./gi
 var result

@@ -4,16 +4,19 @@ WORKING ASSETS
 -------------------------------------------------------
 -------------------------------------------------------
 
+# EXT GRID DELTA FILE:
+sencha compile -d exclude -all and include -na=Ext.grid and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./test/ext.grid.dev.js then fs minify -closure -l=NEXT -f=./test/ext.grid.dev.js -t=./test/ext.grid.prod.js
+
+# EXT BUTTON DELTA FILE:
+sencha compile -d exclude -all and include -na=Ext.Button and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./test/ext.button.dev.js then fs minify -closure -l=NEXT -f=./test/ext.button.dev.js -t=./test/ext.button.prod.js
+
+# EXT CORE FILE:
+sencha compile -d -cl=Ext exclude -all and include -r -na=Ext.app and include -na=Ext.mixin and include -na=Ext.dataview and include -na=Ext.theme.material and include -r -na=Ext.field and include -na=Ext.TitleBar and include -na=Ext.dd and include -na=Ext.drag and include -na=Ext.exporter.Plugin and include -na=Ext.form and include -r -na=Ext.layout and include -r -na=Ext.overrides.drag.proxy.Placeholder and exclude -na=Ext.grid and include -r -na=Ext.plugin and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./test/ext.core.dev.js then fs minify -closure -l=NEXT -f=./test/ext.core.dev.js -t=./test/ext.core.prod.js
+
 # EXT-ALL FROM MANIFEST: 
 ```
 sencha compile -d -cl=Ext concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./build/all/ext.all.dev.js then fs minify -closure -l=NEXT -f=./build/all/ext.all.dev.js -t=./build/all/ext.all.prod.js
 ```
-
-# EXT GRID DELTA FILE:
-sencha compile -d exclude -all and include -na=Ext.grid and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./test/ext.grid.dev.js then fs minify -closure -l=NEXT -f=./test/ext.grid.dev.js -t=./test/ext.grid.prod.js
-
-# EXT CORE FILE:
-sencha compile -d -cl=Ext exclude -all and include -r -na=Ext.app and include -na=Ext.mixin and include -na=Ext.dataview and include -na=Ext.theme.material and include -r -na=Ext.field and include -na=Ext.TitleBar and include -na=Ext.dd and include -na=Ext.drag and include -na=Ext.exporter.Plugin and include -na=Ext.form and include -r -na=Ext.layout and include -r -na=Ext.overrides.drag.proxy.Placeholder and exclude -na=Ext.grid.Location and include -r -na=Ext.plugin and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./test/ext.core.dev.js then fs minify -closure -l=NEXT -f=./test/ext.core.dev.js -t=./test/ext.core.prod.js
 
 # EXT RECURSIVE WIDGET CORE FILE:
 sencha compile -d -cl=Ext exclude -all and include -r -na=Ext.Widget and include -tag=core and include -na=Ext.Class and include -na=Ext.Base and include -na=Ext.Array and include -na=Ext.Boolean and include -na=Ext.Date and include -na=Ext.Function and include -na=Ext.Global_CSS and include -na=Ext.Number and include -na=Ext.Object and include -na=Ext.RegExp and include -na=Ext.String and include -r -na=Ext.app and concat -st --closure --input-js-version ES6 --js-version ES6 --compress -out=./test/ext.widget.dev.js then fs minify -closure -l=NEXT -f=./test/ext.widget.dev.js -t=./test/ext.widget.prod.js
