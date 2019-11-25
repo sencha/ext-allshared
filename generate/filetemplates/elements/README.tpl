@@ -1,33 +1,33 @@
-## @sencha/ext-{framework}{bundle}
+## @sencha/ext-web-components{bundle}
 
 last run: {now}
 
 ## Test with Vanilla JavaScript
 
-- Create a folder named ext-{framework}{bundle}-example
+- Create a folder named ext-web-components{bundle}-demo
 
 mac
 ```sh
-mkdir js-ext-{framework}{bundle}-example
-cd js-ext-{framework}{bundle}-example
+mkdir ext-web-components{bundle}-demo
+cd ext-web-components{bundle}-demo
 ```
 
 windows
 ```sh
-md js-ext-{framework}{bundle}-example
-cd js-ext-{framework}{bundle}-example
+md ext-web-components{bundle}-demo
+cd ext-web-components{bundle}-demo
 ```
 
-- In the js-ext-{framework}{bundle}-example folder, create a package.json file with the following:
+- In the ext-web-components{bundle}-demo folder, create a package.json file with the following:
 
 ```sh
 {
-  "name": "js-ext-{framework}{bundle}-example",
+  "name": "ext-web-components{bundle}-demo",
   "version": "1.0.0",
-  "description": "js-ext-{framework}{bundle}-example",
+  "description": "ext-web-components{bundle}-demo",
   "scripts": {},
   "devDependencies": {
-    "@sencha/ext-{framework}{bundle}": "~7.1.0",
+    "@sencha/ext-web-components{bundle}": "~7.1.0",
     "http-server": "^0.11.1"
   },
   "author": "",
@@ -35,12 +35,12 @@ cd js-ext-{framework}{bundle}-example
   "repository": {}
 }
 ```
-- Run the following in the js-ext-{framework}{bundle}-example folder
+- Run the following in the ext-web-components{bundle}-demo folder
 
 mac
 ```sh
 npm install
-cp node_modules/@sencha/ext-elements-all/index.html ./index.html
+cp node_modules/@sencha/ext-web-components/index.html ./index.html
 npx http-server -o
 
 ```
@@ -58,8 +58,8 @@ npx http-server -o
 - Run the following:
 
 ```sh
-npx create-react-app react-ext-{framework}{bundle}-example
-cd react-ext-{framework}{bundle}-example
+npx create-react-app react-ext-web-components{bundle}-demo
+cd react-ext-web-components{bundle}-demo
 npm install @sencha/ext-elements-all --save
 cp node_modules/@sencha/ext-elements-all/ext/css.all.js ./public/css.all.js
 cp node_modules/@sencha/ext-elements-all/ext/ext.all.js ./public/ext.all.js
@@ -107,10 +107,10 @@ npm install -g @angular/cli
 should be @angular/cli@8.3.x
 
 
-#### Create a new {Framework} CLI application
+#### Create a new web-components CLI application
 
 ```sh
-ng new ng-ext-{framework}{bundle} --minimal=true --interactive=false -g=true --skipInstall=true
+ng new ng-ext-web-components{bundle} --minimal=true --interactive=false -g=true --skipInstall=true
 ```
 
 #### Open your editor
@@ -118,7 +118,7 @@ ng new ng-ext-{framework}{bundle} --minimal=true --interactive=false -g=true --s
 To open Visual Studio Code, type the following:
 
 ```sh
-cd ng-ext-{framework}{bundle}; code .
+cd ng-ext-web-components{bundle}; code .
 ```
 
 #### Add to package.json
@@ -126,7 +126,7 @@ cd ng-ext-{framework}{bundle}; code .
 In the dependencies section of package.json, add the following:
 
 ```sh
-"@sencha/ext-{framework}{bundle}": "~7.1.0",
+"@sencha/ext-web-components{bundle}": "~7.1.0",
 "@webcomponents/webcomponentsjs": "^2.3.0",
 ```
 
@@ -197,7 +197,7 @@ Open the src/app/app.module.js file in the editor and replace the contents with 
 
 ```sh
 declare var Ext: any
-import '@sencha/ext-{framework}{bundle}/ext-{framework}{bundle}.module'
+import '@sencha/ext-web-components{bundle}/ext-web-components{bundle}.module'
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -237,6 +237,6 @@ ng serve --open --port 4200
 a page at http://localhost:4200 opens in a browser window and the EWC application will load
 
 #### imports in the npm package module:
-##### @sencha/ext-{framework}{bundle}/ext-{framework}{bundle}.module
+##### @sencha/ext-web-components{bundle}/ext-web-components{bundle}.module
 
 {imports}

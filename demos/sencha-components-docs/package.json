@@ -1,0 +1,16 @@
+{
+  "name": "@sencha/components-docs",
+  "version": "7.1.0",
+  "description": "sencha-components-docs",
+  "scripts": {
+    "start": "npx http-server -o"
+  },
+  "devDependencies": {
+    "@sencha/ext-web-components": "~7.1.0",
+    "@vanillawc/wc-markdown": "~1.3.4",
+    "http-server": "^0.11.1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {}
+}

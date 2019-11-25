@@ -1,1 +1,1 @@
-import '../build/blank/ext.blank.css';
+import '../build//ext..css';
