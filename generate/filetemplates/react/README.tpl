@@ -4,8 +4,14 @@ last run: {now}
 
 This npm package contains the files that are needed to add the @sencha/ext-react{bundle} package to a React application
 
+## Login to the Sencha early adopter npm repo
 
-## Create the React application with create-react-app
+```sh
+npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@sencha
+
+```
+
+## Create a React application with create-react-app
 
 - Run the following:
 
@@ -30,17 +36,57 @@ code .
 
 (You can use any editor)
 
+#### Add ExtReact to your project
+
 - Replace ./src/App.js with:
 
 ```sh
-{component}
+import React, { Component } from 'react';
+import { ExtPanel, ExtToolbar, ExtButton, ExtGrid, ExtGridcolumn } from "@sencha/ext-react";
+
+class App extends Component {
+
+  render() {
+    return (
+      <ExtPanel
+        title="Panel"
+        layout="fit"
+        shadow="true"
+        viewport="true"
+        padding="10"
+      >
+        <ExtToolbar docked="top">
+          <ExtButton text="button1"></ExtButton>
+          <div>div with text</div>
+          <ExtButton text="button2"></ExtButton>
+        </ExtToolbar>
+        <ExtGrid title="The Grid" shadow="true" onReady={ this.readyGrid }>
+          <ExtGridcolumn text="name" dataIndex="name"></ExtGridcolumn>
+          <ExtGridcolumn text="email" dataIndex="email" flex="1"></ExtGridcolumn>
+        </ExtGrid>
+      </ExtPanel>
+    )
+  }
+
+  readyGrid = event => {
+    var grid = event.detail.cmp;
+    var data=[
+      {name: 'Marc', email: 'marc@gmail.com'},
+      {name: 'Nick', email: 'nick@gmail.com'},
+      {name: 'Andy', email: 'andy@gmail.com'}
+    ]
+    grid.setData(data);
+  }
+
+}
+export default App;
+
 ```
 
-- Run the following:
+- Type the following in a command/terminal window:
 
 ```sh
-npm install
 npm start
 ```
 
-the ExtReact application will load in a browser window
+The ExtReact application will load in a browser window

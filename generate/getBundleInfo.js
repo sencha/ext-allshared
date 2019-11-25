@@ -3,6 +3,9 @@ exports.getBundleInfo = (framework, shortname, type, xtypelist) => {
 
     var examplesSource = './filetemplates/' + framework + '/examples/' + type + '.js';
     var info = {};
+
+  info.xtype = type;
+
     info.framework = framework;
     info.shortname = shortname;
     info.Shortname = shortname.charAt(0).toUpperCase() + shortname.slice(1);

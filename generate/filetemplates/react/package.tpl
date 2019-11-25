@@ -1,11 +1,12 @@
 {
-  "name": "@sencha/ext-react{bundle}",
+  "name": "@sencha/ext-react-{toolkit}{bundle}",
   "version": "7.1.0",
-  "description": "Sencha ext-react{bundle}",
+  "description": "Sencha ext-react-{toolkit}{bundle}",
   "main": "index.js",
   "scripts": {
     "build": "npx babel ./src --out-dir ./dist",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "postinstall": "node ./postinstall.js"
   },
   "keywords": [
     "Sencha",
@@ -15,19 +16,17 @@
   ],
   "author": "Sencha, Inc.",
   "license": "MIT",
-  "homepage": "https://github.com/sencha/ext-react{bundle}#readme",
+  "homepage": "https://github.com/sencha/ext-react-{toolkit}{bundle}#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sencha/ext-react{bundle}.git"
+    "url": "git+https://github.com/sencha/ext-react-{toolkit}{bundle}.git"
   },
   "peerDependencies": {
-    "@sencha/ext-web-components{bundle}": "~7.1.0",
-    "@sencha/ext-runtime-base": "~7.1.0"
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0"
   },
   "dependencies": {
     "fs-extra": "~8.1.0",
-    "@sencha/ext-web-components{bundle}": "~7.1.0",
-    "@sencha/ext-runtime-base": "~7.1.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
     "@babel/runtime": "^7.7.2",
     "react": "~16.11.0",
     "react-dom": "~16.11.0"

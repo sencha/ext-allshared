@@ -1,7 +1,11 @@
-export function extnameToProperty(cmpObj, me) {
-    for (var prop in cmpObj) {
-        me[prop+'Cmp'] = cmpObj[prop];
-    }
+export function extnameToProperty(event, me, suffix) {
+  var cmpObj = event.detail.cmpObj
+  if (suffix == undefined) {
+    suffix = 'Cmp'
+  }
+  for (var prop in cmpObj) {
+      me[prop+suffix] = cmpObj[prop];
+  }
 }
 
 export function doProp(me, prop) {
@@ -19,14 +23,27 @@ export function doProp(me, prop) {
 }
 
 function doSet(me,prop,val) {
+
+
+
+
     if (val) {
         var val2;
+        var valExt;
         if (typeof val == 'object' || typeof val == 'function') {
             me.attributeObjects[prop] = val
             val2 = typeof val
+            valExt = val
         }
         else {
             val2 = val
+            valExt = val
+        }
+        var method = 'set' + prop[0].toUpperCase() + prop.substring(1)
+        try {
+          me.A.ext[method](valExt)
+        }
+        catch(e) {
         }
         me.setAttribute(prop, val2)
     }

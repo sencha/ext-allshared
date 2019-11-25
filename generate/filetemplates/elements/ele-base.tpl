@@ -111,7 +111,10 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         if (this.parentNode != null &&
             this.parentNode.nodeName.substring(0, 4) !== 'EXT-')
         {
+          if (this.A.o.xtype != 'dialog') {
             this.A.o.renderTo = this.parentNode; //this;
+          }
+            //this.A.o.renderTo = this.parentNode; //this;
             //this.A.o.renderTo = this.newDiv.parentNode;
             //this.newDiv.parentNode.removeChild(this.newDiv);
         }
@@ -148,30 +151,22 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 //                }
 
                 else if (property == 'renderer') {
+                    //console.log(this.attributeObjects['renderer'])
                     var cellxtype = '';
                     if (Ext.ClassManager.getByAlias('widget.reactcell') == undefined) {
-                        cellxtype = 'elementcell';
+                      cellxtype = 'elementcell';
                     }
                     else {
-                        cellxtype = 'reactcell';
+                      cellxtype = 'reactcell';
                     }
-
-                    //try {
-                    //    Ext.create({xtype: 'reactcell'})
-                    //    cellxtype = 'reactcell'
-                    //}
-                    //catch(e) {
-                    //    cellxtype = 'elementcell'
-                    //}
-
                     o.cell = {};
                     o.cell.xtype = cellxtype;
                     o.cell.encodeHtml = false;
                     if (this.attributeObjects['renderer'] != undefined) {
-                        o.renderer = this.attributeObjects['renderer'];
+                      o.renderer = this.attributeObjects['renderer'];
                     }
                     else {
-                        o.renderer = eval(this['renderer']);
+                      o.renderer = eval(this['renderer']);
                     }
                 }
 
@@ -180,8 +175,6 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                 }
 
                 else if (property == 'handler') {
-
-
                     var functionString = this.getAttribute(property);
                     if (functionString !== 'undefined') {
                         if (functionString == 'function') {
@@ -308,7 +301,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.extname + ')' + ' - ' + childxtype + '(' + childCmp.extname + ')');
         //if (childxtype == 'widget')
         if (this.A.ext.initialConfig.align != undefined) {
-            if (parentxtype != 'tooltip' && parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
+            if (parentxtype != 'toolbar' && parentxtype != 'tooltip' && parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
                 console.error('Can only use align property if parent is a Titlebar or Grid or Button');
                 return;
             }
@@ -404,9 +397,9 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                         if (newVal === 'true') {newVal = true}
                         if (newVal === 'false') {newVal = false}
                         //console.dir(this.A.ext)
-                        console.log(this.A.ext.xtype)
-                        console.log(method)
-                        console.log(newVal)
+                        //console.log(this.A.ext.xtype)
+                        //console.log(method)
+                        //console.log(newVal)
 
                         //var propertyVal = '';
                         //if (typeof newVal == 'string') {
@@ -423,15 +416,15 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                         this.A.ext[method](propertyVal);
 
                         //this.A.ext[method](newVal)
-                        return
-                        if (isTrueSet) {
-                            this.A.ext.setDisplayed(true)
-                            //this.A.ext.show()
-                            //this.A.ext.setTitle('hi')
-                        }
-                        else {
-                            this.A.ext[method](newVal)
-                        }
+                        //return
+                        //if (isTrueSet) {
+                        //    this.A.ext.setDisplayed(true)
+                        //    //this.A.ext.show()
+                        //    //this.A.ext.setTitle('hi')
+                        //}
+                        //else {
+                        //    this.A.ext[method](newVal)
+                        //}
                     }
                 }
                 else {

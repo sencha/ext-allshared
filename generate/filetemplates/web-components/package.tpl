@@ -1,12 +1,12 @@
 {
-  "name": "@sencha/ext-web-components{bundle}",
+  "name": "@sencha/ext-web-components-{toolkit}{bundle}",
   "mjg": "marc",
   "version": "7.1.0",
-  "main2wc": "ext-web-components{bundle}.module.js",
+  "main2wc": "ext-web-components-{toolkit}{bundle}.module.js",
   "main": "index.js",
   "private": false,
   "binx": {
-    "ext-web-components{bundle}": "./bin/ext-web-components{bundle}.js"
+    "ext-web-components-{toolkit}{bundle}": "./bin/ext-web-components-{toolkit}{bundle}.js"
   },
   "scripts": {
     "watch": "npx babel ./src --out-dir ./dist --watch",
@@ -15,10 +15,10 @@
   },
   "homepage": "https://github.com/sencha/ext-web-components#readme",
   "peerDependencies": {
-    "@sencha/ext-runtime-base": "~7.1.0"
+    "@sencha/ext-runtime-{toolkit}-base": "~7.1.0"
   },
   "dependencies": {
-    "@sencha/ext-runtime-base": "~7.1.0",
+    "@sencha/ext-runtime-{toolkit}-base": "~7.1.0",
     "object-assign": "~4.1.0",
     "pascal-case": "~2.0.1",
     "@babel/runtime": "^7.6.2",

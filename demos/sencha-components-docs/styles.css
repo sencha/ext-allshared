@@ -1,0 +1,11 @@
+.mjg {
+  background: white;
+  padding: 1.4em;
+  position: relative;
+  border-radius: .4rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+  border: 1px solid #e8eaed;
+  color: #3c4043;
+  line-height: 1.33;
+  margin: 1.5rem .5rem 1.5rem .5rem;
+}

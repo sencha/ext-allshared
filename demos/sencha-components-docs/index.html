@@ -1,0 +1,54 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes">
+<title>Sencha Components</title>
+    <link href="./node_modules/@sencha/ext-runtime-base/theme/material/material-all.css" rel="stylesheet">
+
+
+      <script type="text/javascript" src="./node_modules/@sencha/ext-runtime-base/engine.js"></script>
+
+      <script type="module" src="./node_modules/@vanillawc/wc-markdown/dist/wc-markdown.js"></script>
+
+      <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-tab.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-toolbar.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-breadcrumbbar.component.js"></script>
+
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-grid.component.js"></script>
+
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-gridcolumn.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-button.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-panel.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-titlebar.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-searchfield.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-tabpanel.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-treelist.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-dataview.component.js"></script>
+    <script type="module" src="./node_modules/@sencha/ext-web-components/src/ext-component.component.js"></script>
+
+
+    <script type="text/javascript" src="./data.js"></script>
+    <script type="module" src="./MainComponent.js"></script>
+    <style>
+        .x-tabbar {
+            padding: 12px 0 0 0;
+        }
+        :root {
+            --base-color: #024059;
+            --base-foreground-color: white;
+            --background-color: white;
+            --color: black;
+            --accent-color: #87bd3e;
+            --accent-light-color: #9fcc62;
+            --accent-dark-color: #f57c00;
+            --accent-pressed-color: #abd276;
+            --accent-invisible-color: rgba(135, 189, 62, 0);
+        }
+    </style>
+    <link href="./styles.css" rel="stylesheet">
+    <script type="module">
+        import MainComponent from './MainComponent.js';
+        window.main = new MainComponent();
+    </script>
+</head>
+<body></body>
+</html>
