@@ -19,6 +19,13 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         this.eventnames = [];
         var eventnamesall = [];
 
+         if (Ext.isClassic) {
+           console.log('classic')
+         }
+         else {
+           console.log('modern')
+         }
+
         const distinct = (value, index, self) => {
             return self.indexOf(value) === index;
         };
@@ -224,10 +231,14 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         this.A.o = o;
     }
 
-    newDoExtCreate(me, isApplication) {
-        Ext.onReady(function() {
-            //console.log(me.A.o);
-            me.A.ext = Ext.create(me.A.o);
+  newDoExtCreate(me, isApplication) {
+    Ext.onReady(function() {
+      if (isApplication) {
+        if (Ext.isClassic) {
+          me.A.o.plugins = {viewport: true}
+        }
+      }
+      me.A.ext = Ext.create(me.A.o);
             me.A.CHILDREN.forEach(function(child) {
                 me.addTheChild(me.A.ext, child);
             });
@@ -239,13 +250,16 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                     me.parentNode.A.CHILDREN.push(me.A.ext);
                 }
             }
+
             if (isApplication) {
+              if (Ext.isModern) {
                 Ext.application({
-                    name: 'MyEWCApp',
-                    launch: function() {
-                        Ext.Viewport.add([me.A.ext]);
-                    }
+                  name: 'MyEWCApp',
+                  launch: function launch() {
+                    Ext.Viewport.add([me.A.ext]);
+                  }
                 });
+              }
             }
 
             {Shortname}BaseComponent.elementcount--;
@@ -292,8 +306,8 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                     }));
                 });
             }
-        });
-    }
+    });
+  }
 
     addTheChild(parentCmp, childCmp, location) {
         var parentxtype = parentCmp.xtype;
