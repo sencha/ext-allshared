@@ -147,7 +147,7 @@ export function _getAllComponents(vars, options) {
   const fsx = require('fs-extra')
 
   var ExtWebComponents = []
-  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-web-components/lib')
+  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-web-components-modern/dist')
   var files = fsx.readdirSync(packageLibPath)
   files.forEach((fileName) => {
     if (fileName && fileName.substr(0, 4) == 'ext-') {

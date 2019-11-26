@@ -54,7 +54,6 @@ else {
 
 info.folderName = `ext-${info.framework}-${info.toolkit}${info.bundle}/`;
 console.log(info.folderName)
-return
 
 
 info.folder = '../../GeneratedFolders/ext-' + info.framework + info.bundle + '/ext';
@@ -188,6 +187,7 @@ function doLaunch(item, framework) {
         if (item.alias != undefined) {
             if (item.alias.substring(0, 6) == 'widget') {
               aliases = item.alias.split(",")
+              console.log(aliases.length)
               for (alias = 0; alias < aliases.length; alias++) {
                 if (aliases[alias].substring(0, 6) == 'widget') {
                     var xtypelocal = aliases[alias].substring(7)
@@ -218,10 +218,13 @@ function doLaunch(item, framework) {
         return
       }
 
+      //modern
         if (item.extends != undefined) {
             var n = item.extends.indexOf(",");
+            item.extendsArray = []
             if (n != -1) {
                 //console.log('mult extends: ' + item.name + ' - ' + item.extends)
+
                 item.extends = item.extends.substr(0,n)
             }
             //mjgItem.extends = item.extends;
@@ -265,7 +268,21 @@ function doLaunch(item, framework) {
         //mjgItem.xtype = item.xtype;
         //mjgItems.push(mjgItem)
 
-        oneItem(item, framework, names, xtypes)
+        //console.log(xtypes)
+
+        if (xtypes.length == 0) {
+          //console.log(item.name)
+          oneItem(item, framework, names, [])
+        }
+
+        xtypes.forEach(xtype => {
+          var xtypesArray = []
+          xtypesArray.push(xtype)
+          oneItem(item, framework, names, xtypesArray)
+        })
+
+
+        //oneItem(item, framework, names, xtypes)
     }
     else {
       //console.log('not processed')
@@ -273,7 +290,8 @@ function doLaunch(item, framework) {
 }
 
 function oneItem(item, framework, names, xtypes) {
-  //console.log(names)
+  //console.log(xtypes)
+  var xtype = xtypes[0];
 
 
   if (item.alias == 'widget.calendar') {
@@ -346,7 +364,7 @@ function oneItem(item, framework, names, xtypes) {
             extendpath = extendpath + extendparts[j2] + '/'
         }
 
-        var xtype = xtypes[0];
+
         var values = {
             shortname: info.shortname,
             Shortname: info.Shortname,
@@ -411,7 +429,7 @@ function oneItem(item, framework, names, xtypes) {
                 Xtype: xtypes[j].charAt(0).toUpperCase() + xtypes[j].slice(1).replace(/-/g,'_'),
                 xtype: xtypes[j]
             }
-            if (xtypes[j] == "grid") {
+            if (xtypes[j] == "grid" && info.toolkit == 'modern') {
                 //values.ReactCell = "import '@sencha/ext-web-components/dist/ReactCell';"
                 values.ReactCell = "import './ReactCell';"
                 values.ElementCell = "import './ElementCell';"
@@ -420,6 +438,7 @@ function oneItem(item, framework, names, xtypes) {
                 values.ReactCell = ""
                 values.ElementCell = ""
             }
+            console.log(values.xtype)
             writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.js`, values)
             writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}${info.reactPrefix}${values.Xtype}.js`, values)
             writeTemplateFile(templateFolder+'react.tpl', `${reactOrigStagingFolder}${values.Xtype}.js`, values)
@@ -1080,10 +1099,13 @@ function doPostLaunch() {
     writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactOrigFolder}ExtReact.js`, {})
     writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactOrigFolder}ExtReactRenderer.js`, {})
 
-    rimraf.sync(reactStagingFolder);
-    rimraf.sync(reactOrigStagingFolder);
-    rimraf.sync(angularStagingFolder);
-    rimraf.sync(srcStagingFolder);
+    //rimraf.sync(reactStagingFolder);
+    //rimraf.sync(reactOrigStagingFolder);
+    //rimraf.sync(angularStagingFolder);
+    //rimraf.sync(srcStagingFolder);
+
+
+
     //rimraf.sync(docStagingFolder);
 
     createWebComponents()
