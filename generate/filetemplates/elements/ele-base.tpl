@@ -19,12 +19,12 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         this.eventnames = [];
         var eventnamesall = [];
 
-         if (Ext.isClassic) {
-           console.log('classic')
-         }
-         else {
-           console.log('modern')
-         }
+         //if (Ext.isClassic) {
+         //  console.log('classic')
+         //}
+         //else {
+         //  console.log('modern')
+         //}
 
         const distinct = (value, index, self) => {
             return self.indexOf(value) === index;
