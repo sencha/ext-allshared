@@ -1,6 +1,6 @@
 // node ./genIt.js ele blank modern
 // node ./genIt.js ele button
-const install = false;
+const install = true;
 const installExt = true;
 const doAllinXtype = true;
 const toolkit = process.argv[4];
@@ -22,8 +22,8 @@ const rimraf = require("rimraf");
 const mkdirp = require("mkdirp");
 require("./XTemplate");
 
-
 info.toolkit = toolkit;
+info.Toolkit = info.toolkit.charAt(0).toUpperCase() + info.toolkit.slice(1);
 info.classicWidgetCount = 0;
 //info.data = require(`./AllClassesFiles/modern-all-classes-flatten.json`);
 info.data = require(`./AllClassesFiles/docs/${info.toolkit}/${info.toolkit}-all-classes-flatten.json`);
@@ -53,8 +53,7 @@ else {
 }
 
 info.folderName = `ext-${info.framework}-${info.toolkit}${info.bundle}/`;
-console.log(info.folderName)
-
+//console.log(info.folderName)
 
 info.folder = '../../GeneratedFolders/ext-' + info.framework + info.bundle + '/ext';
 info.imports = ''
@@ -81,10 +80,7 @@ info.reactIndex = ''
 //var aItems = [];
 var aItemsInBundle = [];
 
-
-//const xtypelist = require("./npmpackage/" + info.xtype).getXtypes();
-
-
+//const xtypelist = require("./npmpackage/" + info.xtype).getXtypes()
 
 //let getBundleInfo = require("./getBundleInfo").getBundleInfo;
 //var info = getBundleInfo(framework, shortname, info.xtype, info.xtypelist)
@@ -147,19 +143,14 @@ if (install == true) {doInstall()}
 
 function doLaunch(item, framework) {
     //console.log(item.name + ' ' + item.extended)
-
-
-
     var processIt = shouldProcessIt(item)
     if (processIt == true) {
 
       if (info.toolkit == 'classic') {
 
         var n = item.extends.indexOf(',Object');
-        //console.log
         if (n > 0) {
           item.extends = item.extends.substring(0, n)
-
         }
 
         //console.log(item.alias + ' ' + item.extended)
@@ -173,7 +164,6 @@ function doLaunch(item, framework) {
         //   }
         //   //mjgItem.extends = item.extends;
         // }
-
 
         var names = []
         names.push(item.name)
@@ -200,9 +190,6 @@ function doLaunch(item, framework) {
             }
         }
 
-
-
-
         //console.log(xtypes)
         if (xtypes.length == 0) {
           //console.log(item.name)
@@ -224,7 +211,6 @@ function doLaunch(item, framework) {
             item.extendsArray = []
             if (n != -1) {
                 //console.log('mult extends: ' + item.name + ' - ' + item.extends)
-
                 item.extends = item.extends.substr(0,n)
             }
             //mjgItem.extends = item.extends;
@@ -280,9 +266,6 @@ function doLaunch(item, framework) {
           xtypesArray.push(xtype)
           oneItem(item, framework, names, xtypesArray)
         })
-
-
-        //oneItem(item, framework, names, xtypes)
     }
     else {
       //console.log('not processed')
@@ -292,17 +275,6 @@ function doLaunch(item, framework) {
 function oneItem(item, framework, names, xtypes) {
   //console.log(xtypes)
   var xtype = xtypes[0];
-
-
-  if (item.alias == 'widget.calendar') {
-    //console.log(item)
-    //console.log(names)
-    //console.log(extended)
-    //console.log(item)
-  }
-
-
-
 
     var propertyObj = doProperties(item)
     var propertiesDocs = propertyObj.eventsDocs;
@@ -438,7 +410,7 @@ function oneItem(item, framework, names, xtypes) {
                 values.ReactCell = ""
                 values.ElementCell = ""
             }
-            console.log(values.xtype)
+
             writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.js`, values)
             writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}${info.reactPrefix}${values.Xtype}.js`, values)
             writeTemplateFile(templateFolder+'react.tpl', `${reactOrigStagingFolder}${values.Xtype}.js`, values)
@@ -464,6 +436,10 @@ function oneItem(item, framework, names, xtypes) {
                     moduleVars.declarations = moduleVars.declarations + `    Ext${capclassname}Component,${newLine}`;
                     moduleVars.exports = moduleVars.exports + `    Ext${capclassname}Component,${newLine}`;
                     moduleVars.Bundle = info.Bundle;
+                    moduleVars.toolkit = info.toolkit;
+                    moduleVars.Toolkit = info.Toolkit;
+                    moduleVars.framework = info.framework;
+
                   }
             }
 
@@ -589,58 +565,6 @@ function shouldProcessIt(o) {
         }
       }
 
-
-
-      // if ( o.name == 'Ext.chart.AbstractChart') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.draw.ContainerBase') {
-      //   console.log(o)
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.panel.AbstractPanel') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.view.Base') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.panel.AbstractBase') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.EventBase') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.form.Form') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.form.AbstractForm') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.header.Base') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.panel.Base') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.calendar.AbstractList') {
-      //   processIt = true
-      // }
-
-      // if ( o.name == 'Ext.view.AbstractView') {
-      //   processIt = true
-      // }
-
-
       if (o.name == 'Ext.Widget') {
         processIt = true
     }
@@ -651,12 +575,8 @@ function shouldProcessIt(o) {
         processIt = true
     }
 
-
       return processIt
     }
-
-
-
 
 
     if (o.extended == undefined) {
@@ -1043,7 +963,7 @@ function doPostLaunch() {
         copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
         copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
         copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
-        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${info.framework}${info.bundle}.module.js`, moduleVars);
+        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${info.framework}-${info.toolkit}${info.bundle}.module.js`, moduleVars);
         writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}index.js`, moduleVars);
         writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
     //}
@@ -1192,7 +1112,7 @@ function createAngular() {
 
     writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
     writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
-    writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}${info.bundle}.module.ts`,moduleVars);
+    writeTemplateFile(templateFolder+`module.tpl`,`${outputFolder}ext-${framework}-${info.toolkit}${info.bundle}.module.ts`,moduleVars);
     writeTemplateFile(templateFolder+`public_api.tpl`,`${outputFolder}/public_api.ts`,info);
     copyFileSync(templateFolder+`postinstall.js`, outputFolder+`postinstall.js`);
     copyFileSync(templateFolder+`tsconfig.json`, outputFolder+`tsconfig.json`);
@@ -1309,13 +1229,13 @@ async function doInstall() {
     //console.log(info)
 
     //ext-web-components
-    process.chdir(typeFolder + 'ext-web-components' + info.bundle);
+    process.chdir(typeFolder + 'ext-web-components-' + info.toolkit + info.bundle);
     await run(`npm install`);
     await run(`npm publish --force`);
 
-    await run(`rm -r ../../../../../ext-web-components/packages/ext-web-components${info.bundle}`);
+    await run(`rm -r ../../../../../ext-web-components/packages/ext-web-components-${info.toolkit}${info.bundle}`);
     //await run(`cp -R ./${packagefolder} ../../../../../ext-$angular/packages/ext-angular${info.bundle}`);
-    await run(`cp -R ./ ../../../../../ext-web-components/packages/ext-web-components${info.bundle}`);
+    await run(`cp -R ./ ../../../../../ext-web-components/packages/ext-web-components-${info.toolkit}${info.bundle}`);
 
 
 
@@ -1324,7 +1244,7 @@ async function doInstall() {
     //ext-web-components
 
     //ext-react
-    process.chdir(typeFolder + 'ext-react' + info.bundle);
+    process.chdir(typeFolder + 'ext-react-' + info.toolkit + info.bundle);
     await run(`npm install`);
     var packagenameReact = './package.json';
     var packageReact = fs.readFileSync(packagenameReact, 'utf8');
@@ -1337,9 +1257,9 @@ async function doInstall() {
     fs.writeFileSync(packagenameReact, packageStringReact);
     await run(`npm publish --force`);
 
-    await run(`rm -r ../../../../../ext-react/packages/ext-react${info.bundle}`);
+    await run(`rm -r ../../../../../ext-react/packages/ext-react-${info.toolkit}${info.bundle}`);
     //await run(`cp -R ./${packagefolder} ../../../../../ext-$angular/packages/ext-angular${info.bundle}`);
-    await run(`cp -R ./ ../../../../../ext-react/packages/ext-react${info.bundle}`);
+    await run(`cp -R ./ ../../../../../ext-react/packages/ext-react-${info.toolkit}${info.bundle}`);
 
 
 
@@ -1350,7 +1270,7 @@ async function doInstall() {
 
 
     //ext-angular
-    process.chdir(typeFolder + 'ext-angular' + info.bundle);
+    process.chdir(typeFolder + 'ext-angular-' + info.toolkit + info.bundle);
     await run(`npm install`);
     await run(`npm run packagr`);
     await run(`cp -R ./src dist/lib`);
@@ -1370,9 +1290,9 @@ async function doInstall() {
   process.chdir('../');
   //var suffix = info.xtype == 'blank' ? '' : '-' + info.xtype
   //console.log(process.cwd())
-  await run(`rm -r ../../../../../ext-angular/packages/ext-angular${info.bundle}`);
+  await run(`rm -r ../../../../../ext-angular/packages/ext-angular-${info.toolkit}${info.bundle}`);
   //await run(`cp -R ./${packagefolder} ../../../../../ext-$angular/packages/ext-angular${info.bundle}`);
-  await run(`cp -R ./dist ../../../../../ext-angular/packages/ext-angular${info.bundle}`);
+  await run(`cp -R ./dist ../../../../../ext-angular/packages/ext-angular-${info.toolkit}${info.bundle}`);
 
 
 

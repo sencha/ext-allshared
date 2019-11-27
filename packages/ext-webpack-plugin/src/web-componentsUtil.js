@@ -157,7 +157,7 @@ export function _getAllComponents(vars, options) {
       }
     }
   })
-  logv(options.verbose, `Identifying all ext-${options.framework} modules`)
+  logv(options.verbose, `Identifying all ext-${options.framework}-modern modules`)
   //log(vars.app, `Identifying all ext-${options.framework} modules`)
   return ExtWebComponents
 }

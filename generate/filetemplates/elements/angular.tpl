@@ -1,6 +1,6 @@
 //import EWC{Xtype} from '../dist/ext-{xtype}.component.js';
 //inputs: (new EWC{Xtype}()).properties,
-import EWC{Xtype} from '@sencha/ext-web-components{bundle}/dist/ext-{xtype}.component.js';
+import EWC{Xtype} from '@sencha/ext-web-components-{toolkit}{bundle}/dist/ext-{xtype}.component.js';
 import {
     Host,
     Optional,
