@@ -5,6 +5,14 @@
       "entryFile": "./public_api.ts"
     },
     "whitelistedNonPeerDependencies": [
-      "angular", "zone", "comment-json", "script-loader", "@sencha/ext-web-components", "@sencha/ext-runtime-base", "fs-extra"
+      "angular",
+      "zone",
+      "comment-json",
+      "script-loader",
+      "@sencha/ext-web-components-modern",
+      "@sencha/ext-runtime-modern-base",
+      "@sencha/ext-web-components-classic",
+      "@sencha/ext-runtime-classic-base",
+      "fs-extra"
     ]
   }
