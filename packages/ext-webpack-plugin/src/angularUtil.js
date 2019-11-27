@@ -172,12 +172,22 @@ export function _getAllComponents(vars, options) {
   const packageLibPath = path.resolve(process.cwd(), `node_modules/@sencha/ext-angular-${toolkit}/lib`)
   var files = fsx.readdirSync(packageLibPath)
   files.forEach((fileName) => {
-    if (fileName && fileName.substr(0, 4) == 'ext-') {
-      var end = fileName.substr(4).indexOf('.component')
+    // if (fileName && fileName.substr(0, 4) == 'ext-') {
+    //   var end = fileName.substr(4).indexOf('.component')
+    //   if (end >= 0) {
+    //     extComponents.push(fileName.substring(4, end + 4))
+    //   }
+    // }
+
+    if (fileName && fileName.substr(0, 3) == 'Ext') {
+      var end = fileName.substr(3).indexOf('.ts');
       if (end >= 0) {
-        extComponents.push(fileName.substring(4, end + 4))
+        extComponents.push(fileName.substring(3, end + 3).toLowerCase());
       }
     }
+
+
+
   })
   log(vars.app, `Writing all referenced ext-${options.framework} modules`)
   return extComponents

@@ -382,6 +382,7 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
     else {
       js = `Ext.require(["Ext.*","Ext.data.TreeStore"])`
     }
+    js = `Ext.require(["Ext.*","Ext.data.TreeStore"])`; //for now
     if (vars.manifest === null || js !== vars.manifest) {
       vars.manifest = js + ';\nExt.require(["Ext.layout.*"]);\n';
       const manifest = path.join(output, 'manifest.js')
