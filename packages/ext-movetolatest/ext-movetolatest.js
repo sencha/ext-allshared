@@ -66,11 +66,6 @@ function movetolatest() {
     return
   }
 
-  if (o.foundVersion == '7.0.0') {
-    console.log(boldRed('Upgrade Not Needed: ') + ' project is already upgraded to version 7.0.0')
-    return
-  }
-
   archive(packageJson)
   archive(webpackConfigJs)
   archive(babelrc)
@@ -78,8 +73,6 @@ function movetolatest() {
   archive(themerjs)
   archive(themerts)
   archive(polyfillsts)
-
-  console.log(boldGreen('Upgrading ') + o.foundFramework + ': version ' + o.foundVersion + ' to version 7.0.0')
  
   var frameworkTemplateFolder = path.join(upgradeDir, o.foundFramework)
   packageJson.new = JSON.parse(fs.readFileSync(path.join(frameworkTemplateFolder, 'package.json'), {encoding: 'utf8'}))
@@ -98,6 +91,7 @@ function movetolatest() {
   packageJson.old.dependencies = packageJson.new.dependencies
   delete packageJson.old.extDefults
   fs.writeFileSync(packageJson.root, JSON.stringify(packageJson.old, null, 2));
+
   console.log(boldGreen('Updated ') + packageJson.root.replace(process.cwd(), ''))
 
   var values = {}
@@ -321,6 +315,17 @@ function extjsValues() {
       { test: /.(js|jsx)$/, exclude: /node_modules/ }
     ]`,
     resolve:`{
+    }`,
+    devServer: `{
+      contentBase: outputFolder,
+      hot: isProd,
+      historyApiFallback: true,
+      host: '0.0.0.0',
+      port: port,
+      disableHostCheck: false,
+      compress: isProd,
+      inline:!isProd,
+      stats: 'none'
     }`
   }
 }

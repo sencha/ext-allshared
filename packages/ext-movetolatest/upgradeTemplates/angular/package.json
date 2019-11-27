@@ -6,14 +6,14 @@
     "build": "npm run clean && cross-env webpack --env.environment=production --env.treeshake=yes && cross-env webpack --env.environment=production --env.basehref=/"
   },
   "devDependencies": {
-    "@sencha/ext-angular-webpack-plugin": "~7.0.0",
-    "@sencha/ext-angular": "~7.0.0",
+    "@sencha/ext-angular-webpack-plugin": "~7.1.0",
+    "@sencha/ext-angular": "~7.1.0",
 
-    "@sencha/ext": "~7.0.0",
-    "@sencha/ext-modern": "~7.0.0",
-    "@sencha/ext-modern-treegrid": "~7.0.0",
-    "@sencha/ext-modern-theme-material": "~7.0.0",
-    "@sencha/ext-ux": "~7.0.0",
+    "@sencha/ext": "~7.1.0",
+    "@sencha/ext-modern": "~7.1.0",
+    "@sencha/ext-modern-treegrid": "~7.1.0",
+    "@sencha/ext-modern-theme-material": "~7.1.0",
+    "@sencha/ext-ux": "~7.1.0",
 
     "@angular/common": "~7.2.11",
     "@angular/compiler": "~7.2.11",

@@ -1,6 +1,8 @@
 
 'use strict'
 require('@babel/polyfill')
+const fs = require('fs');
+const path = require('path');
 const pluginUtil = require(`./pluginUtil`)
 
 // process.stdin.resume();
@@ -59,7 +61,36 @@ export default class ExtWebpackPlugin {
 
     compiler.hooks.done.tap(`ext-done`, (stats) => {
       pluginUtil.logh(app, `HOOK done`)
+      this.postBuildProcess(stats.compilation.outputOptions)
       pluginUtil._done(stats, vars, options)
     })
+  }
+
+  postBuildProcess(options) {
+    /**
+       * 1. Read the temp file written by the Cmd plugin to get the app.json configured build path
+       * 2. Extract the path as a String, trimmed to the location of the build folder
+       * 3. Copy webpack bundle and index.html to destination directory
+       * 4. Delete the temp file
+       */ 
+      const outputPath = options.path;
+      const bundleName = ((options.filename == "[name].js") ? "main.js" : options.filename);
+      const indexHTML = "index.html";
+      const indexPath = outputPath+indexHTML;
+      const tempFilePath = outputPath+'temp.txt';
+      const buildFolder = "build"
+
+      if (fs.existsSync(tempFilePath)) {
+        const configProdPath = fs.readFileSync(tempFilePath, "utf8").toString().trim();
+        fs.unlinkSync(tempFilePath);
+        const trimmedProdPathIndex = configProdPath.indexOf(buildFolder);
+        const prodBuildPath = configProdPath.substring(trimmedProdPathIndex)
+        const copyBundleDest = path.join(prodBuildPath, bundleName);
+        const copyIndexDest = path.join(prodBuildPath, indexHTML);
+        if (fs.existsSync(bundleName)) {
+          fs.copyFileSync(bundleName, copyBundleDest);
+          fs.copyFileSync(indexHTML, copyIndexDest);
+        }
+      }
   }
 }

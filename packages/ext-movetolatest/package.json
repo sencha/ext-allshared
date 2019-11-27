@@ -1,6 +1,6 @@
 {
   "name": "@sencha/ext-movetolatest",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "Sencha ExtMoveToLatest",
   "bin": {
     "ext-movetolatest": "ext-movetolatest.js"
@@ -17,7 +17,7 @@
   },
   "preferGlobal": true,
   "dependencies": {
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^7.1.0",
     "replace-in-file": "~3.4.4"
   },
   "repository": {
