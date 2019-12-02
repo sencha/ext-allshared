@@ -1,8 +1,8 @@
-## @sencha/ext-react{bundle}
+## @sencha/ext-react-{toolkit}{bundle}
 
 last run: {now}
 
-This npm package contains the files that are needed to add the @sencha/ext-react{bundle} package to a React application
+This npm package contains the files that are needed to add the @sencha/ext-react-{toolkit}{bundle} package to a React application
 
 ## Login to the Sencha early adopter npm repo
 
@@ -16,14 +16,14 @@ npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@senc
 - Run the following:
 
 ```sh
-npx create-react-app ext-react-demo{bundle}
+npx create-react-app ext-react-demo-{toolkit}{bundle}
 ```
 
 - Add ExtReact to your application by running the following:
 
 ```sh
-cd ext-react-demo{bundle}
-npm install @sencha/ext-react{bundle} --save
+cd ext-react-demo-{toolkit}{bundle}
+npm install @sencha/ext-react-{toolkit}{bundle} --save
 ```
 
 - Open your editor
@@ -42,7 +42,7 @@ code .
 
 ```sh
 import React, { Component } from 'react';
-import { ExtPanel, ExtToolbar, ExtButton, ExtGrid, ExtGridcolumn } from "@sencha/ext-react";
+import { ExtPanel, ExtToolbar, ExtButton, ExtGrid, ExtColumn } from "@sencha/ext-react-{toolkit}";
 
 class App extends Component {
 
@@ -61,15 +61,15 @@ class App extends Component {
           <ExtButton text="button2"></ExtButton>
         </ExtToolbar>
         <ExtGrid title="The Grid" shadow="true" onReady={ this.readyGrid }>
-          <ExtGridcolumn text="name" dataIndex="name"></ExtGridcolumn>
-          <ExtGridcolumn text="email" dataIndex="email" flex="1"></ExtGridcolumn>
+          <ExtColumn text="name" dataIndex="name"></ExtColumn>
+          <ExtColumn text="email" dataIndex="email" flex="1"></ExtColumn>
         </ExtGrid>
       </ExtPanel>
     )
   }
 
-  readyGrid = event => {
-    var grid = event.detail.cmp;
+  readyGrid = detail => {
+    var grid = detail.cmp;
     var data=[
       {name: 'Marc', email: 'marc@gmail.com'},
       {name: 'Nick', email: 'nick@gmail.com'},
