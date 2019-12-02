@@ -142,14 +142,6 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         }
         for (var i = 0; i < properties.length; i++) {
             var property = properties[i];
-
-            if (property == 'header') { //todo to fix this
-              //console.log(property)
-              //console.dir(this)
-              //console.log(this.getAttribute(property))
-              o[property] = false; //this[property]
-            }
-
             if (this.getAttribute(property) !== null) {
 
                 if (property == 'config') {
@@ -439,8 +431,8 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                         } catch (e) {}
                       }
                       //console.log(propertyVal)
-                      //console.log(this.A.ext.xtype + ' ' + method)
-                      //console.log(propertyVal)
+                      console.log(`${this.A.ext.xtype}${method}`)
+                      console.log(propertyVal)
                       this.A.ext[method](propertyVal);
                     }
                 }

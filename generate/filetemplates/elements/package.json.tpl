@@ -1,18 +1,18 @@
 {
-    "name": "@sencha/ext-{framework}{bundle}",
+    "name": "@sencha/ext-{framework}-{toolkit}{bundle}",
     "version": "7.1.0",
-    "main2": "ext-{framework}{bundle}.module.js",
+    "main2": "ext-{framework}-{toolkit}{bundle}.module.js",
     "main": "index.js",
     "private": false,
     "bin": {
-      "ext-{framework}{bundle}": "./bin/ext-{framework}{bundle}.js"
+      "ext-{framework}-{toolkit}{bundle}": "./bin/ext-{framework}-{toolkit}{bundle}.js"
     },
     "scripts": {
       "watch": "npx babel ./src --out-dir ./dist --watch",
       "build": "npx babel ./src --out-dir ./dist",
       "prepare": "npm run build"
     },
-    "homepage": "https://github.com/sencha/ext-{framework}#readme",
+    "homepage": "https://github.com/sencha/ext-{framework}-{toolkit}{bundle}#readme",
     "peerDependencies": {},
     "dependencies": {},
     "devDependencies": {
@@ -39,7 +39,7 @@
     },
     "repository": {
       "type": "git",
-      "url": "git+https://github.com/sencha/ext-{framework}{bundle}"
+      "url": "git+https://github.com/sencha/ext-{framework}-{toolkit}{bundle}"
     },
     "keywords": [],
     "author": "Sencha",

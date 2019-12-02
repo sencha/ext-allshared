@@ -4,6 +4,8 @@ const install = true;
 const installExt = true;
 const doAllinXtype = true;
 
+
+
 const toolkit = process.argv[4];
 var toolkits = ['modern', 'classic'];
 if (toolkits.includes(toolkit) == false) {
@@ -82,60 +84,9 @@ var docs = []
 info.reactImports = ''
 info.reactExports = ''
 info.reactExports70 = ''
-info.reactExportsCase = `
-export const ActionSheet = ExtActionsheet_;
-export const BreadcrumbBar = ExtBreadcrumbbar_;
-export const CheckBoxField = ExtCheckboxfield_;
-export const CheckboxGroup = ExtCheckboxgroup_;
-export const CheckColumn = ExtCheckcolumn_;
-export const ComboBoxField = ExtComboboxfield_;
-export const ContainerField = ExtContainerfield_;
-export const DataView = ExtDataview_;
-export const DateColumn = ExtDatecolumn_;
-export const DatePanel = ExtDatepanel_;
-export const DatePickerField = ExtDatepickerfield_;
-export const EmailField = ExtEmailfield_;
-export const FieldSet = ExtFieldset_;
-export const FileField = ExtFilefield_;
-export const FormPanel = ExtFormpanel_;
-export const FroalaEditorField = ExtFroalaeditorfield_;
-export const LockedGrid = ExtLockedgrid_;
-export const MenuCheckItem = ExtMenucheckitem_;
-export const MenuItem = ExtMenuitem_;
-export const NestedList = ExtNestedlist_;
-export const NumberColumn = ExtNumbercolumn_;
-export const NumberField = ExtNumberfield_;
-export const PasswordField = ExtPasswordfield_;
-export const PivotGrid = ExtPivotgrid_;
-export const RadioField = ExtRadiofield_;
-export const SearchField = ExtSearchfield_;
-export const SegmentedButton = ExtSegmentedbutton_;
-export const SelectField = ExtSelectfield_;
-export const SliderField = ExtSliderfield_;
-export const SparkLineLine = ExtSparklineline_;
-export const SpinnerField = ExtSpinnerfield_;
-export const SplitButton = ExtSplitbutton_;
-export const TabBar = ExtTabbar_;
-export const TabPanel = ExtTabpanel_;
-export const TextAreaField = ExtTextareafield_;
-export const TextColumn = ExtTextcolumn_;
-export const TextField = ExtTextfield_;
-export const TimeField = ExtTimefield_;
-export const TimePanel = ExtTimepanel_;
-export const TitleBar = ExtTitlebar_;
-export const ToggleField = ExtTogglefield_;
-export const ToolBar = ExtToolbar_;
-export const ToolTip = ExtTooltip_;
-export const TreeList = ExtTreelist_;
-export const UrlField = ExtUrlfield_;
-export const WidgetCell = ExtWidgetcell_;
-export const URLField = ExtUrlfield_;
-`
-
-
-
+info.reactExportsCase = ''
 //var aItems = [];
-//var aItemsInBundle = [];
+var aItemsInBundle = [];
 
 //const xtypelist = require("./npmpackage/" + info.xtype).getXtypes()
 
@@ -143,7 +94,7 @@ export const URLField = ExtUrlfield_;
 //var info = getBundleInfo(framework, shortname, info.xtype, info.xtypelist)
 
 const generatedFolders = "./GeneratedFolders/";
-//const filetemplatesFolder = "./filetemplates/"
+const filetemplatesFolder = "./filetemplates/"
 const typeFolder = generatedFolders + info.xtype + '/';
 const templateFolder = "./filetemplates/" + info.framework + "/";
 //const outputFolder = typeFolder + "ext-" + info.framework + (info.xtype == 'blank' ? '' : '-' + info.xtype) + '/';
@@ -157,8 +108,8 @@ const binFolder = outputFolder + 'bin/';
 
 const reactFolder = outputFolder + 'react/';
 const reactStagingFolder = outputFolder + 'reactStaging/';
-//const reactOrigFolder = outputFolder + 'reactOrig/';
-//const reactOrigStagingFolder = outputFolder + 'reactOrigStaging/';
+const reactOrigFolder = outputFolder + 'reactOrig/';
+const reactOrigStagingFolder = outputFolder + 'reactOrigStaging/';
 
 const angularFolder = outputFolder + 'angular/';
 const angularStagingFolder = outputFolder + 'angularStaging/';
@@ -177,27 +128,28 @@ mkdirp.sync(binFolder);
 
 mkdirp.sync(reactFolder);
 mkdirp.sync(reactStagingFolder);
-//mkdirp.sync(reactOrigFolder);
-//mkdirp.sync(reactOrigStagingFolder);
+mkdirp.sync(reactOrigFolder);
+mkdirp.sync(reactOrigStagingFolder);
 mkdirp.sync(angularFolder);
 mkdirp.sync(angularStagingFolder);
 
 if (installExt == true) {mkdirp.sync(extFolder)}
 
-//const newLine = "\n";
-//const tab = "    ";
+const newLine = "\n";
+const tab = "    ";
 var didXtype = false;
 var allExtended = '';
 
 var Items = [];
 
-//mjg
+
+
 for (i = 0; i < info.data.global.items.length; i++) {
-  doLaunch(info.data.global.items[i], info.framework);
+    doLaunch(info.data.global.items[i], info.framework);
 }
+return
 
 doPostLaunch();
-
 if (install == true) {doInstall()}
 
 function doLaunch(item, framework) {
@@ -221,7 +173,7 @@ function doLaunch(item, framework) {
         //       //console.log('mult extends: ' + item.name + ' - ' + item.extends)
         //       extended.push(item.extended.substr(0,n))
         //   }
-        //   //mjxgItem.extends = item.extends;
+        //   //mjgItem.extends = item.extends;
         // }
 
         var names = []
@@ -272,7 +224,7 @@ function doLaunch(item, framework) {
                 //console.log('mult extends: ' + item.name + ' - ' + item.extends)
                 item.extends = item.extends.substr(0,n)
             }
-            //mjxgItem.extends = item.extends;
+            //mjgItem.extends = item.extends;
         }
 
         var names = []
@@ -281,7 +233,7 @@ function doLaunch(item, framework) {
             var alt = item.alternateClassNames.split(",");
             names = names.concat(alt)
         }
-        //mjxgItem.names = names;
+        //mjgItem.names = names;
 
         var aliases = []
         var xtypes = []
@@ -303,15 +255,15 @@ function doLaunch(item, framework) {
             //webcomponent = false
         }
 
-        //mjxgItem.aliases = aliases;
-        //mjxgItem.xtypes = xtypes;
+        //mjgItem.aliases = aliases;
+        //mjgItem.xtypes = xtypes;
 
         //there may be more than one
 
 
         item.xtype = xtypes[0]
-        //mjxgItem.xtype = item.xtype;
-        //mjxgItems.push(mjxgItem)
+        //mjgItem.xtype = item.xtype;
+        //mjgItems.push(mjgItem)
 
         //console.log(xtypes)
 
@@ -412,7 +364,7 @@ function oneItem(item, framework, names, xtypes) {
     var sPROPERTIESEVENTS = propertyObj.sPROPERTIESEVENTS;
     //sGETSET = sGETSET + sPROPERTIESEVENTS;
     var sPROPERTIESOBJECT = {};
-    info.propNames = `['header', 'renderer', 'label','fitToParent','tab','config','platformConfig','extname','viewport','align','plugins','responsiveConfig','responsiveFormulas',`
+    info.propNames = `['renderer', 'label','fitToParent','tab','config','platformConfig','extname','viewport','align','plugins','responsiveConfig','responsiveFormulas',`
     propertyObj.propertiesArray.forEach(property => {
       //info.propNames.push(property.name)
       info.propNames = info.propNames + `'${property.name}',`
@@ -488,10 +440,10 @@ function oneItem(item, framework, names, xtypes) {
 
         var templateFile = ''
         if (item.name == 'Ext.Base') {
-            templateFile = 'base.tpl'
+            templateFile = '/base.tpl'
         }
         else {
-            templateFile = 'class.tpl'
+            templateFile = '/class.tpl'
         }
 
         //console.log(`${folder}${filename}.js`)
@@ -540,7 +492,7 @@ function oneItem(item, framework, names, xtypes) {
 
             writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.js`, values)
             writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}${info.reactPrefix}${values.Xtype}.js`, values)
-            //writeTemplateFile(templateFolder+'react.tpl', `${reactOrigStagingFolder}${values.Xtype}.js`, values)
+            writeTemplateFile(templateFolder+'react.tpl', `${reactOrigStagingFolder}${values.Xtype}.js`, values)
             writeTemplateFile(templateFolder+'angular.tpl', `${angularStagingFolder}Ext${values.Xtype}.ts`, values)
 
             if (didXtype == false) {
@@ -818,7 +770,7 @@ function doMethods(o) {
 
         if (method.from == undefined) {
 
-            sMETHODS = sMETHODS + '  ' + '  ' + "{ name:'" + method.name + "', function: function"
+            sMETHODS = sMETHODS + tab + tab + "{ name:'" + method.name + "', function: function"
             // sMETHODS =
             //     sMETHODS +
             //     tab +
@@ -963,36 +915,8 @@ function readFile(file) {
     return fs.readFileSync(path.resolve(templateFolder + file)).toString()
 }
 
-//mjg
 function doPostLaunch() {
-
     fs.writeFileSync(`${docFolder}data.js`,'window.xtypemenu = ' + JSON.stringify(docs, null, ' '));
-
-    writeTemplateFile(templateFolder+`bin-ext-${info.framework}.tpl`,`${outputFolder}bin/ext-${info.framework}${info.toolkitshown}${info.bundle}.js`,info);
-    copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
-    writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${info.framework}${info.toolkitshown}${info.bundle}.module.js`, moduleVars);
-    writeTemplateFile(templateFolder+`package.json.tpl`,`${outputFolder}package.json`,info);
-    writeTemplateFile(templateFolder+`README.md.tpl`,`${outputFolder}README.md`,info);
-    writeTemplateFile(templateFolder+`index.html.tpl`,`${outputFolder}index.html`,info);
-    writeTemplateFile(templateFolder+'index.js.tpl', `${outputFolder}index.js`, info);
-
-    copyFileSync(templateFolder+`HTMLParsedElement.js`, srcFolder + `HTMLParsedElement.js`);
-    copyFileSync(templateFolder+`ElementCell.js`, srcFolder + `ElementCell.js`);
-    copyFileSync(templateFolder+`util.js`, srcFolder + `util.js`);
-    writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
-
-    info.import = ``
-//     if (info.xtype != 'blank') {
-//         if (installExt == true) {
-// //             info.import =
-// // `import 'script-loader!../ext/ext.${info.xtype}';
-// // import 'script-loader!../ext/css.${info.xtype}';`
-//            info.import =
-// `import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/ext.${info.xtype}';
-// import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/css.${info.xtype}';`
-//         }
-//    }
-    writeTemplateFile(`${templateFolder}${info.shortname}-base.tpl`,`${srcFolder}${info.shortname}-base.js`, info);
 
     //copy xtypes from staging to src
     fs.readdirSync(`${srcStagingFolder}`).forEach(function(file) {
@@ -1003,13 +927,13 @@ function doPostLaunch() {
         var xtype = f[0].substring(4)
         if (info.wantedxtypes.indexOf(xtype) != -1) {
             var Xtype = xtype.charAt(0).toUpperCase() + xtype.slice(1).replace(/-/g,'_');
-            //aItemsInBundle.push(Xtype);
+            aItemsInBundle.push(Xtype);
             var reactFrameworkFile = `${info.reactPrefix}${Xtype}`
-            //var reactOrigFrameworkFile = `${Xtype}`
+            var reactOrigFrameworkFile = `${Xtype}`
             var angularFrameworkFile = `Ext${Xtype}`
             fs.copySync(`${reactStagingFolder}/${reactFrameworkFile}.js`,`${reactFolder}/${reactFrameworkFile}.js`)
 
-            //fs.copySync(`${reactOrigStagingFolder}/${reactOrigFrameworkFile}.js`,`${reactOrigFolder}/${reactOrigFrameworkFile}.js`)
+            fs.copySync(`${reactOrigStagingFolder}/${reactOrigFrameworkFile}.js`,`${reactOrigFolder}/${reactOrigFrameworkFile}.js`)
 
             fs.copySync(`${angularStagingFolder}/${angularFrameworkFile}.ts`,`${angularFolder}/${angularFrameworkFile}.ts`)
             fs.copySync(`${srcStagingFolder}/${file}`,`${srcFolder}/${file}`)
@@ -1018,7 +942,6 @@ function doPostLaunch() {
         }
     });
 
-    //doc
     info.includedxtypes = `<div>\n`
     fs.readdirSync(`${docStagingFolder}`).forEach(function(file) {
         var f = file.split('.')
@@ -1031,16 +954,108 @@ function doPostLaunch() {
     });
     info.includedxtypes = info.includedxtypes + `</div>\n`
     writeTemplateFile(templateFolder+'doc.tpl', `${docFolder}doc.html`, info)
-    writeTemplateFile(templateFolder+'doc-z-tabs.tpl', `${docFolder}z-tabs.js`, info)
-    writeTemplateFile(templateFolder+'doc-style.tpl', `${docFolder}style.css`, info)
+    writeTemplateFile(templateFolder+'z-tabs.tpl', `${docFolder}z-tabs.js`, info)
+    writeTemplateFile(templateFolder+'style.tpl', `${docFolder}style.css`, info)
     writeTemplateFile(templateFolder+'docstyle.tpl', `${docFolder}docstyle.css`, info)
-    //doc
+
+    writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
+    writeTemplateFile(templateFolder+`README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(templateFolder+`index.tpl`,`${outputFolder}index.html`,info);
+    //info.basecode = readFile("/../common/common-base.js")
+    //info.propscode = readFile(`/../common/${shortname}-props.js`)
+    //writeTemplateFile(templateFolder+`ext-${framework}.tpl`,`${outputFolder}bin/ext-${framework}${info.bundle}.js`,info);
 
 
-    copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
-    copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
-    copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
+    //if (info.framework == 'elements') {
+        writeTemplateFile(templateFolder+`ext-${info.framework}.tpl`,`${outputFolder}bin/ext-${info.framework}${info.bundle}.js`,info);
+        copyFileSync(templateFolder+`HTMLParsedElement.js`, outputFolder+`src/HTMLParsedElement.js`);
+        copyFileSync(templateFolder+`ElementCell.js`, outputFolder+`src/ElementCell.js`);
+        copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
+        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
+        copyFileSync(templateFolder+`reactize.js`, outputFolder+`reactOrig/reactize.js`);
+        copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`reactOrig/ReactCell.js`);
+        //copyFileSync(templateFolder+`angularize.ts`, outputFolder+`angular/angularize.ts`);
+        copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
+        copyFileSync(templateFolder+`util.js`, outputFolder+`src/util.js`);
+        copyFileSync(templateFolder+`.babelrc`, outputFolder+`.babelrc`);
+        writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}ext-${info.framework}${info.toolkitshown}${info.bundle}.module.js`, moduleVars);
 
+        //writeTemplateFile(templateFolder+'module.tpl', `${outputFolder}index.js`, moduleVars);
+//console.log(info.ewcimports)
+
+        info.reactExportsCase = `
+        export const ActionSheet = ExtActionsheet_;
+        export const BreadcrumbBar = ExtBreadcrumbbar_;
+        export const CheckBoxField = ExtCheckboxfield_;
+        export const CheckboxGroup = ExtCheckboxgroup_;
+        export const CheckColumn = ExtCheckcolumn_;
+        export const ComboBoxField = ExtComboboxfield_;
+        export const ContainerField = ExtContainerfield_;
+        export const DataView = ExtDataview_;
+        export const DateColumn = ExtDatecolumn_;
+        export const DatePanel = ExtDatepanel_;
+        export const DatePickerField = ExtDatepickerfield_;
+        export const EmailField = ExtEmailfield_;
+        export const FieldSet = ExtFieldset_;
+        export const FileField = ExtFilefield_;
+        export const FormPanel = ExtFormpanel_;
+        export const FroalaEditorField = ExtFroalaeditorfield_;
+        export const LockedGrid = ExtLockedgrid_;
+        export const MenuCheckItem = ExtMenucheckitem_;
+        export const MenuItem = ExtMenuitem_;
+        export const NestedList = ExtNestedlist_;
+        export const NumberColumn = ExtNumbercolumn_;
+        export const NumberField = ExtNumberfield_;
+        export const PasswordField = ExtPasswordfield_;
+        export const PivotGrid = ExtPivotgrid_;
+        export const RadioField = ExtRadiofield_;
+        export const SearchField = ExtSearchfield_;
+        export const SegmentedButton = ExtSegmentedbutton_;
+        export const SelectField = ExtSelectfield_;
+        export const SliderField = ExtSliderfield_;
+        export const SparkLineLine = ExtSparklineline_;
+        export const SpinnerField = ExtSpinnerfield_;
+        export const SplitButton = ExtSplitbutton_;
+        export const TabBar = ExtTabbar_;
+        export const TabPanel = ExtTabpanel_;
+        export const TextAreaField = ExtTextareafield_;
+        export const TextColumn = ExtTextcolumn_;
+        export const TextField = ExtTextfield_;
+        export const TimeField = ExtTimefield_;
+        export const TimePanel = ExtTimepanel_;
+        export const TitleBar = ExtTitlebar_;
+        export const ToggleField = ExtTogglefield_;
+        export const ToolBar = ExtToolbar_;
+        export const ToolTip = ExtTooltip_;
+        export const TreeList = ExtTreelist_;
+        export const UrlField = ExtUrlfield_;
+        export const WidgetCell = ExtWidgetcell_;
+        export const URLField = ExtUrlfield_;
+        `
+
+        writeTemplateFile(templateFolder+'index.js.tpl', `${outputFolder}index.js`, info);
+
+
+        writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
+    //}
+
+
+    info.import = ``
+
+
+//     if (info.xtype != 'blank') {
+//         if (installExt == true) {
+// //             info.import =
+// // `import 'script-loader!../ext/ext.${info.xtype}';
+// // import 'script-loader!../ext/css.${info.xtype}';`
+//            info.import =
+// `import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/ext.${info.xtype}';
+// import 'script-loader!@sencha/ext-${framework}${info.bundle}/ext/css.${info.xtype}';`
+//         }
+//    }
+
+
+    writeTemplateFile(templateFolder+`${info.shortname}-base.tpl`,`${srcFolder}${info.shortname}-base.js`,info);
 
     //copy staging Ext folder to src Ext
     var allExtendedArray = allExtended.split(",");
@@ -1066,14 +1081,14 @@ function doPostLaunch() {
         copyFileSync(fromFolder, toFolder);
     })
 
-    writeTemplateFile(templateFolder+'ext-react.component.js.tpl', `${srcFolder}ext-react.component.js`, {})
-    writeTemplateFile(templateFolder+'ext-react-renderer.component.js.tpl', `${srcFolder}ext-react-renderer.component.js`, {})
+    writeTemplateFile(templateFolder+'ExtReact.tpl', `${srcFolder}ext-react.component.js`, {})
+    writeTemplateFile(templateFolder+'ExtReactRenderer.tpl', `${srcFolder}ext-react-renderer.component.js`, {})
 
-    writeTemplateFile(templateFolder+'ExtReact.js.tpl', `${reactFolder}ExtReact.js`, {})
-    writeTemplateFile(templateFolder+'ExtReactRenderer.js.tpl', `${reactFolder}ExtReactRenderer.js`, {})
+    writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactFolder}ExtReact.js`, {})
+    writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactFolder}ExtReactRenderer.js`, {})
 
-    //writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactOrigFolder}ExtReact.js`, {})
-    //writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactOrigFolder}ExtReactRenderer.js`, {})
+    writeTemplateFile(templateFolder+'reactExtReact.tpl', `${reactOrigFolder}ExtReact.js`, {})
+    writeTemplateFile(templateFolder+'reactExtReactRenderer.tpl', `${reactOrigFolder}ExtReactRenderer.js`, {})
 
     //rimraf.sync(reactStagingFolder);
     //rimraf.sync(reactOrigStagingFolder);
@@ -1083,8 +1098,6 @@ function doPostLaunch() {
 
 
     //rimraf.sync(docStagingFolder);
-
-
 
     createWebComponents()
 
@@ -1164,6 +1177,7 @@ function createAngular() {
     //const outputFolder = typeFolder + "ext-" + framework + (info.xtype == 'blank' ? '' : '-' + info.xtype) + '/';
     const outputFolder = `${typeFolder}ext-${info.framework}${info.toolkitshown}${info.bundle}/`;
 
+
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
 
@@ -1224,25 +1238,16 @@ function createReact() {
     // //console.log(aItemsDistinct.length);
 
     //reactIndex = ''
-
-    info.wantedxtypes.forEach(xtype => {
-      var Xtype = xtype.charAt(0).toUpperCase() + xtype.slice(1).replace(/-/g,'_');
-      info.reactImports = info.reactImports + `import Ext${Xtype}_ from "./dist/Ext${Xtype}";\n`;
-      info.reactExports = info.reactExports + `export const Ext${Xtype} = Ext${Xtype}_;\n`;
-      info.reactExports70 = info.reactExports70 + `export const ${Xtype} = Ext${Xtype}_;\n`;
+    aItemsInBundle.forEach(Xtype => {
+        //reactIndex = reactIndex + `import Ext${Xtype}_ from "@sencha/ext-react${info.bundle}/dist/Ext${Xtype}";export const Ext${Xtype} = Ext${Xtype}_;export const ${Xtype} = Ext${Xtype}_;\n`;
+        info.reactImports = info.reactImports + `import Ext${Xtype}_ from "./dist/Ext${Xtype}";\n`;
+        info.reactExports = info.reactExports + `export const Ext${Xtype} = Ext${Xtype}_;\n`;
+        info.reactExports70 = info.reactExports70 + `export const ${Xtype} = Ext${Xtype}_;\n`;
+        //info.reactExportsCase = info.reactExportsCase + `export const ${Xtype}2 = Ext${Xtype}_;\n`;
     })
 
-
-    // aItemsInBundle.forEach(Xtype => {
-    //     //reactIndex = reactIndex + `import Ext${Xtype}_ from "@sencha/ext-react${info.bundle}/dist/Ext${Xtype}";export const Ext${Xtype} = Ext${Xtype}_;export const ${Xtype} = Ext${Xtype}_;\n`;
-    //     info.reactImports = info.reactImports + `import Ext${Xtype}_ from "./dist/Ext${Xtype}";\n`;
-    //     info.reactExports = info.reactExports + `export const Ext${Xtype} = Ext${Xtype}_;\n`;
-    //     info.reactExports70 = info.reactExports70 + `export const ${Xtype} = Ext${Xtype}_;\n`;
-    //     //info.reactExportsCase = info.reactExportsCase + `export const ${Xtype}2 = Ext${Xtype}_;\n`;
-    // })
-
     //info.reactIndex = reactIndex;
-    writeTemplateFile(templateFolder+'index.js.tpl', `${outputFolder}index.js`, info)
+    writeTemplateFile(templateFolder+'index.tpl', `${outputFolder}index.js`, info)
 
     fs.copySync(reactFolder,`${outputFolder}/src`)
     //fs.copySync(reactStagingFolder,`${outputFolder}/src`)
