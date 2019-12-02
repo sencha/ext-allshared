@@ -125,7 +125,9 @@ export default class {Shortname}BaseComponent extends HTMLElement {
             //this.A.o.renderTo = this.newDiv.parentNode;
             //this.newDiv.parentNode.removeChild(this.newDiv);
         }
-        this.newDoExtCreate(me, this.A.o['viewport']);
+        Ext.onReady(function() {
+          me.newDoExtCreate(me, me.A.o['viewport']);
+        })
     }
 
     newCreateProps(properties) {
@@ -142,6 +144,22 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         }
         for (var i = 0; i < properties.length; i++) {
             var property = properties[i];
+
+            if (this.getAttribute(property) == '[object Object]') {
+              //console.log(property)
+              o[property] = this.attributeObjects[property];
+              //console.log(o)
+              continue
+            }
+
+
+            if (this.getAttribute(property) == 'object') {
+              //console.log(property)
+              o[property] = this.attributeObjects[property];
+              continue
+            }
+
+
 
             if (property == 'header') { //todo to fix this
               //console.log(property)
@@ -240,83 +258,91 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     }
 
   newDoExtCreate(me, isApplication) {
-    Ext.onReady(function() {
+    //Ext.onReady(function() {
       if (isApplication) {
         if (Ext.isClassic) {
           me.A.o.plugins = {viewport: true}
         }
       }
       me.A.ext = Ext.create(me.A.o);
-            me.A.CHILDREN.forEach(function(child) {
-                me.addTheChild(me.A.ext, child);
-            });
-            if (me.parentNode != null && me.parentNode.nodeName.substring(0, 4) === 'EXT-') {
-                if (me.parentNode.A.ext !== undefined) {
-                    me.addTheChild(me.parentNode.A.ext, me.A.ext);
-                }
-                else {
-                    me.parentNode.A.CHILDREN.push(me.A.ext);
-                }
-            }
+      me.cmp = me.A.ext;
+      me.ext = me.A.ext;
+      me.dispatchEvent(new CustomEvent('cmpready', {
+        detail: {
+          cmp: me.A.ext
+        }
+      }));
 
-            if (isApplication) {
-              if (Ext.isModern) {
-                Ext.application({
-                  name: 'MyEWCApp',
-                  launch: function launch() {
-                    Ext.Viewport.add([me.A.ext]);
+      me.A.CHILDREN.forEach(function(child) {
+        me.addTheChild(me.A.ext, child);
+      });
+      if (me.parentNode != null && me.parentNode.nodeName.substring(0, 4) === 'EXT-') {
+        if (me.parentNode.A.ext !== undefined) {
+          me.addTheChild(me.parentNode.A.ext, me.A.ext);
+        }
+        else {
+          me.parentNode.A.CHILDREN.push(me.A.ext);
+        }
+      }
+
+      if (isApplication) {
+        if (Ext.isModern) {
+          Ext.application({
+            name: 'MyEWCApp',
+            launch: function launch() {
+              Ext.Viewport.add([me.A.ext]);
+            }
+          });
+        }
+      }
+
+      {Shortname}BaseComponent.elementcount--;
+      //console.log('reduced: ' + me.tagName + ': elementcount reduced to ' + {Shortname}BaseComponent.elementcount)
+      if ({Shortname}BaseComponent.elementcount == 0) {
+          //console.log('done');
+          //console.log({Shortname}BaseComponent.elements);
+          {Shortname}BaseComponent.elementsprior = [...{Shortname}BaseComponent.elements];
+          {Shortname}BaseComponent.elements = [];
+          //console.log({Shortname}BaseComponent.elementsprior);
+          //var allExt = [];
+          var cmpObj = {};
+          {Shortname}BaseComponent.elementsprior.forEach(element => {
+              //console.dir(element)
+              if (element.A != undefined) {
+                  for (var i = 0; i < element.A.ITEMS.length; i++) {
+                      //console.log(element.A.ITEMS[i])
+                      if(element.A.ITEMS[i].xtype == 'widget') {
+                          element.addTheChild(element.A.ext,element.A.ITEMS[i],i);
+                      }
                   }
-                });
               }
-            }
+              if (element.getAttribute('extname') != undefined) {
+                  var o = {};
+                  //o.extname = element.getAttribute('extname');
+                  //o.ext = element.A.ext;
+                  o.cmp = element.A.ext;
+                  //allExt.push(o);
+                  cmpObj[element.getAttribute('extname')] = element.A.ext;
+              }
+          });
 
-            {Shortname}BaseComponent.elementcount--;
-            //console.log('reduced: ' + me.tagName + ': elementcount reduced to ' + {Shortname}BaseComponent.elementcount)
-            if ({Shortname}BaseComponent.elementcount == 0) {
-                //console.log('done');
-                //console.log({Shortname}BaseComponent.elements);
-                {Shortname}BaseComponent.elementsprior = [...{Shortname}BaseComponent.elements];
-                {Shortname}BaseComponent.elements = [];
-                //console.log({Shortname}BaseComponent.elementsprior);
-                //var allExt = [];
-                var cmpObj = {};
-                {Shortname}BaseComponent.elementsprior.forEach(element => {
-                    //console.dir(element)
-                    if (element.A != undefined) {
-                        for (var i = 0; i < element.A.ITEMS.length; i++) {
-                            //console.log(element.A.ITEMS[i])
-                            if(element.A.ITEMS[i].xtype == 'widget') {
-                                element.addTheChild(element.A.ext,element.A.ITEMS[i],i);
-                            }
-                        }
-                    }
-                    if (element.getAttribute('extname') != undefined) {
-                        var o = {};
-                        //o.extname = element.getAttribute('extname');
-                        //o.ext = element.A.ext;
-                        o.cmp = element.A.ext;
-                        //allExt.push(o);
-                        cmpObj[element.getAttribute('extname')] = element.A.ext;
-                    }
-                });
-
-                //console.log({Shortname}BaseComponent.elementsprior)
-                me.cmp = me.A.ext;
-                me.ext = me.A.ext;
-                {Shortname}BaseComponent.elementsprior.forEach(element => {
-                    //console.dir(element)
-                    element.dispatchEvent(new CustomEvent('ready', {
-                        detail: {
-                            cmp: element.A.ext,
-                            //allCmp: allExt,
-                            //ext: element.A.ext,
-                            //allExt: allExt,
-                            cmpObj: cmpObj
-                        }
-                    }));
-                });
-            }
-    });
+          //console.log({Shortname}BaseComponent.elementsprior)
+          me.cmp = me.A.ext;
+          me.ext = me.A.ext;
+          {Shortname}BaseComponent.elementsprior.forEach(element => {
+              //console.dir(element)
+              element.dispatchEvent(new CustomEvent('ready', {
+                  detail: {
+                      cmp: element.A.ext,
+                      //allCmp: allExt,
+                      //ext: element.A.ext,
+                      //allExt: allExt,
+                      cmpObj: cmpObj
+                  }
+              }));
+          });
+      }
+    //});
   }
 
     addTheChild(parentCmp, childCmp, location) {
@@ -325,7 +351,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.extname + ')' + ' - ' + childxtype + '(' + childCmp.extname + ')');
         //if (childxtype == 'widget')
         if (this.A.ext.initialConfig.align != undefined) {
-            if (parentxtype != 'container' && parentxtype != 'toolbar' && parentxtype != 'tooltip' && parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
+            if (parentxtype != 'menu' && parentxtype != 'container' && parentxtype != 'toolbar' && parentxtype != 'tooltip' && parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
                 console.error('Can only use align property if parent is a Titlebar or Grid or Button - parent: ' + parentxtype);
                 return;
             }
@@ -477,8 +503,13 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
 
     disconnectedCallback() {
-        //console.log('ExtBase disconnectedCallback ' + this.A.ext.xtype)
-        Ext.destroy(this.A.ext)
+      //console.log('ExtBase disconnectedCallback ' + this.A.ext.xtype)
+      try {
+      Ext.destroy(this.A.ext);
+      }
+      catch(e) {
+        console.log(e)
+      }
     }
 
 

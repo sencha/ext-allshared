@@ -130,7 +130,9 @@ export const TreeList = ExtTreelist_;
 export const UrlField = ExtUrlfield_;
 export const WidgetCell = ExtWidgetcell_;
 export const URLField = ExtUrlfield_;
+//export { launch } from "./dist/launch";
 `
+//info.reactImports = info.reactImports + `import launch_ from "./dist/launch";\n`;
 
 
 
@@ -1037,6 +1039,7 @@ function doPostLaunch() {
     //doc
 
 
+    //writeTemplateFile(templateFolder+`launch.js.tpl`,`${outputFolder}react/launch.js`,info);
     copyFileSync(templateFolder+`reactize.js`, outputFolder+`react/reactize.js`);
     copyFileSync(templateFolder+`ReactCell.js`, outputFolder+`react/ReactCell.js`);
     copyFileSync(templateFolder+`angularbase.ts`, outputFolder+`angular/angularbase.ts`);
@@ -1207,6 +1210,7 @@ function createReact() {
 
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
+
 
     writeTemplateFile(templateFolder+`package.tpl`,`${outputFolder}package.json`,info);
     copyFileSync(templateFolder+`postinstall.js`, `${outputFolder}postinstall.js`);
