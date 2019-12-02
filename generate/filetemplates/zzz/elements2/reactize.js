@@ -25,7 +25,7 @@ function syncEvent(node, eventName, newEventHandler, me) {
             //console.dir(me)
           }
 
-          newEventHandler.call(this, e.detail);
+          newEventHandler.call(this, e);
         });
     }
 }
@@ -93,21 +93,26 @@ export default function (CustomElement) {
                 if (me.props[prop] !== prevProps[prop] && prop != 'children') {
                     //console.log(prop)
                     //console.dir(me.props[prop])
-                    var node = ReactDOM.findDOMNode(this);
-                    me.componentRef.current[prop] = me.props[prop];
-                    node[prop] = me.props[prop]
 
-                    // var t = typeof me.props[prop]
-                    // //console.log(t)
-                    // if (t == 'object') {
-                    //   me.componentRef.current[prop] = me.props[prop];
-                    //   node.attributeObjects[prop] = me.props[prop]
-                    //   node[prop] = t
-                    // }
-                    // else {
-                    //   me.componentRef.current[prop] = me.props[prop];
-                    //   node[prop] = me.props[prop]
-                    // }
+                    var node = ReactDOM.findDOMNode(this);
+                    var t = typeof me.props[prop]
+                    //console.log(t)
+                    if (t == 'object') {
+                      me.componentRef.current[prop] = me.props[prop];
+                      node.attributeObjects[prop] = me.props[prop]
+                      node[prop] = t
+                    }
+                    else {
+                      me.componentRef.current[prop] = me.props[prop];
+                      node[prop] = me.props[prop]
+                    }
+
+
+
+
+
+
+
                     //me.componentRef.current[prop] = me.props[prop];
                 }
               }
