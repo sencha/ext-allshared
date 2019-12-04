@@ -19,13 +19,6 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         this.eventnames = [];
         var eventnamesall = [];
 
-         //if (Ext.isClassic) {
-         //  console.log('classic')
-         //}
-         //else {
-         //  console.log('modern')
-         //}
-
         const distinct = (value, index, self) => {
             return self.indexOf(value) === index;
         };
@@ -78,31 +71,21 @@ export default class {Shortname}BaseComponent extends HTMLElement {
             //console.log('added: ' + this.tagName + ': elementcount is now ' + EleBaseComponent.elementcount);
         }
         this.xtype = x;
+        //this.initMe();
+        this.newConnectedCallback();
     }
 
-    parsedCallback() {
-        //console.log('parsedCallback');
-        //console.log(this.xtype);
 
-        for (let child of this.children) {
-            if (child.nodeName.substring(0, 4) !== 'EXT-') {
-                var el = Ext.get(child);
-                var w = Ext.create({xtype:'widget', element: el});
-                this.A.ITEMS.push(w);
-            }
-            else {
-                var g = {};
-                g.type = 'ext';
-                this.A.ITEMS.push(g);
-            }
-        }
-        this.initMe();
-    }
+
+
+
 
     //******* base start */
     initMe() {
-        this.newParsedCallback();
+        this.newConnectedCallback();
         return;
+
+
         //console.log('');console.log('*** initMe for ' + this.currentElName);
         //this.createRawChildren();
         //this.setParentType();
@@ -112,7 +95,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         //this.createExtComponent();
     }
 
-    newParsedCallback() {
+    newConnectedCallback() {
         var me = this;
         this.newCreateProps(this.properties, this.events);
         if (this.parentNode != null &&
@@ -125,15 +108,26 @@ export default class {Shortname}BaseComponent extends HTMLElement {
             //this.A.o.renderTo = this.newDiv.parentNode;
             //this.newDiv.parentNode.removeChild(this.newDiv);
         }
+
+
+        if (false) {
         Ext.onReady(function() {
           me.newDoExtCreate(me, me.A.o['viewport']);
         })
+        }
+        else {
+          me.newDoExtCreate(me, me.A.o['viewport']);
+        }
     }
 
     newCreateProps(properties) {
         let listenersProvided = false;
         var o = {};
         o.xtype = this.xtype;
+
+        if (o.xtype == 'grid' && this.getAttribute('columns') == null) {
+          o.rowHeight = null;
+        }
 
         if (this['config'] !== null) {
             Ext.apply(o, this['config']);
@@ -152,14 +146,11 @@ export default class {Shortname}BaseComponent extends HTMLElement {
               continue
             }
 
-
             if (this.getAttribute(property) == 'object') {
               //console.log(property)
               o[property] = this.attributeObjects[property];
               continue
             }
-
-
 
             if (property == 'header') { //todo to fix this
               //console.log(property)
@@ -258,91 +249,119 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     }
 
   newDoExtCreate(me, isApplication) {
-    //Ext.onReady(function() {
-      if (isApplication) {
-        if (Ext.isClassic) {
-          me.A.o.plugins = {viewport: true}
-        }
-      }
-      me.A.ext = Ext.create(me.A.o);
-      me.cmp = me.A.ext;
-      me.ext = me.A.ext;
-      me.dispatchEvent(new CustomEvent('cmpready', {
-        detail: {
-          cmp: me.A.ext
-        }
-      }));
 
-      me.A.CHILDREN.forEach(function(child) {
-        me.addTheChild(me.A.ext, child);
-      });
-      if (me.parentNode != null && me.parentNode.nodeName.substring(0, 4) === 'EXT-') {
-        if (me.parentNode.A.ext !== undefined) {
-          me.addTheChild(me.parentNode.A.ext, me.A.ext);
-        }
-        else {
-          me.parentNode.A.CHILDREN.push(me.A.ext);
-        }
+    if (isApplication) {
+      if (Ext.isClassic) {
+        me.A.o.plugins = {viewport: true}
       }
+    }
+    me.A.ext = Ext.create(me.A.o);
+    me.cmp = me.A.ext;
+    me.ext = me.A.ext;
+    //console.dir(me)
+    //var aMe = me.getAttribute('aMe')
+    var aMe = me.attributeObjects['aMe']
+    console.dir(aMe)
+    aMe.cmp = me.A.ext
+    //me.dispatchEvent(new CustomEvent('cmpready', {
+    //  detail: {cmp: me.A.ext}
+    //}));
 
-      if (isApplication) {
-        if (Ext.isModern) {
-          Ext.application({
-            name: 'MyEWCApp',
-            launch: function launch() {
-              Ext.Viewport.add([me.A.ext]);
+    if (isApplication) {
+      if (Ext.isModern) {
+        Ext.application({
+          name: 'MyEWCApp',
+          launch: function launch() {
+            Ext.Viewport.add([me.A.ext]);
+          }
+        });
+      }
+    }
+  }
+
+    parsedCallback() {
+        //console.log('parsedCallback');
+        //console.log(this.xtype);
+
+        for (let child of this.children) {
+            if (child.nodeName.substring(0, 4) !== 'EXT-') {
+                var el = Ext.get(child);
+                var w = Ext.create({xtype:'widget', element: el});
+                this.A.ITEMS.push(w);
             }
-          });
+            else {
+                var g = {};
+                g.type = 'ext';
+                this.A.ITEMS.push(g);
+            }
         }
-      }
 
-      {Shortname}BaseComponent.elementcount--;
-      //console.log('reduced: ' + me.tagName + ': elementcount reduced to ' + {Shortname}BaseComponent.elementcount)
-      if ({Shortname}BaseComponent.elementcount == 0) {
-          //console.log('done');
-          //console.log({Shortname}BaseComponent.elements);
-          {Shortname}BaseComponent.elementsprior = [...{Shortname}BaseComponent.elements];
-          {Shortname}BaseComponent.elements = [];
-          //console.log({Shortname}BaseComponent.elementsprior);
-          //var allExt = [];
-          var cmpObj = {};
-          {Shortname}BaseComponent.elementsprior.forEach(element => {
-              //console.dir(element)
-              if (element.A != undefined) {
-                  for (var i = 0; i < element.A.ITEMS.length; i++) {
-                      //console.log(element.A.ITEMS[i])
-                      if(element.A.ITEMS[i].xtype == 'widget') {
-                          element.addTheChild(element.A.ext,element.A.ITEMS[i],i);
-                      }
-                  }
-              }
-              if (element.getAttribute('extname') != undefined) {
-                  var o = {};
-                  //o.extname = element.getAttribute('extname');
-                  //o.ext = element.A.ext;
-                  o.cmp = element.A.ext;
-                  //allExt.push(o);
-                  cmpObj[element.getAttribute('extname')] = element.A.ext;
-              }
-          });
+        this.doChildren(this);
+    }
 
-          //console.log({Shortname}BaseComponent.elementsprior)
-          me.cmp = me.A.ext;
-          me.ext = me.A.ext;
-          {Shortname}BaseComponent.elementsprior.forEach(element => {
-              //console.dir(element)
-              element.dispatchEvent(new CustomEvent('ready', {
-                  detail: {
-                      cmp: element.A.ext,
-                      //allCmp: allExt,
-                      //ext: element.A.ext,
-                      //allExt: allExt,
-                      cmpObj: cmpObj
-                  }
-              }));
-          });
+
+  doChildren(me) {
+
+    me.A.CHILDREN.forEach(function(child) {
+      me.addTheChild(me.A.ext, child);
+    });
+    if (me.parentNode != null && me.parentNode.nodeName.substring(0, 4) === 'EXT-') {
+      if (me.parentNode.A.ext !== undefined) {
+        me.addTheChild(me.parentNode.A.ext, me.A.ext);
       }
-    //});
+      else {
+        me.parentNode.A.CHILDREN.push(me.A.ext);
+      }
+    }
+
+    {Shortname}BaseComponent.elementcount--;
+    //console.log('reduced: ' + me.tagName + ': elementcount reduced to ' + {Shortname}BaseComponent.elementcount)
+    if ({Shortname}BaseComponent.elementcount == 0) {
+        //console.log('done');
+        //console.log({Shortname}BaseComponent.elements);
+        {Shortname}BaseComponent.elementsprior = [...{Shortname}BaseComponent.elements];
+        {Shortname}BaseComponent.elements = [];
+        //console.log({Shortname}BaseComponent.elementsprior);
+        //var allExt = [];
+        var cmpObj = {};
+        {Shortname}BaseComponent.elementsprior.forEach(element => {
+            //console.dir(element)
+            if (element.A != undefined) {
+                for (var i = 0; i < element.A.ITEMS.length; i++) {
+                    //console.log(element.A.ITEMS[i])
+                    if(element.A.ITEMS[i].xtype == 'widget') {
+                        element.addTheChild(element.A.ext,element.A.ITEMS[i],i);
+                    }
+                }
+            }
+            if (element.getAttribute('extname') != undefined) {
+                var o = {};
+                //o.extname = element.getAttribute('extname');
+                //o.ext = element.A.ext;
+                o.cmp = element.A.ext;
+                //allExt.push(o);
+                cmpObj[element.getAttribute('extname')] = element.A.ext;
+            }
+        });
+
+        //console.log({Shortname}BaseComponent.elementsprior)
+        me.cmp = me.A.ext;
+        me.ext = me.A.ext;
+        {Shortname}BaseComponent.elementsprior.forEach(element => {
+            //console.dir(element)
+            element.dispatchEvent(new CustomEvent('ready', {
+                detail: {
+                    cmp: element.A.ext,
+                    //allCmp: allExt,
+                    //ext: element.A.ext,
+                    //allExt: allExt,
+                    cmpObj: cmpObj
+                }
+            }));
+        });
+
+    }
+
   }
 
     addTheChild(parentCmp, childCmp, location) {
@@ -646,6 +665,8 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
 
 }
+
+{Shortname}BaseComponent.elementcountnew = 0;
 
 {Shortname}BaseComponent.elementcount = 0;
 {Shortname}BaseComponent.elements = [];
