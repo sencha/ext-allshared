@@ -58,6 +58,25 @@ export default function (CustomElement) {
         constructor(props) {
             super(props)
             this.componentRef = React.createRef();
+            //const node = ReactDOM.findDOMNode(this);
+            //var me = this;
+            //var node = ReactDOM.findDOMNode(this);
+            //console.log(node)
+            // document.addEventListener('cmpready', function handler(event) {
+            //   console.log('**eventHandler')
+            //   console.log(event)
+            //   //console.dir(e)
+            // // if (eventname == 'cmpready') {
+            //     console.dir('cmpready ' + event.detail.cmp.xtype)
+            //     me.cmp = event.detail.cmp;
+            //     me.ext = event.detail.cmp;
+            //   //  return;
+            //   //}
+            // })
+
+
+
+
         }
 
         static get displayName() {
@@ -129,11 +148,14 @@ export default function (CustomElement) {
             //console.log('*****render: ' + tagName)
             //console.log(this.props)
 
+            var newProps = Object.assign({},this.props);
+            newProps['aMe'] = this
+            //console.log(newProps)
             //this.element = React.createElement(tagName, { style: this.props.style }, this.props.children);
             this.element = React.createElement(
                 tagName,
                 {
-                    ...this.props,
+                    ...newProps,
                     style: this.props.style,
                     ref: this.componentRef
                 },

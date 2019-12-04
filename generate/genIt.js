@@ -414,7 +414,7 @@ function oneItem(item, framework, names, xtypes) {
     var sPROPERTIESEVENTS = propertyObj.sPROPERTIESEVENTS;
     //sGETSET = sGETSET + sPROPERTIESEVENTS;
     var sPROPERTIESOBJECT = {};
-    info.propNames = `['header', 'renderer', 'label','fitToParent','tab','config','platformConfig','extname','viewport','align','plugins','responsiveConfig','responsiveFormulas',`
+    info.propNames = `['aMe', 'header', 'renderer', 'label','fitToParent','tab','config','platformConfig','extname','viewport','align','plugins','responsiveConfig','responsiveFormulas',`
     propertyObj.propertiesArray.forEach(property => {
       //info.propNames.push(property.name)
       info.propNames = info.propNames + `'${property.name}',`
