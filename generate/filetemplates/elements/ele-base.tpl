@@ -1,168 +1,146 @@
 //{now}
 {import}
 import {
-    doProp,
-    filterProp,
-    isMenu,
-    isRenderercell,
-    isParentGridAndChildColumn,
-    isTooltip,
-    isPlugin
+  doProp,
+  filterProp,
+  isMenu,
+  isRenderercell,
+  isParentGridAndChildColumn,
+  isTooltip,
+  isPlugin
 } from './util.js';
 
 export default class {Shortname}BaseComponent extends HTMLElement {
 
-    constructor(properties, events) {
-        super ();
-        this.properties = properties;
-        this.events = events;
-        this.eventnames = [];
-        var eventnamesall = [];
+  constructor(properties, events) {
+    super ();
+    this.properties = properties;
+    this.events = events;
+    this.eventnames = [];
+    var eventnamesall = [];
 
+    const distinct = (value, index, self) => {
+        return self.indexOf(value) === index;
+    };
+
+    this.events.forEach((event) => {
+        eventnamesall.push(event.name);
+    });
+
+    this.eventnames = eventnamesall.filter(distinct);
+
+    this.A = {};
+    this.A.CHILDREN = [];
+    this.A.ITEMS = [];
+    this.A.o = {};
+    this.attributeObjects = {};
+
+    this.base = EleBaseComponent;
+
+    // this.newDiv = document.createElement('div');
+    // //var textnode = document.createTextNode(this.xtype);
+    // //this.newDiv.appendChild(textnode)
+    // this.insertAdjacentElement('beforebegin', this.newDiv);
+  }
+
+  connectedCallback() {
+    //console.log('connectedCallback');
+    // console.log(this.xtype);
+    var x = this.xtype;
+
+    //if (this.counted == undefined) {
         const distinct = (value, index, self) => {
             return self.indexOf(value) === index;
         };
-
-        this.events.forEach((event) => {
-            eventnamesall.push(event.name);
+    //    this.counted = true;
+        var properties2 = [];
+        var arrayLength = this.properties.length;
+        for (var i = 0; i < arrayLength; i++) {
+            properties2.push(this.properties[i]);
+        }
+        //console.dir(this.properties)
+        //console.dir(properties2)
+        //this.propertiesDistinct = this.properties.filter(distinct);
+        this.propertiesDistinct = properties2.filter(distinct);
+        this.propertiesDistinct.forEach(prop => {
+            doProp(this, prop);
         });
 
-        this.eventnames = eventnamesall.filter(distinct);
+        EleBaseComponent.elementcount++;
+        EleBaseComponent.elements.push(this);
+        //console.log('added: ' + this.tagName + ': elementcount is now ' + EleBaseComponent.elementcount);
+    //}
+    this.xtype = x;
+    this.newConnectedCallback();
+  }
 
-        this.A = {};
-        this.A.CHILDREN = [];
-        this.A.ITEMS = [];
-        this.A.o = {};
-        this.attributeObjects = {};
-
-        this.base = EleBaseComponent;
-
-        // this.newDiv = document.createElement('div');
-        // //var textnode = document.createTextNode(this.xtype);
-        // //this.newDiv.appendChild(textnode)
-        // this.insertAdjacentElement('beforebegin', this.newDiv);
-    }
-
-    connectedCallback() {
-        //console.log('connectedCallback');
-        // console.log(this.xtype);
-        var x = this.xtype;
-
-        if (this.counted == undefined) {
-            const distinct = (value, index, self) => {
-                return self.indexOf(value) === index;
-            };
-            this.counted = true;
-            var properties2 = [];
-            var arrayLength = this.properties.length;
-            for (var i = 0; i < arrayLength; i++) {
-                properties2.push(this.properties[i]);
-            }
-            //console.dir(this.properties)
-            //console.dir(properties2)
-            //this.propertiesDistinct = this.properties.filter(distinct);
-            this.propertiesDistinct = properties2.filter(distinct);
-            this.propertiesDistinct.forEach(prop => {
-                doProp(this, prop);
-            });
-
-            EleBaseComponent.elementcount++;
-            EleBaseComponent.elements.push(this);
-            //console.log('added: ' + this.tagName + ': elementcount is now ' + EleBaseComponent.elementcount);
+  newConnectedCallback() {
+      var me = this;
+      this.newCreateProps(this.properties, this.events);
+      if (this.parentNode != null &&
+          this.parentNode.nodeName.substring(0, 4) !== 'EXT-')
+      {
+        if (this.A.o.xtype != 'dialog') {
+          this.A.o.renderTo = this.parentNode; //this;
         }
-        this.xtype = x;
-        //this.initMe();
-        this.newConnectedCallback();
-    }
+          //this.A.o.renderTo = this.parentNode; //this;
+          //this.A.o.renderTo = this.newDiv.parentNode;
+          //this.newDiv.parentNode.removeChild(this.newDiv);
+      }
 
-
-
-
-
-
-    //******* base start */
-    initMe() {
-        this.newConnectedCallback();
-        return;
-
-
-        //console.log('');console.log('*** initMe for ' + this.currentElName);
-        //this.createRawChildren();
-        //this.setParentType();
-        //this.setDirection();
-        //this.figureOutA();
-        //this.createProps(this.properties, this.events);
-        //this.createExtComponent();
-    }
-
-    newConnectedCallback() {
-        var me = this;
-        this.newCreateProps(this.properties, this.events);
-        if (this.parentNode != null &&
-            this.parentNode.nodeName.substring(0, 4) !== 'EXT-')
-        {
-          if (this.A.o.xtype != 'dialog') {
-            this.A.o.renderTo = this.parentNode; //this;
-          }
-            //this.A.o.renderTo = this.parentNode; //this;
-            //this.A.o.renderTo = this.newDiv.parentNode;
-            //this.newDiv.parentNode.removeChild(this.newDiv);
-        }
-
-
-        if (false) {
+      if (Ext.widget == undefined) {
         Ext.onReady(function() {
           me.newDoExtCreate(me, me.A.o['viewport']);
         })
-        }
-        else {
-          me.newDoExtCreate(me, me.A.o['viewport']);
-        }
-    }
+      }
+      else {
+        me.newDoExtCreate(me, me.A.o['viewport']);
+      }
+  }
 
-    newCreateProps(properties) {
-        let listenersProvided = false;
-        var o = {};
-        o.xtype = this.xtype;
+  newCreateProps(properties) {
+      let listenersProvided = false;
+      var o = {};
+      o.xtype = this.xtype;
 
-        if (o.xtype == 'grid' && this.getAttribute('columns') == null) {
-          o.rowHeight = null;
-        }
+      if (o.xtype == 'grid' && this.getAttribute('columns') == null) {
+        o.rowHeight = null;
+      }
 
-        if (this['config'] !== null) {
-            Ext.apply(o, this['config']);
-        }
+      if (this['config'] !== null) {
+          Ext.apply(o, this['config']);
+      }
 
-        if ('true' == this.fitToParent || true == this.fitToParent || this.fitToParent == '') {
-            o.height='100%';
-        }
-        for (var i = 0; i < properties.length; i++) {
-            var property = properties[i];
+      if ('true' == this.fitToParent || true == this.fitToParent || this.fitToParent == '') {
+          o.height='100%';
+      }
+      for (var i = 0; i < properties.length; i++) {
+          var property = properties[i];
 
-            if (this.getAttribute(property) == '[object Object]') {
-              //console.log(property)
-              o[property] = this.attributeObjects[property];
-              //console.log(o)
-              continue
-            }
+          if (this.getAttribute(property) == '[object Object]') {
+            //console.log(property)
+            o[property] = this.attributeObjects[property];
+            //console.log(o)
+            continue
+          }
 
-            if (this.getAttribute(property) == 'object') {
-              //console.log(property)
-              o[property] = this.attributeObjects[property];
-              continue
-            }
+          if (this.getAttribute(property) == 'object') {
+            //console.log(property)
+            o[property] = this.attributeObjects[property];
+            continue
+          }
 
-            if (property == 'header') { //todo to fix this
-              //console.log(property)
-              //console.dir(this)
-              //console.log(this.getAttribute(property))
-              o[property] = false; //this[property]
-            }
+          if (property == 'header') { //todo to fix this
+            //console.log(property)
+            //console.dir(this)
+            //console.log(this.getAttribute(property))
+            o[property] = false; //this[property]
+          }
 
-            if (this.getAttribute(property) !== null) {
+          if (this.getAttribute(property) !== null) {
 
-                if (property == 'config') {
-                }
+              if (property == 'config') {
+              }
 
 //                else if (property == 'config') {
 //                    var configs = JSON.parse(this.getAttribute(property))
@@ -174,79 +152,79 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 //                    }
 //                }
 
-                else if (property == 'renderer') {
-                    //console.log(this.attributeObjects['renderer'])
-                    var cellxtype = '';
-                    if (Ext.ClassManager.getByAlias('widget.reactcell') == undefined) {
-                      cellxtype = 'elementcell';
-                    }
-                    else {
-                      cellxtype = 'reactcell';
-                    }
-                    o.cell = {};
-                    o.cell.xtype = cellxtype;
-                    o.cell.encodeHtml = false;
-                    if (this.attributeObjects['renderer'] != undefined) {
-                      o.renderer = this.attributeObjects['renderer'];
-                    }
-                    else {
-                      o.renderer = eval(this['renderer']);
-                    }
-                }
+              else if (property == 'renderer') {
+                  //console.log(this.attributeObjects['renderer'])
+                  var cellxtype = '';
+                  if (Ext.ClassManager.getByAlias('widget.reactcell') == undefined) {
+                    cellxtype = 'elementcell';
+                  }
+                  else {
+                    cellxtype = 'reactcell';
+                  }
+                  o.cell = {};
+                  o.cell.xtype = cellxtype;
+                  o.cell.encodeHtml = false;
+                  if (this.attributeObjects['renderer'] != undefined) {
+                    o.renderer = this.attributeObjects['renderer'];
+                  }
+                  else {
+                    o.renderer = eval(this['renderer']);
+                  }
+              }
 
-                else if (this.getAttribute(property) == 'object') {
-                    o[property] = this.attributeObjects[property];
-                }
+              else if (this.getAttribute(property) == 'object') {
+                  o[property] = this.attributeObjects[property];
+              }
 
-                else if (property == 'handler') {
-                    var functionString = this.getAttribute(property);
-                    if (functionString !== 'undefined') {
-                        if (functionString == 'function') {
-                            o[property] = this.attributeObjects[property];
-                        }
-                        else {
-                            o[property] = eval(functionString);
-                        }
-                    }
+              else if (property == 'handler') {
+                  var functionString = this.getAttribute(property);
+                  if (functionString !== 'undefined') {
+                      if (functionString == 'function') {
+                          o[property] = this.attributeObjects[property];
+                      }
+                      else {
+                          o[property] = eval(functionString);
+                      }
+                  }
 
-                    ////error check for only 1 dot
-                    //var r = functionString.split('.');
-                    //var obj = r[0];
-                    //var func = r[1];
-                    //o[property] = window[obj][func];
-                }
+                  ////error check for only 1 dot
+                  //var r = functionString.split('.');
+                  //var obj = r[0];
+                  //var func = r[1];
+                  //o[property] = window[obj][func];
+              }
 
-                // else if ((o.xtype === 'cartesian' || o.xtype === 'polar') && property === 'layout') {
-                // }
+              // else if ((o.xtype === 'cartesian' || o.xtype === 'polar') && property === 'layout') {
+              // }
 
-                else if (property == 'listeners' && this[property] != undefined) {
-                    o[property] = this[property];
-                    listenersProvided = true;
-                }
+              else if (property == 'listeners' && this[property] != undefined) {
+                  o[property] = this[property];
+                  listenersProvided = true;
+              }
 
-                else if (this[property] != undefined &&
-                    property != 'listeners' &&
-                    property != 'config' &&
-                    property != 'handler' &&
-                    property != 'fitToParent') {
-                    o[property] = filterProp(this.getAttribute(property), property, this);
-                }
+              else if (this[property] != undefined &&
+                  property != 'listeners' &&
+                  property != 'config' &&
+                  property != 'handler' &&
+                  property != 'fitToParent') {
+                  o[property] = filterProp(this.getAttribute(property), property, this);
+              }
 
-                // else {
-                //     o[property] = filterProp(this.getAttribute(property));
-                // }
-            }
+              // else {
+              //     o[property] = filterProp(this.getAttribute(property));
+              // }
+          }
 
-            if (!listenersProvided) {
-                o.listeners = {};
-                var me = this;
-                this.events.forEach(function(event) {
-                    me.setEvent(event, o, me);
-                });
-            }
-        }
-        this.A.o = o;
-    }
+          if (!listenersProvided) {
+              o.listeners = {};
+              var me = this;
+              this.events.forEach(function(event) {
+                  me.setEvent(event, o, me);
+              });
+          }
+      }
+      this.A.o = o;
+  }
 
   newDoExtCreate(me, isApplication) {
 
@@ -258,14 +236,19 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     me.A.ext = Ext.create(me.A.o);
     me.cmp = me.A.ext;
     me.ext = me.A.ext;
+
+
+
     //console.dir(me)
     //var aMe = me.getAttribute('aMe')
-    var aMe = me.attributeObjects['aMe']
-    console.dir(aMe)
-    aMe.cmp = me.A.ext
+    //var aMe = me.attributeObjects['aMe']
+    //console.dir(aMe)
+    //aMe.cmp = me.A.ext
     //me.dispatchEvent(new CustomEvent('cmpready', {
     //  detail: {cmp: me.A.ext}
     //}));
+
+
 
     if (isApplication) {
       if (Ext.isModern) {
@@ -279,25 +262,24 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     }
   }
 
-    parsedCallback() {
-        //console.log('parsedCallback');
-        //console.log(this.xtype);
+  parsedCallback() {
+    //console.log('parsedCallback');
+    //console.log(this.xtype);
 
-        for (let child of this.children) {
-            if (child.nodeName.substring(0, 4) !== 'EXT-') {
-                var el = Ext.get(child);
-                var w = Ext.create({xtype:'widget', element: el});
-                this.A.ITEMS.push(w);
-            }
-            else {
-                var g = {};
-                g.type = 'ext';
-                this.A.ITEMS.push(g);
-            }
-        }
-
-        this.doChildren(this);
+    for (let child of this.children) {
+      if (child.nodeName.substring(0, 4) !== 'EXT-') {
+        var el = Ext.get(child);
+        var w = Ext.create({xtype:'widget', element: el});
+        this.A.ITEMS.push(w);
+      }
+      else {
+        var g = {};
+        g.type = 'ext';
+        this.A.ITEMS.push(g);
+      }
     }
+    this.doChildren(this);
+  }
 
 
   doChildren(me) {
@@ -361,175 +343,163 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         });
 
     }
-
   }
 
-    addTheChild(parentCmp, childCmp, location) {
-        var parentxtype = parentCmp.xtype;
-        var childxtype = childCmp.xtype;
-        //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.extname + ')' + ' - ' + childxtype + '(' + childCmp.extname + ')');
-        //if (childxtype == 'widget')
-        if (this.A.ext.initialConfig.align != undefined) {
-            if (parentxtype != 'menu' && parentxtype != 'container' && parentxtype != 'toolbar' && parentxtype != 'tooltip' && parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
-                console.error('Can only use align property if parent is a Titlebar or Grid or Button - parent: ' + parentxtype);
-                return;
-            }
-        }
-        switch (true) {
-            case isMenu(childxtype):
-                parentCmp.setMenu(childCmp);
-                break;
-            case isRenderercell(childxtype):
-                parentCmp.setCell(childCmp);
-                break;
-            case isParentGridAndChildColumn(parentxtype,childxtype):
-                if (location == null) {
-                    parentCmp.addColumn(childCmp);
-                }
-                else {
-                    var regCols = 0;
-                    if (parentCmp.registeredColumns != undefined) {
-                        regCols = parentCmp.registeredColumns.length;
+  addTheChild(parentCmp, childCmp, location) {
+      var parentxtype = parentCmp.xtype;
+      var childxtype = childCmp.xtype;
+      //console.log('addTheChild: ' + parentxtype + '(' + parentCmp.extname + ')' + ' - ' + childxtype + '(' + childCmp.extname + ')');
+      //if (childxtype == 'widget')
+      if (this.A.ext.initialConfig.align != undefined) {
+          if (parentxtype != 'menu' && parentxtype != 'container' && parentxtype != 'toolbar' && parentxtype != 'tooltip' && parentxtype != 'titlebar' && parentxtype != 'grid' && parentxtype != 'lockedgrid' && parentxtype != 'button') {
+              console.error('Can only use align property if parent is a Titlebar or Grid or Button - parent: ' + parentxtype);
+              return;
+          }
+      }
+      switch (true) {
+          case isMenu(childxtype):
+              parentCmp.setMenu(childCmp);
+              break;
+          case isRenderercell(childxtype):
+              parentCmp.setCell(childCmp);
+              break;
+          case isParentGridAndChildColumn(parentxtype,childxtype):
+              if (location == null) {
+                  parentCmp.addColumn(childCmp);
+              }
+              else {
+                  var regCols = 0;
+                  if (parentCmp.registeredColumns != undefined) {
+                      regCols = parentCmp.registeredColumns.length;
+                  }
+                  if (parentxtype == 'grid') {
+                      parentCmp.insertColumn(location + regCols, childCmp);
+                  }
+                  else {
+                      parentCmp.insert(location + regCols, childCmp);
+                  }
+              }
+              break;
+          case isTooltip(childxtype):
+              parentCmp.setTooltip(childCmp);
+              break;
+          case isPlugin(childxtype):
+              parentCmp.setPlugin(childCmp);
+              break;
+          default:
+              if (location == null) {
+                  parentCmp.add(childCmp);
+              }
+              else {
+                  parentCmp.insert(location, childCmp);
+              }
+      }
+  }
+
+  setEvent(eventparameters, o, me) {
+      o.listeners[eventparameters.name] = function() {
+          let eventname = eventparameters.name
+          //console.log('in event: ' + eventname + ' ' + o.xtype)
+          let parameters = eventparameters.parameters;
+          let parms = parameters.split(',');
+          let args = Array.prototype.slice.call(arguments);
+          let event = {};
+          for (let i = 0, j = parms.length; i < j; i++ ) {
+              event[parms[i]] = args[i];
+          }
+          me.dispatchEvent(new CustomEvent(eventname,{detail: event}))
+      }
+  }
+
+  attributeChangedCallback(attr, oldVal, newVal) {
+      if (/^on/.test(attr)) {
+          if (newVal) {
+          this.addEventListener(attr.slice(2), function(event) {
+              var functionString = newVal;
+              eval(functionString + '(event)');
+
+              //// todo: error check for only 1 dot
+              //var r = functionString.split('.');
+              //var obj = r[0];
+              //var func = r[1];
+              //if (obj && func) {
+              //window[obj][func](event);
+              //}
+          });
+          } else {
+          //delete this[attr];
+          //this.removeEventListener(attr.slice(2), this);
+          }
+      } else {
+
+          var ischanged
+          if (this.A) {
+              if (this.A.ext != undefined) {
+                  ischanged = true
+                  var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
+                  if (typeof this.A.ext[method] == 'function') {
+                    //console.log(method)
+                    //console.log(attr)
+                    //console.log(newVal)
+                    //console.log(this.attributeObjects[attr])
+                    //console.log(typeof newVal)
+                    if (newVal == null) {
+                      return;
                     }
-                    if (parentxtype == 'grid') {
-                        parentCmp.insertColumn(location + regCols, childCmp);
+                    var propertyVal = newVal;
+                    if (newVal == '[object Object]') {
+                      propertyVal = this.attributeObjects[attr]
+                    }
+                    if (newVal == 'object') {
+                      propertyVal = this.attributeObjects[attr]
+                    }
+                    else if (newVal === 'true') {
+                      propertyVal = true;
+                    }
+                    else if (newVal === 'false') {
+                      propertyVal = false;
                     }
                     else {
-                        parentCmp.insert(location + regCols, childCmp);
+                      try {
+                        propertyVal = JSON.parse(newVal);
+                      } catch (e) {}
                     }
-                }
-                break;
-            case isTooltip(childxtype):
-                parentCmp.setTooltip(childCmp);
-                break;
-            case isPlugin(childxtype):
-                parentCmp.setPlugin(childCmp);
-                break;
-            default:
-                if (location == null) {
-                    parentCmp.add(childCmp);
-                }
-                else {
-                    parentCmp.insert(location, childCmp);
-                }
-        }
-    }
+                    //console.log(propertyVal)
+                    //console.log(this.A.ext.xtype + ' ' + method)
+                    //console.log(propertyVal)
+                    this.A.ext[method](propertyVal);
+                  }
+              }
+              else {
+                  ischanged = false
+              }
+          }
+          //console.log('attr: ' + attr + ', changed is ' + ischanged)
 
-    setEvent(eventparameters, o, me) {
-        o.listeners[eventparameters.name] = function() {
-            let eventname = eventparameters.name
-            //console.log('in event: ' + eventname + ' ' + o.xtype)
-            let parameters = eventparameters.parameters;
-            let parms = parameters.split(',');
-            let args = Array.prototype.slice.call(arguments);
-            let event = {};
-            for (let i = 0, j = parms.length; i < j; i++ ) {
-                event[parms[i]] = args[i];
-            }
-            me.dispatchEvent(new CustomEvent(eventname,{detail: event}))
-        }
-    }
-
-    attributeChangedCallback(attr, oldVal, newVal) {
-        if (/^on/.test(attr)) {
-            if (newVal) {
-            this.addEventListener(attr.slice(2), function(event) {
-                var functionString = newVal;
-                eval(functionString + '(event)');
-
-                //// todo: error check for only 1 dot
-                //var r = functionString.split('.');
-                //var obj = r[0];
-                //var func = r[1];
-                //if (obj && func) {
-                //window[obj][func](event);
-                //}
-            });
-            } else {
-            //delete this[attr];
-            //this.removeEventListener(attr.slice(2), this);
-            }
-        } else {
-
-            var ischanged
-            if (this.A) {
-                if (this.A.ext != undefined) {
-                    ischanged = true
-                    var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
-                    if (typeof this.A.ext[method] == 'function') {
-                      //console.log(method)
-                      //console.log(attr)
-                      //console.log(newVal)
-                      //console.log(this.attributeObjects[attr])
-                      //console.log(typeof newVal)
-                      if (newVal == null) {
-                        return;
-                      }
-                      var propertyVal = newVal;
-                      if (newVal == '[object Object]') {
-                        propertyVal = this.attributeObjects[attr]
-                      }
-                      if (newVal == 'object') {
-                        propertyVal = this.attributeObjects[attr]
-                      }
-                      else if (newVal === 'true') {
-                        propertyVal = true;
-                      }
-                      else if (newVal === 'false') {
-                        propertyVal = false;
-                      }
-                      else {
-                        try {
-                          propertyVal = JSON.parse(newVal);
-                        } catch (e) {}
-                      }
-                      //console.log(propertyVal)
-                      //console.log(this.A.ext.xtype + ' ' + method)
-                      //console.log(propertyVal)
-                      this.A.ext[method](propertyVal);
-                    }
-                }
-                else {
-                    ischanged = false
-                }
-            }
-            //console.log('attr: ' + attr + ', changed is ' + ischanged)
-
-            //if (this.A.ext === undefined) {
-            //    //mjg ??
-            //}
-            //else {
-            //    //mjg check if this method exists for this component
-            //    var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
-            //    this.A.ext[method](newVal)
-            //}
-        }
-    }
-
-    //extendObject(obj, src) {
-    //    if (obj == undefined) {obj = {}}
-    //    for (var key in src) {
-    //        if (src.hasOwnProperty(key)) obj[key] = src[key];
-    //    }
-    //    return obj;
-    //}
-
-    //extendArray(obj, src) {
-    //    if (obj == undefined) {obj = []}
-    //    Array.prototype.push.apply(obj,src);
-    //    return obj;
-    //}
-
-
-    disconnectedCallback() {
-      //console.log('ExtBase disconnectedCallback ' + this.A.ext.xtype)
-      try {
-      Ext.destroy(this.A.ext);
+          //if (this.A.ext === undefined) {
+          //    //mjg ??
+          //}
+          //else {
+          //    //mjg check if this method exists for this component
+          //    var method = 'set' + attr[0].toUpperCase() + attr.substring(1)
+          //    this.A.ext[method](newVal)
+          //}
       }
-      catch(e) {
-        console.log(e)
-      }
+  }
+
+
+
+  disconnectedCallback() {
+    //console.log('ExtBase disconnectedCallback ' + this.A.ext.xtype)
+    try {
+    Ext.destroy(this.A.ext);
     }
+    catch(e) {
+      console.log(e)
+    }
+  }
+
+
 
 
 
@@ -694,3 +664,21 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 //    Array.prototype.push.apply(obj,src);
 //    return obj;
 //}
+
+
+
+
+
+    //extendObject(obj, src) {
+    //    if (obj == undefined) {obj = {}}
+    //    for (var key in src) {
+    //        if (src.hasOwnProperty(key)) obj[key] = src[key];
+    //    }
+    //    return obj;
+    //}
+
+    //extendArray(obj, src) {
+    //    if (obj == undefined) {obj = []}
+    //    Array.prototype.push.apply(obj,src);
+    //    return obj;
+    //}
