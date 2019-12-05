@@ -2,7 +2,7 @@
 
 last run: {now}
 
-This npm package contains the files that are needed to add the @sencha/ext-react-{toolkit}{bundle} package to a React application
+This npm package contains the needed files to add the @sencha/ext-react-{toolkit}{bundle} package to a React application
 
 ## Login to the Sencha early adopter npm repo
 
