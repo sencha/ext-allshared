@@ -18,7 +18,7 @@
     "@sencha/ext-runtime-{toolkit}-base": "~7.1.0"
   },
   "dependencies": {
-    "@sencha/ext-runtime-modern-base": "~7.1.0",
+    "@sencha/ext-runtime-{toolkit}-base": "~7.1.0",
     "object-assign": "~4.1.1",
     "pascal-case": "~3.0.0",
     "@babel/runtime": "^7.7.4",
