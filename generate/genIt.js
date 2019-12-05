@@ -1400,9 +1400,9 @@ async function doInstall() {
 
 
     console.log('')
-    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-web-components${info.bundle}/${info.version}`)
-    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-react${info.bundle}/${info.version}`)
-    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-angular${info.bundle}/${info.version}`)
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-web-components${info.toolkitshown}${info.bundle}/${info.version}`)
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-react${info.toolkitshown}${info.bundle}/${info.version}`)
+    console.log(`https://sencha.myget.org/feed/early-adopter/package/npm/%40sencha/ext-angular${info.toolkitshown}${info.bundle}/${info.version}`)
     console.log('')
 
     return

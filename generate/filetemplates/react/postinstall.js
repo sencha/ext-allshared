@@ -118,7 +118,7 @@ try {
     fs.copySync(`../ext-runtime-${toolkit}-base/engine.js`,`../../../${copyFolder}ext-runtime-${toolkit}/engine.js`);
     console.log(`${prefix} created ./${copyFolder}ext-runtime-${toolkit}/engine.js`);
 
-    fs.copySync(`../ext-runtime-${toolkit}-base/bootstrap.js`,`../../../${copyFolder}ext-runtime-${toolkit}/bootstrap.js`);
+    fs.copySync(`../ext-runtime-${toolkit}-base/boot.js`,`../../../${copyFolder}ext-runtime-${toolkit}/bootstrap.js`);
     console.log(`${prefix} created ./${copyFolder}ext-runtime-${toolkit}/bootstrap.js`);
 
 

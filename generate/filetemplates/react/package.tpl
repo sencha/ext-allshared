@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "fs-extra": "~8.1.0",
-    "@sencha/ext-web-components-modern": "~7.1.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
     "@babel/runtime": "^7.7.4",
     "react": "~16.12.0",
     "react-dom": "~16.12.0"
