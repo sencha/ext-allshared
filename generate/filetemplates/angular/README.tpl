@@ -1,4 +1,4 @@
-## @sencha/ext-angular{bundle}
+## @sencha/ext-angular-{toolkit}{bundle}
 
 last run: {now}
 
@@ -30,14 +30,14 @@ should be @angular/cli@8.3.x
 - Run 'ng new':
 
 ```sh
-ng new ext-angular-demo --minimal=true --interactive=false -g=true --skipInstall=false
+ng new ext-angular-{toolkit}-demo --minimal=true --interactive=false -g=true --skipInstall=false
 ```
 
-- Add ExtAngular to your application by running the following:
+- Add ExtAngular{Toolkit}{Bundle} to your application by running the following:
 
 ```sh
-cd ext-angular-demo
-npm install @sencha/ext-angular{bundle} --save
+cd ext-angular-{toolkit}-demo
+npm install @sencha/ext-angular-{toolkit}{bundle} --save
 ```
 
 - Open your editor
@@ -68,7 +68,7 @@ code .
 ```sh
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ExtAngularModule } from '@sencha/ext-angular';
+import { ExtAngular{Toolkit}{Bundle}Module } from '@sencha/ext-angular-{toolkit}{bundle}';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -77,7 +77,7 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    ExtAngularModule
+    ExtAngular{Toolkit}{Bundle}Module
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -102,8 +102,8 @@ import { Component } from '@angular/core';
         [title]="title"
         (ready)="readyGrid($event)"
     >
-        <ExtGridcolumn text="name" dataIndex="name"></ExtGridcolumn>
-        <ExtGridcolumn text="email" dataIndex="email" flex="1"></ExtGridcolumn>
+        <ExtColumn text="name" dataIndex="name"></ExtColumn>
+        <ExtColumn text="email" dataIndex="email" flex="1"></ExtColumn>
     </ExtGrid>
 </ExtPanel>
     `,
