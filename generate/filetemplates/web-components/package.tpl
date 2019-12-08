@@ -15,10 +15,10 @@
   },
   "homepage": "https://github.com/sencha/ext-web-components#readme",
   "peerDependencies": {
-    "@sencha/ext-runtime-{toolkit}-base": "~7.1.0"
+
   },
   "dependencies": {
-    "@sencha/ext-runtime-{toolkit}-base": "~7.1.0",
+
     "object-assign": "~4.1.1",
     "pascal-case": "~3.0.0",
     "@babel/runtime": "^7.7.4",

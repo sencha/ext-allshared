@@ -1,6 +1,6 @@
 //import {classname} from '@sencha/ext-runtime-base/dist/{folder}.js';
 import {classname} from '{folder}.js';
-import HTMLParsedElement from './HTMLParsedElement.js';
+import ElementParser from './ElementParser.js';
 
 export default class EWC{Xtype} extends {classname} {
     constructor() {
@@ -9,5 +9,5 @@ export default class EWC{Xtype} extends {classname} {
     }
 
 }
-window.customElements.define('ext-{xtype}', HTMLParsedElement.withParsedCallback(EWC{Xtype}));
+window.customElements.define('ext-{xtype}', ElementParser.withParsedCallback(EWC{Xtype}));
 {ElementCell}

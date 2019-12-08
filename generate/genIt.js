@@ -1,4 +1,5 @@
 // node ./genIt.js ele blank modern
+// node ./genIt.js ele blank classic
 // node ./genIt.js ele button
 const install = true;
 const installExt = true;
@@ -38,7 +39,7 @@ info.Shortname = info.shortname.charAt(0).toUpperCase() + info.shortname.slice(1
 info.framework = 'elements';
 //info.extension = 'js';
 info.xtype = process.argv[3];
-info.wantedxtypes = require("./npmpackage/" + info.xtype).getXtypes();
+info.wantedxtypes = require(`./npmpackage/${toolkit}/${info.xtype}`).getXtypes();
 //console.log(info.wantedxtypes)
 //info.xtypelist = require("./npmpackage/" + info.xtype).getXtypes();
 //info.wantedxtypes = info.xtypelist;
@@ -82,7 +83,10 @@ var docs = []
 info.reactImports = ''
 info.reactExports = ''
 info.reactExports70 = ''
-info.reactExportsCase = `
+info.reactExportsCase = ''
+
+if (info.framework == 'modern') {
+  info.reactExportsCase = `
 export const ActionSheet = ExtActionsheet_;
 export const BreadcrumbBar = ExtBreadcrumbbar_;
 
@@ -154,7 +158,8 @@ export const UrlField = ExtUrlfield_;
 export const WidgetCell = ExtWidgetcell_;
 export const URLField = ExtUrlfield_;
 //export { launch } from "./dist/launch";
-`
+  `
+}
 //info.reactImports = info.reactImports + `import launch_ from "./dist/launch";\n`;
 
 
@@ -261,7 +266,7 @@ function doLaunch(item, framework) {
         if (item.alias != undefined) {
             if (item.alias.substring(0, 6) == 'widget') {
               aliases = item.alias.split(",")
-              console.log(aliases.length)
+              //console.log(aliases.length)
               for (alias = 0; alias < aliases.length; alias++) {
                 if (aliases[alias].substring(0, 6) == 'widget') {
                     var xtypelocal = aliases[alias].substring(7)
@@ -283,6 +288,7 @@ function doLaunch(item, framework) {
         xtypes.forEach(xtype => {
           var xtypesArray = []
           xtypesArray.push(xtype)
+
           oneItem(item, framework, names, xtypesArray)
         })
         //console.log(item.alias + ' ' + item.extends + ' ' + item.alternateClassNames)
@@ -464,8 +470,20 @@ function oneItem(item, framework, names, xtypes) {
     })
     info.eventNames = info.eventNames + `]`
 
-
     didXtype = false;
+
+    if (names.length > 1) {
+      var namesSmall = [];
+      names.forEach(name => {
+        namesSmall.push(name.toLowerCase())
+      })
+      var uniqSmall = [...new Set(namesSmall)];
+      if (names.length != uniqSmall.length) {
+        var newNames = [names[0]]
+        names = [...new Set(newNames)]
+      }
+    }
+
     for (var i = 0; i < names.length; i++) {
         var folder = ''
         var filename = ''
@@ -480,6 +498,10 @@ function oneItem(item, framework, names, xtypes) {
             pathprefix = pathprefix + '../'
         }
         folder = `${srcStagingFolder}${thePath}`
+
+
+
+
         if (!fs.existsSync(folder)) { mkdirp.sync(folder) }
         filename = parts[parts.length-1]
         var extendparts = item.extends.split(".")
@@ -563,6 +585,10 @@ function oneItem(item, framework, names, xtypes) {
                 values.ElementCell = ""
             }
 
+
+
+
+
             writeTemplateFile(templateFolder+'xtype.tpl', `${srcStagingFolder}ext-${xtypes[j]}.component.js`, values)
             writeTemplateFile(templateFolder+'react.tpl', `${reactStagingFolder}${info.reactPrefix}${values.Xtype}.js`, values)
             //writeTemplateFile(templateFolder+'react.tpl', `${reactOrigStagingFolder}${values.Xtype}.js`, values)
@@ -571,6 +597,9 @@ function oneItem(item, framework, names, xtypes) {
             if (didXtype == false) {
                 didXtype = true
                 xt = values.xtype
+
+//console.log(`  '${xt}',`)
+
                 if (info.wantedxtypes.includes(xt)) {
                     var theNames = ""
                     names.forEach(name => theNames += name + ',')
@@ -1001,7 +1030,8 @@ function doPostLaunch() {
     writeTemplateFile(templateFolder+`index.html.tpl`,`${outputFolder}index.html`,info);
     writeTemplateFile(templateFolder+'index.js.tpl', `${outputFolder}index.js`, info);
 
-    copyFileSync(templateFolder+`HTMLParsedElement.js`, srcFolder + `HTMLParsedElement.js`);
+    writeTemplateFile(templateFolder+'ElementParser.js.tpl', `${srcFolder}ElementParser.js`, info);
+    //copyFileSync(templateFolder+`ElementParser.js`, srcFolder + `ElementParser.js`);
     copyFileSync(templateFolder+`ElementCell.js`, srcFolder + `ElementCell.js`);
     copyFileSync(templateFolder+`util.js`, srcFolder + `util.js`);
     writeTemplateFile(templateFolder+'router.tpl', `${srcFolder}ext-router.component.js`, info);
@@ -1143,6 +1173,9 @@ function createWebComponents() {
     const elementsOutputFolder = typeFolder + "ext-" + 'elements' + '-' + info.toolkit + (info.xtype == 'blank' ? '' : '-' + info.xtype) + '/';
     fs.copySync(`${elementsOutputFolder}index.js`,`${outputFolder}/index.js`);
     fs.copySync(`${elementsOutputFolder}index.html`,`${outputFolder}/index.html`);
+
+    fs.copySync(`./ext-runtime/ext-runtime-${info.toolkit}`,`${outputFolder}/ext-runtime-${info.toolkit}`)
+
 }
 
 function createWebComponentsExt() {
@@ -1290,7 +1323,7 @@ async function doInstall() {
 
             var bundle = {};
             bundle.xtype = info.xtype;
-            bundle.creates = require("./npmpackage/" + info.xtype).getCreates();
+            bundle.creates = require(`./npmpackage/${toolkit}/${info.xtype}`).getCreates();
 
             writeTemplateFile(`./template/app.json.tpl`,`./app.json`, bundle);
             //console.log(`app.json` + ' created');

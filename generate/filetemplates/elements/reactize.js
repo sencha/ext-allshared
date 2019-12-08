@@ -98,7 +98,7 @@ export default function (CustomElement) {
           else {
               //console.log(name)
               if (name != 'viewport') {
-                node[name] = _this2.props[name];
+                node[name] = this.props[name];
               }
           }
       });

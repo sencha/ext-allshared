@@ -1,4 +1,4 @@
-## @sencha/ext-web-components{bundle}
+## @sencha/ext-web-components-{toolkit}{bundle}
 
 last run: {now}
 
@@ -11,32 +11,32 @@ npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@senc
 
 ## Create a JavaScript application
 
-- Create a folder named ext-web-components{bundle}-demo
+- Create a folder named ext-web-components-{toolkit}{bundle}-demo
 
 mac
 ```sh
-mkdir ext-web-components{bundle}-demo
-cd ext-web-components{bundle}-demo
+mkdir ext-web-components-{toolkit}{bundle}-demo
+cd ext-web-components-{toolkit}{bundle}-demo
 ```
 
 windows
 ```sh
-md ext-web-components{bundle}-demo
-cd ext-web-components{bundle}-demo
+md ext-web-components-{toolkit}{bundle}-demo
+cd ext-web-components-{toolkit}{bundle}-demo
 ```
 
-- In the ext-web-components{bundle}-demo folder, create a package.json file with the following:
+- In the ext-web-components-{toolkit}{bundle}-demo folder, create a package.json file with the following:
 
 ```sh
 {
-  "name": "ext-web-components{bundle}-demo",
+  "name": "ext-web-components-{toolkit}{bundle}-demo",
   "version": "1.0.0",
-  "description": "ext-web-components{bundle}-demo",
+  "description": "ext-web-components-{toolkit}{bundle}-demo",
   "scripts": {
     "start": "npx http-server -o"
   },
   "devDependencies": {
-    "@sencha/ext-web-components{bundle}": "~7.1.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
     "http-server": "^0.11.1"
   },
   "author": "",
@@ -45,7 +45,7 @@ cd ext-web-components{bundle}-demo
 }
 ```
 
-- In the ext-web-components{bundle}-demo folder, create an index.html file with the following:
+- In the ext-web-components-{toolkit}{bundle}-demo folder, create an index.html file with the following:
 
 ```sh
 <!DOCTYPE html>
@@ -57,10 +57,10 @@ cd ext-web-components{bundle}-demo
 </head>
 
 <script type="module"
-  src="./node_modules/@sencha/ext-web-components/src/ext-toolbar.component.js">
+  src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-toolbar.component.js">
 </script>
 <script type="module"
-  src="./node_modules/@sencha/ext-web-components/src/ext-button.component.js">
+  src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-button.component.js">
 </script>
 
 <script>
@@ -78,7 +78,7 @@ cd ext-web-components{bundle}-demo
 </html>
 ```
 
-- Run the following in the ext-web-components{bundle}-demo folder
+- Run the following in the ext-web-components-{toolkit}{bundle}-demo folder
 
 ```sh
 npm install

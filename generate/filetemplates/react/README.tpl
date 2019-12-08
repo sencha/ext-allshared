@@ -19,7 +19,7 @@ npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@senc
 npx create-react-app ext-react-demo-{toolkit}{bundle}
 ```
 
-- Add ExtReact to your application by running the following:
+- Add ExtReact{Toolkit}{Bundle} to your application by running the following:
 
 ```sh
 cd ext-react-demo-{toolkit}{bundle}
@@ -38,12 +38,33 @@ code .
 
 #### Add ExtReact to your project
 
+- Replace ./src/index.js with:
+
+```sh
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+
+const Ext = window['Ext'];
+Ext.onReady(function () {
+  ReactDOM.render(<App />, document.getElementById('root'));
+});
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
+
+```
+
 - Replace ./src/App.js with:
 
 ```sh
 import React, { Component } from 'react';
-import { ExtGrid } from "@sencha/ext-react-{toolkit}{bundle)";
-import { ExtColumn } from "@sencha/ext-react-{toolkit}{bundle)";
+import { ExtGrid } from "@sencha/ext-react-{toolkit}{bundle}";
+import { ExtColumn } from "@sencha/ext-react-{toolkit}{bundle}";
 const Ext = window['Ext'];
 
 class App extends Component {

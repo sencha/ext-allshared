@@ -70,8 +70,8 @@ switch(framework) {
 
 if (fs.existsSync(`../../../${copyFolder}ext-runtime-${toolkit}`)) {
   console.log(`${prefix} ./${copyFolder}ext-runtime-${toolkit} exists`);
-  if (xtype != '') {doXtype()}
-  console.log('');
+  //if (xtype != '') {doXtype()}
+  //console.log('');
   return
 }
 
@@ -113,16 +113,18 @@ try {
     else {
       theme = 'material';
     }
-    fs.copySync(`../ext-runtime-${toolkit}-base/theme/${theme}`,`../../../${copyFolder}ext-runtime-${toolkit}/theme/${theme}`);
+    var from = `../ext-web-components-${toolkit}/ext-runtime-${toolkit}`;
+    fs.copySync(`${from}/theme/${theme}`,`../../../${copyFolder}ext-runtime-${toolkit}/theme/${theme}`);
+    //fs.copySync(`../ext-runtime-${toolkit}-base/theme/${theme}`,`../../../${copyFolder}ext-runtime-${toolkit}/theme/${theme}`);
     console.log(`${prefix} created ./${copyFolder}ext-runtime-${toolkit}/theme/${theme} folder`);
 
-    fs.copySync(`../ext-runtime-${toolkit}-base/engine.js`,`../../../${copyFolder}ext-runtime-${toolkit}/engine.js`);
+    fs.copySync(`${from}/engine.js`,`../../../${copyFolder}ext-runtime-${toolkit}/engine.js`);
     console.log(`${prefix} created ./${copyFolder}ext-runtime-${toolkit}/engine.js`);
 
-    fs.copySync(`../ext-runtime-${toolkit}-base/boot.js`,`../../../${copyFolder}ext-runtime-${toolkit}/bootstrap.js`);
+    fs.copySync(`${from}/boot.js`,`../../../${copyFolder}ext-runtime-${toolkit}/bootstrap.js`);
     console.log(`${prefix} created ./${copyFolder}ext-runtime-${toolkit}/bootstrap.js`);
 
-    fs.copySync(`../ext-runtime-${toolkit}-base/css.prod.js`,`../../../${copyFolder}ext-runtime-${toolkit}/css.prod.js`);
+    fs.copySync(`${from}/css.prod.js`,`../../../${copyFolder}ext-runtime-${toolkit}/css.prod.js`);
     console.log(`${prefix} created ./${copyFolder}ext-runtime-${toolkit}/css.prod.js`);
 
     switch(framework) {
@@ -143,13 +145,13 @@ try {
         `
         var b =
         `
-    <link
+    <!--<link
       href="%PUBLIC_URL%/ext-runtime-${toolkit}/theme/${theme}/${theme}-all.css"
       rel="stylesheet" type="text/css"
-    >
+    >-->
     <script src="%PUBLIC_URL%/ext-runtime-${toolkit}/bootstrap.js"></script>
     <script src="%PUBLIC_URL%/ext-runtime-${toolkit}/engine.js"></script>
-    <!--<script src="%PUBLIC_URL%/ext-runtime-${toolkit}/css.prod.js"></script>-->
+    <script src="%PUBLIC_URL%/ext-runtime-${toolkit}/css.prod.js"></script>
 ${styles}
         `
         fs.copySync(`../../../${copyFolder}index.html`,`../../../${copyFolder}indexBack.html`);
@@ -183,6 +185,6 @@ ${styles}
         break;
       default:
     }
-    if (xtype != '') {doXtype()}
+    //if (xtype != '') {doXtype()}
 }
 catch(e) {console.log(e);}
