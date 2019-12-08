@@ -52,6 +52,27 @@ code .
 
 #### Add ExtAngular to your project
 
+- Replace ./src/main.ts with:
+
+```sh
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+const Ext = window['Ext'];
+Ext.onReady(function () {
+  platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+});
+
+```
+
 - Add to ./src/styles.css:
 
 ```sh

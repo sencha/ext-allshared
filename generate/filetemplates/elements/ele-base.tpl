@@ -406,8 +406,13 @@ export default class {Shortname}BaseComponent extends HTMLElement {
               break;
           case isParentGridAndChildColumn(parentxtype,childxtype):
               if (location == null) {
-                parentCmp.rowHeight = null;
-                parentCmp.addColumn(childCmp);
+                if (Ext.isModern) {
+                  parentCmp.rowHeight = null;
+                  parentCmp.addColumn(childCmp);
+                }
+                else {
+                  parentCmp.add(childCmp);
+                }
               }
               else {
                   var regCols = 0;
@@ -415,7 +420,12 @@ export default class {Shortname}BaseComponent extends HTMLElement {
                       regCols = parentCmp.registeredColumns.length;
                   }
                   if (parentxtype == 'grid') {
+                    if (Ext.isModern) {
                       parentCmp.insertColumn(location + regCols, childCmp);
+                    }
+                    else {
+                      parentCmp.insert(location + regCols, childCmp);
+                    }
                   }
                   else {
                       parentCmp.insert(location + regCols, childCmp);
