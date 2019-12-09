@@ -85,7 +85,7 @@ info.reactExports = ''
 info.reactExports70 = ''
 info.reactExportsCase = ''
 
-if (info.framework == 'modern') {
+if (info.toolkit == 'modern') {
   info.reactExportsCase = `
 export const ActionSheet = ExtActionsheet_;
 export const BreadcrumbBar = ExtBreadcrumbbar_;
