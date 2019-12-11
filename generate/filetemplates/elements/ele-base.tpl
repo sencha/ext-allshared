@@ -260,12 +260,10 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         me.A.o.plugins = {viewport: true}
       }
     }
-    console.log(me.A.o);
+    //console.log(me.A.o);
     me.A.ext = Ext.create(me.A.o);
     me.cmp = me.A.ext;
     me.ext = me.A.ext;
-
-
 
     //console.dir(me)
     //var aMe = me.getAttribute('aMe')
@@ -275,8 +273,6 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     //me.dispatchEvent(new CustomEvent('cmpready', {
     //  detail: {cmp: me.A.ext}
     //}));
-
-
 
     if (isApplication) {
       if (Ext.isModern) {
