@@ -37,7 +37,7 @@ cd ext-web-components-{toolkit}{bundle}-demo
   },
   "devDependencies": {
     "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
-    "http-server": "^0.11.1"
+    "http-server": "^0.12.0"
   },
   "author": "",
   "license": "ISC",

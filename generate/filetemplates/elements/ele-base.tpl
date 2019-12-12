@@ -103,17 +103,19 @@ export default class {Shortname}BaseComponent extends HTMLElement {
       }
 
 
+    me.newDoExtCreate(me, me.A.o['viewport']);
+    //me.doChildren(me);
 
-    if (Ext.env.Ready.firing == false) {
-      this.onReadyNeeded = true
-      Ext.onReady(function () {
-        me.newDoExtCreate(me, me.A.o['viewport']);
-          me.doChildren(me);
-      });
-    } else {
-      this.onReadyNeeded = false
-      me.newDoExtCreate(me, me.A.o['viewport']);
-    }
+    //if (Ext.env.Ready.firing == false) {
+    //  this.onReadyNeeded = true
+    //  Ext.onReady(function () {
+    //    me.newDoExtCreate(me, me.A.o['viewport']);
+    //      me.doChildren(me);
+    //  });
+    //} else {
+    //  this.onReadyNeeded = false
+    //  me.newDoExtCreate(me, me.A.o['viewport']);
+    //}
   }
 
   newCreateProps(properties) {
@@ -292,9 +294,9 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
 
 
-    if (this.onReadyNeeded == false) {
+    //if (this.onReadyNeeded == false) {
       this.doChildren(this);
-    }
+    //}
 
 
 

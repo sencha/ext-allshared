@@ -1,3 +1,33 @@
+exports.writeTemplateFile =(tplFile, outFile, vars) => {
+  require("./XTemplate");
+  var path = require("path");
+  var fs = require("fs-extra");
+  //var tpl = new Ext.XTemplate(fs.readFileSync(path.resolve(tplFile)).toString());
+  var tpl = new Ext.XTemplate(fs.readFileSync(tplFile));
+
+  //console.log(tplFile)
+  //console.log(path.resolve(tplFile)).toString()
+  var t = tpl.apply(vars);
+  fs.writeFileSync(outFile, t);
+  //console.log(outFile)
+  delete tpl;
+}
+
+exports.run = (parm, cwd) => {
+  var all = parm.split(' ')
+  var command = all[0]
+  var args = all.slice(1)
+  if (cwd == undefined) {cwd = process.cwd()}
+  return promise = new Promise((resolve, reject) => {
+    let options = {cwd: cwd, stdio: 'inherit', encoding: 'utf-8'}
+    //console.log(color(command + ' ' + args.toString().replace(',', ' ')) + ' in ' + cwd)
+    let child = require('child_process').spawn(command, args, options)
+    child.on('close', (code, signal) => {resolve({code, signal})})
+    child.on('error', (error) => {reject(error)})
+  })
+}
+
+
 function getItems(o, type) {
   var array = o.items.filter(function(obj) {
       return obj.$type == type;
