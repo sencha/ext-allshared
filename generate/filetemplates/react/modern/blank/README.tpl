@@ -16,13 +16,13 @@ npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@senc
 - Run the following:
 
 ```sh
-npx create-react-app ext-react-demo-{toolkit}{bundle}
+npx create-react-app ext-react-{toolkit}{bundle}-demo
 ```
 
 - Add ExtReact{Toolkit}{Bundle} to your application by running the following:
 
 ```sh
-cd ext-react-demo-{toolkit}{bundle}
+cd ext-react-{toolkit}{bundle}-demo
 npm install @sencha/ext-react-{toolkit}{bundle} --save
 ```
 

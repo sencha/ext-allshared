@@ -30,7 +30,7 @@ should be @angular/cli@8.3.x
 - Run 'ng new':
 
 ```sh
-ng new ext-angular-{toolkit}-demo --minimal=true --interactive=false -g=true --skipInstall=false
+ng new ext-angular-{toolkit}{bundle}-demo --minimal=true --interactive=false -g=true --skipInstall=false
 ```
 
 - Add ExtAngular{Toolkit}{Bundle} to your application by running the following:

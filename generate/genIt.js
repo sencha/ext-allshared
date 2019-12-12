@@ -426,7 +426,7 @@ function oneItem(item, names, xtypes) {
             writeTemplateFile(`${templateFolder}react.tpl`, `${reactStagingFolder}${info.reactPrefix}${values.Xtype}.js`, values)
             writeTemplateFile(`${templateFolder}angular.tpl`, `${angularStagingFolder}Ext${values.Xtype}.ts`, values)
 
-            //investigate
+            //investigate - because every multi-xtype component
             if (didXtype == false) {
                 didXtype = true
                 xt = values.xtype
@@ -450,6 +450,9 @@ function oneItem(item, names, xtypes) {
                   else {
                     console.log('not found ' + xt)
                   }
+            } else {
+              //console.log(values.xtype)
+              //console.log(xtypes)
             }
 
             //docs
@@ -544,6 +547,7 @@ function doPostLaunch() {
     writeTemplateFile(`${templateFolder}package.json.tpl`,`${outputFolder}package.json`,info);
     writeTemplateFile(`${templateFolder}README.md.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(`${templateFolder}index.html.tpl`,`${outputFolder}index.html`,info);
+    console.log(outputFolder)
     writeTemplateFile(`${templateFolder}index.js.tpl`, `${outputFolder}index.js`, info);
 
     //web-components
@@ -664,13 +668,15 @@ function createWebComponents() {
 
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
+    mkdirp.sync(`${outputFolder}bin`);
 
     fs.copySync(srcFolder,`${outputFolder}src`);
     //fs.copySync(docFolder,`${outputFolder}/doc`);
-    //fs.copySync(binFolder,`${outputFolder}/bin`);
 
-    writeTemplateFile(`${webComponentsTemplateFolder}package.tpl`,`${outputFolder}package.json`,info);
-    writeTemplateFile(`${webComponentsTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}ext-web-components.js.tpl`,`${outputFolder}bin/ext-web-components.js`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}index.js.tpl`,`${outputFolder}index.js`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}package.json.tpl`,`${outputFolder}package.json`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}${info.toolkit}/${info.suffixParm}/README.md.tpl`,`${outputFolder}README.md`,info);
     copyFileSync(`${webComponentsTemplateFolder}.babelrc`, `${outputFolder}.babelrc`);
 
     //const elementsOutputFolder = `${typeFolder}ext-elements${info.toolkitshown}${info.bundle}/`;
@@ -687,9 +693,11 @@ function createAngular() {
 
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
+    mkdirp.sync(`${outputFolder}bin`);
 
     fs.copySync(angularFolder,`${outputFolder}src`)
 
+    writeTemplateFile(`${angularTemplateFolder}ext-angular.js.tpl`,`${outputFolder}bin/ext-angular.js`,info);
     writeTemplateFile(`${angularTemplateFolder}package.tpl`,`${outputFolder}package.json`,info);
     writeTemplateFile(`${angularTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(`${angularTemplateFolder}module.tpl`,`${outputFolder}ext-${info.framework}${info.toolkitshown}${info.bundle}.module.ts`,moduleVars);
@@ -707,6 +715,7 @@ function createReact() {
 
     rimraf.sync(outputFolder);
     mkdirp.sync(outputFolder);
+    mkdirp.sync(`${outputFolder}bin`);
 
     fs.copySync(reactFolder,`${outputFolder}src`)
 
@@ -717,6 +726,7 @@ function createReact() {
       info.reactExports70 = info.reactExports70 + `export const ${Xtype} = Ext${Xtype}_;\n`;
     })
 
+    writeTemplateFile(`${reactTemplateFolder}ext-react.js.tpl`,`${outputFolder}bin/ext-react.js`,info);
     writeTemplateFile(`${reactTemplateFolder}package.tpl`,`${outputFolder}package.json`,info);
     copyFileSync(`${reactTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
     copyFileSync(`${reactTemplateFolder}.babelrc`, `${outputFolder}.babelrc`);
