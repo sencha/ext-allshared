@@ -57,10 +57,10 @@ cd ext-web-components-{toolkit}{bundle}-demo
 </head>
 
 <script type="module"
-  src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-toolbar.component.js">
+src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-toolbar.component.js">
 </script>
 <script type="module"
-  src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-button.component.js">
+src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-button.component.js">
 </script>
 
 <script>
