@@ -721,7 +721,7 @@ function createReact() {
 
     info.wantedxtypes.forEach(xtype => {
       var Xtype = xtype.charAt(0).toUpperCase() + xtype.slice(1).replace(/-/g,'_');
-      info.reactImports = info.reactImports + `import Ext${Xtype}_ from "./dist/Ext${Xtype}";\n`;
+      info.reactImports = info.reactImports + `import Ext${Xtype}_ from "./Ext${Xtype}";\n`;
       info.reactExports = info.reactExports + `export const Ext${Xtype} = Ext${Xtype}_;\n`;
       info.reactExports70 = info.reactExports70 + `export const ${Xtype} = Ext${Xtype}_;\n`;
     })
@@ -731,7 +731,7 @@ function createReact() {
     copyFileSync(`${reactTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
     copyFileSync(`${reactTemplateFolder}.babelrc`, `${outputFolder}.babelrc`);
 
-    writeTemplateFile(`${reactTemplateFolder}index.js.tpl`, `${outputFolder}index.js`, info);
+    writeTemplateFile(`${reactTemplateFolder}index.js.tpl`, `${outputFolder}src/index.js`, info);
     const examples = require(reactTemplateFolder + "examples/" + info.suffixParm).examples;
     info.component = examples('component');
     writeTemplateFile(`${reactTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
