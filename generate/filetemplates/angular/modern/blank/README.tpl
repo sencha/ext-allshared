@@ -52,6 +52,7 @@ code .
 
 #### Add ExtAngular to your project
 
+<!--
 - Replace ./src/main.ts with:
 
 ```sh
@@ -72,6 +73,7 @@ Ext.onReady(function () {
 });
 
 ```
+-->
 
 - Add to ./src/styles.css:
 
