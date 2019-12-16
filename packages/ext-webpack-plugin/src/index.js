@@ -4,6 +4,7 @@ require('@babel/polyfill')
 const fs = require('fs');
 const path = require('path');
 const pluginUtil = require(`./pluginUtil`)
+const replace = require("replace");
 
 // process.stdin.resume();
 
@@ -86,6 +87,14 @@ export default class ExtWebpackPlugin {
         const copyBundleDest = path.join(prodBuildPath, bundleName);
         if (fs.existsSync(bundleName)) {
           fs.copyFileSync(bundleName, copyBundleDest);
+
+          // Due to the race condition between Cmd's processing for production files and the webpack bundling
+          // index.html doesn't receive the injected reference to the webpack bundle.
+          replace({
+            regex: '</body>',
+            replacement: '<script type="text/javascript" src="'+bundleName+'"></script></body>',
+            paths: ['index.html']
+          });
         }
       }
   }
