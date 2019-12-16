@@ -93,7 +93,7 @@ export default class ExtWebpackPlugin {
           replace({
             regex: '</body>',
             replacement: '<script type="text/javascript" src="'+bundleName+'"></script></body>',
-            paths: ['index.html']
+            paths: [path.join(prodBuildPath, 'index.html')]
           });
         }
       }
