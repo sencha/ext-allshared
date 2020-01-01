@@ -13,9 +13,6 @@ npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@senc
 
 ## Create an Angular application with Angular CLI
 
-
-npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@sencha
-
 #### Install Angular CLI
 
 ```sh
