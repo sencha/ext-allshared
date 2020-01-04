@@ -14,6 +14,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
   constructor(properties, events) {
     super ();
+
     this.properties = properties;
     this.events = events;
     this.eventnames = [];
@@ -38,12 +39,29 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     this.base = EleBaseComponent;
   }
 
-    connectedCallback() {
-      //console.log('connectedCallback: ' + this.xtype);
-      EleBaseComponent.elementcount++;
-      EleBaseComponent.elements.push(this);
-      //console.log('added: ' + this.tagName + ': elementcount is now ' + EleBaseComponent.elementcount);
+  connectedCallback() {
+    //console.log('connectedCallback: ' + this.xtype);
+    EleBaseComponent.elementcount++;
+    EleBaseComponent.elements.push(this);
+    //console.log('added: ' + this.tagName + ': elementcount is now ' + EleBaseComponent.elementcount);
+
+    if ({Shortname}BaseComponent.attributeFirst == true) {
+      {Shortname}BaseComponent.attributeFirst = false;
+      console.log(this.attributes.length)
+      if (this.attributes.length > 1) {
+        console.log('Early')
+        {Shortname}BaseComponent.attributeEarly = true;
+      } else {
+        console.log('Late')
+        {Shortname}BaseComponent.attributeEarly = false;
+      }
     }
+
+    if ({Shortname}BaseComponent.attributeEarly == true) {
+      this.connectedCallback2()
+    }
+
+  }
 
   connectedCallback2() {
     //console.log('connectedCallback: ' + this.xtype);
@@ -212,10 +230,12 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
   parsedCallback() {
     //console.log('parsedCallback: ' + this.xtype);
-    this.connectedCallback2()
+    if ({Shortname}BaseComponent.attributeEarly == false) {
+      this.connectedCallback2()
+    }
     this.doChildren(this);
 
-    
+
   }
 
   doChildren(me) {
@@ -473,6 +493,9 @@ export default class {Shortname}BaseComponent extends HTMLElement {
   }
 
 }
+
+{Shortname}BaseComponent.attributeFirst = true;
+{Shortname}BaseComponent.attributeEarly = true;
 
 {Shortname}BaseComponent.elementcountnew = 0;
 
