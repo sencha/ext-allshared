@@ -47,12 +47,12 @@ export default class {Shortname}BaseComponent extends HTMLElement {
 
     if ({Shortname}BaseComponent.attributeFirst == true) {
       {Shortname}BaseComponent.attributeFirst = false;
-      console.log(this.attributes.length)
+      //console.log(this.attributes.length)
       if (this.attributes.length > 1) {
-        console.log('Early')
+        //console.log('Early')
         {Shortname}BaseComponent.attributeEarly = true;
       } else {
-        console.log('Late')
+        //console.log('Late')
         {Shortname}BaseComponent.attributeEarly = false;
       }
     }
