@@ -11,7 +11,7 @@ export default class {classname} extends {Shortname}BaseComponent {
         'tab',
         'config',
         'platformConfig',
-        'renderer',
+        'summaryRenderer',
         'extname',
         'viewport',
         'align',
