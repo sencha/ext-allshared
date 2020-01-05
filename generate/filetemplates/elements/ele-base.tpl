@@ -141,8 +141,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
       }
 
       if (this.getAttribute(property) !== null) {
-        if (property == 'config') {
-        }
+        if (property == 'config') {}
         else if (property == 'renderer') {
             //console.log(this.attributeObjects['renderer'])
             var cellxtype = '';
@@ -162,6 +161,15 @@ export default class {Shortname}BaseComponent extends HTMLElement {
               o.renderer = eval(this['renderer']);
             }
         }
+
+        else if (property == 'summaryRenderer') {
+          if (this.attributeObjects[property] != undefined) {
+            o[property] = this.attributeObjects[property];
+          } else {
+            //o[property] = eval(this[property]);
+          }
+        }
+
 
         else if (this.getAttribute(property) == 'object') {
             o[property] = this.attributeObjects[property];
