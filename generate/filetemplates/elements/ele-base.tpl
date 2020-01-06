@@ -401,6 +401,7 @@ export default class {Shortname}BaseComponent extends HTMLElement {
   attributeChangedCallback(attr, oldVal, newVal) {
     if (/^on/.test(attr)) {
         if (newVal) {
+          if (newVal == 'function') { return }
           this.addEventListener(attr.slice(2), function(event) {
               var functionString = newVal;
               eval(functionString + '(event)');
