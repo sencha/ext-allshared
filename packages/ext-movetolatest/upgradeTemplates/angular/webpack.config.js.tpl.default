@@ -1,7 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { BaseHrefWebpackPlugin } = require('base-href-webpack-plugin');
-const ExtWebpackPlugin = require('@sencha/ext-angular-webpack-plugin')
+const ExtWebpackPlugin = require('@sencha/ext-webpack-plugin')
 const portfinder = require('portfinder')
 
 const webpack = require("webpack")
@@ -11,33 +11,40 @@ const FilterWarningsPlugin = require('webpack-filter-warnings-plugin')
 module.exports = function (env) {
   function get(it, val) {if(env == undefined) {return val} else if(env[it] == undefined) {return val} else {return env[it]}}
 
+   //******* */
+   var framework     = get('framework',     'angular')
+   var contextFolder = get('contextFolder', './src')
+   var entryFile     = get('entryFile',     './main.ts')
+   var outputFolder  = get('outputFolder',  'build')
+   const rules = [
+    {test: /\.css$/, loader: ['to-string-loader', "style-loader", "css-loader"]},
+    {test: /\.(png|svg|jpg|jpeg|gif)$/, use: ['file-loader']},
+    {test: /\.html$/,loader: "html-loader"},
+    {test: /\.ts$/,  loader: '@ngtools/webpack'}
+  ]
+   const resolve = {
+    extensions: ['.ts', '.js', '.html']
+  }
   //******* */
-  var framework     = get('framework',     '{framework}')
-  var contextFolder = get('contextFolder', '{contextFolder}')
-  var outputFolder  = get('outputFolder',  '{outputFolder}')
-  const entry = {entry}
-  const rules = {rules}
-  const resolve = {resolve}
-  //******* */
- 
-  var toolkit       = get('toolkit',       'modern')
-  var theme         = get('theme',         'theme-material')
-  var packages      = get('packages',      ['treegrid', 'ux'])
-  var script        = get('script',        '')
-  var emit          = get('emit',          'yes')
-  var profile       = get('profile',       '')
-  var environment   = get('environment',   'development')
-  var treeshake     = get('treeshake',     'no')
-  var browser       = get('browser',       'yes')
-  var watch         = get('watch',         'yes')
-  var verbose       = get('verbose',       'no')
-  var basehref      = get('basehref',      '/') 
+
+   var toolkit       = get('toolkit',       'modern')
+   var theme         = get('theme',         'theme-material')
+   var packages      = get('packages',      ['treegrid'])
+   var script        = get('script',        '')
+   var emit          = get('emit',          'yes')
+   var profile       = get('profile',       '')
+   var environment   = get('environment',   'development')
+   var treeshake     = get('treeshake',     'no')
+   var browser       = get('browser',       'yes')
+   var watch         = get('watch',         'yes')
+   var verbose       = get('verbose',       'no')
+   var basehref      = get('basehref',      '/')
 
   const isProd = environment === 'production'
   portfinder.basePort = (env && env.port) || 1962
   return portfinder.getPortPromise().then(port => {
     const plugins = [
-      new HtmlWebpackPlugin({template: "index.html",hash: true,inject: "body"}),
+      new HtmlWebpackPlugin({template: "index.html",hash: false,inject: "body"}),
       new BaseHrefWebpackPlugin({ baseHref: basehref }),
       new ExtWebpackPlugin({
         framework: framework,
@@ -47,12 +54,14 @@ module.exports = function (env) {
         script: script,
         emit: emit,
         port: port,
-        profile: profile, 
+        profile: profile,
         environment: environment,
         treeshake: treeshake,
         browser: browser,
         watch: watch,
-        verbose: verbose
+        verbose: verbose,
+        inject: 'yes',
+        intellishake: 'no'
       }),
 
       new AngularCompilerPlugin({
@@ -62,7 +71,7 @@ module.exports = function (env) {
         skipCodeGeneration: true
       }),
       new webpack.ContextReplacementPlugin(
-        /\@angular(\\|\\/)core(\\|\\/)fesm5/,
+        /\@angular(\\|\/)core(\\|\/)fesm5/,
         path.resolve(__dirname, 'src'),{}
       ),
       new FilterWarningsPlugin({
@@ -74,7 +83,11 @@ module.exports = function (env) {
       mode: environment,
       devtool: (environment === 'development') ? 'inline-source-map' : false,
       context: path.join(__dirname, contextFolder),
-      entry: entry,
+      entry: {
+        vendor:  './vendor.ts',
+        polyfills: "./polyfills.ts",
+        main: entryFile
+      },
       output: {
         path: path.join(__dirname, outputFolder),
         filename: "[name].js"
