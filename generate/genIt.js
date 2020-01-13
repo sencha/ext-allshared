@@ -151,6 +151,7 @@ export const TabBar = ExtTabbar_;
 export const TabPanel = ExtTabpanel_;
 export const TextAreaField = ExtTextareafield_;
 export const TextColumn = ExtTextcolumn_;
+export const TreeColumn = ExtTreecolumn_;
 export const TextField = ExtTextfield_;
 export const TimeField = ExtTimefield_;
 export const TimePanel = ExtTimepanel_;
@@ -415,6 +416,7 @@ function oneItem(item, names, xtypes) {
               xtype: xtypes[j]
             }
             if (xtypes[j] == "grid" && info.toolkit == 'modern') {
+            //if (xtypes[j] == "grid") {
                 values.ReactCell = "import './ReactCell';"
                 values.ElementCell = "import './ElementCell';"
             }
@@ -798,7 +800,10 @@ async function doInstall() {
     await run(`npm run packagr`);
     log(`add postinstall.js in ${process.cwd()}`);
     await run(`cp -R ./src dist/lib`);
+    await run(`cp -R ./bin dist/bin`);
     await run(`cp ./postinstall.js dist/postinstall.js`);
+
+
     process.chdir('dist');
     var packagenameAngular = './package.json';
     var packageAngular = fs.readFileSync(packagenameAngular, 'utf8');
@@ -809,6 +814,11 @@ async function doInstall() {
     packageJsonAngular.scripts.postinstall = "node ./postinstall.js";
     packageStringAngular = JSON.stringify(packageJsonAngular, null, 2);
     fs.writeFileSync(packagenameAngular, packageStringAngular);
+
+
+
+
+
     process.chdir(origCwd);
 
     process.chdir(reactFolder);
