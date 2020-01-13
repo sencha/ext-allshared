@@ -17,7 +17,7 @@
   },
   "preferGlobal": true,
   "dependencies": {
-    "fs-extra": "^7.1.0",
+    "fs-extra": "^7.0.1",
     "replace-in-file": "~3.4.4"
   },
   "repository": {

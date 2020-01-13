@@ -22,7 +22,8 @@
     "opn": "^6.0.0",
     "recursive-readdir-sync": "^1.0.6",
     "schema-utils": "^2.2.0",
-    "switchit": "^1.0.8"
+    "switchit": "^1.0.8",
+    "replace": "^1.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",
