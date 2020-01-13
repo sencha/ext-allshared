@@ -7,26 +7,16 @@ const pluginUtil = require(`./pluginUtil`)
 const replace = require("replace");
 
 // process.stdin.resume();
-
 // process.on('SIGINT', function () {
 //   console.log('Got SIGINT.  Press Control-D to exit.');
 // });
-
 // function cleanUpServer(eventType) {
 //   console.log(eventType)
 //   process.exit();
-
 // }
-
 // [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
 //   process.on(eventType, cleanUpServer.bind(null, eventType));
 // })
-
-
-
-
-
-
 
 export default class ExtWebpackPlugin {
 
@@ -36,44 +26,25 @@ export default class ExtWebpackPlugin {
     this.options = constructorOutput.options
 
     this.vars.child = null;
-
-
-
     var me = this;
 
     [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
       //process.on(eventType, me.cleanUpServer2.bind(null, eventType));
-
       process.on(eventType, function(eventType){
-        console.log(eventType)
+        //console.log(eventType)
         //console.log(me.vars.child)
         if (me.vars.child != null) {
-          console.log(me.vars.child.kill)
+          //console.log(me.vars.child.kill)
           me.vars.child.kill();
         }
         else {
-          console.log('child is null')
+          //console.log('child is null')
         }
         process.exit();
       });
-
-
-
     })
-    console.log('added')
-
-
-
+    //console.log('added')
   }
-
-
-  // cleanUpServer2(eventType) {
-  //   console.log(eventType)
-  //   console.log(this.vars.child)
-  //   process.exit();
-
-  // }
-
 
   apply(compiler) {
     const vars = this.vars
