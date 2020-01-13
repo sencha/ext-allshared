@@ -5,6 +5,9 @@
   "scripts": {
     "packagr": "ng-packagr -p ng-package.json"
   },
+  "bin": {
+    "ext-angular": "./bin/ext-angular.js"
+  },
   "main": "index.js",
   "private": false,
   "peerDependencies": {

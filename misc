@@ -1,3 +1,13 @@
+        {/* <ExtGridcolumn text="name" dataIndex="name"></ExtGridcolumn>
+        <ExtGridcolumn text="email" dataIndex="email" width="150"></ExtGridcolumn>
+        <ExtGridcolumn
+          text="% Change"
+          dataIndex="priceChangePct"
+          align="right"
+          renderer={ this.renderSign.bind(this, '0.00') }
+        /> */}
+
+
 https://www.rapidtables.com/web/color/gray-color.html
 
 

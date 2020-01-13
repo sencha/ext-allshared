@@ -12,6 +12,21 @@ const replace = require("replace");
 //   console.log('Got SIGINT.  Press Control-D to exit.');
 // });
 
+// function cleanUpServer(eventType) {
+//   console.log(eventType)
+//   process.exit();
+
+// }
+
+// [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
+//   process.on(eventType, cleanUpServer.bind(null, eventType));
+// })
+
+
+
+
+
+
 
 export default class ExtWebpackPlugin {
 
@@ -19,7 +34,46 @@ export default class ExtWebpackPlugin {
     var constructorOutput = pluginUtil._constructor(options)
     this.vars = constructorOutput.vars
     this.options = constructorOutput.options
+
+    this.vars.child = null;
+
+
+
+    var me = this;
+
+    [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
+      //process.on(eventType, me.cleanUpServer2.bind(null, eventType));
+
+      process.on(eventType, function(eventType){
+        console.log(eventType)
+        //console.log(me.vars.child)
+        if (me.vars.child != null) {
+          console.log(me.vars.child.kill)
+          me.vars.child.kill();
+        }
+        else {
+          console.log('child is null')
+        }
+        process.exit();
+      });
+
+
+
+    })
+    console.log('added')
+
+
+
   }
+
+
+  // cleanUpServer2(eventType) {
+  //   console.log(eventType)
+  //   console.log(this.vars.child)
+  //   process.exit();
+
+  // }
+
 
   apply(compiler) {
     const vars = this.vars
@@ -57,6 +111,12 @@ export default class ExtWebpackPlugin {
 
     compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
       pluginUtil.logh(app, `HOOK emit (async)`)
+
+
+
+
+
+
       pluginUtil._emit(compiler, compilation, vars, options, callback)
     })
 
@@ -73,7 +133,7 @@ export default class ExtWebpackPlugin {
        * 2. Extract the path as a String, trimmed to the location of the build folder
        * 3. Copy webpack bundle to destination directory
        * 4. Delete the temp file
-       */ 
+       */
       const outputPath = options.path;
       const bundleName = ((options.filename == "[name].js") ? "main.js" : options.filename);
       const tempFilePath = outputPath+'temp.txt';

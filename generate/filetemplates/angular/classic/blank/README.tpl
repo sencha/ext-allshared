@@ -151,3 +151,11 @@ ng serve --open --port 4201
 ```
 
 open http://localhost:4201 in a browser - the ExtAngular application will load
+
+- To generate a theme for Sencha Themer:
+
+```sh
+npm install @sencha/cmd --save
+node_modules/.bin/ext-angular generate theme -b theme-material -n test-ext-angular
+```
+
