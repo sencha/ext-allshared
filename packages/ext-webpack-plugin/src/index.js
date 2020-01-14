@@ -28,17 +28,18 @@ export default class ExtWebpackPlugin {
     this.vars.child = null;
     var me = this;
 
-    [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
-      //process.on(eventType, me.cleanUpServer2.bind(null, eventType));
+    var v = [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`]
+    v.forEach(eventType => {
       process.on(eventType, function(eventType){
-        //console.log(eventType)
-        //console.log(me.vars.child)
         if (me.vars.child != null) {
-          //console.log(me.vars.child.kill)
+          console.log('\nnode process and sencha cmd process ended')
           me.vars.child.kill();
+          me.vars.child = null;
         }
         else {
-          //console.log('child is null')
+          if (eventType != 0) {
+            console.log('\nnode process ended')
+          }
         }
         process.exit();
       });
