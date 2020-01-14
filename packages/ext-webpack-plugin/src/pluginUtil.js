@@ -456,11 +456,11 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
       logv(verbose, `parms - ${parms}`)
       logv(verbose, `opts - ${JSON.stringify(opts)}`)
       //let child = crossSpawn(command, parms, opts)
-      console.log('child')
-      console.log(vars.child)
+      //console.log('child')
+      //console.log(vars.child)
       vars.child = crossSpawn(command, parms, opts)
-      console.log('child')
-      console.log(vars.child)
+      //console.log('child')
+      //console.log(vars.child)
 
       vars.child.on('close', (code, signal) => {
         logv(verbose, `on close: ` + code)
