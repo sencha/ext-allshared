@@ -653,7 +653,6 @@ export function logh(app,message) {
 
 //**********
 export function logv(verbose, s) {
-  verbose = 'yes'
   if (verbose == 'yes') {
     require('readline').cursorTo(process.stdout, 0)
     try {
