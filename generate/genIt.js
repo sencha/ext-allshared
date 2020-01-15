@@ -5,7 +5,7 @@
 const doGenerate = true;
 const npmInstall = true;
 const npmCopy = true;
-const npmPublish = true;
+const npmPublish = false;
 
 const doAllinXtype = true;
 var didXtype = false;
@@ -736,8 +736,11 @@ function createReact() {
     writeTemplateFile(`${reactTemplateFolder}index.js.tpl`, `${outputFolder}src/index.js`, info);
     const examples = require(reactTemplateFolder + "examples/" + info.suffixParm).examples;
     info.component = examples('component');
+
     writeTemplateFile(`${reactTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
-}
+    writeTemplateFile(`${reactTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
+
+  }
 
 
 function createWebComponentsExt() {
