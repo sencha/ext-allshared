@@ -1,36 +1,4 @@
 {
-  "_from": "@sencha/ext-angular-boilerplate@7.1.0",
-  "_id": "@sencha/ext-angular-boilerplate@7.1.0",
-  "_inBundle": false,
-  "_integrity": "sha512-sQW7wQqAhpLWLTFco9M3mQMSR6l6NCG7Ln0LQyqtJYaV3fPRpD5asoj31LDgAt9PoGNBNTi0F63UOMyRNerxMA==",
-  "_location": "/@sencha/ext-angular-gen/@sencha/ext-angular-boilerplate",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "@sencha/ext-angular-boilerplate@7.1.0",
-    "name": "@sencha/ext-angular-boilerplate",
-    "escapedName": "@sencha%2fext-angular-boilerplate",
-    "scope": "@sencha",
-    "rawSpec": "7.1.0",
-    "saveSpec": null,
-    "fetchSpec": "7.1.0"
-  },
-  "_requiredBy": [
-    "/@sencha/ext-angular-gen"
-  ],
-  "_resolved": "http://test.npm.sencha.com/@sencha%2fext-angular-boilerplate/-/ext-angular-boilerplate-7.1.0.tgz",
-  "_shasum": "5b354a42332fe5d3120a10d55b6f1cf05b98498f",
-  "_spec": "@sencha/ext-angular-boilerplate@7.1.0",
-  "_where": "/usr/local/lib/node_modules/@sencha/ext-angular-gen",
-  "author": "",
-  "bugs": {
-    "url": "https://github.com/sencha"
-  },
-  "bundleDependencies": false,
-  "dependencies": {},
-  "deprecated": false,
-  "description": "ext-angular-boilerplate",
   "devDependencies": {
     "@angular-builders/custom-webpack": "^8.4.1",
     "@angular-builders/dev-server": "^7.3.1",
@@ -74,16 +42,6 @@
     "webpack-filter-warnings-plugin": "~1.2.1",
     "zone.js": "~0.10.2"
   },
-  "homepage": "https://github.com/sencha",
-  "keywords": [],
-  "license": "ISC",
-  "main": "",
-  "name": "@sencha/ext-angular-boilerplate",
-  "private": false,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sencha"
-  },
   "scripts": {
     "build": "npm run clean && npm run webpack1 && npm run gzip && npm run http",
     "clean": "rimraf build",
@@ -98,5 +56,6 @@
     "xwebpack": "npm run webpack1 && npm run webpack2",
     "xwebpack2": "cross-env webpack --env.environment=production --env.treeshake=no --env.basehref=/"
   },
-  "version": "7.1.0"
+  "version": "7.1.0",
+  "dependencies": {}
 }
