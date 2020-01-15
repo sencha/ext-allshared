@@ -737,9 +737,10 @@ function createReact() {
     const examples = require(reactTemplateFolder + "examples/" + info.suffixParm).examples;
     info.component = examples('component');
 
-    writeTemplateFile(`${reactTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
+//    writeTemplateFile(`${reactTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
     writeTemplateFile(`${reactTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
-
   }
 
 
