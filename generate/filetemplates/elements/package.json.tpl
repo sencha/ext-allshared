@@ -1,6 +1,6 @@
 {
     "name": "@sencha/ext-{framework}-{toolkit}{bundle}",
-    "version": "7.1.0",
+    "version": "7.1.1",
     "main2": "ext-{framework}-{toolkit}{bundle}.module.js",
     "main": "index.js",
     "private": false,

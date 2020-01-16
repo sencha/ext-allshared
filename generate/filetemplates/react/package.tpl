@@ -1,6 +1,6 @@
 {
   "name": "@sencha/ext-react-{toolkit}{bundle}",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "description": "Sencha ext-react-{toolkit}{bundle}",
   "main": "dist/index.js",
   "bin": {

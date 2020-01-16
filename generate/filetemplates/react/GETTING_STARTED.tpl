@@ -27,7 +27,7 @@ npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@senc
 - Run the following:
 
 ```sh
-npx create-react-app ext-react-{toolkit}{bundle}-demo --template @sencha/ext-react-{toolkit}{bundle}
+npx create-react-app --template @sencha/ext-react-{toolkit}{bundle} ext-react-{toolkit}{bundle}-demo
 ```
 
 create-react-app will create a new application using the ext-react-{toolkit}{bundle} template
