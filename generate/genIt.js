@@ -701,13 +701,21 @@ function createAngular() {
 
     writeTemplateFile(`${angularTemplateFolder}ext-angular.js.tpl`,`${outputFolder}bin/ext-angular.js`,info);
     writeTemplateFile(`${angularTemplateFolder}package.tpl`,`${outputFolder}package.json`,info);
-    writeTemplateFile(`${angularTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(`${angularTemplateFolder}module.tpl`,`${outputFolder}ext-${info.framework}${info.toolkitshown}${info.bundle}.module.ts`,moduleVars);
     writeTemplateFile(`${angularTemplateFolder}public_api.tpl`,`${outputFolder}public_api.ts`,info);
     copyFileSync(`${angularTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
     copyFileSync(`${angularTemplateFolder}tsconfig.json`, `${outputFolder}tsconfig.json`);
     copyFileSync(`${angularTemplateFolder}tsconfig.lib.json`, `${outputFolder}tsconfig.lib.json`);
     copyFileSync(`${angularTemplateFolder}ng-package.json`, `${outputFolder}ng-package.json`);
+
+    //writeTemplateFile(`${angularTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
+
+
+
 }
 
 function createReact() {
@@ -741,6 +749,7 @@ function createReact() {
     writeTemplateFile(`${reactTemplateFolder}README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(`${reactTemplateFolder}GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
     writeTemplateFile(`${reactTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
   }
 
 
@@ -802,10 +811,15 @@ async function doInstall() {
     await run(`npm install`);
     log(`npm run packagr in ${process.cwd()}`);
     await run(`npm run packagr`);
-    log(`add postinstall.js in ${process.cwd()}`);
+
+    log(`add postinstall.js and all .md in ${process.cwd()}`);
     await run(`cp -R ./src dist/lib`);
     await run(`cp -R ./bin dist/bin`);
     await run(`cp ./postinstall.js dist/postinstall.js`);
+    await run(`cp ./README.md dist/README.md`);
+    await run(`cp ./EJECT.md dist/EJECT.md`);
+    await run(`cp ./GETTING_STARTED.md dist/GETTING_STARTED.md`);
+    await run(`cp ./WHATS_NEW.md dist/WHATS_NEW.md`);
 
 
     process.chdir('dist');

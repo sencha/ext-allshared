@@ -1,4 +1,4 @@
-## Getting started for @sencha/ext-react-{toolkit}{bundle}
+## Getting started with @sencha/ext-react-{toolkit}{bundle}
 
 last run: {now}
 
