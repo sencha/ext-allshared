@@ -1,9 +1,12 @@
 {
   "name": "@sencha/ext-angular-{toolkit}{bundle}",
   "description": "ext-angular-{toolkit}{bundle}",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "scripts": {
     "packagr": "ng-packagr -p ng-package.json"
+  },
+  "bin": {
+    "ext-angular": "./bin/ext-angular.js"
   },
   "main": "index.js",
   "private": false,

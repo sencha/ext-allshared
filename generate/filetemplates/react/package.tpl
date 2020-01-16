@@ -1,8 +1,11 @@
 {
   "name": "@sencha/ext-react-{toolkit}{bundle}",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "description": "Sencha ext-react-{toolkit}{bundle}",
   "main": "dist/index.js",
+  "bin": {
+    "ext-react": "./bin/ext-react.js"
+  },
   "scripts": {
     "build": "npx babel ./src --out-dir ./dist",
     "prepublish": "npm run build",

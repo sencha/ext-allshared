@@ -5,7 +5,7 @@
 const doGenerate = true;
 const npmInstall = true;
 const npmCopy = true;
-const npmPublish = true;
+const npmPublish = false;
 
 const doAllinXtype = true;
 var didXtype = false;
@@ -41,7 +41,7 @@ info.now = new Date().toString();
 info.toolkit = toolkit;
 info.Toolkit = info.toolkit.charAt(0).toUpperCase() + info.toolkit.slice(1);
 info.toolkitshown = `-${info.toolkit}`;
-info.version = '7.1.0';
+info.version = '7.1.1';
 info.reactPrefix = 'Ext';
 info.shortname = process.argv[2];
 info.Shortname = info.shortname.charAt(0).toUpperCase() + info.shortname.slice(1);
@@ -151,6 +151,7 @@ export const TabBar = ExtTabbar_;
 export const TabPanel = ExtTabpanel_;
 export const TextAreaField = ExtTextareafield_;
 export const TextColumn = ExtTextcolumn_;
+export const TreeColumn = ExtTreecolumn_;
 export const TextField = ExtTextfield_;
 export const TimeField = ExtTimefield_;
 export const TimePanel = ExtTimepanel_;
@@ -415,6 +416,7 @@ function oneItem(item, names, xtypes) {
               xtype: xtypes[j]
             }
             if (xtypes[j] == "grid" && info.toolkit == 'modern') {
+            //if (xtypes[j] == "grid") {
                 values.ReactCell = "import './ReactCell';"
                 values.ElementCell = "import './ElementCell';"
             }
@@ -699,13 +701,21 @@ function createAngular() {
 
     writeTemplateFile(`${angularTemplateFolder}ext-angular.js.tpl`,`${outputFolder}bin/ext-angular.js`,info);
     writeTemplateFile(`${angularTemplateFolder}package.tpl`,`${outputFolder}package.json`,info);
-    writeTemplateFile(`${angularTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(`${angularTemplateFolder}module.tpl`,`${outputFolder}ext-${info.framework}${info.toolkitshown}${info.bundle}.module.ts`,moduleVars);
     writeTemplateFile(`${angularTemplateFolder}public_api.tpl`,`${outputFolder}public_api.ts`,info);
     copyFileSync(`${angularTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
     copyFileSync(`${angularTemplateFolder}tsconfig.json`, `${outputFolder}tsconfig.json`);
     copyFileSync(`${angularTemplateFolder}tsconfig.lib.json`, `${outputFolder}tsconfig.lib.json`);
     copyFileSync(`${angularTemplateFolder}ng-package.json`, `${outputFolder}ng-package.json`);
+
+    //writeTemplateFile(`${angularTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
+
+
+
 }
 
 function createReact() {
@@ -734,8 +744,13 @@ function createReact() {
     writeTemplateFile(`${reactTemplateFolder}index.js.tpl`, `${outputFolder}src/index.js`, info);
     const examples = require(reactTemplateFolder + "examples/" + info.suffixParm).examples;
     info.component = examples('component');
-    writeTemplateFile(`${reactTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
-}
+
+//    writeTemplateFile(`${reactTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
+  }
 
 
 function createWebComponentsExt() {
@@ -796,9 +811,17 @@ async function doInstall() {
     await run(`npm install`);
     log(`npm run packagr in ${process.cwd()}`);
     await run(`npm run packagr`);
-    log(`add postinstall.js in ${process.cwd()}`);
+
+    log(`add postinstall.js and all .md in ${process.cwd()}`);
     await run(`cp -R ./src dist/lib`);
+    await run(`cp -R ./bin dist/bin`);
     await run(`cp ./postinstall.js dist/postinstall.js`);
+    await run(`cp ./README.md dist/README.md`);
+    await run(`cp ./EJECT.md dist/EJECT.md`);
+    await run(`cp ./GETTING_STARTED.md dist/GETTING_STARTED.md`);
+    await run(`cp ./WHATS_NEW.md dist/WHATS_NEW.md`);
+
+
     process.chdir('dist');
     var packagenameAngular = './package.json';
     var packageAngular = fs.readFileSync(packagenameAngular, 'utf8');
@@ -809,6 +832,11 @@ async function doInstall() {
     packageJsonAngular.scripts.postinstall = "node ./postinstall.js";
     packageStringAngular = JSON.stringify(packageJsonAngular, null, 2);
     fs.writeFileSync(packagenameAngular, packageStringAngular);
+
+
+
+
+
     process.chdir(origCwd);
 
     process.chdir(reactFolder);
