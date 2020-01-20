@@ -742,6 +742,10 @@ function createReact() {
     copyFileSync(`${reactTemplateFolder}.babelrc`, `${outputFolder}.babelrc`);
 
     writeTemplateFile(`${reactTemplateFolder}index.js.tpl`, `${outputFolder}src/index.js`, info);
+    writeTemplateFile(`${reactTemplateFolder}overrides.js.tpl`, `${outputFolder}src/overrides.js`, info);
+    writeTemplateFile(`${reactTemplateFolder}Template.js.tpl`, `${outputFolder}src/Template.js`, info);
+
+
     const examples = require(reactTemplateFolder + "examples/" + info.suffixParm).examples;
     info.component = examples('component');
 
