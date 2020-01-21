@@ -256,11 +256,7 @@ function angularValues() {
   return {
     framework: 'angular',
     contextFolder: './src',
-    entry: `{
-      vendor:  './vendor.ts',
-      polyfills: './polyfills.ts',
-      main: './main.ts'
-    }`,
+    entryFile: './main.ts',
     outputFolder: 'build',
     rules: `[
       {test: /\.css$/, loader: ['to-string-loader', "style-loader", "css-loader"]},
