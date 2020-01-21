@@ -56,6 +56,17 @@ extReactDidMount = ({cmp, cmpObj}) => {
 }
 ```
 
+#### event name case change
+for example: onActiveTabChange is now onActivetabchange
+
+#### event parameters now follow what is documented
+for example: for tab change event:
+
+```
+  onTabChange = ({sender, value, oldValue}) => {
+    
+  }
+```
 
 #### removal of ext-react-babel-plugin from .babelrc and/or package.json
 #### need a rood <div> around plain text
