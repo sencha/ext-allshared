@@ -57,7 +57,6 @@ module.exports = function (env) {
         inject: 'yes',
         intellishake: 'no'
       }),
-
       new AngularCompilerPlugin({
         tsConfigPath: './tsconfig.json',
         entryModule: "src/app/app.module#AppModule",
@@ -65,7 +64,7 @@ module.exports = function (env) {
         skipCodeGeneration: true
       }),
       new webpack.ContextReplacementPlugin(
-        /\@angular(\\|\/)core(\\|\/)fesm5/,
+        '/\@angular(\\|\/)core(\\|\/)fesm5/',
         path.resolve(__dirname, 'src'),{}
       ),
       new FilterWarningsPlugin({

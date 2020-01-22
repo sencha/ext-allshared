@@ -3,6 +3,30 @@ const path = require('path')
 const fs = require('fs-extra')
 require('./XTemplate/js')
 
+// Packages used for determining framework environment from package.json
+const extAngularPackage = "@sencha/ext-angular"
+const extReactPackage = "@sencha/ext-react"
+const extModernPackage = "@sencha/ext-modern"
+const extClassicPackage = "@sencha/ext-classic"
+const extWCPackage = "@sencha/ext-web-components"
+const extGenPackage = "@sencha/ext-gen"
+const extReactorPackage = "@extjs/reactor"
+
+const reactFW = "react"
+const reactModernFW = "reactModern"
+const reactClassicFW = "reactClassic"
+const reactorFW = "reactor"
+const extJSFW = "extjs"
+const angularFW = "angular"
+const componentsFW = "components"
+const fwSet = [
+  extJSFW,
+  reactFW,
+  angularFW,
+  componentsFW,
+  reactorFW
+]
+
 var rootDir
 var backupDir
 var upgradeDir
@@ -51,11 +75,10 @@ function movetolatest() {
     foundKey: ''
   }
 
-  findIt('extjs', packageJson, o)
-  findIt('react', packageJson, o)
-  findIt('angular', packageJson, o)
-  findIt('components', packageJson, o)
-  findIt('reactor', packageJson, o)
+  // Traverse the framework types we may find
+  fwSet.forEach(framework => {
+    findIt(framework, packageJson, o)
+  });
 
   if (!doesFileExist(indexJS) && o.foundFramework == 'extjs') {
     createIndexJS();
@@ -193,31 +216,90 @@ function archive(o) {
 function findIt(framework, packageJson, o) {
   var v = ''
   var key = ''
-  if (framework == 'extjs') {
+
+  if (framework == 'reactor') {
+    key = '@extjs/reactor-webpack-plugin'
+  } else {
     key = '@sencha/ext-webpack-plugin'
   }
-  else if (framework == 'reactor') {
-    key = '@extjs/reactor-webpack-plugin'
-  } 
-  else {
-    key = '@sencha/ext-' + framework + '-webpack-plugin'
-  }
+
+  console.log("---->>>> SEARCHING FOR FRAMEWORK: " + framework);
 
   if (packageJson.old.dependencies != undefined) {
-    var inDep = packageJson.old.dependencies.hasOwnProperty(key) 
-    if (inDep) {
-      v = packageJson.old.dependencies[key].slice(-5)
-    }
+    console.log("---->>>> TRAVERSING DEPENDENCIES");
+    checkFrameworkOnNodeForPackage(packageJson.old.dependencies, key, framework, o)
   }
 
   if (packageJson.old.devDependencies != undefined) {
-    var inDevDep = packageJson.old.devDependencies.hasOwnProperty(key) 
-    if (inDevDep) {
-      v = packageJson.old.devDependencies[key].slice(-5)
-    }
+    console.log("---->>>> TRAVERSING DEV DEPENDENCIES");
+    checkFrameworkOnNodeForPackage(packageJson.old.devDependencies, key, framework, o)
   }
 
-  if (v != '') { o.foundFramework = framework; o.foundVersion = v; o.foundKey = key; }
+  console.log("---->>>> FRAMEWORK RESULT: " + JSON.stringify(o));  
+}
+
+
+
+
+
+
+
+function checkFrameworkOnNodeForPackage(packageJsonNode, key, tryingFramework, o) {
+
+  // Did we already find a framework? Don't bother with the rest if we did
+  if (o.foundFramework) { return }
+
+  // Verify the webpack plugin (key) exists within the package.json node
+  var inDep = packageJsonNode.hasOwnProperty(key)
+  var determinedFramework = ''
+
+  // If it does exist, set the version and key (2 or 3 values stored in o variable)
+  if (inDep) {
+    v = packageJsonNode[key].slice(-5)
+    o.foundVersion = v
+    o.foundKey = key;
+  }
+
+  /**
+   * Compare template dependency arrays with the customer's current array
+   * in order to keep customer's custom dependencies 
+   */
+  switch (tryingFramework) {
+    case angularFW:
+      if (packageJsonNode.hasOwnProperty(extAngularPackage)
+      && (packageJsonNode.hasOwnProperty(extGenPackage) == false)) 
+      {
+        o.foundFramework = tryingFramework
+      }
+    break;
+    case reactFW:
+    case reactorFW:
+      if (packageJsonNode.hasOwnProperty(extReactPackage)) 
+      {
+        if (packageJsonNode.hasOwnProperty(extClassicPackage)) 
+        {
+          // We are inside an ExtReactClassic project
+          o.foundFramework = reactClassicFW
+        } else 
+        {
+          // We are inside an ExtReactModern project
+          o.foundFramework = reactModernFW
+        }
+      }
+    break;
+    case componentsFW:
+      if (packageJsonNode.hasOwnProperty(extWCPackage)) 
+      {
+        o.foundFramework = tryingFramework
+      }
+    break;
+    case extJSFW:
+      if (packageJsonNode.hasOwnProperty(extGenPackage)) 
+      {
+        o.foundFramework = tryingFramework
+      }
+    break;
+  }
 }
 
 function replaceIt(regex, to) {
