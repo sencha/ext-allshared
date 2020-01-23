@@ -399,24 +399,11 @@ function extjsValues() {
 
 function componentsValues() {
   return {
-    framework: 'components',
+    framework: 'web-components',
     contextFolder: './src',
-    entryFile: './app.js',
+    entryFile: './index.js',
     outputFolder: 'build',
-    rules: `[
-      { test: /\.ext-angularrc$/, use: 'raw-loader' },
-      { test: /\.(js|jsx)$/, exclude: /node_modules/, use: ['babel-loader'] },
-      { test: /\.(html)$/,use: { loader: 'html-loader' } },
-      {
-        test: /\.(css|scss)$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'sass-loader' }
-        ]
-      }
-    ]`,
-    resolve:`{
-    }`
+    rules: `[]`,
+    resolve:`{}`
   }
 }
