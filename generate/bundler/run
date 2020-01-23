@@ -1,4 +1,4 @@
-sencha -sdk /Volumes/BOOTCAMP/aaExt/ext-7.0.0.156 compile \
+sencha -sdk /Volumes/BOOTCAMP/aaExt/ext-7.1.0.46 compile \
 exclude -all  and \
 include -r -namespace Ext.grid  and \
 include -r -namespace Ext.form.field.ComboBox  and \
