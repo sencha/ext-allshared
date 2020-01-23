@@ -13,6 +13,14 @@ last run: {now}
 The @sencha/ext-react package has been deprecated
 
 #### deprecated packages - see git repo
+
+- deprecate-ext-react
+- deprecate-ext-react-babel-plugin
+- deprecate-ext-react-classic-demo
+- deprecate-ext-react-renderercell (this functionality now imbedded in ext-react-modern and ext-react-classic)
+- deprecate-ext-react-transition
+- deprecate-ext-react-webpack-plugin (now ext-webpack-plugin)
+
 #### launching an app
 
 Launching an ExtReact application has been simplified:
@@ -64,7 +72,7 @@ for example: for tab change event:
 
 ```
   onTabChange = ({sender, value, oldValue}) => {
-    
+
   }
 ```
 
