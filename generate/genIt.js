@@ -424,6 +424,17 @@ function oneItem(item, names, xtypes) {
                 values.ReactCell = ""
                 values.ElementCell = ""
             }
+
+            if (xtypes[j] == "grid") {
+              //if (xtypes[j] == "grid") {
+                  values.overrides = "import './overrides';"
+                  values.Template = "export { default as Template } from './Template';"
+              }
+              else {
+                  values.overrides = ""
+                  values.Template = ""
+              }
+
             writeTemplateFile(`${templateFolder}xtype.tpl`, `${srcStagingFolder}ext-${xtypes[j]}.component.js`, values)
             writeTemplateFile(`${templateFolder}react.tpl`, `${reactStagingFolder}${info.reactPrefix}${values.Xtype}.js`, values)
             writeTemplateFile(`${templateFolder}angular.tpl`, `${angularStagingFolder}Ext${values.Xtype}.ts`, values)
