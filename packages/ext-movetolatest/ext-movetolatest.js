@@ -6,6 +6,8 @@ require('./XTemplate/js')
 // Packages used for determining framework environment from package.json
 const extAngularPackage = "@sencha/ext-angular"
 const extReactPackage = "@sencha/ext-react"
+const extReactClassicPackage = "@sencha/ext-react-classic"
+const extReactModernPackage = "@sencha/ext-react-modern"
 const extModernPackage = "@sencha/ext-modern"
 const extClassicPackage = "@sencha/ext-classic"
 const extWCPackage = "@sencha/ext-web-components"
@@ -223,28 +225,16 @@ function findIt(framework, packageJson, o) {
     key = '@sencha/ext-webpack-plugin'
   }
 
-  console.log("---->>>> SEARCHING FOR FRAMEWORK: " + framework);
-
   if (packageJson.old.dependencies != undefined) {
-    console.log("---->>>> TRAVERSING DEPENDENCIES");
-    checkFrameworkOnNodeForPackage(packageJson.old.dependencies, key, framework, o)
+    determineFrameworkFromPackageWithKey(packageJson.old.dependencies, key, framework, o)
   }
 
   if (packageJson.old.devDependencies != undefined) {
-    console.log("---->>>> TRAVERSING DEV DEPENDENCIES");
-    checkFrameworkOnNodeForPackage(packageJson.old.devDependencies, key, framework, o)
+    determineFrameworkFromPackageWithKey(packageJson.old.devDependencies, key, framework, o)
   }
-
-  console.log("---->>>> FRAMEWORK RESULT: " + JSON.stringify(o));  
 }
 
-
-
-
-
-
-
-function checkFrameworkOnNodeForPackage(packageJsonNode, key, tryingFramework, o) {
+function determineFrameworkFromPackageWithKey(packageJsonNode, key, tryingFramework, o) {
 
   // Did we already find a framework? Don't bother with the rest if we did
   if (o.foundFramework) { return }
@@ -260,10 +250,6 @@ function checkFrameworkOnNodeForPackage(packageJsonNode, key, tryingFramework, o
     o.foundKey = key;
   }
 
-  /**
-   * Compare template dependency arrays with the customer's current array
-   * in order to keep customer's custom dependencies 
-   */
   switch (tryingFramework) {
     case angularFW:
       if (packageJsonNode.hasOwnProperty(extAngularPackage)
@@ -274,17 +260,20 @@ function checkFrameworkOnNodeForPackage(packageJsonNode, key, tryingFramework, o
     break;
     case reactFW:
     case reactorFW:
-      if (packageJsonNode.hasOwnProperty(extReactPackage)) 
+      if (packageJsonNode.hasOwnProperty(extReactPackage)
+      || packageJsonNode.hasOwnProperty(extReactClassicPackage)
+      || packageJsonNode.hasOwnProperty(extReactModernPackage)) 
       {
         if (packageJsonNode.hasOwnProperty(extClassicPackage)) 
         {
-          // We are inside an ExtReactClassic project
           o.foundFramework = reactClassicFW
-        } else 
+        } else if (packageJsonNode.hasOwnProperty(extModernPackage))
         {
-          // We are inside an ExtReactModern project
           o.foundFramework = reactModernFW
         }
+      } else if (packageJsonNode.hasOwnProperty(extReactorPackage)) 
+      {
+        o.foundFramework = reactorFW
       }
     break;
     case componentsFW:
