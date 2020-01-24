@@ -60,6 +60,7 @@ function movetolatest() {
   var themerjs = {}
   var themerts = {}
   var polyfillsts = {}
+  var buildXML = {}
 
   set(packageJson, 'package.json', './', '')
   set(webpackConfigJs, 'webpack.config.js', './', 'webpack.config.js.tpl.default')
@@ -68,6 +69,7 @@ function movetolatest() {
   set(themerjs, 'themer.js', './src', '')
   set(themerts, 'themer.ts', './src', '')
   set(polyfillsts, 'polyfills.ts', './src', '')
+  set(buildXML, 'build.xml', './', 'build.xml.tpl.default')
 
 
   packageJson.old = JSON.parse(fs.readFileSync(packageJson.root, {encoding: 'utf8'}))
@@ -93,16 +95,17 @@ function movetolatest() {
 
   archive(packageJson)
   archive(webpackConfigJs)
+  archive(buildXML)
   archive(babelrc)
   archive(indexjs)
   archive(themerjs)
   archive(themerts)
   archive(polyfillsts)
  
+  /**
+   * Template folder setup
+   */
   var frameworkTemplateFolder = path.join(upgradeDir, o.foundFramework)
-  packageJson.new = JSON.parse(fs.readFileSync(path.join(frameworkTemplateFolder, 'package.json'), {encoding: 'utf8'}))
-
-  packageJson.upgrade = path.join(frameworkTemplateFolder, packageJson.name)
   webpackConfigJs.upgrade = path.join(frameworkTemplateFolder, webpackConfigJs.template)
   babelrc.upgrade = path.join(frameworkTemplateFolder, babelrc.name)
   indexjs.upgrade = path.join(frameworkTemplateFolder, indexjs.name)
@@ -110,14 +113,31 @@ function movetolatest() {
   themerts.upgrade = path.join(frameworkTemplateFolder, themerts.name)
   polyfillsts.upgrade = path.join(frameworkTemplateFolder, polyfillsts.name)
 
+  /**
+   * ExtJS + ExtGen (OpenTools) package.json template processing
+   */
+  if ((o.foundFramework == 'extjs') ) {
 
-  packageJson.old.scripts = packageJson.new.scripts
-  packageJson.old.devDependencies = packageJson.new.devDependencies
-  packageJson.old.dependencies = packageJson.new.dependencies
-  delete packageJson.old.extDefults
-  fs.writeFileSync(packageJson.root, JSON.stringify(packageJson.old, null, 2));
+    var content = fs.readFileSync(path.join(frameworkTemplateFolder,'package.json.tpl.default')).toString()
+    var tpl = new Ext.XTemplate(content)
+    var t = tpl.apply(getToolkit(packageJson))
+    tpl = null
+    fs.writeFileSync(packageJson.root, t);
+    console.log(boldGreen('Processed ') + packageJson.root.replace(process.cwd(), ''))
+    
+  } else {
 
-  console.log(boldGreen('Updated ') + packageJson.root.replace(process.cwd(), ''))
+    packageJson.new = JSON.parse(fs.readFileSync(path.join(frameworkTemplateFolder, 'package.json'), {encoding: 'utf8'}))
+    packageJson.upgrade = path.join(frameworkTemplateFolder, packageJson.name)
+
+    packageJson.old.scripts = packageJson.new.scripts
+    packageJson.old.devDependencies = packageJson.new.devDependencies
+    packageJson.old.dependencies = packageJson.new.dependencies
+    delete packageJson.old.extDefults
+    fs.writeFileSync(packageJson.root, JSON.stringify(packageJson.old, null, 2));
+
+    console.log(boldGreen('Updated ') + packageJson.root.replace(process.cwd(), ''))
+  }
 
   var values = {}
   switch (o.foundFramework) {
@@ -143,10 +163,15 @@ function movetolatest() {
   fs.writeFileSync(webpackConfigJs.root, t);
   console.log(boldGreen('Updated ') + webpackConfigJs.root.replace(process.cwd(), ''))
 
+
   if ((o.foundFramework == 'extjs') ) {
     fs.copySync(indexjs.upgrade, indexjs.root)
     console.log(boldGreen('Copied ') + indexjs.upgrade.replace(__dirname, '') + ' to ' +  indexjs.root.replace(process.cwd(), ''))
+
+    fs.copySync(path.join(frameworkTemplateFolder,'build.xml'), buildXML.root)
+    console.log(boldGreen('Updated ') + buildXML.root.replace(process.cwd(), ''))
   }
+
 
   if ((o.foundFramework == 'components') ) {
   }
@@ -182,7 +207,7 @@ function movetolatest() {
     if (replaceIt(/\<\/Transition\>/g, '') == -1) {return}
   }
 
-  console.log("Upgrade Completed, run 'npm install' then 'npm start'")
+  console.log(boldGreen("\n\n-->> ExtJS Upgrade Complete.\n-->> run 'npm install' to update ExtJS packages.\n-->> Note: package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.\n-->> Review documentation (https://docs.sencha.com) and update your app's src code."))
   return
 }
 /***** */
@@ -283,12 +308,58 @@ function determineFrameworkFromPackageWithKey(packageJsonNode, key, tryingFramew
       }
     break;
     case extJSFW:
-      if (packageJsonNode.hasOwnProperty(extGenPackage)) 
+      if ((packageJsonNode.hasOwnProperty(extAngularPackage) == false)
+      && (packageJsonNode.hasOwnProperty(extAngularPackage) == false)
+      && ((
+        packageJsonNode.hasOwnProperty(extReactPackage)
+        || packageJsonNode.hasOwnProperty(extReactClassicPackage)
+        || packageJsonNode.hasOwnProperty(extReactModernPackage)
+      ) == false)
+      && (packageJsonNode.hasOwnProperty(extWCPackage) == false)) 
       {
         o.foundFramework = tryingFramework
       }
     break;
   }
+}
+
+function getToolkit(packageJson) {
+
+  var values = {
+    classic: false,
+    modern: false,
+    universal: false
+  }
+
+  values = checkPackageToolkit(packageJson.old.dependencies, values)
+  values = checkPackageToolkit(packageJson.old.devDependencies, values)
+
+  return values;
+}
+
+function checkPackageToolkit(dependencies, values) {
+  if (dependencies != undefined) {
+    if (isModern(dependencies)) {
+      values.modern = true
+    } else if (isClassic(dependencies)) {
+      values.classic = true
+    } else if (isUniversal(dependencies)) {
+      values.universal = true
+    }
+  }
+  return values
+}
+
+function isModern(configuration) {
+  return (configuration.hasOwnProperty(extModernPackage) && !(configuration.hasOwnProperty(extClassicPackage)))
+}
+
+function isClassic(configuration) {
+  return (configuration.hasOwnProperty(extClassicPackage) && !(configuration.hasOwnProperty(extModernPackage)))
+}
+
+function isUniversal(configuration) {
+  return (configuration.hasOwnProperty(extModernPackage) && configuration.hasOwnProperty(extClassicPackage))
 }
 
 function replaceIt(regex, to) {
@@ -374,12 +445,10 @@ function extjsValues() {
   return {
     framework: 'extjs',
     contextFolder: './',
-    entry: `{
-      main: './app.js'
-    }`,
+    entryFile: `./index.js`,
     outputFolder: './',
     rules: `[
-      { test: /.(js|jsx)$/, exclude: /node_modules/ }
+      { test: /\.(js)$/, use: ['babel-loader'] }
     ]`,
     resolve:`{
     }`,
@@ -403,7 +472,23 @@ function componentsValues() {
     contextFolder: './src',
     entryFile: './index.js',
     outputFolder: 'build',
-    rules: `[]`,
+    rules: `[
+      { test: /\.(js)$/, exclude: /node_modules/,
+          use: [
+              'babel-loader',
+              // 'eslint-loader'
+          ]
+      },
+      { test: /\.(html)$/, use: { loader: 'html-loader' } },
+      {
+          test: /\.(css|scss)$/,
+          use: [
+              { loader: 'style-loader' },
+              { loader: 'css-loader' },
+              { loader: 'sass-loader' }
+          ]
+      }
+    ]`,
     resolve:`{}`
   }
 }
