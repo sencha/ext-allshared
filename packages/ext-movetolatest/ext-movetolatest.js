@@ -35,6 +35,29 @@ var upgradeDir
 
 var indexJS = 'index.js';
 
+const classicThemes = [
+  "graphite",
+  "neptune-touch",
+  "classic",
+  "aria",
+  "crisp-touch",
+  "neptune",
+  "gray",
+  "neutral",
+  "crisp",
+  "base",
+  "triton",
+  "material"
+]
+
+const modernThemes = [
+  "material",
+  "neptune",
+  "base",
+  "triton",
+  "ios"
+]
+
 movetolatest()
 
 /********** */
@@ -207,7 +230,7 @@ function movetolatest() {
     if (replaceIt(/\<\/Transition\>/g, '') == -1) {return}
   }
 
-  console.log(boldGreen("\n\n-->> ExtJS Upgrade Complete.\n-->> run 'npm install' to update ExtJS packages.\n-->> Note: package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.\n-->> Review documentation (https://docs.sencha.com) and update your app's src code."))
+  console.log(boldGreen("\nExtJS Upgrade Complete.\nrun 'npm install' to update ExtJS packages.\nNote: package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.\nReview documentation (https://docs.sencha.com) and update your app's src code."))
   return
 }
 /***** */
@@ -328,12 +351,12 @@ function getToolkit(packageJson) {
   var values = {
     classic: false,
     modern: false,
-    universal: false
+    universal: false,
+    modernTheme: 'material',
+    classicTheme: 'material'
   }
-
   values = checkPackageToolkit(packageJson.old.dependencies, values)
   values = checkPackageToolkit(packageJson.old.devDependencies, values)
-
   return values;
 }
 
@@ -346,8 +369,42 @@ function checkPackageToolkit(dependencies, values) {
     } else if (isUniversal(dependencies)) {
       values.universal = true
     }
+    const modernTheme = getModernTheme(dependencies)
+    const classicTheme = getClassicTheme(dependencies)
+    if (modernTheme) {
+      values.modernTheme = modernTheme
+    } else if (classicTheme) {
+      values.classicTheme = classicTheme
+    } 
   }
   return values
+}
+
+function getModernTheme(package) {
+  var exists = false
+  var theme = undefined // default
+  var testTheme = "@sencha/ext-modern-theme-"
+  modernThemes.forEach(theme => {
+    testTheme+=theme
+    exists = package.hasOwnProperty(testTheme)
+  })  
+  if (exists) {
+    theme = testTheme
+  }
+  return theme
+}
+
+function getClassicTheme(package) {
+  var exists = false
+  var theme = undefined // default
+  var testTheme = "@sencha/ext-classic-theme-"+theme
+  classicThemes.forEach(theme => {
+    exists = package.hasOwnProperty(testTheme)
+  })  
+  if (exists) {
+    theme = testTheme
+  }
+  return theme
 }
 
 function isModern(configuration) {

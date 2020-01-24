@@ -9,10 +9,10 @@ module.exports = async function (env) {
   function get(it, val) {if(env == undefined) {return val} else if(env[it] == undefined) {return val} else {return env[it]}}
 
   //******* */
-  var framework     = get('framework', {framework})
-  var contextFolder = get('contextFolder', {contextFolder})
-  var entryFile     = get('entryFile',     {entryFile})
-  var outputFolder  = get('outputFolder',  {outputFolder})
+  var framework     = get('framework',     '{framework}')
+  var contextFolder = get('contextFolder', '{contextFolder}')
+  var entryFile     = get('entryFile',     '{entryFile}')
+  var outputFolder  = get('outputFolder',  '{outputFolder}')
   const rules = {rules}
   const resolve = {}
   //******* */
