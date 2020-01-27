@@ -117,8 +117,6 @@ function movetolatest() {
     o.foundFramework = extJSFW
   }
 
-  console.log("\n\n--->>> Upgrading framework: " + o.foundFramework + "\n\n")
-
   archive(packageJson)
   archive(webpackConfigJs)
   archive(buildXML)
@@ -167,17 +165,23 @@ function movetolatest() {
 
   var values = {}
   switch (o.foundFramework) {
-    case 'extjs':
+    case extJSFW:
       values = extjsValues()
       break;
-    case 'react':
-    case 'reactor':
+    case reactFW:
+    case reactorFW:
       values = reactValues()
       break;
-    case 'angular':
+    case reactModernFW:
+      values = reactModernValues()
+      break;
+    case reactClassicFW:
+      values = reactClassicValues()
+      break;
+    case angularFW:
       values = angularValues()
       break;
-    case 'components':
+    case componentsFW:
       values = componentsValues()
       break;
   }
@@ -498,6 +502,50 @@ function reactValues() {
   }
 }
 
+function reactModernValues() {
+  return {
+    framework: 'react',
+    contextFolder: './src',
+    entryFile: './index.js',
+    outputFolder: 'build',
+    rules: `[[
+      { test: /\.ext-reactrc$/, use: 'raw-loader' },
+      { test: /\.(js|jsx)$/, exclude: /node_modules/, use: ['babel-loader'] },
+      { test: /\.(html)$/,use: { loader: 'html-loader' } },
+      {
+        test: /\.(css|scss)$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'sass-loader' }
+        ]
+      }
+    ]`
+  }
+}
+
+function reactClassicValues() {
+  return {
+    framework: 'react',
+    contextFolder: './src',
+    entryFile: './index.js',
+    outputFolder: 'build',
+    rules: `[
+      { test: /\.ext-reactrc$/, use: 'raw-loader' },
+      { test: /\.(js|jsx)$/, exclude: /node_modules/, use: ['babel-loader'] },
+      { test: /\.(html)$/,use: { loader: 'html-loader' } },
+      {
+        test: /\.(css|scss)$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'sass-loader' }
+        ]
+      }
+    ]`
+  }
+}
+ 
 function extjsValues() {
   return {
     framework: 'extjs',
