@@ -13,6 +13,7 @@ const extClassicPackage = "@sencha/ext-classic"
 const extWCPackage = "@sencha/ext-web-components"
 const extGenPackage = "@sencha/ext-gen"
 const extReactorPackage = "@extjs/reactor"
+const reactPackage = "react"
 
 const reactFW = "react"
 const reactModernFW = "reactModern"
@@ -111,10 +112,12 @@ function movetolatest() {
     createIndexJS();
   }
 
+  // Default to ExtJS + ExtGen (Open To)
   if (o.foundFramework == '') {
-    console.log(boldRed('Error: ') + 'no framework found')
-    return
+    o.foundFramework = extJSFW
   }
+
+  console.log("\n\n--->>> Upgrading framework: " + o.foundFramework + "\n\n")
 
   archive(packageJson)
   archive(webpackConfigJs)
@@ -230,7 +233,12 @@ function movetolatest() {
     if (replaceIt(/\<\/Transition\>/g, '') == -1) {return}
   }
 
-  console.log(boldGreen("\nExtJS Upgrade Complete.\nrun 'npm install' to update ExtJS packages.\nNote: package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.\nReview documentation (https://docs.sencha.com) and update your app's src code."))
+  console.log(boldGreen("\nExtJS Upgrade Complete.\n\nrun 'npm install' to update ExtJS packages.\n\nPlease note package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.\n\nReview documentation for you chosen product at https://docs.sencha.com and update your app's src code."))
+  console.log(boldGreen("\n\nExtAngular What's New Guide: https://docs.sencha.com/extangular/7.1.0/guides/whats_new/release_notes.html"))
+  console.log(boldGreen("\n\nExtReact What's New Guide: https://docs.sencha.com/extreact/7.1.0/guides/whats_new/release_notes.html"))
+  console.log(boldGreen("\n\nExtWebComponents What's New Guide: https://docs.sencha.com/extwebcomponents/7.1.0/guides/whats_new/release_notes.html"))
+  console.log(boldGreen("\n\nExtJS What's New Guide: https://docs.sencha.com/extjs/7.1.0/guides/whats_new/whats_new.html"))
+
   return
 }
 /***** */
@@ -264,6 +272,9 @@ function archive(o) {
 }
 
 function findIt(framework, packageJson, o) {
+
+  if (o.foundFramework != '' && o.foundVersion != '' && o.foundKey != '') { return }
+
   var v = ''
   var key = ''
 
@@ -285,7 +296,7 @@ function findIt(framework, packageJson, o) {
 function determineFrameworkFromPackageWithKey(packageJsonNode, key, tryingFramework, o) {
 
   // Did we already find a framework? Don't bother with the rest if we did
-  if (o.foundFramework) { return }
+  if (o.foundFramework != '') { return }
 
   // Verify the webpack plugin (key) exists within the package.json node
   var inDep = packageJsonNode.hasOwnProperty(key)
@@ -303,7 +314,7 @@ function determineFrameworkFromPackageWithKey(packageJsonNode, key, tryingFramew
       if (packageJsonNode.hasOwnProperty(extAngularPackage)
       && (packageJsonNode.hasOwnProperty(extGenPackage) == false)) 
       {
-        o.foundFramework = tryingFramework
+        o.foundFramework = angularFW
       }
     break;
     case reactFW:
@@ -327,21 +338,10 @@ function determineFrameworkFromPackageWithKey(packageJsonNode, key, tryingFramew
     case componentsFW:
       if (packageJsonNode.hasOwnProperty(extWCPackage)) 
       {
-        o.foundFramework = tryingFramework
+        o.foundFramework = componentsFW
       }
     break;
     case extJSFW:
-      if ((packageJsonNode.hasOwnProperty(extAngularPackage) == false)
-      && (packageJsonNode.hasOwnProperty(extAngularPackage) == false)
-      && ((
-        packageJsonNode.hasOwnProperty(extReactPackage)
-        || packageJsonNode.hasOwnProperty(extReactClassicPackage)
-        || packageJsonNode.hasOwnProperty(extReactModernPackage)
-      ) == false)
-      && (packageJsonNode.hasOwnProperty(extWCPackage) == false)) 
-      {
-        o.foundFramework = tryingFramework
-      }
     break;
   }
 }
