@@ -55,6 +55,10 @@ cd ext-web-components-{toolkit}{bundle}-demo
     content="width=device-width,initial-scale=1,maximum-scale=10,user-scalable=yes"
   >
 </head>
+<!--
+<script src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/{toolkit}{bundle}.engine.js"></script>
+<link rel="stylesheet" type="text/css" href="node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/graphite/graphite-all.css"></link>
+-->
 
 <script type="module"
 src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-toolbar.component.js">
