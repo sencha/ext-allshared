@@ -143,6 +143,18 @@ export class AppComponent {
 }
 ```
 
+- to change theme, modify angular.json (uncomment one of the themes):
+
+```sh
+            "styles": [
+              "src/styles.css",
+              //"ext-runtime-modern/ios/ios-all.css"
+              //"ext-runtime-modern/material/material-all.css"
+              //"ext-runtime-modern/neptune/neptune-all.css"
+              //"ext-runtime-modern/triton/triton-all.css"
+            ],
+```
+
 - Type the following in a command/terminal window:
 
 ```sh
