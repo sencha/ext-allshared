@@ -42,7 +42,7 @@ cd ext-react-{toolkit}{bundle}-demo
 - To change the theme, edit 'public/index.html' and uncomment one of the links below this line:
 
 ```sh
-<script src="%PUBLIC_URL%/ext-runtime-{toolkit}{bundle}/themes/css.{toolkit}.material.js"></script>
+<link href="%PUBLIC_URL%/ext-runtime-{toolkit}{bundle}/material/material-all.css" rel="stylesheet" type="text/css"></link>
 ```
 
 - To start the ExtReact application, run the following in a terminal window:
