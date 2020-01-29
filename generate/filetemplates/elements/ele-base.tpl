@@ -85,7 +85,8 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     this.xtype = x;
 
     var me = this;
-    this.newCreateProps(this.properties, this.events);
+    //this.newCreateProps(this.properties, this.events);
+    this.newCreateProps(this.properties);
 
     if (me.A.o['viewport'] == 'true') {
       me.A.o['viewport'] = true

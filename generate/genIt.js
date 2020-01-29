@@ -663,7 +663,6 @@ function doPostLaunch() {
         copyFileSync(fromFolder, toFolder);
     })
 
-
     rimraf.sync(reactStagingFolder);
     rimraf.sync(angularStagingFolder);
     rimraf.sync(srcStagingFolder);
@@ -697,6 +696,15 @@ function createWebComponents() {
     //fs.copySync(`${elementsOutputFolder}index.html`,`${outputFolder}index.html`);
 
     fs.copySync(`./ext-runtime/ext-runtime-${info.toolkit}`,`${outputFolder}ext-runtime-${info.toolkit}`)
+
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/MIGRATE.tpl`,`${outputFolder}MIGRATE.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/UNDERSTANDING_AN_APP.tpl`,`${outputFolder}UNDERSTANDING_AN_APP.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/USING_EXT_WEBPACK_PLUGIN.tpl`,`${outputFolder}USING_EXT_WEBPACK_PLUGIN.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/USING_SVELTE.tpl`,`${outputFolder}USING_SVELTE.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/USING_VUE.tpl`,`${outputFolder}USING_VUE.md`,info);
+    writeTemplateFile(`${webComponentsTemplateFolder}guides/WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
 }
 
 function createAngular() {
@@ -714,19 +722,17 @@ function createAngular() {
     writeTemplateFile(`${angularTemplateFolder}package.tpl`,`${outputFolder}package.json`,info);
     writeTemplateFile(`${angularTemplateFolder}module.tpl`,`${outputFolder}ext-${info.framework}${info.toolkitshown}${info.bundle}.module.ts`,moduleVars);
     writeTemplateFile(`${angularTemplateFolder}public_api.tpl`,`${outputFolder}public_api.ts`,info);
-    copyFileSync(`${angularTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
     copyFileSync(`${angularTemplateFolder}tsconfig.json`, `${outputFolder}tsconfig.json`);
     copyFileSync(`${angularTemplateFolder}tsconfig.lib.json`, `${outputFolder}tsconfig.lib.json`);
     copyFileSync(`${angularTemplateFolder}ng-package.json`, `${outputFolder}ng-package.json`);
 
-    //writeTemplateFile(`${angularTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
-    writeTemplateFile(`${angularTemplateFolder}README.tpl`,`${outputFolder}README.md`,info);
-    writeTemplateFile(`${angularTemplateFolder}GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
-    writeTemplateFile(`${angularTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
-    writeTemplateFile(`${angularTemplateFolder}WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
-
-
-
+    copyFileSync(`${angularTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
+    writeTemplateFile(`${angularTemplateFolder}guides/GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}guides/MIGRATE.tpl`,`${outputFolder}MIGRATE.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}guides/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}guides/UNDERSTANDING_AN_APP.tpl`,`${outputFolder}UNDERSTANDING_AN_APP.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}guides/USING_EXT_WEBPACK_PLUGIN.tpl`,`${outputFolder}USING_EXT_WEBPACK_PLUGIN.md`,info);
+    writeTemplateFile(`${angularTemplateFolder}guides/WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
 }
 
 function createReact() {
@@ -749,22 +755,23 @@ function createReact() {
 
     writeTemplateFile(`${reactTemplateFolder}ext-react.js.tpl`,`${outputFolder}bin/ext-react.js`,info);
     writeTemplateFile(`${reactTemplateFolder}package.tpl`,`${outputFolder}package.json`,info);
-    copyFileSync(`${reactTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
+
     copyFileSync(`${reactTemplateFolder}.babelrc`, `${outputFolder}.babelrc`);
 
     writeTemplateFile(`${reactTemplateFolder}index.js.tpl`, `${outputFolder}src/index.js`, info);
     writeTemplateFile(`${reactTemplateFolder}overrides.js.tpl`, `${outputFolder}src/overrides.js`, info);
     writeTemplateFile(`${reactTemplateFolder}Template.js.tpl`, `${outputFolder}src/Template.js`, info);
 
-
     const examples = require(reactTemplateFolder + "examples/" + info.suffixParm).examples;
     info.component = examples('component');
 
-//    writeTemplateFile(`${reactTemplateFolder}${info.toolkit}/${info.suffixParm}/README.tpl`,`${outputFolder}README.md`,info);
-    writeTemplateFile(`${reactTemplateFolder}README.tpl`,`${outputFolder}README.md`,info);
-    writeTemplateFile(`${reactTemplateFolder}GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
-    writeTemplateFile(`${reactTemplateFolder}EJECT.tpl`,`${outputFolder}EJECT.md`,info);
-    writeTemplateFile(`${reactTemplateFolder}WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
+    copyFileSync(`${reactTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
+    writeTemplateFile(`${reactTemplateFolder}guides/GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}guides/MIGRATE.tpl`,`${outputFolder}MIGRATE.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}guides/README.tpl`,`${outputFolder}README.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}guides/UNDERSTANDING_AN_APP.tpl`,`${outputFolder}UNDERSTANDING_AN_APP.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}guides/USING_EXT_WEBPACK_PLUGIN.tpl`,`${outputFolder}USING_EXT_WEBPACK_PLUGIN.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}guides/WHATS_NEW.tpl`,`${outputFolder}WHATS_NEW.md`,info);
   }
 
 
@@ -831,11 +838,12 @@ async function doInstall() {
     await run(`cp -R ./src dist/lib`);
     await run(`cp -R ./bin dist/bin`);
     await run(`cp ./postinstall.js dist/postinstall.js`);
-    await run(`cp ./README.md dist/README.md`);
-    await run(`cp ./EJECT.md dist/EJECT.md`);
     await run(`cp ./GETTING_STARTED.md dist/GETTING_STARTED.md`);
+    await run(`cp ./MIGRATE.md dist/MIGRATE.md`);
+    await run(`cp ./README.md dist/README.md`);
+    await run(`cp ./UNDERSTANDING_AN_APP.md dist/UNDERSTANDING_AN_APP.md`);
+    await run(`cp ./USING_EXT_WEBPACK_PLUGIN.md dist/USING_EXT_WEBPACK_PLUGIN.md`);
     await run(`cp ./WHATS_NEW.md dist/WHATS_NEW.md`);
-
 
     process.chdir('dist');
     var packagenameAngular = './package.json';

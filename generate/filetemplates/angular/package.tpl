@@ -11,7 +11,7 @@
   "main": "index.js",
   "private": false,
   "peerDependencies": {
-    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.1",
     "@angular/compiler": "~8.2.14",
     "@angular/core": "~8.2.14",
     "tslib": "^1.10.0"
