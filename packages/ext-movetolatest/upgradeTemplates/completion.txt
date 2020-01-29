@@ -1,11 +1,8 @@
------------------------------------------------------------------------------------------------
-WARNING: upgrade unsuccessful. 
-ext-movetolatest 7.1.0 and later has been deprecated for the following projects:
- - Reactor
- - ExtWebComponents + ExtReact
- - ExtWebComponents + ExtAngular
- -----------------------------------------------------------------------------------------------
+ExtJS Upgrade Complete.
+run 'npm install' to update ExtJS packages.
+Your project's package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.
 
+Please review new documentation and update your application source code as necessary:
 ** ExtAngular **
 1. To Use the modern toolkit with ExtAngular 7.1 or later: https://github.com/sencha/ext-angular/tree/ext-angular-7.1.1/packages/ext-angular-modern
 2. To Use the classic toolkit with ExtAngular 7.1 or later: https://github.com/sencha/ext-angular/tree/ext-angular-7.1.1/packages/ext-angular-classic

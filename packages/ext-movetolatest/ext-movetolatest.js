@@ -61,6 +61,9 @@ const modernThemes = [
   "ios"
 ]
 
+const migrationMessage = "migration.txt"
+const completionMessage = "completion.txt"
+
 movetolatest()
 
 /********** */
@@ -107,16 +110,10 @@ function movetolatest() {
 
   // If the product is no longer supported, politely inform the user
   if (packageJson.old.dependencies != undefined && isSupportDeprecatedForApplication(packageJson.old.dependencies)) {
-    var deprecatedOutput = fs.readFileSync(path.join(upgradeDir, 'migration.txt')).toString().split('\n')
-    deprecatedOutput.forEach(line => {
-      console.log(boldGreen('\n'+line))
-    })
+    logOutputForFile(migrationMessage)
     return
   } else if (packageJson.old.devDependencies != undefined && isSupportDeprecatedForApplication(packageJson.old.devDependencies)) {
-    var deprecatedOutput = fs.readFileSync(path.join(upgradeDir, 'migration.txt')).toString().split('\n')
-    deprecatedOutput.forEach(line => {
-      console.log(boldGreen('\n'+line))
-    })
+    logOutputForFile(migrationMessage)
     return
   }
 
@@ -254,15 +251,18 @@ function movetolatest() {
     if (replaceIt(/\<\/Transition\>/g, '') == -1) {return}
   }
 
-  console.log(boldGreen("\nExtJS Upgrade Complete.\n\nrun 'npm install' to update ExtJS packages.\n\nPlease note package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.\n\nReview documentation for you chosen product at https://docs.sencha.com and update your app's src code."))
-  console.log(boldGreen("\n\nExtAngular What's New Guide: https://docs.sencha.com/extangular/7.1.0/guides/whats_new/release_notes.html"))
-  console.log(boldGreen("\n\nExtReact What's New Guide: https://docs.sencha.com/extreact/7.1.0/guides/whats_new/release_notes.html"))
-  console.log(boldGreen("\n\nExtWebComponents What's New Guide: https://docs.sencha.com/extwebcomponents/7.1.0/guides/whats_new/release_notes.html"))
-  console.log(boldGreen("\n\nExtJS What's New Guide: https://docs.sencha.com/extjs/7.1.0/guides/whats_new/whats_new.html"))
+  logOutputForFile(completionMessage)
 
   return
 }
 /***** */
+
+function logOutputForFile(messageFile) {
+  var deprecatedOutput = fs.readFileSync(path.join(upgradeDir, messageFile)).toString().split('\n')
+    deprecatedOutput.forEach(line => {
+      console.log(boldGreen('\n'+line))
+    })
+}
 
 function doesFileExist(fileName) {
 	return fs.existsSync(fileName);
