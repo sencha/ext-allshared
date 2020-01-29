@@ -1,6 +1,9 @@
+-------------------------------------------------------------------------------------------------------------
 ExtJS Upgrade Complete.
 run 'npm install' to update ExtJS packages.
-Your project's package.json has been updated to ensure all necessary dependencies for this update were added. Please add any of your missing dependencies from the package.json backup file in ./extBackup.
+Your project's package.json has been updated to ensure all necessary dependencies for this update were added.
+Please reinstall any missing dependencies from your previous package.json backup file in ./extBackup.
+-------------------------------------------------------------------------------------------------------------
 
 Please review new documentation and update your application source code as necessary:
 ** ExtAngular **
