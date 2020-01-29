@@ -17,6 +17,7 @@ const extReactorPackage = "@extjs/reactor"
 const reactPackage = "react"
 const angularCLIPackage = "@angular/cli"
 
+// Frameworks and Themes
 const reactFW = "react"
 const reactModernFW = "reactModern"
 const reactClassicFW = "reactClassic"
@@ -24,20 +25,6 @@ const reactorFW = "reactor"
 const extJSFW = "extjs"
 const angularFW = "angular"
 const componentsFW = "components"
-const fwSet = [
-  extJSFW,
-  reactFW,
-  angularFW,
-  componentsFW,
-  reactorFW
-]
-
-var rootDir
-var backupDir
-var upgradeDir
-
-var indexJS = 'index.js';
-
 const classicThemes = [
   "graphite",
   "neptune-touch",
@@ -52,7 +39,6 @@ const classicThemes = [
   "triton",
   "material"
 ]
-
 const modernThemes = [
   "material",
   "neptune",
@@ -61,12 +47,35 @@ const modernThemes = [
   "ios"
 ]
 
+// Console Out Messaging
 const migrationMessage = "migration.txt"
 const completionMessage = "completion.txt"
 
+// Frameworks Array
+const supportedFrameworks = [
+  extJSFW,
+  reactFW,
+  angularFW,
+  componentsFW,
+  reactorFW
+]
+
+var rootDir
+var backupDir
+var upgradeDir
+var indexJS = 'index.js';
+
+// "Main" method invocation
 movetolatest()
 
-/********** */
+/**
+ *
+ * 1. Parse existing application's package.json dependencies
+ * 2. Determine what framework environment the project is using
+ * 3. Backup all files that will be upgraded
+ * 4. If applicable, upgrade necessary files, else inform the user that this tool is not supported
+ *
+ */
 function movetolatest() {
   
   rootDir = path.resolve(process.cwd())
@@ -100,7 +109,6 @@ function movetolatest() {
   set(polyfillsts, 'polyfills.ts', './src', '')
   set(buildXML, 'build.xml', './', 'build.xml.tpl.default')
 
-
   packageJson.old = JSON.parse(fs.readFileSync(packageJson.root, {encoding: 'utf8'}))
   var o = {
     foundFramework: '',
@@ -109,16 +117,18 @@ function movetolatest() {
   }
 
   // If the product is no longer supported, politely inform the user
-  if (packageJson.old.dependencies != undefined && isSupportDeprecatedForApplication(packageJson.old.dependencies)) {
+  if (packageJson.old.dependencies != undefined 
+    && isSupportDeprecatedForApplication(packageJson.old.dependencies)) {
     logOutputForFile(migrationMessage)
     return
-  } else if (packageJson.old.devDependencies != undefined && isSupportDeprecatedForApplication(packageJson.old.devDependencies)) {
+  } else if (packageJson.old.devDependencies != undefined 
+    && isSupportDeprecatedForApplication(packageJson.old.devDependencies)) {
     logOutputForFile(migrationMessage)
     return
   }
 
   // Traverse the framework types we may find
-  fwSet.forEach(framework => {
+  supportedFrameworks.forEach(framework => {
     findIt(framework, packageJson, o)
   });
 
@@ -127,10 +137,12 @@ function movetolatest() {
     o.foundFramework = extJSFW
   }
 
+  // Previous versions didn't have an index.js at the project root
   if (!doesFileExist(indexJS) && o.foundFramework == 'extjs') {
     createIndexJS();
   }
 
+  // Create backups of files that will be touched
   archive(packageJson)
   archive(webpackConfigJs)
   archive(buildXML)
@@ -177,6 +189,7 @@ function movetolatest() {
     console.log(boldGreen('Updated ') + packageJson.root.replace(process.cwd(), ''))
   }
 
+  // Choose the correct template values based on the detected framework
   var values = {}
   switch (o.foundFramework) {
     case extJSFW:
@@ -207,17 +220,12 @@ function movetolatest() {
   fs.writeFileSync(webpackConfigJs.root, t);
   console.log(boldGreen('Updated ') + webpackConfigJs.root.replace(process.cwd(), ''))
 
-
   if ((o.foundFramework == 'extjs') ) {
     fs.copySync(indexjs.upgrade, indexjs.root)
     console.log(boldGreen('Copied ') + indexjs.upgrade.replace(__dirname, '') + ' to ' +  indexjs.root.replace(process.cwd(), ''))
 
     fs.copySync(path.join(frameworkTemplateFolder,'build.xml'), buildXML.root)
     console.log(boldGreen('Updated ') + buildXML.root.replace(process.cwd(), ''))
-  }
-
-
-  if ((o.foundFramework == 'components') ) {
   }
 
   if ((o.foundFramework == 'angular') ) {
@@ -255,7 +263,12 @@ function movetolatest() {
 
   return
 }
-/***** */
+
+/**
+ * 
+ * HELPER FUNCTIONS
+ * 
+ */
 
 function logOutputForFile(messageFile) {
   var deprecatedOutput = fs.readFileSync(path.join(upgradeDir, messageFile)).toString().split('\n')
