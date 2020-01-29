@@ -1,8 +1,8 @@
-\next-movetolatest has been deprecated for the following projects:
-\n - Reactor
-\n - ExtWebComponents + ExtReact
-\n - ExtWebComponents + ExtAngular\n
-\n1. To Use ExtAngular 7.1 or later: https://github.com/sencha/ext-angular/blob/ext-angular-7.1.1/packages/ext-angular-modern/GETTING_STARTED.md
-\n2. To Use ExtReact 7.1 or later: https://github.com/sencha/ext-react/blob/ext-react-7.1.1/packages/ext-react-modern/GETTING_STARTED.md
-\n3. To Use ExtWebComponents 7.1 or later: https://github.com/sencha/ext-web-components/blob/ext-web-components-7.1.1/packages/ext-web-components-modern/README.md
-\n\nFor additional resources or help upgrading your application please submit a support ticket at https://support.sencha.com with the subject 'upgrade ExtAngular', 'update ExtWebComponents', etc.
+ext-movetolatest has been deprecated for the following projects:
+ - Reactor
+ - ExtWebComponents + ExtReact
+ - ExtWebComponents + ExtAngular
+1. To Use ExtAngular 7.1 or later: https://github.com/sencha/ext-angular/blob/ext-angular-7.1.1/packages/ext-angular-modern/GETTING_STARTED.md
+2. To Use ExtReact 7.1 or later: https://github.com/sencha/ext-react/blob/ext-react-7.1.1/packages/ext-react-modern/GETTING_STARTED.md
+3. To Use ExtWebComponents 7.1 or later: https://github.com/sencha/ext-web-components/blob/ext-web-components-7.1.1/packages/ext-web-components-modern/README.md
+For additional resources or help upgrading your application please submit a support ticket at https://support.sencha.com with the subject 'upgrade ExtAngular', 'update ExtWebComponents', etc.

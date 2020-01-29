@@ -11,9 +11,11 @@ const extReactModernPackage = "@sencha/ext-react-modern"
 const extModernPackage = "@sencha/ext-modern"
 const extClassicPackage = "@sencha/ext-classic"
 const extWCPackage = "@sencha/ext-web-components"
+const vuePackage = "vue"
 const extGenPackage = "@sencha/ext-gen"
 const extReactorPackage = "@extjs/reactor"
 const reactPackage = "react"
+const angularCLIPackage = "@angular/cli"
 
 const reactFW = "react"
 const reactModernFW = "reactModern"
@@ -103,18 +105,33 @@ function movetolatest() {
     foundKey: ''
   }
 
+  // If the product is no longer supported, politely inform the user
+  if (packageJson.old.dependencies != undefined && isSupportDeprecatedForApplication(packageJson.old.dependencies)) {
+    var deprecatedOutput = fs.readFileSync(path.join(upgradeDir, 'migration.txt')).toString().split('\n')
+    deprecatedOutput.forEach(line => {
+      console.log(boldGreen('\n'+line))
+    })
+    return
+  } else if (packageJson.old.devDependencies != undefined && isSupportDeprecatedForApplication(packageJson.old.devDependencies)) {
+    var deprecatedOutput = fs.readFileSync(path.join(upgradeDir, 'migration.txt')).toString().split('\n')
+    deprecatedOutput.forEach(line => {
+      console.log(boldGreen('\n'+line))
+    })
+    return
+  }
+
   // Traverse the framework types we may find
   fwSet.forEach(framework => {
     findIt(framework, packageJson, o)
   });
 
-  if (!doesFileExist(indexJS) && o.foundFramework == 'extjs') {
-    createIndexJS();
-  }
-
   // Default to ExtJS + ExtGen (Open To)
   if (o.foundFramework == '') {
     o.foundFramework = extJSFW
+  }
+
+  if (!doesFileExist(indexJS) && o.foundFramework == 'extjs') {
+    createIndexJS();
   }
 
   archive(packageJson)
@@ -421,6 +438,45 @@ function isClassic(configuration) {
 
 function isUniversal(configuration) {
   return (configuration.hasOwnProperty(extModernPackage) && configuration.hasOwnProperty(extClassicPackage))
+}
+
+function isSupportDeprecatedForApplication(appPackageJSON) {
+  if (isComponentsInAngular(appPackageJSON)
+  || isComponentsInReact(appPackageJSON)
+  || isComponentsInVue(appPackageJSON)) {
+    return true
+  }
+  return false
+}
+
+function isComponentsInReact(configuration) {
+  if (configuration.hasOwnProperty(extWCPackage)) {
+    if (configuration.hasOwnProperty(extReactPackage)
+    || configuration.hasOwnProperty(extReactClassicPackage)
+    || configuration.hasOwnProperty(extReactModernPackage)
+    || configuration.hasOwnProperty(reactPackage)
+    || configuration.hasOwnProperty(extReactorPackage)) 
+    {
+      return true
+    }
+  }
+  return false
+}
+
+function isComponentsInVue(configuration) {
+  if (configuration.hasOwnProperty(extWCPackage)
+  && configuration.hasOwnProperty(vuePackage)) {
+    return true
+  }
+  return false
+}
+
+function isComponentsInAngular(configuration) {
+  if (configuration.hasOwnProperty(extWCPackage)
+  && configuration.hasOwnProperty(angularCLIPackage)) {
+    return true
+  }
+  return false
 }
 
 function replaceIt(regex, to) {
