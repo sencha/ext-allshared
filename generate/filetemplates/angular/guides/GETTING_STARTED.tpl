@@ -2,13 +2,22 @@
 
 last run: {now}
 
-This npm package contains the files that are needed to add the @sencha/ext-angular{bundle} package to an Angular application
+This npm package contains the files that are needed to add the @sencha/ext-angular-{toolkit}{bundle} package to an Angular application
 
-## Login to the Sencha early adopter npm repo
+### Login to the Sencha npm repo
+
+* Note, you must be signed into the Sencha npm registry to access packages.
+
+production:
+
+```sh
+npm login --registry=https://npm.sencha.com/ --scope=@sencha
+```
+
+early adopter:
 
 ```sh
 npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@sencha
-
 ```
 
 ## Create an Angular application with Angular CLI

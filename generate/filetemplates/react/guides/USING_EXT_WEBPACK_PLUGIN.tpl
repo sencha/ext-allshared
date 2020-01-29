@@ -1,8 +1,8 @@
-## Eject for @sencha/ext-react-{toolkit}{bundle}
+## Using ext-webpack-plugin for @sencha/ext-react-{toolkit}{bundle}
 
 last run: {now}
 
-### Eject - Adding ext-webpack-plugin to app
+### Adding ext-webpack-plugin to app
 
 #### 1. install ExtReact Packages using npm
 
@@ -137,3 +137,4 @@ npm start
 ```
 
 The ExtReact application will load in a browser window with the ext-webpack-plugin!
+

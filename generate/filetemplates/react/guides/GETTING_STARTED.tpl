@@ -1,4 +1,4 @@
-## Getting started with @sencha/ext-react-{toolkit}{bundle}
+## Getting started for @sencha/ext-react-{toolkit}{bundle}
 
 last run: {now}
 
@@ -7,8 +7,6 @@ Getting started with @sencha/ext-react-{toolkit}{bundle} and create-react-app
 ### Login to the Sencha npm repo
 
 * Note, you must be signed into the Sencha npm registry to access packages.
-See [Authenticating to Sencha's npm Registry](getting_started.html#getting_started_-_authenticating_to_sencha_s_npm_registry)
-for more information.
 
 production:
 
