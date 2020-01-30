@@ -1,4 +1,3 @@
-
 'use strict'
 require('@babel/polyfill')
 const fs = require('fs');
@@ -6,17 +5,9 @@ const path = require('path');
 const pluginUtil = require(`./pluginUtil`)
 const replace = require("replace");
 
-// process.stdin.resume();
-// process.on('SIGINT', function () {
-//   console.log('Got SIGINT.  Press Control-D to exit.');
-// });
-// function cleanUpServer(eventType) {
-//   console.log(eventType)
-//   process.exit();
-// }
-// [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
-//   process.on(eventType, cleanUpServer.bind(null, eventType));
-// })
+const configBundleName = "[name].js";
+const defaultBundleName = "main.js"
+const tmpCmdPluginFile = "temp.txt"
 
 export default class ExtWebpackPlugin {
 
@@ -83,12 +74,6 @@ export default class ExtWebpackPlugin {
 
     compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
       pluginUtil.logh(app, `HOOK emit (async)`)
-
-
-
-
-
-
       pluginUtil._emit(compiler, compilation, vars, options, callback)
     })
 
@@ -107,21 +92,17 @@ export default class ExtWebpackPlugin {
        * 4. Delete the temp file
        */
       const outputPath = options.path;
-      const bundleName = ((options.filename == "[name].js") ? "main.js" : options.filename);
-      const tempFilePath = outputPath+'temp.txt';
-      const buildFolder = "build"
+      const bundleName = ((options.filename == configBundleName) ? defaultBundleName : options.filename);
+      const tempFilePath = outputPath + tmpCmdPluginFile;
 
       if (fs.existsSync(tempFilePath)) {
         const configProdPath = fs.readFileSync(tempFilePath, "utf8").toString().trim();
         fs.unlinkSync(tempFilePath);
-        const trimmedProdPathIndex = configProdPath.indexOf(buildFolder);
+        const trimmedProdPathIndex = process.cwd().length+1;
         const prodBuildPath = configProdPath.substring(trimmedProdPathIndex)
         const copyBundleDest = path.join(prodBuildPath, bundleName);
         if (fs.existsSync(bundleName)) {
           fs.copyFileSync(bundleName, copyBundleDest);
-
-          // Due to the race condition between Cmd's processing for production files and the webpack bundling
-          // index.html doesn't receive the injected reference to the webpack bundle.
           replace({
             regex: '</body>',
             replacement: '<script type="text/javascript" src="'+bundleName+'"></script></body>',
