@@ -727,7 +727,11 @@ function createAngular() {
     copyFileSync(`${angularTemplateFolder}ng-package.json`, `${outputFolder}ng-package.json`);
 
     copyFileSync(`${angularTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
-    writeTemplateFile(`${angularTemplateFolder}guides/GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+
+      writeTemplateFile(`${angularTemplateFolder}guides/Adding_ExtAngular_to_Angular_CLI_project.tpl`,`${outputFolder}Adding_ExtAngular_to_Angular_CLI_project.md`,info);
+      writeTemplateFile(`${angularTemplateFolder}guides/Creating_Angular_CLI_ExtAngular.tpl`,`${outputFolder}Creating_Angular_CLI_ExtAngular.md`,info);
+
+    //writeTemplateFile(`${angularTemplateFolder}guides/GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
     writeTemplateFile(`${angularTemplateFolder}guides/MIGRATE.tpl`,`${outputFolder}MIGRATE.md`,info);
     writeTemplateFile(`${angularTemplateFolder}guides/README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(`${angularTemplateFolder}guides/UNDERSTANDING_AN_APP.tpl`,`${outputFolder}UNDERSTANDING_AN_APP.md`,info);
@@ -766,7 +770,11 @@ function createReact() {
     info.component = examples('component');
 
     copyFileSync(`${reactTemplateFolder}postinstall.js`, `${outputFolder}postinstall.js`);
-    writeTemplateFile(`${reactTemplateFolder}guides/GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
+
+    writeTemplateFile(`${reactTemplateFolder}guides/Adding_ExtReact_to_create-react-app_project.tpl`,`${outputFolder}Adding_ExtReact_to_create-react-app_project.md`,info);
+    writeTemplateFile(`${reactTemplateFolder}guides/Creating_create-react-app_ExtReact.tpl`,`${outputFolder}Creating_create-react-app_ExtReact.md.md`,info);
+
+    //writeTemplateFile(`${reactTemplateFolder}guides/GETTING_STARTED.tpl`,`${outputFolder}GETTING_STARTED.md`,info);
     writeTemplateFile(`${reactTemplateFolder}guides/MIGRATE.tpl`,`${outputFolder}MIGRATE.md`,info);
     writeTemplateFile(`${reactTemplateFolder}guides/README.tpl`,`${outputFolder}README.md`,info);
     writeTemplateFile(`${reactTemplateFolder}guides/UNDERSTANDING_AN_APP.tpl`,`${outputFolder}UNDERSTANDING_AN_APP.md`,info);
@@ -838,7 +846,8 @@ async function doInstall() {
     await run(`cp -R ./src dist/lib`);
     await run(`cp -R ./bin dist/bin`);
     await run(`cp ./postinstall.js dist/postinstall.js`);
-    await run(`cp ./GETTING_STARTED.md dist/GETTING_STARTED.md`);
+    await run(`cp ./Adding_ExtAngular_to_Angular_CLI_project.md dist/Adding_ExtAngular_to_Angular_CLI_project.md`);
+    await run(`cp ./Creating_Angular_CLI_ExtAngular.md dist/Creating_Angular_CLI_ExtAngular.md`);
     await run(`cp ./MIGRATE.md dist/MIGRATE.md`);
     await run(`cp ./README.md dist/README.md`);
     await run(`cp ./UNDERSTANDING_AN_APP.md dist/UNDERSTANDING_AN_APP.md`);
