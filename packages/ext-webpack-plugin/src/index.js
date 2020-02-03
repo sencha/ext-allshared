@@ -1,4 +1,3 @@
-
 'use strict'
 require('@babel/polyfill')
 const fs = require('fs');
@@ -6,12 +5,9 @@ const path = require('path');
 const pluginUtil = require(`./pluginUtil`)
 const replace = require("replace");
 
-// process.stdin.resume();
-
-// process.on('SIGINT', function () {
-//   console.log('Got SIGINT.  Press Control-D to exit.');
-// });
-
+const configBundleName = "[name].js";
+const defaultBundleName = "main.js"
+const tmpCmdPluginFile = "temp.txt"
 
 export default class ExtWebpackPlugin {
 
@@ -19,6 +15,27 @@ export default class ExtWebpackPlugin {
     var constructorOutput = pluginUtil._constructor(options)
     this.vars = constructorOutput.vars
     this.options = constructorOutput.options
+
+    this.vars.child = null;
+    var me = this;
+
+    var v = [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`]
+    v.forEach(eventType => {
+      process.on(eventType, function(eventType){
+        if (me.vars.child != null) {
+          console.log('\nnode process and sencha cmd process ended')
+          me.vars.child.kill();
+          me.vars.child = null;
+        }
+        else {
+          if (eventType != 0) {
+            console.log('\nnode process ended')
+          }
+        }
+        process.exit();
+      });
+    })
+    //console.log('added')
   }
 
   apply(compiler) {
@@ -73,23 +90,19 @@ export default class ExtWebpackPlugin {
        * 2. Extract the path as a String, trimmed to the location of the build folder
        * 3. Copy webpack bundle to destination directory
        * 4. Delete the temp file
-       */ 
+       */
       const outputPath = options.path;
-      const bundleName = ((options.filename == "[name].js") ? "main.js" : options.filename);
-      const tempFilePath = outputPath+'temp.txt';
-      const buildFolder = "build"
+      const bundleName = ((options.filename == configBundleName) ? defaultBundleName : options.filename);
+      const tempFilePath = outputPath + tmpCmdPluginFile;
 
       if (fs.existsSync(tempFilePath)) {
         const configProdPath = fs.readFileSync(tempFilePath, "utf8").toString().trim();
         fs.unlinkSync(tempFilePath);
-        const trimmedProdPathIndex = configProdPath.indexOf(buildFolder);
+        const trimmedProdPathIndex = process.cwd().length+1;
         const prodBuildPath = configProdPath.substring(trimmedProdPathIndex)
         const copyBundleDest = path.join(prodBuildPath, bundleName);
         if (fs.existsSync(bundleName)) {
           fs.copyFileSync(bundleName, copyBundleDest);
-
-          // Due to the race condition between Cmd's processing for production files and the webpack bundling
-          // index.html doesn't receive the injected reference to the webpack bundle.
           replace({
             regex: '</body>',
             replacement: '<script type="text/javascript" src="'+bundleName+'"></script></body>',

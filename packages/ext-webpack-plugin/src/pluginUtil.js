@@ -439,30 +439,40 @@ export function _buildExtBundle(app, compilation, outputPath, parms, vars, optio
 //**********
 export async function _executeAsync (app, command, parms, opts, compilation, vars, options) {
 //  try {
+
+
+
+
     var verbose = options.verbose
     var framework = options.framework
     //const DEFAULT_SUBSTRS = ['[INF] Loading', '[INF] Processing', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Server", "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
     const DEFAULT_SUBSTRS = ["[INF] xServer", '[INF] Loading', '[INF] Append', '[INF] Processing', '[INF] Processing Build', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
     var substrings = DEFAULT_SUBSTRS
     var chalk = require('chalk')
-    const crossSpawn = require('cross-spawn')
+    const crossSpawn = require('cross-spawn-with-kill')
     logv(verbose, 'FUNCTION _executeAsync')
     await new Promise((resolve, reject) => {
       logv(verbose,`command - ${command}`)
       logv(verbose, `parms - ${parms}`)
       logv(verbose, `opts - ${JSON.stringify(opts)}`)
-      let child = crossSpawn(command, parms, opts)
-      child.on('close', (code, signal) => {
+      //let child = crossSpawn(command, parms, opts)
+      //console.log('child')
+      //console.log(vars.child)
+      vars.child = crossSpawn(command, parms, opts)
+      //console.log('child')
+      //console.log(vars.child)
+
+      vars.child.on('close', (code, signal) => {
         logv(verbose, `on close: ` + code)
         if(code === 0) { resolve(0) }
         else { compilation.errors.push( new Error(code) ); resolve(0) }
       })
-      child.on('error', (error) => {
+      vars.child.on('error', (error) => {
         logv(verbose, `on error`)
         compilation.errors.push(error)
         resolve(0)
       })
-      child.stdout.on('data', (data) => {
+      vars.child.stdout.on('data', (data) => {
         var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
         logv(verbose, `${str}`)
         if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
@@ -494,7 +504,7 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
           }
         }
       })
-      child.stderr.on('data', (data) => {
+      vars.child.stderr.on('data', (data) => {
         logv(options, `error on close: ` + data)
         var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
         var strJavaOpts = "Picked up _JAVA_OPTIONS";

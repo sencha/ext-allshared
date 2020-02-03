@@ -7,5 +7,10 @@ export default class EWC{Xtype} extends {classname} {
     this.xtype = '{xtype}';
   }
 }
-window.customElements.define('ext-{xtype}', ElementParser.withParsedCallback(EWC{Xtype}));
+try {
+  window.customElements.define('ext-{xtype}', ElementParser.withParsedCallback(EWC{Xtype}));
+}
+catch(e) {
+  window.customElements.define('ext-{xtype}', EWC{Xtype});
+}
 {ElementCell}

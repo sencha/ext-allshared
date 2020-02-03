@@ -5,6 +5,7 @@ import {
   filterProp,
   isMenu,
   isRenderercell,
+  isParentGridAndChildToolbar,
   isParentGridAndChildColumn,
   isTooltip,
   isPlugin
@@ -84,7 +85,8 @@ export default class {Shortname}BaseComponent extends HTMLElement {
     this.xtype = x;
 
     var me = this;
-    this.newCreateProps(this.properties, this.events);
+    //this.newCreateProps(this.properties, this.events);
+    this.newCreateProps(this.properties);
 
     if (me.A.o['viewport'] == 'true') {
       me.A.o['viewport'] = true
@@ -338,6 +340,14 @@ export default class {Shortname}BaseComponent extends HTMLElement {
         break;
       case isRenderercell(childxtype):
         parentCmp.setCell(childCmp);
+        break;
+      case isParentGridAndChildToolbar(parentxtype, childxtype):
+        if(parentCmp.items.items[0].xtype == 'titlebar') {
+          parentCmp.insert(1, childCmp);
+        }
+        else {
+          parentCmp.insert(0, childCmp);
+        }
         break;
       case isParentGridAndChildColumn(parentxtype,childxtype):
         if (location == null) {

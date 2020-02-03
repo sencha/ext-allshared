@@ -2,11 +2,20 @@
 
 last run: {now}
 
-## Login to the Sencha early adopter npm repo
+### Login to the Sencha npm repo
+
+* Note, you must be signed into the Sencha npm registry to access packages.
+
+production:
+
+```sh
+npm login --registry=https://npm.sencha.com/ --scope=@sencha
+```
+
+early adopter:
 
 ```sh
 npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@sencha
-
 ```
 
 ## Create a JavaScript application
@@ -37,7 +46,7 @@ cd ext-web-components-{toolkit}{bundle}-demo
   },
   "devDependencies": {
     "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
-    "http-server": "^0.12.0"
+    "http-server": "^0.12.1"
   },
   "author": "",
   "license": "ISC",
@@ -55,6 +64,17 @@ cd ext-web-components-{toolkit}{bundle}-demo
     content="width=device-width,initial-scale=1,maximum-scale=10,user-scalable=yes"
   >
 </head>
+
+<!--
+<script
+ src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/{toolkit}{bundle}.engine.js">
+</script>
+<link
+ rel="stylesheet"
+ type="text/css"
+ href="node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/material/material-all.css">
+</link>
+-->
 
 <script type="module"
 src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-toolbar.component.js">

@@ -3,7 +3,8 @@ import {Shortname}BaseComponent from '../{shortname}-base.js'
 export default class {classname} extends {Shortname}BaseComponent {
 
     static PROPERTIES() { return [
-        'aMe',
+        'closable',
+        'title',
         'header',
         'renderer',
         'label',
