@@ -45,7 +45,7 @@ cd ext-web-components-{toolkit}{bundle}-demo
     "start": "npx http-server -o"
   },
   "devDependencies": {
-    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.1",
     "http-server": "^0.12.1"
   },
   "author": "",
@@ -63,6 +63,7 @@ cd ext-web-components-{toolkit}{bundle}-demo
   <meta name="viewport"
     content="width=device-width,initial-scale=1,maximum-scale=10,user-scalable=yes"
   >
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
 <!--
