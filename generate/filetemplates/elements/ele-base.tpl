@@ -16,14 +16,17 @@ export default class {Shortname}BaseComponent extends HTMLElement {
   constructor(properties, events) {
     super ();
 
-    this.properties = properties;
+    const distinct = (value, index, self) => {
+        return self.indexOf(value) === index;
+    };
+    this.properties = properties.filter(distinct);
+
+    //this.properties = properties;
     this.events = events;
     this.eventnames = [];
     var eventnamesall = [];
 
-    const distinct = (value, index, self) => {
-        return self.indexOf(value) === index;
-    };
+
 
     this.events.forEach((event) => {
         eventnamesall.push(event.name);
