@@ -1,6 +1,6 @@
 {
   "name": "@sencha/ext-webpack-plugin",
-  "version": "7.0.2",
+  "version": "7.0.0",
   "description": "A webpack plugin for ext-* applications",
   "main": "dist/index.js",
   "scripts": {
@@ -62,7 +62,7 @@
     "Sencha"
   ],
   "author": "Sencha, Inc.",
-  "license": "MIT",
+  "license" : "SEE LICENSE IN license.txt",
   "bugs": {
     "url": "https://github.com/sencha"
   },
