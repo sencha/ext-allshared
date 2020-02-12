@@ -1,4 +1,4 @@
-MIT © Sencha, Inc. https://www.sencha.com/
+MIT © Sencha, Inc. https://www.sencha.com/legal/#Sencha_Ext_JS
 
 Third Party Content
 ------------------------------------------------------------------------------------------
