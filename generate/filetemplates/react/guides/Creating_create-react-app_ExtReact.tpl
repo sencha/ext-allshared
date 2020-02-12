@@ -1,7 +1,5 @@
 ## Creating a new create-react-app project with @sencha/ext-react-{toolkit}{bundle}
 
-last run: {now}
-
 ## Requirements
 Fetch your npm credentials and generate an application.
 

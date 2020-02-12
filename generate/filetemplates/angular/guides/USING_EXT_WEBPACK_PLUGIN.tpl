@@ -1,6 +1,5 @@
 ## Using ext-webpack-plugin for @sencha/ext-angular-{toolkit}{bundle}
 
-last run: {now}
 
 ## Adding Sencha ext-webpack-plugin to an Angular CLI application
 
