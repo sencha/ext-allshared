@@ -1,6 +1,5 @@
 ## Migrate for @sencha/ext-angular-{toolkit}{bundle}
 
-last run: {now}
 
 ## migrating/upgrading an ext-angular application
 

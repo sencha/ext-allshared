@@ -1,7 +1,5 @@
 ## Using ext-webpack-plugin for @sencha/ext-react-{toolkit}{bundle}
 
-last run: {now}
-
 ### Adding ext-webpack-plugin to app
 
 #### 1. install ExtReact Packages using npm

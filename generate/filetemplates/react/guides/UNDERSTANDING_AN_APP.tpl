@@ -1,7 +1,5 @@
 ## Understanding an app for @sencha/ext-react-{toolkit}{bundle}
 
-last run: {now}
-
 This guide will illustrate some of the key features of ExtReact within a React application.
 To get a starter application created,
 follow the [Getting Started guide](https://github.com/sencha/ext-react/blob/ext-react-7.1.1/packages/ext-react-{toolkit}{bundle}/GETTING_STARTED.md).
@@ -169,8 +167,8 @@ The ExtColumn supports render functions as JSX
 ```
   renderName = (value, context) => (
     <div style={{height:'15px'}}>
-      <span>span - {context.data.name}</span>
-      <ext-button shadow="true" text={context.data.name}></ext-button>
+      <span>span - { context.data.name }</span>
+      <ext-button shadow="true" text={ context.data.name }></ext-button>
     </div>
   )
 
@@ -178,9 +176,9 @@ The ExtColumn supports render functions as JSX
   render() {
     return (
       <ExtGrid
-        
+
       >
-        <ExtColumn text="Name" dataIndex="name" flex={2} renderer={this.renderName}/>
+        <ExtColumn text="Name" dataIndex="name" flex={2} renderer={ this.renderName }/>
 
       </ExtGrid>
     )

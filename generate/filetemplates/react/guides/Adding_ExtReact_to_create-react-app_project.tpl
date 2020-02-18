@@ -1,7 +1,5 @@
 ## Adding @sencha/ext-react-{toolkit}{bundle} components to an existing create-react-app project
 
-last run: {now}
-
 ## Requirements
 Fetch your npm credentials and generate an application.
 

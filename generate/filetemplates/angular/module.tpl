@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-{engimports}
+{angularImportsUnique}
 
 import { APP_INITIALIZER } from '@angular/core';
 const Ext = window['Ext'];

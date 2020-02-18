@@ -1,7 +1,7 @@
 {
     "name": "@sencha/ext-{framework}-{toolkit}{bundle}",
-    "version": "7.1.1",
-    "main2": "ext-{framework}-{toolkit}{bundle}.module.js",
+    "version": "7.2.0",
+    "main2root": "ext-{framework}-{toolkit}{bundle}.module.js",
     "main": "index.js",
     "private": false,
     "bin": {
