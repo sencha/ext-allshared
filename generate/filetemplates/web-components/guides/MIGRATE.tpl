@@ -1,7 +1,5 @@
 ## Migrate for @sencha/ext-web-components-{toolkit}{bundle}
 
-last run: {now}
-
 ## migrating/upgrading an ext-web-components application
 
 We want to make sure that your upgrade of ext-web-components is successful, so we would like to

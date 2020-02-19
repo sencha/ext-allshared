@@ -1,6 +1,5 @@
 ## Understanding an app for @sencha/ext-angular-{toolkit}{bundle}
 
-last run: {now}
 
 This guide will illustrate some of the key features of ExtAngular within a Angular application.
 To get a starter application created,

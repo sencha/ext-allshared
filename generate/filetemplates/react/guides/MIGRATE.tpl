@@ -1,7 +1,5 @@
 ## Migrate for @sencha/ext-react-{toolkit}{bundle}
 
-last run: {now}
-
 ## migrating/upgrading an ext-react application
 
 We want to make sure that your upgrade of ext-react is successful, so we would like to

@@ -1,4 +1,6 @@
-## Getting started for @sencha/ext-web-components-{toolkit}{bundle}
+## @sencha/ext-web-components-{toolkit}{bundle}
+
+last run: {now}
 
 ### Login to the Sencha npm repo
 
@@ -37,14 +39,14 @@ cd ext-web-components-{toolkit}{bundle}-demo
 ```sh
 {
   "name": "ext-web-components-{toolkit}{bundle}-demo",
-  "version": "7.2.0",
+  "version": "1.0.0",
   "description": "ext-web-components-{toolkit}{bundle}-demo",
   "scripts": {
-    "start": "npx servor . index.html 8080 --reload --browse"
+    "start": "npx http-server -o"
   },
   "devDependencies": {
-    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.2.0",
-    "servor": "~3.1.0"
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.1.0",
+    "http-server": "^0.12.1"
   },
   "author": "",
   "license": "ISC",
@@ -58,17 +60,28 @@ cd ext-web-components-{toolkit}{bundle}-demo
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=10,user-scalable=yes">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=10,user-scalable=yes"
+  >
 </head>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
 <!--
-<script src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/{toolkit}{bundle}.engine.js"></script>
-<link rel="stylesheet" type="text/css" href="node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/material/material-all.css"></link>
+<script
+ src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/{toolkit}{bundle}.engine.js">
+</script>
+<link
+ rel="stylesheet"
+ type="text/css"
+ href="node_modules/@sencha/ext-web-components-{toolkit}{bundle}/ext-runtime-{toolkit}{bundle}/material/material-all.css">
+</link>
 -->
 
-<script type="module" src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-toolbar.component.js"></script>
-<script type="module" src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-button.component.js"></script>
+<script type="module"
+src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-toolbar.component.js">
+</script>
+<script type="module"
+src="./node_modules/@sencha/ext-web-components-{toolkit}{bundle}/src/ext-button.component.js">
+</script>
 
 <script>
   getNow = function() {
@@ -77,9 +90,8 @@ cd ext-web-components-{toolkit}{bundle}-demo
 </script>
 
 <body>
-  <ext-toolbar border="1">
-<tpl if="toolkit == 'classic'">    <ext-button text="get now" border="1" onclick="getNow"></ext-button></tpl>
-<tpl if="toolkit == 'modern'">    <ext-button text="get now" border="1" ontap="getNow"></ext-button></tpl>
+  <ext-toolbar>
+    <ext-button text="get now" shadow="true" ontap="getNow"></ext-button>
     <div id='updateDiv' style="margin-left:20px;"></div>
   </ext-toolbar>
 </body>
