@@ -359,7 +359,7 @@ function _done(stats, vars, options) {
         console.log(chalk.red('******************************************'));
         console.log(stats.compilation.errors[0]);
         console.log(chalk.red('******************************************'));
-        process.exit(0);
+        //process.exit(0);
       } //mjg refactor
 
 
