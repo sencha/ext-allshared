@@ -209,6 +209,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
     var verbose = options.verbose
     var emit = options.emit
     var framework = options.framework
+    vars.callback = callback
     logv(verbose,'FUNCTION _emit')
     if (emit == 'yes') {
       if (vars.buildstep == '1 of 1' || vars.buildstep == '1 of 2') {
@@ -475,7 +476,8 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
       vars.child.stdout.on('data', (data) => {
         var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
         logv(verbose, `${str}`)
-        if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
+        //if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
+        if (data && data.toString().match(/aiting for changes\.\.\./)) {
 
 //           const fs = require('fs');
 //           var filename = process.cwd() + vars.touchFile;
@@ -488,7 +490,7 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
 //           catch(e) {
 //             logv(app, `NOT touching ${filename}`);
 //           }
-
+          vars.callback()
           resolve(0)
         }
         else {
