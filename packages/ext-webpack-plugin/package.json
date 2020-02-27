@@ -4,7 +4,8 @@
   "description": "A webpack plugin for ext-* applications",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx babel ./src --out-dir ./dist"
+    "build": "npx babel ./src --out-dir ./dist",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@babel/generator": "^7.6.0",
