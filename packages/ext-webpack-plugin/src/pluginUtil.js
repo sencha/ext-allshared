@@ -245,28 +245,24 @@ export async function _emit(compiler, compilation, vars, options, callback) {
             await _buildExtBundle(app, compilation, outputPath, parms, vars, options)
             vars.watchStarted = true
           }
-          callback()
         }
         else {
-          callback()
+          vars.callback()
         }
       }
       else {
         logv(verbose,'NOT running emit')
-        callback()
+        vars.callback()
       }
     }
     else {
       logv(verbose,'emit is no')
-      callback()
+      vars.callback()
     }
   }
   catch(e) {
-    callback()
+    vars.callback()
     throw '_emit: ' + e.toString()
-    // logv(options.verbose,e)
-    // compilation.errors.push('_emit: ' + e)
-    // callback()
   }
 }
 
@@ -406,78 +402,59 @@ export function _prepareForBuild(app, vars, options, output, compilation) {
 
 //**********
 export function _buildExtBundle(app, compilation, outputPath, parms, vars, options) {
-//  try {
-    var verbose = options.verbose
-    const fs = require('fs')
-    logv(verbose,'FUNCTION _buildExtBundle')
-    let sencha; try { sencha = require('@sencha/cmd') } catch (e) { sencha = 'sencha' }
-    if (fs.existsSync(sencha)) {
-      logv(verbose,'sencha folder exists')
+  var verbose = options.verbose
+  const fs = require('fs')
+  logv(verbose,'FUNCTION _buildExtBundle')
+  let sencha; try { sencha = require('@sencha/cmd') } catch (e) { sencha = 'sencha' }
+  if (fs.existsSync(sencha)) {
+    logv(verbose,'sencha folder exists')
+  }
+  else {
+    logv(verbose,'sencha folder DOES NOT exist')
+  }
+  return new Promise((resolve, reject) => {
+    const onBuildDone = () => {
+      logv(verbose,'onBuildDone')
+      resolve()
     }
-    else {
-      logv(verbose,'sencha folder DOES NOT exist')
-    }
-    return new Promise((resolve, reject) => {
-      const onBuildDone = () => {
-        logv(verbose,'onBuildDone')
-        resolve()
-      }
-      var opts = { cwd: outputPath, silent: true, stdio: 'pipe', encoding: 'utf-8'}
-      _executeAsync(app, sencha, parms, opts, compilation, vars, options).then (
-        function() { onBuildDone() },
-        function(reason) { reject(reason) }
-      )
-    })
-  // }
-  // catch(e) {
-  //   console.log('e')
-  //   require('./pluginUtil').logv(options.verbose,e)
-  //   compilation.errors.push('_buildExtBundle: ' + e)
-  //   callback()
-  // }
+    var opts = { cwd: outputPath, silent: true, stdio: 'pipe', encoding: 'utf-8'}
+    _executeAsync(app, sencha, parms, opts, compilation, vars, options).then (
+      function() { onBuildDone() },
+      function(reason) { reject(reason) }
+    )
+  })
 }
 
 //**********
 export async function _executeAsync (app, command, parms, opts, compilation, vars, options) {
-//  try {
+  var verbose = options.verbose
+  var framework = options.framework
+  //const DEFAULT_SUBSTRS = ['[INF] Loading', '[INF] Processing', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Server", "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
+  const DEFAULT_SUBSTRS = ["[INF] xServer", '[INF] Loading', '[INF] Append', '[INF] Processing', '[INF] Processing Build', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
+  var substrings = DEFAULT_SUBSTRS
+  var chalk = require('chalk')
+  const crossSpawn = require('cross-spawn-with-kill')
+  logv(verbose, 'FUNCTION _executeAsync')
+  await new Promise((resolve, reject) => {
+    logv(verbose,`command - ${command}`)
+    logv(verbose, `parms - ${parms}`)
+    logv(verbose, `opts - ${JSON.stringify(opts)}`)
+    vars.child = crossSpawn(command, parms, opts)
 
-
-
-
-    var verbose = options.verbose
-    var framework = options.framework
-    //const DEFAULT_SUBSTRS = ['[INF] Loading', '[INF] Processing', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Server", "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
-    const DEFAULT_SUBSTRS = ["[INF] xServer", '[INF] Loading', '[INF] Append', '[INF] Processing', '[INF] Processing Build', '[LOG] Fashion build complete', '[ERR]', '[WRN]', "[INF] Writing", "[INF] Loading Build", "[INF] Waiting", "[LOG] Fashion waiting"];
-    var substrings = DEFAULT_SUBSTRS
-    var chalk = require('chalk')
-    const crossSpawn = require('cross-spawn-with-kill')
-    logv(verbose, 'FUNCTION _executeAsync')
-    await new Promise((resolve, reject) => {
-      logv(verbose,`command - ${command}`)
-      logv(verbose, `parms - ${parms}`)
-      logv(verbose, `opts - ${JSON.stringify(opts)}`)
-      //let child = crossSpawn(command, parms, opts)
-      //console.log('child')
-      //console.log(vars.child)
-      vars.child = crossSpawn(command, parms, opts)
-      //console.log('child')
-      //console.log(vars.child)
-
-      vars.child.on('close', (code, signal) => {
-        logv(verbose, `on close: ` + code)
-        if(code === 0) { resolve(0) }
-        else { compilation.errors.push( new Error(code) ); resolve(0) }
-      })
-      vars.child.on('error', (error) => {
-        logv(verbose, `on error`)
-        compilation.errors.push(error)
-        resolve(0)
-      })
-      vars.child.stdout.on('data', (data) => {
-        var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
-        logv(verbose, `${str}`)
-        //if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
-        if (data && data.toString().match(/aiting for changes\.\.\./)) {
+    vars.child.on('close', (code, signal) => {
+      logv(verbose, `on close: ` + code)
+      if(code === 0) { resolve(0) }
+      else { compilation.errors.push( new Error(code) ); resolve(0) }
+    })
+    vars.child.on('error', (error) => {
+      logv(verbose, `on error`)
+      compilation.errors.push(error)
+      resolve(0)
+    })
+    vars.child.stdout.on('data', (data) => {
+      var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
+      logv(verbose, `${str}`)
+      if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
 
 //           const fs = require('fs');
 //           var filename = process.cwd() + vars.touchFile;
@@ -490,38 +467,42 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
 //           catch(e) {
 //             logv(app, `NOT touching ${filename}`);
 //           }
-          vars.callback()
-          resolve(0)
+
+        str = str.replace("[INF]", "")
+        str = str.replace("[LOG]", "")
+        str = str.replace(process.cwd(), '').trim()
+        if (str.includes("[ERR]")) {
+          compilation.errors.push(app + str.replace(/^\[ERR\] /gi, ''));
+          str = str.replace("[ERR]", `${chalk.red("[ERR]")}`)
         }
-        else {
-          if (substrings.some(function(v) { return data.indexOf(v) >= 0; })) {
-            str = str.replace("[INF]", "")
-            str = str.replace("[LOG]", "")
-            str = str.replace(process.cwd(), '').trim()
-            if (str.includes("[ERR]")) {
-              compilation.errors.push(app + str.replace(/^\[ERR\] /gi, ''));
-              str = str.replace("[ERR]", `${chalk.red("[ERR]")}`)
-            }
-            log(app, str)
+        log(app, str)
+
+        vars.callback()
+        resolve(0)
+      }
+      else {
+        if (substrings.some(function(v) { return data.indexOf(v) >= 0; })) {
+          str = str.replace("[INF]", "")
+          str = str.replace("[LOG]", "")
+          str = str.replace(process.cwd(), '').trim()
+          if (str.includes("[ERR]")) {
+            compilation.errors.push(app + str.replace(/^\[ERR\] /gi, ''));
+            str = str.replace("[ERR]", `${chalk.red("[ERR]")}`)
           }
+          log(app, str)
         }
-      })
-      vars.child.stderr.on('data', (data) => {
-        logv(options, `error on close: ` + data)
-        var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
-        var strJavaOpts = "Picked up _JAVA_OPTIONS";
-        var includes = str.includes(strJavaOpts)
-        if (!includes) {
-          console.log(`${app} ${chalk.red("[ERR]")} ${str}`)
-        }
-      })
+      }
     })
-  // }
-  // catch(e) {
-  //   logv(options,e)
-  //   compilation.errors.push('_executeAsync: ' + e)
-  //   callback()
-  // }
+    vars.child.stderr.on('data', (data) => {
+      logv(options, `error on close: ` + data)
+      var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
+      var strJavaOpts = "Picked up _JAVA_OPTIONS";
+      var includes = str.includes(strJavaOpts)
+      if (!includes) {
+        console.log(`${app} ${chalk.red("[ERR]")} ${str}`)
+      }
+    })
+  })
 }
 
 //**********
