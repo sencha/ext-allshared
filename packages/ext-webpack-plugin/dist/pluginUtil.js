@@ -659,7 +659,7 @@ function runScript(scriptPath, callback) {
 
 
   var invoked = false;
-  var process = childProcess.fork(scriptPath); // listen for errors as they may prevent the exit event from firing
+  var process = childProcess.fork(scriptPath, [], { execArgv : ['--inspect=0'] }); // listen for errors as they may prevent the exit event from firing
 
   process.on('error', function (err) {
     if (invoked) return;
