@@ -510,7 +510,7 @@ function runScript(scriptPath, callback) {
   var childProcess = require('child_process');
   // keep track of whether callback has been invoked to prevent multiple invocations
   var invoked = false;
-  var process = childProcess.fork(scriptPath);
+  var process = childProcess.fork(scriptPath, [], { execArgv : ['--inspect=0'] });
   // listen for errors as they may prevent the exit event from firing
   process.on('error', function (err) {
     if (invoked) return;
