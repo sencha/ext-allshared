@@ -241,9 +241,18 @@ export async function _emit(compiler, compilation, vars, options, callback) {
             else
               {parms = ['app', command, '--web-server', 'false', options.profile, options.environment]}
           }
+          // if (vars.watchStarted == false) {
+          //   await _buildExtBundle(app, compilation, outputPath, parms, vars, options)
+          //   vars.watchStarted = true
+          // }
           if (vars.watchStarted == false) {
             await _buildExtBundle(app, compilation, outputPath, parms, vars, options)
-            vars.watchStarted = true
+            if (command == 'watch') {
+              vars.watchStarted = true
+            }
+            else {
+              vars.callback()
+            }
           }
         }
         else {
