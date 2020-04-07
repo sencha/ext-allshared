@@ -465,7 +465,8 @@ export async function _executeAsync (app, command, parms, opts, compilation, var
     vars.child.stdout.on('data', (data) => {
       var str = data.toString().replace(/\r?\n|\r/g, " ").trim()
       logv(verbose, `${str}`)
-      if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
+      //if (data && data.toString().match(/Fashion waiting for changes\.\.\./)) {
+      if (data && data.toString().match(/aiting for changes\.\.\./)) {
 
 //           const fs = require('fs');
 //           var filename = process.cwd() + vars.touchFile;
