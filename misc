@@ -1,7 +1,20 @@
+        {/* <ExtGridcolumn text="name" dataIndex="name"></ExtGridcolumn>
+        <ExtGridcolumn text="email" dataIndex="email" width="150"></ExtGridcolumn>
+        <ExtGridcolumn
+          text="% Change"
+          dataIndex="priceChangePct"
+          align="right"
+          renderer={ this.renderSign.bind(this, '0.00') }
+        /> */}
+
+
+https://www.rapidtables.com/web/color/gray-color.html
+
+
 git remote add upstream https://github.com/sencha/ext-allshared.git
 git fetch upstream
 git merge upstream/master
-git merge upstream/ext-allshared-7.0.x
+git merge upstream/ext-allshared-7.2.x
 
 
 generators/ext-angular/src/*.*
@@ -57,14 +70,14 @@ https://github.com/maciejtreder/angular-universal-pwa
   //"dest": "../../../ext-angular",
 
 
-ng new angular-cli-with-library2 --style scss --minimal --skip-tests --inline-style --inline-template 
+ng new angular-cli-with-library2 --style scss --minimal --skip-tests --inline-style --inline-template
 
 ng generate library ext-angular
 
 ng build ext-angular
 
 https://dev.to/meltedspark/customizing-angular-cli-6-buildan-alternative-to-ng-eject-1oc4
-ng new ext-angular-builder --style scss --minimal --skip-tests --inline-style --inline-template 
+ng new ext-angular-builder --style scss --minimal --skip-tests --inline-style --inline-template
 npm i -D @angular-builders/custom-webpack
 
       "architect": {
@@ -127,7 +140,7 @@ import {
   ComponentFactoryResolver,
   EmbeddedViewRef,
   ApplicationRef
-  } 
+  }
 from '@angular/core'
 @Injectable({
   providedIn: 'root'
@@ -248,7 +261,7 @@ export function launch(AppModule) {
   //     })
   //   }
   // }
-  // else 
+  // else
   //   { thisVars.production = false }
 
 

@@ -1,0 +1,42 @@
+{
+  "name": "@sencha/ext-angular",
+  "version": "7.0.0",
+  "description": "ext-angular",
+  "main": "index.js",
+  "bin": {
+    "ext-angular": "./bin/ext-angular.js"
+  },
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json"
+  },
+  "peerDependencies": {
+    "@angular/compiler": "~8.2.0",
+    "@angular/core": "~8.2.0",
+    "comment-json": "^2.1.0",
+    "tslib": "^1.10.0"
+  },
+  "dependencies": {
+    "@angular/compiler": "~8.2.0",
+    "@angular/core": "~8.2.0",
+    "@angular/common": "~8.2.0",
+    "@angular/platform-browser": "~8.2.0",
+    "@angular/platform-browser-dynamic": "~8.2.0",
+    "comment-json": "^2.1.0",
+    "zone.js": "~0.10.0",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "minimist": "^1.2.0",
+    "ng-packagr": "^5.4.3",
+    "tsickle":"^0.36.0",
+    "@angular/compiler-cli": "~8.2.0",
+    "typescript": "3.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sencha/ext-angular.git"
+  },
+  "keywords": [],
+  "author": "Sencha",
+  "license": "ISC"
+}

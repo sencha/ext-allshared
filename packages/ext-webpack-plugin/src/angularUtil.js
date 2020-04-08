@@ -65,7 +65,8 @@ export function _extractFromSource(module, options, compilation, extComponents) 
               var tagEnd = start.indexOf('>')
               var end = Math.min(spaceEnd, newlineEnd, tagEnd)
               if (end >= 0) {
-                var xtype = require('./pluginUtil')._toXtype(start.substring(1, end))
+                  //changed this from 1 to five when adding ext- to elements
+                var xtype = require('./pluginUtil')._toXtype(start.substring(5, end))
                 if(extComponents.includes(xtype)) {
                   var theValue = node.value.toLowerCase()
                   if (theValue.indexOf('doctype html') == -1) {
@@ -104,26 +105,29 @@ export function _toProd(vars, options) {
   const mkdirp = require('mkdirp')
   const path = require('path')
 
-  const pathExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-prod`);
+  const toolkit = 'modern';
+  const Toolkit = toolkit.charAt(0).toUpperCase() + toolkit.slice(1);
+
+  const pathExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-${toolkit}-prod`);
   if (!fs.existsSync(pathExtAngularProd)) {
     mkdirp.sync(pathExtAngularProd)
     const t = require('./artifacts').extAngularModule('', '', '')
-    fsx.writeFileSync(`${pathExtAngularProd}/ext-angular.module.ts`, t, 'utf-8', () => {
+    fsx.writeFileSync(`${pathExtAngularProd}/ext-angular-${toolkit}.module.ts`, t, 'utf-8', () => {
       return
     })
   }
 
   var o = {}
   o.where = 'src/app/app.module.ts'
-  o.from = `import { ExtAngularModule } from '@sencha/ext-angular'`
-  o.to = `import { ExtAngularModule } from './ext-angular-prod/ext-angular.module'`
+  o.from = `import { ExtAngular${Toolkit}Module } from '@sencha/ext-angular-${toolkit}'`
+  o.to = `import { ExtAngular${Toolkit}Module } from './ext-angular-${toolkit}-prod/ext-angular-${toolkit}.module'`
   changeIt(o)
 
-  o = {}
-  o.where = 'src/main.ts'
-  o.from = `bootstrapModule( AppModule );`
-  o.to = `enableProdMode();bootstrapModule(AppModule);`
-  changeIt(o)
+//   o = {}
+//   o.where = 'src/main.ts'
+//   o.from = `bootstrapModule( AppModule );`
+//   o.to = `enableProdMode();bootstrapModule(AppModule);`
+//   changeIt(o)
 }
 
 export function _toDev(vars, options) {
@@ -131,20 +135,24 @@ export function _toDev(vars, options) {
   const logv = require('./pluginUtil').logv
   logv(options.verbose,'FUNCTION _toDev')
   const path = require('path')
-  const pathExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-prod`);
+
+  const toolkit = 'modern';
+  const Toolkit = toolkit.charAt(0).toUpperCase() + toolkit.slice(1);
+
+  const pathExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-${toolkit}-prod`);
   require('rimraf').sync(pathExtAngularProd);
 
   var o = {}
   o.where = 'src/app/app.module.ts'
-  o.from = `import { ExtAngularModule } from './ext-angular-prod/ext-angular.module'`
-  o.to = `import { ExtAngularModule } from '@sencha/ext-angular'`
+  o.from = `import { ExtAngular-${Toolkit}Module } from './ext-angular-${toolkit}-prod/ext-angular-${toolkit}.module'`
+  o.to = `import { ExtAngular-${Toolkit}Module } from '@sencha/ext-angular-${toolkit}'`
   changeIt(o)
 
-  o = {}
-  o.where = 'src/main.ts'
-  o.from = `enableProdMode();bootstrapModule(AppModule);`
-  o.to = `bootstrapModule( AppModule );`
-  changeIt(o)
+//   o = {}
+//   o.where = 'src/main.ts'
+//   o.from = `enableProdMode();bootstrapModule(AppModule);`
+//   o.to = `bootstrapModule( AppModule );`
+//   changeIt(o)
 }
 
 
@@ -156,17 +164,30 @@ export function _getAllComponents(vars, options) {
   const path = require('path')
   const fsx = require('fs-extra')
 
+  const toolkit = 'modern';
+  const Toolkit = toolkit.charAt(0).toUpperCase() + toolkit.slice(1);
+
 //    log(vars.app, `Getting all referenced ext-${options.framework} modules`)
   var extComponents = []
-  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src/lib')
+  const packageLibPath = path.resolve(process.cwd(), `node_modules/@sencha/ext-angular-${toolkit}/lib`)
   var files = fsx.readdirSync(packageLibPath)
   files.forEach((fileName) => {
-    if (fileName && fileName.substr(0, 4) == 'ext-') {
-      var end = fileName.substr(4).indexOf('.component')
+    // if (fileName && fileName.substr(0, 4) == 'ext-') {
+    //   var end = fileName.substr(4).indexOf('.component')
+    //   if (end >= 0) {
+    //     extComponents.push(fileName.substring(4, end + 4))
+    //   }
+    // }
+
+    if (fileName && fileName.substr(0, 3) == 'Ext') {
+      var end = fileName.substr(3).indexOf('.ts');
       if (end >= 0) {
-        extComponents.push(fileName.substring(4, end + 4))
+        extComponents.push(fileName.substring(3, end + 3).toLowerCase());
       }
     }
+
+
+
   })
   log(vars.app, `Writing all referenced ext-${options.framework} modules`)
   return extComponents
@@ -180,8 +201,11 @@ export function _writeFilesToProdFolder(vars, options) {
   const path = require('path')
   const fsx = require('fs-extra')
 
-  const packageLibPath = path.resolve(process.cwd(), 'node_modules/@sencha/ext-angular/src/lib')
-  const pathToExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-prod`)
+  const toolkit = 'modern';
+  const Toolkit = toolkit.charAt(0).toUpperCase() + toolkit.slice(1);
+
+  const packageLibPath = path.resolve(process.cwd(), `node_modules/@sencha/ext-angular-${toolkit}/lib`)
+  const pathToExtAngularProd = path.resolve(process.cwd(), `src/app/ext-angular-${toolkit}-prod`)
   const string = 'Ext.create({\"xtype\":\"'
 
   vars.deps.forEach(code => {
@@ -214,9 +238,9 @@ export function _writeFilesToProdFolder(vars, options) {
     var t = require('./artifacts').extAngularModule(
       moduleVars.imports, moduleVars.exports, moduleVars.declarations
     )
-    fsx.writeFileSync(`${pathToExtAngularProd}/ext-angular.module.ts`, t, 'utf-8', ()=>{return})
+    fsx.writeFileSync(`${pathToExtAngularProd}/ext-angular-${toolkit}.module.ts`, t, 'utf-8', ()=>{return})
   }
 
-  const baseContent = fsx.readFileSync(`${packageLibPath}/base.ts`).toString()
-  fsx.writeFileSync(`${pathToExtAngularProd}/base.ts`, baseContent, 'utf-8', ()=>{return})
+  const baseContent = fsx.readFileSync(`${packageLibPath}/eng-base.ts`).toString()
+  fsx.writeFileSync(`${pathToExtAngularProd}/eng-base.ts`, baseContent, 'utf-8', ()=>{return})
 }

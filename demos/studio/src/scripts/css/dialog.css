@@ -1,0 +1,128 @@
+@charset "UTF-8";
+.dialogs {
+  margin-left: -400;
+  position: fixed;
+}
+
+dialog {
+  padding: 0;
+  width: 400px;
+  border: 0;
+  border-radius: 0.6rem;
+  -webkit-box-shadow: 0 0 1em black;
+          box-shadow: 0 0 1em black;
+}
+
+/* native backdrop */
+dialog::-webkit-backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* polyfill backdrop */
+dialog + .backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+dialog[open] {
+  -webkit-animation: slide-up 0.4s ease-out;
+          animation: slide-up 0.4s ease-out;
+}
+
+/* The following styles are for older browsers when using
+   the polyfill. These aren’t necessary for Chrome/Firefox. */
+dialog {
+  display: none;
+  position: absolute;
+  margin: 0 auto;
+  /* should center it, but not working in Safari */
+  max-width: 80vw;
+  background-color: white;
+}
+
+dialog[open] {
+  display: block;
+}
+
+/* prettying things up a bit */
+.close {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.3em;
+  line-height: 0.6;
+  background-color: transparent;
+  border: 0;
+  font-size: 2em;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  padding: 1em;
+}
+
+.modal-header {
+  margin: 0;
+  padding-bottom: 0.6em;
+  background-color: #ddedfd;
+  border-top-left-radius: 0.6rem;
+  border-top-right-radius: 0.6rem;
+  border-bottom: 1px solid #78a4d3;
+}
+
+.modal-footer {
+  border-top: 1px solid #78a4d3;
+}
+
+/* misc page styles -- not important for demo */
+body {
+  margin: 1em;
+}
+
+:first-child {
+  margin-top: 0;
+}
+
+:last-child {
+  margin-bottom: 0;
+}
+
+button {
+  padding: 0.4em 1em 0.2em;
+  font-family: Glober, Helvetica, sans-serif;
+}
+
+@-webkit-keyframes slide-up {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate(0, 15px);
+            transform: translate(0, 15px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate(0, 15px);
+            transform: translate(0, 15px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+  }
+}
+/*# sourceMappingURL=dialog.css.map */

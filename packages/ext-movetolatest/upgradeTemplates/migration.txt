@@ -1,0 +1,23 @@
+-----------------------------------------------------------------------------------------------
+WARNING: upgrade unsuccessful. 
+ext-movetolatest 7.2.0 and later has been deprecated for the following projects:
+ - Reactor
+ - ExtWebComponents + ExtReact
+ - ExtWebComponents + ExtAngular
+ - ExtWebComponents + Vue
+ext-movetolatest no longer supports these projects as of ExtJS 7.0.0.
+-----------------------------------------------------------------------------------------------
+
+** ExtAngular **
+1. To Use the modern toolkit with ExtAngular 7.2 or later: https://github.com/sencha/ext-angular/tree/ext-angular-7.2.x/packages/ext-angular-modern
+2. To Use the classic toolkit with ExtAngular 7.2 or later: https://github.com/sencha/ext-angular/tree/ext-angular-7.2.x/packages/ext-angular-classic
+
+** ExtReact **
+1. To Use the modern toolkit with ExtReact 7.2 or later: https://github.com/sencha/ext-react/tree/ext-react-7.2.x/packages/ext-react-modern
+2. To Use the classic toolkit with ExtReact 7.2 or later: https://github.com/sencha/ext-react/tree/ext-react-7.2.x/packages/ext-react-classic
+
+** ExtWebComponents **
+1. To Use the modern toolkit with ExtWebComponents 7.2 or later: https://github.com/sencha/ext-web-components/tree/ext-web-components-7.2.x/packages/ext-web-components-modern
+2. To Use the classic toolkit with ExtWebComponents 7.2 or later: https://github.com/sencha/ext-web-components/tree/ext-web-components-7.2.x/packages/ext-web-components-classic
+
+For additional resources or help upgrading your application please submit a support ticket at https://support.sencha.com with the subject 'upgrade ExtAngular', 'update ExtWebComponents', etc.

@@ -1,0 +1,36 @@
+/* https://codepen.io/akinjide/pen/BpggrZ
+ */
+ 
+::-webkit-scrollbar {
+	width: 10px;
+	background: gray;
+}
+
+/* ::-webkit-scrollbar-track {
+    color: red
+} */
+
+::-webkit-resizer {
+    color: red
+}
+
+
+/**  STYLE 1 */
+::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #025B80;;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: gray;
+}
+
+
+/* ::-webkit-scrollbar — the entire scrollbar.
+::-webkit-scrollbar-button — the buttons on the scrollbar (arrows pointing upwards and downwards).
+::-webkit-scrollbar-thumb — the draggable scrolling handle.
+::-webkit-scrollbar-track — the track (progress bar) of the scrollbar.
+::-webkit-scrollbar-track-piece — the part of the track (progress bar) not covered by the handle.
+::-webkit-scrollbar-corner — the bottom corner of the scrollbar, where both horizontal and vertical scrollbars meet.
+::-webkit-resizer — the draggable resizing handle that appears at the bottom corner of some elements. */

@@ -1,0 +1,41 @@
+# Getting Started with ExtWebComponents and React.js
+
+Note:  This approach does not utilize @sencha/ext-webpack-plugin
+
+## Login to Sencha npm repository
+
+If you haven't already, log into Sencha's private registry using the credentials you received in your ExtWebComponents trial or subscription activation email. If you don't have credentials, you can get them by [signing up for a trial of ExtWebComponents](https://www.sencha.com/products/extwebcomponents/evaluate/).
+
+Early Adopter
+```bash
+npm login --registry=https://sencha.myget.org/F/early-adopter/npm/ --scope=@sencha
+```
+
+## Create a React application
+
+1 - Run `create-react-app`
+
+    $ npx create-react-app ewc-react-app
+    
+    $ cd ewc-react-app
+
+2 - Add to package.json:
+
+- In 'scripts' section:
+
+      "install": "node ./node_modules/@sencha/ext-all/install-react.js",
+
+- In 'dependencies' section: 
+
+        "@sencha/ext-web-components": "~7.0.0",
+        "@sencha/ext-all": "~7.0.0",
+
+3 - Run `npm install` (for lerna: run `npm install` at the root)
+
+
+4 - Run `npm start`
+
+if instructed, add a .env file to the root and add the following line:
+
+SKIP_PREFLIGHT_CHECK=true
+

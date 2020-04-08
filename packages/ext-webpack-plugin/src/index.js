@@ -1,7 +1,13 @@
-
 'use strict'
 require('@babel/polyfill')
+const fs = require('fs');
+const path = require('path');
 const pluginUtil = require(`./pluginUtil`)
+const replace = require("replace");
+
+const configBundleName = "[name].js";
+const defaultBundleName = "main.js"
+const tmpCmdPluginFile = "temp.txt"
 
 export default class ExtWebpackPlugin {
 
@@ -10,11 +16,26 @@ export default class ExtWebpackPlugin {
     this.vars = constructorOutput.vars
     this.options = constructorOutput.options
 
-    pluginUtil.logv('yes', 'VARS');
-    pluginUtil.logv('yes', JSON.stringify(this.vars));
+    this.vars.child = null;
+    var me = this;
 
-    pluginUtil.logv('yes', 'OPTIONS');
-    pluginUtil.logv('yes', JSON.stringify(this.options));
+    var v = [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`]
+    v.forEach(eventType => {
+      process.on(eventType, function(eventType){
+        if (me.vars.child != null) {
+          console.log('\nnode process and sencha cmd process ended')
+          me.vars.child.kill();
+          me.vars.child = null;
+        }
+        else {
+          if (eventType != 0) {
+            console.log('\nnode process ended')
+          }
+        }
+        process.exit();
+      });
+    })
+    //console.log('added')
   }
 
   apply(compiler) {
@@ -37,9 +58,13 @@ export default class ExtWebpackPlugin {
       }
     })
 
+    //var cRun = 0;
     compiler.hooks.compilation.tap(`ext-compilation`, (compilation) => {
       pluginUtil.logh(app, `HOOK compilation`)
-      pluginUtil._compilation(compiler, compilation, vars, options)
+      //if (cRun == 0) {
+        pluginUtil._compilation(compiler, compilation, vars, options);
+      //}
+      //cRun++;
     })
 
     compiler.hooks.afterCompile.tap('ext-after-compile', (compilation) => {
@@ -47,13 +72,13 @@ export default class ExtWebpackPlugin {
       pluginUtil._afterCompile(compiler, compilation, vars, options)
     })
 
-    compiler.hooks.emit.tapAsync(`ext-emit`, (compilation, callback) => {
-      pluginUtil.logh(app, `HOOK emit (async)`)
+    compiler.hooks.afterEmit.tapAsync('ext-after-emit', (compilation, callback) => {
       pluginUtil._emit(compiler, compilation, vars, options, callback)
     })
 
     compiler.hooks.done.tap(`ext-done`, (stats) => {
       pluginUtil.logh(app, `HOOK done`)
+      // this.postBuildProcess(stats.compilation.outputOptions)
       pluginUtil._done(stats, vars, options)
     })
   }

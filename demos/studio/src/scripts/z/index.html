@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html manifest="">
+<head>
+    <title>z-tabs</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes">
+    <script src="z-gen.js"></script>
+    <script src="z-tabs.js"></script>
+    <script src="z-props.js"></script>
+</head>
+
+<body>
+    <div style="width:500px;height:100px;border: 2px solid rgb(171, 6, 6);">
+
+    <z-tabs>
+        <z-tabpanel tabname="tab 1">
+            <z-props id="ultimateconfigs"></z-props>
+        </z-tabpanel>
+        <z-tabpanel tabname="tab 2a">
+            <div>content2</div>
+        </z-tabpanel>
+        <z-tabpanel tabname="tab 3">
+        </z-tabpanel>
+    </z-tabs>
+
+    </div>
+
+    <button onclick="doClick()">go</button>
+</body>
+
+<style>
+    body {
+        --vscode-tab-activeBackground : blue;
+      margin: 0px;
+      padding: 0px;
+      background: gray;
+      width: 100%;
+      height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    html {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+      -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+    }
+    
+    *, *:before, *:after {
+      -webkit-box-sizing: inherit;
+              box-sizing: inherit;
+    }
+    </style>
+    
+    <script>
+    window.addEventListener('DOMContentLoaded', (event) => {});
+    
+    function doClick() {
+        var ultimateconfigs = document.getElementById('ultimateconfigs');
+    
+    var configs = [
+        {configName: "alignSelf", className: "Ext.Widget", value2: "", type: undefined},
+        {configName: "alwaysOnTop", className: "Ext.Widget", value2: "", type: "boolean"},
+        {configName: "ariaAttributes", className: "Ext.Widget", value2: "", type: "object"},
+        {configName: "axisLock", className: "Ext.Component", value2: "", type: "boolean"},
+        {configName: "bind", className: "Ext.Widget", value2: "", type: "object"}
+    ]
+        console.dir(configs)
+        ultimateconfigs.data = configs;
+    
+    }
+    </script>
+
+
+</html>

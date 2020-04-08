@@ -1,0 +1,79 @@
+<ext-panel
+  onready="main.onViewportReady"
+  title="Sencha Components Documentation"
+  layout="fit"
+  bodyPadding="0"
+  viewport="true"
+>
+  <ext-toolbar docked="top" weight="1" padding="0">
+    <ext-breadcrumbbar
+        extname="breadcrumb"
+        onChange="main.breadcrumbClick"
+        showIcons= "true"
+        useSplitButtons="true"
+        width="100%"
+        height="100%"
+    >
+    </ext-breadcrumbbar>
+    <ext-button text="1" shadow="true"></ext-button>
+  </ext-toolbar>
+
+<ext-panel
+  weight="10"
+  title="left"
+  docked="left"
+  border="true"
+  shadow="true"
+  scrollable="y"
+  resizable='{"edges": "east", "dynamic": "true"}'
+  header="false"
+  collapsible='{"direction": "left"}'
+  collapsed="false"
+  width="320px"
+  extname="navTreePanel"
+>
+  <ext-searchfield
+    flex="1"
+    docked="top"
+    ui="faded"
+    margin="7px"
+    onchange="main.filterNav"
+  >
+  </ext-searchfield>
+  <ext-treelist
+    extname="navTreelist"
+    onselectionchange="main.navTreelistSelectionChange"
+    ui="nav"
+    expanderFirst="false"
+    expanderOnly="false"
+    selectOnExpander="true"
+  >
+  </ext-treelist>
+</ext-panel>
+
+<ext-tabpanel
+  extname="tabPanel"
+  shadow="true"
+  margin="10px"
+  tabBarPosition="top"
+  tabBar='{"layout": {"pack": "start"}, "ui": "tabbar"}'
+  defaults='{"userSelectable": "text", "scrollable": true, "padding": 10, "layout": "fit", "tab":{"xminWidth": "195", "xmaxWidth": "195"}}'
+>
+    <ext-panel extname='overview' title='Overview' iconCls="x-fa fa-book-open">
+      <wc-markdown id="mjg-wc-markdown"></wc-markdown>
+    </ext-panel>
+    <ext-panel extname="properties" title = 'Properties' iconCls="x-fa fa-list-ul" tab='{"badgeText":""}'>
+      <ext-component extname="propertiesheader"></ext-component>
+      <ext-dataview extname="propertiesdetail"></ext-dataview>
+    </ext-panel>
+    <ext-panel extname="methods" title = 'Methods' iconCls="x-fa fa-upload" tab='{"badgeText":""}'></ext-panel>
+    <ext-panel extname="events" title = 'Events' iconCls="x-fa fa-download" tab='{"badgeText":""}'></ext-panel>
+    <ext-panel extname="examples" title = 'Examples' iconCls="x-fa fa-code" tab='{"badgeText":""}'>
+
+    </ext-panel>
+    <!-- <ext-panel extname="webcomponents" title = 'Web Components'  iconCls="x-fa fa-object-group" tab='{}'></ext-panel>
+    <ext-panel extname="angular" title = 'Angular' iconCls="x-fab fa-angular" tab='{}'></ext-panel>
+    <ext-panel extname="react" title = 'React' iconCls="x-fab fa-react" tab='{}'></ext-panel>
+    <ext-panel extname="vue" title = 'Vue' iconCls="x-fab fa-vuejs" tab='{}'></ext-panel> -->
+
+</ext-tabpanel>

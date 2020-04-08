@@ -1,0 +1,261 @@
+body {margin: 0px; padding: 0px; background: lightgray;}
+html {margin: 0px; padding: 0px; width:100%; height: 100%;}
+
+/* https://www.webfx.com/blog/images/assets/cdn.sixrevisions.com/0457-01-css-box-shadow-demo/demo.html */
+
+/* //box-shadow: 3px 3px 5px grey;
+//xbox-shadow: 0 0 8px black; */
+
+/* body {margin: 0px; padding: 0px; background: lightgray;}
+html {margin: 0px; padding: 0px; width:100%; height: 100%;} */
+
+body {margin: 0px; padding: 0px; background: black;}
+html {margin: 0px; padding: 0px; width:100%; height: 100%;box-sizing: border-box;}
+*, *:before, *:after {box-sizing: inherit;}
+
+  
+
+
+
+/* 
+.header {
+    height:50px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: 1;
+    color:#FFF;
+    background: #32373a;
+    overflow-x: hidden;
+}
+
+.footer {
+    height: 50px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    z-index: 1;
+    color:#FFF;
+    background: #32373a;
+    overflow-x: hidden;
+} */
+
+
+/* .arearoot {
+    position: relative;
+    background:#333;
+    height:100%;
+    display: flex;
+
+    flex-direction: column;
+    align-items: stretch;
+    box-shadow: 0 0 10px;
+} */
+
+
+.btn {
+    background-color: #025B80;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    width: 90px;
+  }
+
+
+
+.leftside {
+    height: calc(100% - 100px);
+    width: 250px;
+    top: 50px;
+    left: 0;
+    position: fixed;
+    z-index: 1;
+    background: #32373a;
+    overflow-x: hidden;
+}
+
+.leftside a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 12px;
+    font: 12px/1 Arial, Helvetica, sans-serif;
+    color: #fff;
+}
+    
+.leftside a:hover {
+    color: #f1f1f1;
+}
+
+.xtype {
+    padding: 0;
+    text-decoration: none;
+    display: block;
+    color: #fff;
+}
+
+#leftSide .x-button {
+    color: green !important;
+}
+
+#leftSide .x-dataview {
+    background-color: #32373a;
+}
+
+#leftSide .x-headercontainer {
+    border-color: #32373a;
+    background-color: #32373a;
+}
+
+#leftSide .x-gridcolumn > .x-header-el {
+    color: white;
+    background-color: #32373a;
+    /* background-color: #fafafa; */
+    /* background-color: var(--background-color); */
+    font: 400 10px/12px Roboto, sans-serif;
+    /* border-width: 0 1px 1px 0; */
+    border-style: solid;
+    border-color: #32373a;
+}
+
+#leftSide .x-listitem {
+    color: white;
+    background-color: #32373a;
+    border-width: 0px 0;
+    border-style: solid;
+    border-color: #32373a;;
+}
+
+#leftSide .x-listitem-inner-el {
+    padding: 0;
+}
+
+#leftSide .x-gridrow .x-cells-el {
+    background-color: #32373a;
+}
+
+#leftSide .x-gridcell-body-el {
+    padding: 5px !important;
+}
+
+.rightside {
+    height: 100%;
+    width: 250px;
+    top: 50px;
+    right: 0;
+    position: fixed;
+    z-index: 1;
+    background-color: #32373a;;
+    overflow-x: hidden;
+}
+
+.rightside a {
+padding: 6px 8px 6px 16px;
+text-decoration: none;
+font-size: 25px;
+color: #818181;
+display: block;
+}
+
+::placeholder {
+    color: white; 
+} 
+
+.nnnfloater {
+    position:fixed;
+    width:2px;
+    height:2px;
+    bottom:50px;
+    left:250px;
+    background-color:black;
+    color:#FFF;
+    border-radius:0px;
+    text-align:left;
+    font-size: 10px;
+    box-shadow: 2px 2px 3px #999;
+}
+
+.highlight {
+    position: relative;
+}
+
+.highlight:before {
+    background: transparent;
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999999;
+    box-shadow:
+    inset 0 0 10px #000000;
+}
+
+.highlightselect {
+    position: relative;
+}
+
+.highlightselect:before {
+    background: transparent;
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999999;
+    box-shadow:
+    inset 0 0 40px yellow;
+}
+
+
+
+
+.nnnresp-container {
+    position: absolute;
+    left: 165px;
+    top: 165px;
+    width: calc(100% - 330px);
+    border: 1px solid black;
+    background-color: yellow;
+    height:calc(100% - 330px);
+    text-align: center;
+}
+
+.nnnresp-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.nnnsearch input {
+    border: 0;
+    background-color: #41474c;
+    font-size: 11px;
+    padding: 9px 10px;
+    color: #FFF;
+    border-radius: 3px;
+}
+
+.main {
+    margin-left: 260px; /* Same as the width of the leftside */
+    margin-right: 160px; /* Same as the width of the leftside */
+    font-size: 28px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+    height: 100%;
+}
+
+iframe {
+    display:block;
+    width:100%;
+    height:100%;
+    border-width: 0px;
+}

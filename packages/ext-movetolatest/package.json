@@ -1,0 +1,33 @@
+{
+  "name": "@sencha/ext-movetolatest",
+  "version": "7.2.0",
+  "description": "Sencha ExtMoveToLatest",
+  "bin": {
+    "ext-movetolatest": "ext-movetolatest.js"
+  },
+  "scripts": {
+    "install": "node ./install.js"
+  },
+  "keywords": [
+    "Ext JS",
+    "ext-movetolatest"
+  ],
+  "directories": {
+    "lib": "lib"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "fs-extra": "^7.0.1",
+    "replace-in-file": "~3.4.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sencha/ext-react.git"
+  },
+  "author": "Sencha, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "http://www.sencha.com"
+}

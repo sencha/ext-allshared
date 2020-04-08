@@ -1,0 +1,21 @@
+{
+  "name": "@sencha/ext-runtime-classic-base",
+  "version": "7.1.0",
+  "description": "Sencha ext-runtime-classic-base",
+  "scripts": {
+    "p": "node ./postinstall.js"
+  },
+  "keywords": [],
+  "author": "Sencha, Inc.",
+  "license": "MIT",
+  "homepage": "https://github.com/sencha/ext-runtime-classic-base#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sencha/ext-runtime-classic-base.git"
+  },
+  "peerDependencies": {},
+  "dependencies": {},
+  "devDependencies": {
+    "fs-extra": "~8.1.0"
+  }
+}

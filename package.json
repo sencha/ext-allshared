@@ -1,6 +1,6 @@
 {
   "name": "ext-allshared",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "All Shared packages for ext-* tools",
   "main": "index.js",
   "scripts": {
@@ -17,10 +17,10 @@
   "author": "Sencha, Inc.",
   "license": "MIT",
   "devDependencies": {
-    "lerna": "^3.13.1"
+    "lerna": "^3.13.4"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sencha/ext-allshared"
-  },
+  }
 }

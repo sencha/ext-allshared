@@ -19,6 +19,13 @@ export class base {
   private _extChildren: any = false
   private q: QueryList<any>
 
+  @ContentChild('extroute',{ static : false }) _extroute: any;
+  @ContentChildren('extroute') _extroutes: QueryList<any>;
+  @ContentChild('extitem',{ static : false }) _extitem: any;
+  @ContentChildren('extitem') _extitems: QueryList<any>;
+  @ContentChildren(base) _base: QueryList<any>;
+
+
   constructor(
     nativeElement: any,
     private metaData: any,
@@ -44,7 +51,7 @@ export class base {
     let o: any = {}
     o.xtype = metaData.XTYPE
     let listenersProvided = false
-    for (var i = 0; i < me.metaData.PROPERTIES.length; i++) { 
+    for (var i = 0; i < me.metaData.PROPERTIES.length; i++) {
       var prop = me.metaData.PROPERTIES[i];
       if (prop == 'handler') {
         if (me[prop] != undefined) {
@@ -57,22 +64,22 @@ export class base {
       else if(prop == 'listeners' && me[prop] != undefined) {
         o[prop] = me[prop];
         listenersProvided = true;
-      } 
+      }
       else {
-        if (me[prop] != undefined && 
-            prop != 'listeners' && 
-            prop != 'config' && 
-            prop != 'handler' && 
-            prop != 'fitToParent') { 
-          o[prop] = me[prop]; 
+        if (me[prop] != undefined &&
+            prop != 'listeners' &&
+            prop != 'config' &&
+            prop != 'handler' &&
+            prop != 'fitToParent') {
+          o[prop] = me[prop];
         }
       }
     }
 
     if (true === me.fitToParent) {
-      o.top=0, 
-      o.left=0, 
-      o.width='100%', 
+      o.top=0,
+      o.left=0,
+      o.width='100%',
       o.height='100%'
     }
     if (me.config !== {} ) {
@@ -106,13 +113,12 @@ export class base {
       o.renderTo = undefined;
     }
 
-    this.ext = Ext.create(o)
+    //this.ext = Ext.create(o)
+    Ext.onReady(function() {
+        me.ext = Ext.create(o)
+    });
   }
 
-  @ContentChild('extroute') _extroute: any;
-  @ContentChildren('extroute') _extroutes: QueryList<any>;
-  @ContentChild('extitem') _extitem: any;
-  @ContentChildren('extitem') _extitems: QueryList<any>;
   baseAfterContentInit() {
     if (this._extitems.length == 1) {
         if (this._hostComponent != null) {
@@ -161,17 +167,17 @@ export class base {
         console.log(parentxtype)
         console.log(childxtype)
       }
-    } 
+    }
     if (childxtype === 'tooltip') {
       parentCmp.setTooltip(childCmp)
       return
-    } 
+    }
     if (childxtype === 'plugin') {
       parentCmp.setPlugin(childCmp)
       return
-    } 
+    }
     else if (
-      parentxtype === 'button' || 
+      parentxtype === 'button' ||
       parentxtype === 'menuitem' ||
       parentxtype === 'menucheckitem'
       ) {
@@ -181,11 +187,11 @@ export class base {
       } else {
         console.log('child not added')
       }
-    } 
+    }
     if (childxtype === 'toolbar' && Ext.isClassic === true) {
       parentCmp.addDockedItems(childCmp)
       return
-    } 
+    }
     else if ((childxtype === 'toolbar' || childxtype === 'titlebar') && parentCmp.getHideHeaders != undefined) {
       if (parentCmp.getHideHeaders() === false) {
         //var j: any = parentCmp.items.items.length
@@ -196,7 +202,7 @@ export class base {
         parentCmp.add(childCmp)
         return
       }
-    } 
+    }
      if (parentCmp.add != undefined) {
       parentCmp.add(childCmp)
       return
@@ -322,7 +328,7 @@ export class base {
 //        this.subscriptions.push(sub);
 //        return sub;
 //    }
- 
+
 //    private unsubscribeAll() {
 //        this.subscriptions.forEach(element => {
 //            !element.isUnsubscribed && element.unsubscribe();
