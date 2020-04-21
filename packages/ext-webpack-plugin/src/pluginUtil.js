@@ -256,6 +256,11 @@ export async function _emit(compiler, compilation, vars, options, callback) {
               vars.callback()
             }
           }
+          //mjg
+          else {
+            vars.callback()
+          }
+          //mjg
         }
         else {
           vars.callback()
