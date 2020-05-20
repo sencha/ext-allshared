@@ -37,13 +37,13 @@ cd ext-web-components-{toolkit}{bundle}-demo
 ```sh
 {
   "name": "ext-web-components-{toolkit}{bundle}-demo",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "description": "ext-web-components-{toolkit}{bundle}-demo",
   "scripts": {
     "start": "npx servor . index.html 8080 --reload --browse"
   },
   "devDependencies": {
-    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.2.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.3.0",
     "servor": "~3.1.0"
   },
   "author": "",

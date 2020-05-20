@@ -1,7 +1,7 @@
 {
   "name": "@sencha/ext-angular-{toolkit}{bundle}",
   "description": "ext-angular-{toolkit}{bundle}",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "scripts": {
     "packagr": "ng-packagr -p ng-package.json"
   },
@@ -11,14 +11,14 @@
   "main": "index.js",
   "private": false,
   "peerDependencies": {
-    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.2.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.3.0",
     "@angular/compiler": "~9.0.0",
     "@angular/core": "~9.0.0",
     "tslib": "^1.10.0"
   },
   "dependencies": {
     "fs-extra": "~8.1.0",
-    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.2.0",
+    "@sencha/ext-web-components-{toolkit}{bundle}": "~7.3.0",
     "script-loader": "^0.7.2",
     "tslib": "^1.10.0"
   },

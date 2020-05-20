@@ -56,7 +56,7 @@ exports.setGlobals =() => {
   info.toolkit = toolkit;
   info.Toolkit = info.toolkit.charAt(0).toUpperCase() + info.toolkit.slice(1);
   info.toolkitshown = `-${info.toolkit}`;
-  info.version = '7.2.0';
+  info.version = '7.3.0';
   //info.reactPrefix = 'Ext';
   info.shortname = process.argv[2];
   info.Shortname = info.shortname.charAt(0).toUpperCase() + info.shortname.slice(1);

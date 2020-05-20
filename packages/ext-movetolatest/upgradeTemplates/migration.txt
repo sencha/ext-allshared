@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------------
 WARNING: upgrade unsuccessful. 
-ext-movetolatest 7.2.0 and later has been deprecated for the following projects:
+ext-movetolatest 7.3.0 and later has been deprecated for the following projects:
  - Reactor
  - ExtWebComponents + ExtReact
  - ExtWebComponents + ExtAngular
