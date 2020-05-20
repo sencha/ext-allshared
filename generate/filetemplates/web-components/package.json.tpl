@@ -1,6 +1,6 @@
 {
   "name": "@sencha/ext-web-components-{toolkit}{bundle}",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "main2wcx": "ext-web-components-{toolkit}{bundle}.module.js",
   "main": "index.js",
   "private": false,
