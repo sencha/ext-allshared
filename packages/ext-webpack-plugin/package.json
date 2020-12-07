@@ -1,6 +1,6 @@
 {
   "name": "@sencha/ext-webpack-plugin",
-  "version": "7.3.0",
+  "version": "7.4.0",
   "description": "A webpack plugin for ext-* applications",
   "main": "dist/index.js",
   "scripts": {
@@ -8,10 +8,9 @@
     "zzzpostinstall": "npm run build"
   },
   "dependencies": {
-    "@sencha/cmd": "^7.3.0",
     "@babel/generator": "^7.9.5",
     "@babel/polyfill": "^7.8.7",
-
+    "@sencha/cmd": "^7.4.0",
     "ast-traverse": "^0.1.1",
     "babylon": "^6.18.0",
     "chalk": "^4.0.0",
@@ -23,9 +22,9 @@
     "lodash.uniq": "^4.5.0",
     "opn": "^6.0.0",
     "recursive-readdir-sync": "^1.0.6",
+    "replace": "^1.1.5",
     "schema-utils": "^2.6.5",
-    "switchit": "^1.0.8",
-    "replace": "^1.1.5"
+    "switchit": "^1.0.8"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
