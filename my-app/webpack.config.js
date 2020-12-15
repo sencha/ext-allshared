@@ -1,25 +1,23 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { BaseHrefWebpackPlugin } = require('base-href-webpack-plugin');
 const ExtWebpackPlugin = require('@sencha/ext-webpack-plugin');
 const portfinder = require('portfinder');
 
 module.exports = async function (env) {
+
+  // Utility function for retrieving environment variables
   function get(it, val) {if(env == undefined) {return val} else if(env[it] == undefined) {return val} else {return env[it]}}
 
-  //******* */
+  const rules = [
+    { test: /.(js)$/, use: ['babel-loader'] }
+  ]
+  const resolve = {}
+  const host = '0.0.0.0'
+  const stats = 'none'
+
   var framework     = get('framework',     'extjs')
   var contextFolder = get('contextFolder', './')
   var entryFile     = get('entryFile',     './index.js')
   var outputFolder  = get('outputFolder',  './')
-  const rules =[
-    //{ test: /.(js|jsx)$/, exclude: /node_modules/ }
-    { test: /.(js)$/, use: ['babel-loader'] }
-  ]
-  const resolve = {
-  }
-  //******* */
-
   var toolkit       = get('toolkit',       'modern')
   var theme         = get('theme',         'theme-material')
   var packages      = get('packages',      ['treegrid'])
@@ -31,14 +29,22 @@ module.exports = async function (env) {
   var browser       = get('browser',       'yes')
   var watch         = get('watch',         'yes')
   var verbose       = get('verbose',       'no')
-  var basehref      = get('basehref',      '/')
+  var isProd        = false;
+  var cmdopts     = get('cmdopts',     '')
 
-  const isProd = environment === 'production'
+  if (environment === 'production') { isProd = true; }
+
+  // The build.xml Sencha Cmd plugin uses a regex to locate the webpack bundle for use in app.json to be included in
+  // the different build environments. For development builds, the file is served in memory.
+  // For production builds, the hashed file name is stored as an ant property and added to the build via app.json.
+  const bundleFormat = isProd ? "[name].[hash].js" : "[name].js";
+
+  // Using Live Reload with a root context directory, necessary for Sencha Cmd, requires these folders be ignored
+  const ignoreFolders = [path.resolve(__dirname, './generatedFiles'), path.resolve(__dirname, './build')]
+
   portfinder.basePort = (env && env.port) || 1962
   return portfinder.getPortPromise().then(port => {
     const plugins = [
-      new HtmlWebpackPlugin({ template: "index.html", hash: true, inject: "body" }),
-      new BaseHrefWebpackPlugin({ baseHref: basehref }),
       new ExtWebpackPlugin({
         framework: framework,
         toolkit: toolkit,
@@ -47,15 +53,15 @@ module.exports = async function (env) {
         script: script,
         emit: emit,
         port: port,
-        profile: profile, 
+        profile: profile,
         environment: environment,
         treeshake: treeshake,
         browser: browser,
         watch: watch,
-        verbose: verbose
+        verbose: verbose,
+        cmdopts: cmdopts
       })
     ]
-
     return {
       mode: environment,
       devtool: (environment === 'development') ? 'inline-source-map' : false,
@@ -63,7 +69,7 @@ module.exports = async function (env) {
       entry: entryFile,
       output: {
         path: path.join(__dirname, outputFolder),
-        filename: "[name].js"
+        filename: bundleFormat
       },
       plugins: plugins,
       module: {
@@ -75,15 +81,19 @@ module.exports = async function (env) {
       optimization: { noEmitOnErrors: true },
       node: false,
       devServer: {
-        contentBase: outputFolder,
-        hot: !isProd,
-        historyApiFallback: true,
-        host: '0.0.0.0',
+        watchOptions: {
+          ignored: ignoreFolders
+        },
+        contentBase: [path.resolve(__dirname, outputFolder)],
+        watchContentBase: !isProd,
+        liveReload: !isProd,
+        historyApiFallback: !isProd,
+        host: host,
         port: port,
-        disableHostCheck: false,
+        disableHostCheck: isProd,
         compress: isProd,
-        inline:!isProd,
-        stats: 'none'
+        inline: !isProd,
+        stats: stats
       }
     }
   })

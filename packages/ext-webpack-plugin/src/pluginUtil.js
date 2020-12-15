@@ -26,6 +26,7 @@ export function _constructor(initialOptions) {
     vars.app = _getApp()
     var pluginName = vars.pluginName
     var app = vars.app
+    vars.testing = false
 
     logv(verbose, 'FUNCTION _constructor')
     logv(verbose, `pluginName - ${pluginName}`)
@@ -38,6 +39,13 @@ export function _constructor(initialOptions) {
     }
     else {
       vars.production = false
+    }
+
+    if(options.cmdopts && (options.cmdopts.includes('--testing') || options.cmdopts.includes('--environment=testing'))){
+      vars.production = false
+      vars.testing = true
+      options.browser = 'no'
+      options.watch = 'no'
     }
 
     log(app, _getVersions(pluginName, framework))
@@ -55,6 +63,10 @@ export function _constructor(initialOptions) {
       if (vars.production == true) {
         vars.buildstep = '1 of 1'
         log(app, 'Starting production build for ' + framework)
+      }
+      else if(vars.testing == true){
+        vars.buildstep = '1 of 1'
+        log(app, 'Starting testing build for ' + framework)
       }
       else {
         vars.buildstep = '1 of 1'
@@ -231,18 +243,25 @@ export async function _emit(compiler, compilation, vars, options, callback) {
           {command = 'build'}
         if (vars.rebuild == true) {
           var parms = []
+          var buildEnviroment = vars.testing === true ? 'testing' : options.environment
+          if(!Array.isArray(options.cmdopts)){
+            options.cmdopts.split(' ')
+          }
           if (options.profile == undefined || options.profile == '' || options.profile == null) {
             if (command == 'build')
-              { parms = ['app', command, options.environment] }
+              { parms = ['app', command, buildEnviroment] }
             else
-              { parms = ['app', command, '--web-server', 'false', options.environment] }
+              { parms = ['app', command, '--web-server', 'false', buildEnviroment] }
           }
           else {
             if (command == 'build')
-              {parms = ['app', command, options.profile, options.environment]}
+              {parms = ['app', command, options.profile, buildEnviroment]}
             else
-              {parms = ['app', command, '--web-server', 'false', options.profile, options.environment]}
+              {parms = ['app', command, '--web-server', 'false', options.profile, buildEnviroment]}
           }
+          options.cmdopts.forEach(function(element){
+              parms.splice(parms.indexOf(command)+1, 0, element);
+          })
           // if (vars.watchStarted == false) {
           //   await _buildExtBundle(app, compilation, outputPath, parms, vars, options)
           //   vars.watchStarted = true
@@ -319,11 +338,17 @@ export function _done(stats, vars, options) {
       if (vars.production == true) {
         require('./pluginUtil').log(vars.app, `Ending production build for ${framework}`)
       }
+      else if (vars.testing == true) {
+        require('./pluginUtil').log(vars.app, `Ending testing build for ${framework}`)
+      }
       else {
         require('./pluginUtil').log(vars.app, `Ending development build for ${framework}`)
       }
     }
     if (vars.buildstep == '2 of 2') {
+      if(vars.testing == true){
+        require('./pluginUtil').log(vars.app, `Ending testing build for ${framework}`)
+      }
       require('./pluginUtil').log(vars.app, `Ending production build for ${framework}`)
     }
   }
@@ -721,6 +746,10 @@ function _getValidateOptions() {
         "errorMessage": "should be 'yes' or 'no' string value (NOT true or false)",
         "type": ["string"]
       },
+      "cmdopts": {
+        "errorMessage": "should be a sencha cmd option or argument string",
+        "type": ["string", "array"]
+      }
     },
     "additionalProperties": false
   };
@@ -744,6 +773,7 @@ function _getDefaultOptions() {
     watch: 'yes',
     verbose: 'no',
     inject: 'yes',
-    intellishake: 'yes'
+    intellishake: 'yes',
+    cmdopts: ''
   }
 }
