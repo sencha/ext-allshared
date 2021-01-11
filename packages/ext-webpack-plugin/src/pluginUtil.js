@@ -245,7 +245,7 @@ export async function _emit(compiler, compilation, vars, options, callback) {
           var parms = []
           var buildEnviroment = vars.testing === true ? 'testing' : options.environment
           if(!Array.isArray(options.cmdopts)){
-            options.cmdopts.split(' ')
+            options.cmdopts = options.cmdopts.split(' ')
           }
           if (options.profile == undefined || options.profile == '' || options.profile == null) {
             if (command == 'build')
