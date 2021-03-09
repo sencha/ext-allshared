@@ -32,7 +32,7 @@ export function _constructor(initialOptions) {
     logv(verbose, `pluginName - ${pluginName}`)
     logv(verbose, `app - ${app}`)
 
-    if (options.environment == 'production') {
+    if (options.environment == 'production' || (options.cmdopts.includes('--production') || options.cmdopts.includes('--environment=production'))) {
       vars.production = true
       options.browser = 'no'
       options.watch = 'no'
@@ -242,8 +242,16 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         else
           {command = 'build'}
         if (vars.rebuild == true) {
-          var parms = []
-          var buildEnviroment = vars.testing === true ? 'testing' : options.environment
+          var parms = [],
+          buildEnviroment;
+
+          if(vars.testing === true){
+            buildEnviroment = 'testing';
+          }else if (vars.production === true){
+            buildEnviroment = 'production';
+          }else{
+            buildEnviroment = 'development';
+          }
           if(!Array.isArray(options.cmdopts)){
             options.cmdopts = options.cmdopts.split(' ')
           }
