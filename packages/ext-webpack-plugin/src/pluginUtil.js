@@ -32,20 +32,26 @@ export function _constructor(initialOptions) {
     logv(verbose, `pluginName - ${pluginName}`)
     logv(verbose, `app - ${app}`)
 
-    if (options.environment == 'production') {
-      vars.production = true
-      options.browser = 'no'
-      options.watch = 'no'
-    }
-    else {
-      vars.production = false
-    }
-
-    if(options.cmdopts && (options.cmdopts.includes('--testing') || options.cmdopts.includes('--environment=testing'))){
-      vars.production = false
-      vars.testing = true
-      options.browser = 'no'
-      options.watch = 'no'
+    if (options.environment == 'production' ||
+        options.cmdopts.includes('--production') ||
+        options.cmdopts.includes('-pr') ||
+        options.cmdopts.includes('--environment=production')
+      ) {
+      vars.production = true;
+      options.browser = 'no';
+      options.watch = 'no';
+      options.buildEnvironment = 'production';
+    } else if (options.cmdopts && (options.cmdopts.includes('--testing') ||
+               options.cmdopts.includes('-te') ||
+               options.cmdopts.includes('--environment=testing'))) {
+      vars.production = false;
+      vars.testing = true;
+      options.browser = 'no';
+      options.watch = 'no';
+      options.buildEnvironment = 'testing';
+    } else {
+      options.buildEnvironment = 'development';
+      vars.production = false;
     }
 
     log(app, _getVersions(pluginName, framework))
@@ -88,7 +94,7 @@ export function _constructor(initialOptions) {
       vars.buildstep = '1 of 1'
       log(app, 'Starting development build for ' + framework)
     }
-    logv(verbose, 'Building for ' + options.environment + ', ' + 'treeshake is ' + options.treeshake+ ', ' + 'intellishake is ' + options.intellishake)
+    logv(verbose, 'Building for ' + options.buildEnvironment + ', ' + 'treeshake is ' + options.treeshake+ ', ' + 'intellishake is ' + options.intellishake)
 
     var configObj = { vars: vars, options: options };
     return configObj;
@@ -133,7 +139,7 @@ export function _compilation(compiler, compilation, vars, options) {
     logv(verbose, 'FUNCTION _compilation')
 
     if (framework != 'extjs') {
-      if (options.treeshake === 'yes' && options.environment === 'production') {
+      if (options.treeshake === 'yes' && options.buildEnvironment === 'production') {
         var extComponents = [];
 
         //mjg for 1 step build
@@ -243,21 +249,20 @@ export async function _emit(compiler, compilation, vars, options, callback) {
           {command = 'build'}
         if (vars.rebuild == true) {
           var parms = []
-          var buildEnviroment = vars.testing === true ? 'testing' : options.environment
           if(!Array.isArray(options.cmdopts)){
             options.cmdopts = options.cmdopts.split(' ')
           }
           if (options.profile == undefined || options.profile == '' || options.profile == null) {
             if (command == 'build')
-              { parms = ['app', command, buildEnviroment] }
+              { parms = ['app', command, options.buildEnvironment] }
             else
-              { parms = ['app', command, '--web-server', 'false', buildEnviroment] }
+              { parms = ['app', command, '--web-server', 'false', options.buildEnvironment] }
           }
           else {
             if (command == 'build')
-              {parms = ['app', command, options.profile, buildEnviroment]}
+              {parms = ['app', command, options.profile, options.buildEnvironment]}
             else
-              {parms = ['app', command, '--web-server', 'false', options.profile, buildEnviroment]}
+              {parms = ['app', command, '--web-server', 'false', options.profile, options.buildEnvironment]}
           }
           options.cmdopts.forEach(function(element){
               parms.splice(parms.indexOf(command)+1, 0, element);
