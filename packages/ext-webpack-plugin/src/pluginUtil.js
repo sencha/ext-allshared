@@ -35,7 +35,8 @@ export function _constructor(initialOptions) {
     if (options.environment == 'production' ||
         options.cmdopts.includes('--production') ||
         options.cmdopts.includes('-pr') ||
-        options.cmdopts.includes('--environment=production')
+        options.cmdopts.includes('--environment=production') ||
+        options.cmdopts.includes('-e=production')
       ) {
       vars.production = true;
       options.browser = 'no';
@@ -43,7 +44,9 @@ export function _constructor(initialOptions) {
       options.buildEnvironment = 'production';
     } else if (options.cmdopts && (options.cmdopts.includes('--testing') ||
                options.cmdopts.includes('-te') ||
-               options.cmdopts.includes('--environment=testing'))) {
+               options.cmdopts.includes('--environment=testing') ||
+               options.cmdopts.includes('-e=testing'))
+    ) {
       vars.production = false;
       vars.testing = true;
       options.browser = 'no';
