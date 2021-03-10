@@ -32,7 +32,9 @@ export function _constructor(initialOptions) {
     logv(verbose, `pluginName - ${pluginName}`)
     logv(verbose, `app - ${app}`)
 
-    if (options.environment == 'production' || (options.cmdopts.includes('--production') || options.cmdopts.includes('--environment=production'))) {
+    if (options.environment == 'production' ||
+        (options.cmdopts.includes('--production') || options.cmdopts.includes('-pr') ||
+            options.cmdopts.includes('--environment=production') || options.cmdopts.includes('-e=production'))) {
       vars.production = true
       options.browser = 'no'
       options.watch = 'no'
@@ -41,7 +43,9 @@ export function _constructor(initialOptions) {
       vars.production = false
     }
 
-    if(options.cmdopts && (options.cmdopts.includes('--testing') || options.cmdopts.includes('--environment=testing'))){
+    if(options.cmdopts &&
+        (options.cmdopts.includes('--testing') || options.cmdopts.includes('-te') ||
+            options.cmdopts.includes('--environment=testing') || options.cmdopts.includes('-e=testing'))){
       vars.production = false
       vars.testing = true
       options.browser = 'no'
@@ -243,29 +247,30 @@ export async function _emit(compiler, compilation, vars, options, callback) {
           {command = 'build'}
         if (vars.rebuild == true) {
           var parms = [],
-          buildEnviroment;
+          buildEnvironment;
 
           if(vars.testing === true){
-            buildEnviroment = 'testing';
+            buildEnvironment = 'testing';
           }else if (vars.production === true){
-            buildEnviroment = 'production';
+            buildEnvironment = 'production';
           }else{
-            buildEnviroment = 'development';
+            buildEnvironment = 'development';
           }
+          logv(verbose, `buildEnvironment: ${buildEnvironment}`);
           if(!Array.isArray(options.cmdopts)){
             options.cmdopts = options.cmdopts.split(' ')
           }
           if (options.profile == undefined || options.profile == '' || options.profile == null) {
             if (command == 'build')
-              { parms = ['app', command, buildEnviroment] }
+              { parms = ['app', command, buildEnvironment] }
             else
-              { parms = ['app', command, '--web-server', 'false', buildEnviroment] }
+              { parms = ['app', command, '--web-server', 'false', buildEnvironment] }
           }
           else {
             if (command == 'build')
-              {parms = ['app', command, options.profile, buildEnviroment]}
+              {parms = ['app', command, options.profile, buildEnvironment]}
             else
-              {parms = ['app', command, '--web-server', 'false', options.profile, buildEnviroment]}
+              {parms = ['app', command, '--web-server', 'false', options.profile, buildEnvironment]}
           }
           options.cmdopts.forEach(function(element){
               parms.splice(parms.indexOf(command)+1, 0, element);
