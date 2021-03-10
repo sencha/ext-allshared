@@ -33,23 +33,28 @@ export function _constructor(initialOptions) {
     logv(verbose, `app - ${app}`)
 
     if (options.environment == 'production' ||
-        (options.cmdopts.includes('--production') || options.cmdopts.includes('-pr') ||
-            options.cmdopts.includes('--environment=production') || options.cmdopts.includes('-e=production'))) {
-      vars.production = true
-      options.browser = 'no'
-      options.watch = 'no'
-    }
-    else {
-      vars.production = false
-    }
-
-    if(options.cmdopts &&
-        (options.cmdopts.includes('--testing') || options.cmdopts.includes('-te') ||
-            options.cmdopts.includes('--environment=testing') || options.cmdopts.includes('-e=testing'))){
-      vars.production = false
-      vars.testing = true
-      options.browser = 'no'
-      options.watch = 'no'
+        options.cmdopts.includes('--production') ||
+        options.cmdopts.includes('-pr') ||
+        options.cmdopts.includes('--environment=production') ||
+        options.cmdopts.includes('-e=production')
+      ) {
+      vars.production = true;
+      options.browser = 'no';
+      options.watch = 'no';
+      options.buildEnvironment = 'production';
+    } else if (options.cmdopts && (options.cmdopts.includes('--testing') ||
+               options.cmdopts.includes('-te') ||
+               options.cmdopts.includes('--environment=testing') ||
+               options.cmdopts.includes('-e=testing'))
+    ) {
+      vars.production = false;
+      vars.testing = true;
+      options.browser = 'no';
+      options.watch = 'no';
+      options.buildEnvironment = 'testing';
+    } else {
+      options.buildEnvironment = 'development';
+      vars.production = false;
     }
 
     log(app, _getVersions(pluginName, framework))
@@ -92,7 +97,7 @@ export function _constructor(initialOptions) {
       vars.buildstep = '1 of 1'
       log(app, 'Starting development build for ' + framework)
     }
-    logv(verbose, 'Building for ' + options.environment + ', ' + 'treeshake is ' + options.treeshake+ ', ' + 'intellishake is ' + options.intellishake)
+    logv(verbose, 'Building for ' + options.buildEnvironment + ', ' + 'treeshake is ' + options.treeshake+ ', ' + 'intellishake is ' + options.intellishake)
 
     var configObj = { vars: vars, options: options };
     return configObj;
@@ -137,7 +142,7 @@ export function _compilation(compiler, compilation, vars, options) {
     logv(verbose, 'FUNCTION _compilation')
 
     if (framework != 'extjs') {
-      if (options.treeshake === 'yes' && options.environment === 'production') {
+      if (options.treeshake === 'yes' && options.buildEnvironment === 'production') {
         var extComponents = [];
 
         //mjg for 1 step build
@@ -246,31 +251,21 @@ export async function _emit(compiler, compilation, vars, options, callback) {
         else
           {command = 'build'}
         if (vars.rebuild == true) {
-          var parms = [],
-          buildEnvironment;
-
-          if(vars.testing === true){
-            buildEnvironment = 'testing';
-          }else if (vars.production === true){
-            buildEnvironment = 'production';
-          }else{
-            buildEnvironment = 'development';
-          }
-          logv(verbose, `buildEnvironment: ${buildEnvironment}`);
+          var parms = []
           if(!Array.isArray(options.cmdopts)){
             options.cmdopts = options.cmdopts.split(' ')
           }
           if (options.profile == undefined || options.profile == '' || options.profile == null) {
             if (command == 'build')
-              { parms = ['app', command, buildEnvironment] }
+              { parms = ['app', command, options.buildEnvironment] }
             else
-              { parms = ['app', command, '--web-server', 'false', buildEnvironment] }
+              { parms = ['app', command, '--web-server', 'false', options.buildEnvironment] }
           }
           else {
             if (command == 'build')
-              {parms = ['app', command, options.profile, buildEnvironment]}
+              {parms = ['app', command, options.profile, options.buildEnvironment]}
             else
-              {parms = ['app', command, '--web-server', 'false', options.profile, buildEnvironment]}
+              {parms = ['app', command, '--web-server', 'false', options.profile, options.buildEnvironment]}
           }
           options.cmdopts.forEach(function(element){
               parms.splice(parms.indexOf(command)+1, 0, element);
