@@ -30,17 +30,19 @@ class ExtWebpackPlugin {
     var v = [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`];
     v.forEach(eventType => {
       process.on(eventType, function (eventType) {
-        if (me.vars.child != null) {
-          console.log('\nnode process and sencha cmd process ended');
-          me.vars.child.kill();
-          me.vars.child = null;
-        } else {
-          if (eventType != 0) {
-            console.log('\nnode process ended');
+        if (v.includes(eventType)) {
+          if (me.vars.child != null) {
+            console.log('\nnode process and sencha cmd process ended');
+            me.vars.child.kill();
+            me.vars.child = null;
+          } else {
+            if (eventType != 0) {
+              console.log('\nnode process ended');
+            }
           }
-        }
 
-        process.exit();
+          process.exit();
+        }
       });
     }); //console.log('added')
   }
