@@ -21,21 +21,22 @@ export default class ExtWebpackPlugin {
 
     var v = [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`]
     v.forEach(eventType => {
-      process.on(eventType, function(eventType){
-        if (me.vars.child != null) {
-          console.log('\nnode process and sencha cmd process ended')
-          me.vars.child.kill();
-          me.vars.child = null;
-        }
-        else {
-          if (eventType != 0) {
-            console.log('\nnode process ended')
+      process.on(eventType, function (eventType) {
+        if (v.includes(eventType)) {
+          if (me.vars.child != null) {
+            console.log('\nnode process and sencha cmd process ended');
+            me.vars.child.kill();
+            me.vars.child = null;
+          } else {
+            if (eventType != 0) {
+              console.log('\nnode process ended');
+            }
           }
+
+          process.exit();
         }
-        process.exit();
       });
-    })
-    //console.log('added')
+    });
   }
 
   apply(compiler) {
@@ -53,7 +54,7 @@ export default class ExtWebpackPlugin {
       pluginUtil._thisCompilation(compiler, compilation, vars, options)
 
       if (vars.pluginErrors.length > 0) {
-        compilation.errors.push( new Error(vars.pluginErrors.join("")) )
+        compilation.errors.push(new Error(vars.pluginErrors.join("")))
         return
       }
     })
@@ -62,7 +63,7 @@ export default class ExtWebpackPlugin {
     compiler.hooks.compilation.tap(`ext-compilation`, (compilation) => {
       pluginUtil.logh(app, `HOOK compilation`)
       //if (cRun == 0) {
-        pluginUtil._compilation(compiler, compilation, vars, options);
+      pluginUtil._compilation(compiler, compilation, vars, options);
       //}
       //cRun++;
     })
