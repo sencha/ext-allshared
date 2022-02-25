@@ -13,7 +13,7 @@ version = pkg.version
 
 console.log (`Welcome to ${boldGreen('Sencha Ext MoveToLatest')} v${version}
 
-This tool upgrades applications generated with previous versions of ext-gen, ext-react-gen, ext-angular-gen, or ExtJSReactor to the 7.5.0 version of the same product.
+This tool upgrades applications generated with previous versions of ext-gen, ext-react-gen, ext-angular-gen, or ExtJSReactor to the 7.5.1 version of the same product.
 
 Ext MoveToLatest must be run in an existing ExtGen, ExtReact, ExtAngular, or ExtJSReactor project folder
 
