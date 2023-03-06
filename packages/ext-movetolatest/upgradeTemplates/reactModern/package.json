@@ -10,11 +10,11 @@
     "@babel/polyfill": "^7.7.0",
     "@babel/runtime": "^7.7.7",
 
-    "@sencha/ext": "~7.6.0",
-    "@sencha/ext-modern": "~7.6.0",
-    "@sencha/ext-modern-theme-material": "~7.6.0",
-    "@sencha/ext-modern-treegrid": "~7.6.0",
-    "@sencha/ext-react-modern": "~7.6.0",
+    "@sencha/ext": "~7.7.0",
+    "@sencha/ext-modern": "~7.7.0",
+    "@sencha/ext-modern-theme-material": "~7.7.0",
+    "@sencha/ext-modern-treegrid": "~7.7.0",
+    "@sencha/ext-react-modern": "~7.7.0",
 
     "prop-types": "^15.7.2",
     "react": "~16.12.0",
