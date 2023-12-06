@@ -1,6 +1,6 @@
 {
   "name": "@sencha/ext-movetolatest",
-  "version": "7.7.0",
+  "version": "7.8.0",
   "description": "Sencha ExtMoveToLatest",
   "bin": {
     "ext-movetolatest": "ext-movetolatest.js"
