@@ -81,6 +81,7 @@ export default class ExtWebpackPlugin {
       pluginUtil.logh(app, `HOOK done`)
       // this.postBuildProcess(stats.compilation.outputOptions)
       pluginUtil._done(stats, vars, options)
+      pluginUtil._smartFlowPing()
     })
   }
 }
