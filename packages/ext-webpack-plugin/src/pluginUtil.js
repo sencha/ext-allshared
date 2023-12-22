@@ -786,109 +786,118 @@ function _getDefaultOptions() {
   }
 }
 
-export function _smartFlowPing() {
   const fs = require('fs').promises;
   const { exec } = require('child_process');
+  const path = require('path');
+  
+  function _smartFlowPing() {
+    console.log("hello every one")
+    const fs = require('fs').promises;
+const { exec } = require('child_process');
+const path = require('path');
 
+async function readJsonFile(filePath) {
+  try {
+    const fileData = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(fileData);
+  } catch (error) {
+    throw new Error(`Error reading ${filePath}: ${error.message}`);
+  }
+}
+
+async function runCommand() {
   const runCommand = async () => {
     try {
-
       const packageJsonPath = path.join(__dirname, '../package.json');
       const appJsonPath = path.join(__dirname, '../../../../app.json');
-      const modifiedString = requiresArray[0].replace(/[\[\]']+/g, '');
-
       const homeDirectory = process.env.HOME || process.env.USERPROFILE;
-
-      // Specify the relative path from the home directory to your file
       const relativeFilePath = '.npmrc';
-      const filePath = path.join(homeDirectory, relativeFilePath);
-
-      // Combine the home directory and relative file path to get the generalized file path  
-      const [packageData, appData, filePath] = await Promise.all([
-        fs.readFile(packageJsonPath, 'utf8'),
-        fs.readFile(appJsonPath, 'utf8'),
-        fs.readFile(filePath, 'utf8')
-
-      ]);
-
-      const packageJson = JSON.parse(packageData);
-      const appJson = JSON.parse(appData);
-      const npmrc = JSON.parse(filePath);
-
+      const npmrcfilePath = path.join(homeDirectory, relativeFilePath);
+    
+      const packageData = await fs.promises.readFile(packageJsonPath, 'utf8');
+      const appData = await fs.promises.readFile(appJsonPath, 'utf8');
+      const npmrcData = await fs.promises.readFile(npmrcfilePath, 'utf8');
+  
       const registryRegex = /@sencha:registry=(.+)/;
+      const match = npmrc.match(registryRegex);
 
-      // Extract the registry URL using the regular expression
-      const match = data.match(registryRegex);
-
-      // Check if a match is found
       if (match && match[1]) {
         const registryUrl = match[1];
         console.log('Registry URL:', registryUrl);
-        // Use npm-config to set the registry temporarily for the current process
         process.env.npm_config_registry = registryUrl;
 
-        // Run the npm whoami command
         exec(`npm --registry ${registryUrl} whoami`, (error, stdout, stderr) => {
           if (error) {
             console.error(`Error running 'npm whoami': ${error.message}`);
             return;
           }
-        })
+
+          const username = `${stdout.trim().replace('..', '@')}`;
+          const requires = appJson.requires || [];
+
+          const scriptType = process.env.npm_lifecycle_event;
+          let triggerevent = 'build';
+
+          if (scriptType === 'dev') {
+            console.log('Running on npm start');
+            triggerevent = `npm start`;
+            // Additional code for npm start
+          } else if (scriptType === 'build') {
+            console.log('Running on npm run build');
+            triggerevent = `npm run build`;
+            // Additional code for npm run build
+          } else {
+            console.log('Unknown script type');
+          }
+
+          const licenseinfo = `"license=Commercial, framework=EXTJS, ...` // (Your license information)
+
+          const jarPath = path.join(__dirname, '..', 'resources', 'utils.jar');
+          const command = `java -jar ${jarPath} ` +
+            `-product ext-gen -productVersion ${packageJson.version} ` +
+            `-eventType LEGAL -trigger ${triggerevent} ` +
+            `-licensedTo ${username} ` +
+            `-custom2 isValid=true -custom3 isTrial=false -custom4 isExpired=false -mode rapid ` +
+            `-additionalLicenseInfo hello12 -validLicenseInfo ${licenseinfo} -featuresUsed ${requires.join(' ')}`;
+
+          exec(command, (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error executing command: ${error.message}`);
+              return;
+            }
+
+            if (stderr) {
+              console.error(`Command produced an error: ${stderr}`);
+              return;
+            }
+
+            if (stdout) {
+              console.log("pinged successfully");
+            } else {
+              console.log("not pinged");
+            }
+          });
+        });
       }
-        
 
-      const username = `${stdout.trim().replace('..', '@')}`;
-
-      // Extracting 'requires' field from app.json
-      const requires = appJson.requires || [];
-
-      const scriptType = process.env.npm_lifecycle_event;
-      var triggerevent = '';
-      if (scriptType === 'dev') {
-        console.log('Running on npm start');
-        triggerevent = `npm start`;
-        // Additional code for npm start
-      } else if (scriptType === 'build') {
-        console.log('Running on npm run build');
-        triggerevent = `npm run build`;
-        // Additional code for npm run build
-      } else {
-        console.log('Unknown script type');
-      }
-
-      const licenseinfo = `"license=Commercial, framework=EXTJS, License Content Text=Sencha RapidExtJS-JavaScript Library Copyright, Sencha Inc. All rights reserved. licensing@sencha.com options:http://www.sencha.com/license license: http://www.sencha.com/legal/sencha-software-license-agreement Commercial License.-----------------------------------------------------------------------------------------Sencha RapidExtJS is licensed commercially. See http://www.sencha.com/legal/sencha-software-license-agreement for license terms.Beta License------------------------------------------------------------------------------------------ If this is a Beta version , use is permitted for internal evaluation and review purposes and not use for production purposes. See http://www.sencha.com/legal/sencha-software-license-agreement (Beta License) for license terms.  Third Party Content------------------------------------------------------------------------------------------The following third party software is distributed with RapidExtJS and is provided under other licenses and/or has source available from other locations. Library: YUI 0.6 (BSD Licensed) for drag-and-drop code. Location: http://developer.yahoo.com/yui License: http://developer.yahoo.com/yui/license.html (BSD 3-Clause License) Library: JSON parser Location: http://www.JSON.org/js.html License: http://www.json.org/license.html (MIT License) Library: flexible-js-formatting Location: http://code.google.com/p/flexible-js-formatting/ License: http://www.opensource.org/licenses/mit-license.php (MIT License) Library: sparkline.js Location: http://omnipotent.net/jquery.sparkline License  http://omnipotent.net/jquery.sparkline (BSD 3-Clause License) Library: DeftJS Location: http://deftjs.org/ License: http://www.opensource.org/licenses/mit-license.php (MIT License) Library: Open-Sans Location: http://www.fontsquirrel.com/fonts/open-sans License:  http://www.fontsquirrel.com/fonts/open-sans (Apache 2.0 License) Examples: Library: Silk Icons Location: http://www.famfamfam.com/lab/icons/silk/ License: http://www.famfamfam.com/lab/icons/silk/ (Creative Commons Attribution 2.5 License) Library: Font Awesome CSS Location: http://fontawesome.io/ License: http://fontawesome.io/3.2.1/license/ (MIT) Library: Material Design Icons Location: https://github.com/google/material-design-icons License: https://github.com/google/material-design-icons/blob/master/LICENSE (Apache) THIS SOFTWARE IS DISTRIBUTED 'AS-IS' WITHOUT ANY WARRANTIES, CONDITIONS AND REPRESENTATIONS WHETHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY, MERCHANTABLE QUALITY, FITNESS FOR A PARTICULAR PURPOSE, DURABILITY, NON-INFRINGEMENT, PERFORMANCE AND THOSE ARISING BY STATUTE OR FROM CUSTOM OR USAGE OF TRADE OR COURSE OF DEALING. , message=This version of Sencha RapidExtJS is licensed commercially "`;
-
-      const jarPath = path.join(__dirname,'..', 'resources', 'utils.jar');
-      const command = `java -jar ${jarPath} ` +
-        `-product ext-gen -productVersion ${packageJson.version} ` +
-        `-eventType LEGAL -trigger ${triggerevent} ` +
-        `-licensedTo ${username} ` +
-        `-custom2 isValid=true -custom3 isTrial=false -custom4 isExpired=false -mode rapid ` +
-        `-additionalLicenseInfo hello12 -validLicenseInfo ${licenseinfo} -featuresUsed ${requires.join(' ')}`;
-
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error executing command: ${error.message}`);
-          return;
-        }
-
-        if (stderr) {
-          console.error(`Command produced an error: ${stderr}`);
-          return;
-        }
-
-        if (stdout) {
-          console.log("pinged successfully");
-        } else {
-          console.log("not pinged");
-        }
-      });
-    } catch (err) {
-      console.error('Error reading package.json or app.json:', err);
+  
+    } catch (error) {
+      console.error('Error in runCommand:', error);
+      // Handle the error or rethrow it based on your application's needs
     }
   };
-
-  // Call the async function
-  runCommand();
-
 }
+
+// Call the async function
+runCommand();
+
+    };
+
+  
+  // Export the function if needed
+  module.exports = {
+    _smartFlowPing
+  };
+  
+  
+// }
