@@ -845,7 +845,7 @@ export function smartFlowPing(packageJsonPath, appJsonPath) {
               let licensedFeature = '';
               if(username!=null){
                 additionalLicenseInfo = 'This version of Sencha Ext-gen is licensed commercially'
-                licensedFeature = ' LEGAL'
+                licensedFeature = 'LEGAL'
               }else{
                 additionalLicenseInfo = 'This version of Sencha Ext-gen is not licensed commercially'
                 licensedFeature  = 'UNLICENSED'
@@ -874,7 +874,6 @@ export function smartFlowPing(packageJsonPath, appJsonPath) {
                  `-licensedTo ${username} ` +
                  `-custom2 isValid=true -custom3 isTrial=false -custom4 isExpired=false -mode rapid ` +
                  `-validLicenseInfo ${encryptedLicense} -featuresUsed ${featuresUsed} -licensedFeature ${licensedFeature} -piracyLicenseInfo ${additionalLicenseInfo}`;
-
 
             exec(command, (error, stdout, stderr) => {
               if (error) {
