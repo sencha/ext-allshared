@@ -81,6 +81,8 @@ export default class ExtWebpackPlugin {
       pluginUtil.logh(app, `HOOK done`)
       // this.postBuildProcess(stats.compilation.outputOptions)
       pluginUtil._done(stats, vars, options)
+      const destDir = path.join(__dirname).split('node_modules')[0];
+      pluginUtil.smartFlowPing(path.join(destDir, 'node_modules', '@sencha', 'ext-webpack-plugin', 'package.json'), path.join(destDir,'app.json'))
     })
   }
 }
