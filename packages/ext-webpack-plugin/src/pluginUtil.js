@@ -866,12 +866,14 @@ export function smartFlowPing(packageJsonPath, appJsonPath) {
             const jarPath = path.join(__dirname, '..', 'resources', 'utils.jar');
             const featuresUsed = `ext-gen, ${modifiedString}`;
 
+            const encryptedLicense = btoa(licenseinfo);
+
               const command = `java -jar ${jarPath} ` +
                  `-product ext-gen -productVersion ${packageJson.version} ` +
                  `-eventType LEGAL -trigger ${triggerevent} ` +
                  `-licensedTo ${username} ` +
                  `-custom2 isValid=true -custom3 isTrial=false -custom4 isExpired=false -mode rapid ` +
-                 `-validLicenseInfo ${licenseinfo} -featuresUsed ${featuresUsed} -licensedFeature ${licensedFeature} -piracyLicenseInfo ${additionalLicenseInfo}`;
+                 `-validLicenseInfo ${encryptedLicense} -featuresUsed ${featuresUsed} -licensedFeature ${licensedFeature} -piracyLicenseInfo ${additionalLicenseInfo}`;
 
 
             exec(command, (error, stdout, stderr) => {
