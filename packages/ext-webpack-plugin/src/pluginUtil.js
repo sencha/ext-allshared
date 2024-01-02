@@ -854,9 +854,9 @@ export function smartFlowPing(packageJsonPath, appJsonPath) {
             const scriptType = process.env.npm_lifecycle_event;
                       let triggerevent = 'build';
             
-                      if (scriptType === 'dev') {
+                      if (scriptType === 'dev' || scriptType === 'dev:desktop') {
                         triggerevent = `npm start`;
-                      } else if (scriptType === 'build') {
+                      } else if (scriptType === 'build' || scriptType === 'build:desktop' ) {
                         triggerevent = `npm run build`;
                       } else {
                         triggerevent = `null`;
