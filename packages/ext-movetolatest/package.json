@@ -18,7 +18,7 @@
   "preferGlobal": true,
   "dependencies": {
     "fs-extra": "^7.0.1",
-    "replace-in-file": "~3.4.4"
+    "replace-in-file": "~8.0.0"
   },
   "repository": {
     "type": "git",
