@@ -4,7 +4,6 @@
   "description": "All Shared packages for ext-* tools",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "postinstall": "npx lerna bootstrap --loglevel warn",
     "increment": "npx lerna publish --skip-git --skip-npm --force-publish",
     "clean": "npx lerna clean",
@@ -18,18 +17,10 @@
   "author": "Sencha, Inc.",
   "license": "MIT",
   "devDependencies": {
-    "lerna": "6.6.2",
-    "npm-force-resolutions": "^0.0.3"
+    "lerna": "^3.13.4"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sencha/ext-allshared"
-  },
-  "resolutions": {
-    "semver": "7.6.3",
-    "tar": "7.4.3"
-  },
-  "dependencies": {
-    "@isaacs/fs-minipass": "^4.0.1"
   }
 }
