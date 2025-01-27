@@ -18,7 +18,7 @@
     "cross-spawn": "^7.0.2",
     "cross-spawn-with-kill": "^1.0.0",
     "fs-extra": "^9.0.0",
-    "html-webpack-plugin": "^5.5.0",
+    "html-webpack-plugin": "^4.2.0",
     "lodash.uniq": "^4.5.0",
     "opn": "^6.0.0",
     "recursive-readdir-sync": "^1.0.6",
