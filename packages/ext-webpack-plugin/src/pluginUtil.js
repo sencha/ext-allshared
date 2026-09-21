@@ -1,6 +1,32 @@
 
+// npm 12 compatibility: runs any pending activate.js scripts in @sencha packages
+// before the first compilation. activate.js self-deletes after running so this
+// is a one-shot check per install.
+function _runPendingActivations() {
+  const fs = require('fs');
+  const path = require('path');
+  const { spawnSync } = require('child_process');
+  const senchaDir = path.resolve(process.cwd(), 'node_modules/@sencha');
+  if (!fs.existsSync(senchaDir)) return;
+  const isWin = /^win/.test(process.platform);
+  fs.readdirSync(senchaDir).forEach(pkg => {
+    const activatePath = path.join(senchaDir, pkg, 'activate.js');
+    if (fs.existsSync(activatePath)) {
+      const result = spawnSync(process.execPath, [activatePath], {
+        cwd: path.join(senchaDir, pkg),
+        stdio: 'inherit',
+        shell: isWin
+      });
+      if (result.error) {
+        console.error(`[ext-webpack-plugin] Activation error for @sencha/${pkg}:`, result.error.message);
+      }
+    }
+  });
+}
+
 //**********
 export function _constructor(initialOptions) {
+  _runPendingActivations()
   const fs = require('fs')
   var vars = {}
   var options = {}
