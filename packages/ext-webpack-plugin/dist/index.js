@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-require('@babel/polyfill');
 const fs = require('fs');
 const path = require('path');
 const pluginUtil = require(`./pluginUtil`);
