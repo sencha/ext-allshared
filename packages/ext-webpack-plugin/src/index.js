@@ -1,5 +1,4 @@
 'use strict'
-require('@babel/polyfill')
 const fs = require('fs');
 const path = require('path');
 const pluginUtil = require(`./pluginUtil`)
