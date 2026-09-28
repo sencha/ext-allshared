@@ -8,14 +8,12 @@ function _runPendingActivations() {
   const { spawnSync } = require('child_process');
   const senchaDir = path.resolve(process.cwd(), 'node_modules/@sencha');
   if (!fs.existsSync(senchaDir)) return;
-  const isWin = /^win/.test(process.platform);
   fs.readdirSync(senchaDir).forEach(pkg => {
     const activatePath = path.join(senchaDir, pkg, 'activate.js');
     if (fs.existsSync(activatePath)) {
       const result = spawnSync(process.execPath, [activatePath], {
         cwd: path.join(senchaDir, pkg),
-        stdio: 'inherit',
-        shell: isWin
+        stdio: 'inherit' // no shell: process.execPath may contain spaces
       });
       if (result.error) {
         console.error(`[ext-webpack-plugin] Activation error for @sencha/${pkg}:`, result.error.message);
